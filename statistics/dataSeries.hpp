@@ -2,8 +2,7 @@
 #define _DATASERIES_HPP_
 
 #include <QString>
-
-#include <list>
+#include <vector>
 
 #include "../types.hpp"
 
@@ -12,7 +11,7 @@ public:
 	DataSeries() = default;
 
 	Status readData(QString);
-	std::vector<std::list<double>>& series();
+	std::vector<std::vector<double>>& series();
 	size_t size();
 	unsigned short dimension();
 
@@ -23,7 +22,7 @@ public:
 private:
 	QString filename;
 
-	std::vector<std::list<double>> dataSeries;
+	std::vector<std::vector<double>> dataSeries;
 	unsigned short dimensions = 0;
 
 

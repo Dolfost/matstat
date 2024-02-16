@@ -1,11 +1,10 @@
+#include "dataseries.hpp"
 #include <QString>
 #include <QDebug>
 #include <QFile>
 #include <QtCore/qnamespace.h>
 #include <QtCore/qstring.h>
-#include <QRegularExpression>
-
-#include "dataSeries.hpp"
+#include <vector>
 
 Status DataSeries::readData(QString fn) {
 	filename = fn;
@@ -25,25 +24,23 @@ Status DataSeries::readData(QString fn) {
 
 	double tmp;
 	bool ok;
-	int column;
-	std::vector<std::list<double>> tmpDataSeries;
-	QRegularExpression reqExp("[\t, ]+");
-
+	std::vector<double> dataLine;
+	std::vector<std::vector<double>> tmpDataSeries;
+	
     while (!file.atEnd()) {
 		// read new line
 		lineno++;
 		line = file.readLine();
-		words = line.split(reqExp, Qt::SkipEmptyParts);
+		words = line.split(',', Qt::SkipEmptyParts, Qt::CaseSensitive);
 
 		// skip empty lines
 		if (words.length() == 0)
 			continue;
 
 		// check data dimension
-		if (dimensions == 0) {
+		if (dimensions == 0)
 			dimensions = words.length();
-			tmpDataSeries.resize(dimensions);
-		} else if (words.length() != dimensions) {
+		else if (words.length() != dimensions) {
 			msg = QString("Got too %1 entries on line %2 in '%3', expected %4, got %5.")
 					.arg(words.length() > dimensions ? "many" : "few")
 					.arg(QString::number(lineno))
@@ -55,7 +52,7 @@ Status DataSeries::readData(QString fn) {
 		}
 
 		// parse integers
-		column = 0;
+		dataLine.clear();
 		for (const auto& word : words) {
 			tmp = word.toDouble(&ok);
 			if (ok == false) {
@@ -66,22 +63,23 @@ Status DataSeries::readData(QString fn) {
 				return Status::Error;
 			}
 
-			tmpDataSeries[column].push_back(tmp);
-			column++;
+			dataLine.push_back(tmp);
 		}
+
+		tmpDataSeries.push_back(dataLine);
     }
 
 	dataSeries = tmpDataSeries;
 
-	msg = QString("Read %1 %2-dimensional entries from '%3'.")
-		.arg(QString::number(dataSeries[0].size()))
+	msg = QString("Read %1 %2-dimensional entries from '%3.'")
+		.arg(QString::number(dataSeries.size()))
 		.arg(QString::number(dimensions))
 		.arg(filename);
 
 	return dataSeries.size() == 0 ? Status::Warning : Status::Ok;
 }
 
-std::vector<std::list<double>>& DataSeries::series() {
+std::vector<std::vector<double>>& DataSeries::series() {
 	return dataSeries;
 }
 

@@ -8,17 +8,21 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_PREFIX_PATH "~/Qt/6.6.0/macos/lib/cmake")
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
-
 find_package(Qt6 REQUIRED COMPONENTS Widgets Gui Charts)
 qt_standard_project_setup()
 
 file(GLOB STATISTICS_FILES ${PROJECT_SOURCE_DIR}/statistics/*.cpp)
+file(GLOB GUI_FILES ${PROJECT_SOURCE_DIR}/gui/*.cpp)
 
 qt_add_executable(lab1
     main.cpp
+	calculator.cpp 
 	${STATISTICS_FILES}
+	${GUI_FILES}
+
+	# statistics/matstat.hpp
+	# calculator.hpp
+	# types.hpp
 )
 
 target_link_libraries(lab1 PRIVATE Qt6::Widgets Qt6::Gui Qt6::Charts)

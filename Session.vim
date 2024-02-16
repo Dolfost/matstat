@@ -13,27 +13,29 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +87 main.cpp
+badd +17 main.cpp
+badd +17 calculator.hpp
+badd +1 calculator.cpp
 badd +3 types.hpp
-badd +15 statistics/relativeFrequencyChart.hpp
-badd +23 statistics/relativeFrequencyChart.cpp
-badd +1 statistics/varSeries.cpp
-badd +1 statistics/varSeries.hpp
-badd +1 statistics/dataSeries.cpp
-badd +12 statistics/dataSeries.hpp
-badd +1 statistics/classSeries.cpp
-badd +32 statistics/classSeries.hpp
-badd +17 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp
-badd +43 statistics/distributionChart.cpp
-badd +221 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataVector.cpp
-badd +59 statistics/dataVector.hpp
-badd +56 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.cpp
-badd +33 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp
-badd +200 ../data/200/KVANT.DAT
-badd +13 ../data/25/norm.txt
+badd +18 statistics/varseries.hpp
+badd +1 statistics/varseries.cpp
+badd +1 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.cpp
+badd +11 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.hpp
+badd +1 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.cpp
+badd +30 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp
+badd +3 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/graph.hpp
+badd +13 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.hpp
+badd +1 ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.cpp
+badd +1 gui/vectorContainerWidget.cpp
+badd +5 gui/vectorContainerWidget.hpp
+badd +1 gui/vectorReaderWindow.cpp
+badd +23 gui/vectorReaderWindow.hpp
+badd +1 statistics/vectordataseries.cpp
+badd +6 statistics/vectordataseries.hpp
 argglobal
 %argdel
 $argadd main.cpp
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -54,115 +56,20 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 33 - ((32 * winheight(0) + 21) / 42)
+let s:l = 17 - ((16 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 33
-normal! 05|
-tabnext
-edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-wincmd _ | wincmd |
-vsplit
-2wincmd h
-wincmd w
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 131 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 79 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 1 + 106) / 213)
-argglobal
-balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 56 - ((10 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 56
-normal! 031|
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp | endif
-if &buftype ==# 'terminal'
-  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp
-endif
-balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 47 - ((32 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 47
+keepjumps 17
 normal! 04|
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp | endif
-if &buftype ==# 'terminal'
-  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.hpp
-endif
-balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chartViewBase.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 35 - ((0 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 35
-normal! 08|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 131 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 79 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 1 + 106) / 213)
 tabnext
-edit statistics/relativeFrequencyChart.cpp
+edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-wincmd _ | wincmd |
-vsplit
-2wincmd h
-wincmd w
+1wincmd h
 wincmd w
 let &splitbelow = s:save_splitbelow
 let &splitright = s:save_splitright
@@ -173,11 +80,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 0 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 92 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 99 + 96) / 192)
 argglobal
-balt statistics/relativeFrequencyChart.hpp
+balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/graph.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -188,19 +94,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 31 - ((30 * winheight(0) + 21) / 42)
+let s:l = 7 - ((6 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 31
+keepjumps 7
 normal! 05|
 wincmd w
 argglobal
-if bufexists(fnamemodify("statistics/relativeFrequencyChart.hpp", ":p")) | buffer statistics/relativeFrequencyChart.hpp | else | edit statistics/relativeFrequencyChart.hpp | endif
+if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.hpp | endif
 if &buftype ==# 'terminal'
-  silent file statistics/relativeFrequencyChart.hpp
+  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.hpp
 endif
-balt statistics/relativeFrequencyChart.cpp
+balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/chart.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -211,309 +117,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 15
-normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("statistics/relativeFrequencyChart.hpp", ":p")) | buffer statistics/relativeFrequencyChart.hpp | else | edit statistics/relativeFrequencyChart.hpp | endif
-if &buftype ==# 'terminal'
-  silent file statistics/relativeFrequencyChart.hpp
-endif
-balt statistics/relativeFrequencyChart.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 15
-normal! 017|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
-exe 'vert 3resize ' . ((&columns * 0 + 106) / 213)
-tabnext
-edit statistics/distributionChart.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 105 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 107 + 106) / 213)
-argglobal
-balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 43 - ((27 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 43
-normal! 028|
-wincmd w
-argglobal
-if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp | endif
-if &buftype ==# 'terminal'
-  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/distributionChart.hpp
-endif
-balt statistics/distributionChart.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 14 - ((13 * winheight(0) + 21) / 42)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 14
-normal! 0
-wincmd w
-exe 'vert 1resize ' . ((&columns * 105 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 107 + 106) / 213)
-tabnext
-edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataVector.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 67 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 145 + 106) / 213)
-argglobal
-balt statistics/dataVector.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 221 - ((11 * winheight(0) + 18) / 37)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 221
-normal! 043|
-wincmd w
-argglobal
-if bufexists(fnamemodify("statistics/dataVector.hpp", ":p")) | buffer statistics/dataVector.hpp | else | edit statistics/dataVector.hpp | endif
-if &buftype ==# 'terminal'
-  silent file statistics/dataVector.hpp
-endif
-balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataVector.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 47 - ((28 * winheight(0) + 18) / 37)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 47
-normal! 0
-wincmd w
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 67 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 145 + 106) / 213)
-tabnext
-edit statistics/dataSeries.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 75 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 137 + 106) / 213)
-argglobal
-balt statistics/dataSeries.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 83 - ((20 * winheight(0) + 18) / 37)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 83
-normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("statistics/dataSeries.hpp", ":p")) | buffer statistics/dataSeries.hpp | else | edit statistics/dataSeries.hpp | endif
-if &buftype ==# 'terminal'
-  silent file statistics/dataSeries.hpp
-endif
-balt statistics/dataSeries.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 12 - ((0 * winheight(0) + 18) / 37)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 12
-normal! 015|
-wincmd w
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 75 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 137 + 106) / 213)
-tabnext
-edit statistics/varSeries.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 61 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 151 + 106) / 213)
-argglobal
-balt statistics/varSeries.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 36 - ((35 * winheight(0) + 18) / 37)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 36
-normal! 0
-wincmd w
-argglobal
-if bufexists(fnamemodify("statistics/varSeries.hpp", ":p")) | buffer statistics/varSeries.hpp | else | edit statistics/varSeries.hpp | endif
-if &buftype ==# 'terminal'
-  silent file statistics/varSeries.hpp
-endif
-balt statistics/varSeries.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 16 - ((0 * winheight(0) + 18) / 37)
+let s:l = 16 - ((15 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 16
-normal! 022|
+normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 1resize ' . ((&columns * 61 + 106) / 213)
-exe '2resize ' . ((&lines * 37 + 22) / 45)
-exe 'vert 2resize ' . ((&columns * 151 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 92 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 99 + 96) / 192)
 tabnext
-edit statistics/classSeries.cpp
+edit calculator.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -530,10 +144,10 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 91 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 121 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 93 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 98 + 96) / 192)
 argglobal
-balt statistics/classSeries.hpp
+balt calculator.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -544,39 +158,435 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 33 - ((26 * winheight(0) + 22) / 45)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 33
-normal! 018|
-wincmd w
-argglobal
-if bufexists(fnamemodify("statistics/classSeries.hpp", ":p")) | buffer statistics/classSeries.hpp | else | edit statistics/classSeries.hpp | endif
-if &buftype ==# 'terminal'
-  silent file statistics/classSeries.hpp
-endif
-balt statistics/classSeries.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 22) / 45)
+let s:l = 10 - ((8 * winheight(0) + 25) / 50)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 10
+normal! 012|
+wincmd w
+argglobal
+if bufexists(fnamemodify("calculator.hpp", ":p")) | buffer calculator.hpp | else | edit calculator.hpp | endif
+if &buftype ==# 'terminal'
+  silent file calculator.hpp
+endif
+balt calculator.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 20 - ((19 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 20
+normal! 010|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 93 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 98 + 96) / 192)
+tabnext
+edit gui/vectorContainerWidget.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 86 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 105 + 96) / 192)
+argglobal
+balt gui/vectorContainerWidget.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
+normal! 036|
+wincmd w
+argglobal
+if bufexists(fnamemodify("gui/vectorContainerWidget.hpp", ":p")) | buffer gui/vectorContainerWidget.hpp | else | edit gui/vectorContainerWidget.hpp | endif
+if &buftype ==# 'terminal'
+  silent file gui/vectorContainerWidget.hpp
+endif
+balt gui/vectorContainerWidget.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 18 - ((17 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 18
+normal! 07|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 86 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 105 + 96) / 192)
+tabnext
+edit gui/vectorReaderWindow.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 77 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 114 + 96) / 192)
+argglobal
+balt gui/vectorReaderWindow.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 47 - ((34 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 47
+normal! 017|
+wincmd w
+argglobal
+if bufexists(fnamemodify("gui/vectorReaderWindow.hpp", ":p")) | buffer gui/vectorReaderWindow.hpp | else | edit gui/vectorReaderWindow.hpp | endif
+if &buftype ==# 'terminal'
+  silent file gui/vectorReaderWindow.hpp
+endif
+balt gui/vectorReaderWindow.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 23 - ((22 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 23
+normal! 046|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 77 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 114 + 96) / 192)
+tabnext
+edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
+argglobal
+balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 61 - ((13 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 61
+normal! 030|
+wincmd w
+argglobal
+if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp | endif
+if &buftype ==# 'terminal'
+  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.hpp
+endif
+balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/dataseries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 32 - ((31 * winheight(0) + 25) / 50)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 32
 normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 91 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 121 + 106) / 213)
-tabnext 2
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
+tabnext
+edit statistics/vectordataseries.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe '1resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
+argglobal
+balt statistics/vectordataseries.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 3 - ((2 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 3
+normal! 09|
+wincmd w
+argglobal
+if bufexists(fnamemodify("statistics/vectordataseries.hpp", ":p")) | buffer statistics/vectordataseries.hpp | else | edit statistics/vectordataseries.hpp | endif
+if &buftype ==# 'terminal'
+  silent file statistics/vectordataseries.hpp
+endif
+balt statistics/vectordataseries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 12 - ((11 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 12
+normal! 0
+wincmd w
+exe '1resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
+tabnext
+edit statistics/varseries.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe '1resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 114 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 77 + 96) / 192)
+argglobal
+balt statistics/varseries.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
+normal! 021|
+wincmd w
+argglobal
+if bufexists(fnamemodify("statistics/varseries.hpp", ":p")) | buffer statistics/varseries.hpp | else | edit statistics/varseries.hpp | endif
+if &buftype ==# 'terminal'
+  silent file statistics/varseries.hpp
+endif
+balt statistics/varseries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 18 - ((17 * winheight(0) + 18) / 36)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 18
+normal! 05|
+wincmd w
+exe '1resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 114 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 77 + 96) / 192)
+tabnext
+edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe '1resize ' . ((&lines * 40 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 107 + 96) / 192)
+exe '2resize ' . ((&lines * 40 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 84 + 96) / 192)
+argglobal
+balt statistics/varseries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 45 - ((23 * winheight(0) + 20) / 40)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 45
+normal! 012|
+wincmd w
+argglobal
+if bufexists(fnamemodify("~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.hpp", ":p")) | buffer ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.hpp | else | edit ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.hpp | endif
+if &buftype ==# 'terminal'
+  silent file ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.hpp
+endif
+balt ~/Lib/NAU/Mathematical_statistics/Labs/Lab_1/statistics/classseries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 11 - ((0 * winheight(0) + 20) / 40)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 11
+normal! 028|
+wincmd w
+exe '1resize ' . ((&lines * 40 + 26) / 53)
+exe 'vert 1resize ' . ((&columns * 107 + 96) / 192)
+exe '2resize ' . ((&lines * 40 + 26) / 53)
+exe 'vert 2resize ' . ((&columns * 84 + 96) / 192)
+tabnext 1
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

@@ -1,51 +1,41 @@
 #include <QDebug>
 
-#include "classSeries.hpp"
-ClassSeries::ClassSeries(DataVector* vs) {
-	dataVector = vs;
+#include "classseries.hpp"
+
+
+ClassSeries::ClassSeries(VarSeries* vs) {
+	varSeries = vs;
 }
 
 bool ClassSeries::makeSeries(unsigned short cc) {
 	if (cc == 0) {
-		clsCnt = dataVector->size() >= 100 ?
-				cbrt(dataVector->size()) : sqrt(dataVector->size());
+		clsCnt = varSeries->count() >= 100 ?
+				cbrt(varSeries->count()) : sqrt(varSeries->count());
 		if (clsCnt % 2 == 0)
 			clsCnt--;
 	} else {
 		clsCnt = cc;
 	}
-	
-	double seriesMin = dataVector->min();
-	double seriesMax = dataVector->max();
-	double entryCount = dataVector->size();
 
+	xMin = varSeries->seriesMin();
+	xMax = varSeries->seriesMax();
 
 	classSeries.clear();
 
-	h = (dataVector->max()-dataVector->min())/double(clsCnt);
+	h = (varSeries->seriesMax()-varSeries->seriesMin())/double(clsCnt);
 
 	classSeries.resize(clsCnt);
 
 	int idx;
-	for (auto const& i : dataVector->vector()) {
-		idx = (i - dataVector->min())/h;
-		if (idx >= clsCnt)
+	for (auto const& [key, val] : varSeries->series()) {
+		idx = int(key - varSeries->seriesMin())/h;
+		if (idx == clsCnt) {
 			idx--;
-		classSeries[idx].first++;
-	}
-
-	for (auto& i : classSeries) {
-		i.second = i.first/double(entryCount);
-	}
-
-
-	maxIntCnt = classSeries[0].first;
-	maxIntProb = classSeries[0].second;
-	for (int i = 1; i < classSeries.size(); i++) {
-		if (classSeries[i].first > maxIntCnt)
-			maxIntCnt = classSeries[i].first;
-		if (classSeries[i].second > maxIntProb)
-			maxIntProb = classSeries[i].second;
+		}
+		classSeries[idx].first +=
+			varSeries->series()[key].first;
+		classSeries[idx].second +=
+			varSeries->series()[key].second;
 	}
 
 	return true;
@@ -59,14 +49,14 @@ double ClassSeries::step() {
 	return h;
 }
 
-size_t ClassSeries::maxIntervalCount() {
-	return maxIntCnt;
+int ClassSeries::seriesMin() {
+	return xMin;
 }
 
-double ClassSeries::maxIntervalProbability() {
-	return maxIntProb;
+int ClassSeries::seriesMax() {
+	return xMax;
 }
 
-size_t ClassSeries::classCount() {
+unsigned short ClassSeries::classCount() {
 	return clsCnt;
 }
