@@ -13,24 +13,22 @@
 
 #include "classSeries.hpp"
 
-class ChartViewBase : public QChartView {
+#include "QCustomPlot/qcustomplot.h"
+
+class PlotBase : public QCustomPlot {
 	Q_OBJECT
 public:
-	ChartViewBase(QWidget* parent = nullptr);
+	PlotBase(QWidget* parent = nullptr);
 
 	ClassSeries* classSeries();
 
 	ClassSeries* cs = nullptr;
 
-	QChartView* chartView;
+	QCPBars* bars = nullptr;
 
-	QChart* chart = nullptr;
-	QValueAxis* xAxis = nullptr;
-	QValueAxis* yAxis = nullptr;
-
-	QAreaSeries* barAreaSeries = nullptr;
-	QLineSeries* lowerBarAreaSeries = nullptr;
-	QLineSeries* upperBarAreaSeries = nullptr;
+	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
+	QSharedPointer<QCPAxisTicker> yTicker;
+	QSharedPointer<QCPAxisTickerLog> yLogTicker;
 
 	QSplineSeries* continiousSplineSeries = nullptr;
 
@@ -43,6 +41,10 @@ public:
 	QLineSeries* walshMedLineSeries = nullptr;
 private:
 	QLabel* coordinatesLabel = nullptr;
+
+private slots:
+	void handleZoomX(const QCPRange &  newRange);
+	void handleZoomY(const QCPRange &  newRange);
 
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;

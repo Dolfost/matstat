@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     // "Open data", QDir::homePath(), "Text files (*.txt *.csv)");
 
 	DataSeries* ds = new DataSeries();
-	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp.txt");
+	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm.txt");
 
 	qDebug() << ds->message();
 	qDebug() << "DATA SERIES:"; for (auto& i : ds->series()) {
@@ -74,12 +74,12 @@ int main(int argc, char *argv[]) {
 	RelativeFrequencyChart* frequencyChart = new RelativeFrequencyChart();
 	frequencyChart->fill(cs);
 
-	DistributionChart* distributionChart = new DistributionChart();
-	distributionChart->fill(cs);
+	// DistributionChart* distributionChart = new DistributionChart();
+	// distributionChart->fill(cs);
 
 	layout->setContentsMargins(0,0,0,0);
 	layout->addWidget(frequencyChart);
-	layout->addWidget(distributionChart);
+	// layout->addWidget(distributionChart);
 
 	layout2->addLayout(layout);
 	layout2->addWidget(logCheckBox);

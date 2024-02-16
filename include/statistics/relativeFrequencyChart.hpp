@@ -5,9 +5,9 @@
 #include <QtCharts/qbarseries.h>
 
 #include "classSeries.hpp"
-#include "chartViewBase.hpp"
+#include "plotBase.hpp"
 
-class RelativeFrequencyChart : public ChartViewBase {
+class RelativeFrequencyChart : public PlotBase {
 	Q_OBJECT
 public:
     RelativeFrequencyChart(QWidget* parent = nullptr);
