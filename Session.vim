@@ -13,22 +13,23 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +1 main.cpp
-badd +73 include/statistics/plotBase.cpp
-badd +0 include/statistics/plotBase.hpp
+badd +28 main.cpp
+badd +15 include/statistics/plotBase.cpp
+badd +35 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
-badd +0 include/statistics/dataSeries.hpp
+badd +1 include/statistics/dataSeries.hpp
 badd +1 include/statistics/dataVector.hpp
-badd +2 include/statistics/dataVector.cpp
+badd +1 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
-badd +0 include/statistics/classSeries.hpp
-badd +1 include/statistics/relativeFrequencyChart.cpp
-badd +0 include/statistics/relativeFrequencyChart.hpp
+badd +1 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
-badd +0 include/statistics/distributionChart.hpp
-badd +0 include/types.hpp
+badd +18 include/statistics/distributionChart.hpp
+badd +1 include/types.hpp
+badd +13 include/statistics/densityChart.hpp
+badd +1 include/statistics/densityChart.cpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -49,11 +50,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 2 - ((1 * winheight(0) + 22) / 45)
+let s:l = 80 - ((8 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 2
+keepjumps 80
 normal! 0
 tabnext
 edit include/statistics/plotBase.cpp
@@ -73,8 +74,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 151 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 61 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 118 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 94 + 106) / 213)
 argglobal
 balt include/statistics/plotBase.hpp
 setlocal fdm=manual
@@ -87,12 +88,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 73 - ((33 * winheight(0) + 22) / 45)
+let s:l = 15 - ((14 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 73
-normal! 053|
+keepjumps 15
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/plotBase.hpp", ":p")) | buffer include/statistics/plotBase.hpp | else | edit include/statistics/plotBase.hpp | endif
@@ -110,17 +111,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 34 - ((18 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 34
+normal! 014|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 151 + 106) / 213)
-exe 'vert 2resize ' . ((&columns * 61 + 106) / 213)
+exe 'vert 1resize ' . ((&columns * 118 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 94 + 106) / 213)
 tabnext
-edit include/statistics/relativeFrequencyChart.cpp
+edit include/statistics/densityChart.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -140,7 +141,7 @@ set winwidth=1
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 argglobal
-balt include/statistics/relativeFrequencyChart.hpp
+balt include/statistics/densityChart.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -151,19 +152,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 38 - ((36 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
+keepjumps 38
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("include/statistics/relativeFrequencyChart.hpp", ":p")) | buffer include/statistics/relativeFrequencyChart.hpp | else | edit include/statistics/relativeFrequencyChart.hpp | endif
+if bufexists(fnamemodify("include/statistics/densityChart.hpp", ":p")) | buffer include/statistics/densityChart.hpp | else | edit include/statistics/densityChart.hpp | endif
 if &buftype ==# 'terminal'
-  silent file include/statistics/relativeFrequencyChart.hpp
+  silent file include/statistics/densityChart.hpp
 endif
-balt include/statistics/relativeFrequencyChart.cpp
+balt include/statistics/densityChart.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -174,12 +175,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 7 - ((6 * winheight(0) + 22) / 45)
+let s:l = 10 - ((9 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 7
-normal! 0
+keepjumps 10
+normal! 012|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
@@ -215,12 +216,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 16 - ((14 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 16
+normal! 030|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/distributionChart.hpp", ":p")) | buffer include/statistics/distributionChart.hpp | else | edit include/statistics/distributionChart.hpp | endif
@@ -238,11 +239,74 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 3 - ((2 * winheight(0) + 22) / 45)
+let s:l = 14 - ((13 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 3
+keepjumps 14
+normal! 0
+wincmd w
+exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
+tabnext
+edit include/types.hpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
+argglobal
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 8 - ((7 * winheight(0) + 21) / 42)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 8
+normal! 0
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/statistics/densityChart.hpp", ":p")) | buffer include/statistics/densityChart.hpp | else | edit include/statistics/densityChart.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/statistics/densityChart.hpp
+endif
+balt include/types.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 1
 normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
@@ -279,7 +343,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -302,7 +366,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 3 - ((2 * winheight(0) + 22) / 45)
+let s:l = 3 - ((2 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -343,12 +407,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 2 - ((1 * winheight(0) + 22) / 45)
+let s:l = 13 - ((12 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 2
-normal! 0
+keepjumps 13
+normal! 022|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
@@ -366,7 +430,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -407,7 +471,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -430,7 +494,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 8 - ((7 * winheight(0) + 22) / 45)
+let s:l = 8 - ((7 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -453,7 +517,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 21) / 42)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -472,7 +536,6 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost
