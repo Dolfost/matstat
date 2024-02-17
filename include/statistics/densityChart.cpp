@@ -5,34 +5,35 @@
 #include <QtCore/qnamespace.h>
 
 #include "classSeries.hpp"
-#include "distributionChart.hpp"
+#include "densityChart.hpp"
 #include "plotBase.hpp"
 
-DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
-	bars->setName("F(x) (class)");
+DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
+	bars->setName("f(x) (class)");
+	enableMean();
+	enableStandartDeviation();
 	enableMed();
 	enableWalshMed();
-
-	yRange = QCPRange(0,1.01);
 }
 
-void DistributionChart::fill(ClassSeries* clSr) {
+void DensityChart::fill(ClassSeries* clSr) {
 	cs = clSr;
 
+
 	QVector<double> x, y;
-	double cumSum = 0;
 	for (size_t i = 0; i < cs->classCount(); i++) {
 		x.push_back(cs->dataVector->min() + cs->step()*(i+0.5));
-		cumSum += cs->series()[i].second;
-		y.push_back(cumSum);
+		y.push_back(cs->series()[i].second);
 	}
 
 	bars->setData(x, y, true);
 
+	yRange = QCPRange(0, cs->maxIntervalProbability()*1.01);
+
+	plotMean();
+	plotStandartDeviation();
 	plotMed();
 	plotWalshMed();
-
-	this->yAxis->setRange(yRange);
 
 	PlotBase::fill(cs);
 }

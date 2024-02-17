@@ -22,6 +22,18 @@ public:
 
 	ClassSeries* classSeries();
 
+	void enableMean();
+	void plotMean();
+
+	void enableStandartDeviation();
+	void plotStandartDeviation();
+
+	void enableMed();
+	void plotMed();
+
+	void enableWalshMed();
+	void plotWalshMed();
+
 	ClassSeries* cs = nullptr;
 
 	QCPBars* bars = nullptr;
@@ -29,22 +41,20 @@ public:
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
 	QSharedPointer<QCPAxisTicker> yTicker;
 	QSharedPointer<QCPAxisTickerLog> yLogTicker;
+	QCPRange xRange;
+	QCPRange yRange;
 
-	QSplineSeries* continiousSplineSeries = nullptr;
-
-	QLineSeries* meanLineSeries = nullptr;
-
-	QLineSeries* standatrDeviationLineSeries = nullptr;
-
-	QLineSeries* medLineSeries = nullptr;
-
-	QLineSeries* walshMedLineSeries = nullptr;
+	QCPGraph* mean = nullptr;
+	QCPGraph* standatrDeviation = nullptr;
+	QCPGraph* med = nullptr;
+	QCPGraph* walshMed = nullptr;
 private:
 	QLabel* coordinatesLabel = nullptr;
+	QTimer* coordinatesTimer = nullptr;
 
 private slots:
-	void handleZoomX(const QCPRange &  newRange);
-	void handleZoomY(const QCPRange &  newRange);
+	void handleZoomX(const QCPRange & newRange);
+	void handleZoomY(const QCPRange & newRange);
 
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;

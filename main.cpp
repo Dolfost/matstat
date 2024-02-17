@@ -11,7 +11,7 @@
 #include "statistics/dataSeries.hpp"
 #include "statistics/varSeries.hpp"
 #include "statistics/classSeries.hpp"
-#include "statistics/relativeFrequencyChart.hpp"
+#include "statistics/densityChart.hpp"
 #include "statistics/distributionChart.hpp"
 
 #include "types.hpp"
@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     // "Open data", QDir::homePath(), "Text files (*.txt *.csv)");
 
 	DataSeries* ds = new DataSeries();
-	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm.txt");
+	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/random_numbers2.txt");
 
 	qDebug() << ds->message();
 	qDebug() << "DATA SERIES:"; for (auto& i : ds->series()) {
@@ -65,21 +65,22 @@ int main(int argc, char *argv[]) {
 		j++;
 	}
 
-	qDebug() << "mad: " << dv->mad() << "skew: " << dv->skew() << "kurtosis: " << dv->kurtosis() << "walsh_med" << dv->walshAveragesMed() << "covar coef" << dv->variationCoef();
+	// qDebug() << "mad: " << dv->mad() << "skew: " << dv->skew() << "kurtosis: " << dv->kurtosis() << "walsh_med" << dv->walshAveragesMed() << "covar coef" << dv->variationCoef();
+	qDebug() << "variance" << dv->variance() << "med" << dv->med();
 
 	QHBoxLayout* layout = new QHBoxLayout();
 	QVBoxLayout* layout2 = new QVBoxLayout();
 	QCheckBox* logCheckBox = new QCheckBox("log grid");
 
-	RelativeFrequencyChart* frequencyChart = new RelativeFrequencyChart();
-	frequencyChart->fill(cs);
+	DensityChart* densityChart = new DensityChart();
+	densityChart->fill(cs);
 
-	// DistributionChart* distributionChart = new DistributionChart();
-	// distributionChart->fill(cs);
+	DistributionChart* distributionChart = new DistributionChart();
+	distributionChart->fill(cs);
 
 	layout->setContentsMargins(0,0,0,0);
-	layout->addWidget(frequencyChart);
-	// layout->addWidget(distributionChart);
+	layout->addWidget(densityChart);
+	layout->addWidget(distributionChart);
 
 	layout2->addLayout(layout);
 	layout2->addWidget(logCheckBox);
