@@ -10,6 +10,7 @@
 
 DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	bars->setName("f(x) (class)");
+	title->setText("Density");
 	enableMean();
 	enableStandartDeviation();
 	enableMed();

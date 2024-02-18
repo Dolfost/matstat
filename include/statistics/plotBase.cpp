@@ -12,8 +12,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->setAutoAddPlottableToLegend(true);
 	this->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignLeft|Qt::AlignTop);
 	this->setAntialiasedElements(QCP::AntialiasedElement::aeAll);
-
-
+	this->plotLayout()->setMargins(QMargins(5, 5, 5, 5));
 
 	QCPLayoutGrid *subLayout = new QCPLayoutGrid;
 	this->plotLayout()->addElement(1, 0, subLayout);
@@ -22,10 +21,15 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->legend->setFillOrder(QCPLegend::foColumnsFirst);
 	this->plotLayout()->setRowStretchFactor(1, 0.001);
 
+	this->plotLayout()->insertRow(0);
+	title = new QCPTextElement(this, "Title");
+	this->plotLayout()->addElement(0, 0, title);
+
 	// axes setup
 	xFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
 	xFixedTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
 	this->xAxis->setTicker(xFixedTicker);
+	this->xAxis->setTickLabelRotation(90);
 	this->xAxis->setNumberFormat("f");
 	this->xAxis->setNumberPrecision(3);
 	this->xAxis->setScaleType(QCPAxis::stLinear);
@@ -34,17 +38,22 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	yTicker = QSharedPointer<QCPAxisTicker>(new QCPAxisTicker);
 	yTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
 	yTicker->setTickCount(11);
-	this->yAxis->setTicker(yTicker);
-	this->yAxis->setScaleType(QCPAxis::stLinear);
-	this->yAxis2->setTicker(yTicker);
 
 	yLogTicker = QSharedPointer<QCPAxisTickerLog>(new QCPAxisTickerLog);
 	yLogTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
+	yLogTicker->setTickCount(6);
+	yLogTicker->setLogBase(10);
+
+	toggleLog(Qt::Unchecked);
 
 	this->yAxis->setTickLength(0, 5);
 	this->yAxis->setSubTickLength(0, 3);
 	this->xAxis->setTickLength(0, 5);
 	this->xAxis->setSubTickLength(0, 3);
+	this->yAxis2->setTickLength(0, 5);
+	this->yAxis2->setSubTickLength(0, 3);
+	this->xAxis2->setTickLength(0, 5);
+	this->xAxis2->setSubTickLength(0, 3);
 
 	this->xAxis2->setVisible(true);
 	this->xAxis2->setTickLabels(false);
@@ -65,8 +74,11 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	bars->setWidthType(QCPBars::WidthType::wtPlotCoords);
 	QPen barsPen;
 	barsPen.setWidth(0);
-	// barsPen.setColor("#ff0000");
-	bars->setPen(barsPen);
+	bars->setPen(Qt::NoPen);
+	QBrush barsBrush;
+	barsBrush.setStyle(Qt::SolidPattern);
+	barsBrush.setColor("#2b8eff");
+	bars->setBrush(barsBrush);
 
 
 	// coordinatesLabel setup
@@ -153,7 +165,7 @@ void PlotBase::enableMed() {
 	med->setName("Med.");
 	med->setLineStyle(QCPGraph::lsLine);
 	QPen pen;
-	pen.setColor(Qt::darkGreen);
+	pen.setColor(Qt::green);
 	pen.setWidthF(1.5);
 	med->setPen(pen);
 }
@@ -208,4 +220,24 @@ void PlotBase::handleZoomY(const QCPRange& newRange) {
 			newRange.maxRange > cs->maxIntervalProbability()+1) {
 		this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 	}
+}
+
+void PlotBase::toggleLog(int state) {
+	if (state == Qt::Checked) {
+		this->yAxis->setTicker(yLogTicker);
+		this->yAxis->setScaleType(QCPAxis::stLogarithmic);
+		this->yAxis2->setTicker(yLogTicker);
+		this->yAxis2->setScaleType(QCPAxis::stLogarithmic);
+		this->yAxis->setNumberFormat("eb");
+		this->yAxis->setNumberPrecision(0);
+	} else {
+		this->yAxis->setTicker(yTicker);
+		this->yAxis->setScaleType(QCPAxis::stLinear);
+		this->yAxis2->setTicker(yTicker);
+		this->yAxis2->setScaleType(QCPAxis::stLinear);
+		this->yAxis->setNumberFormat("f");
+		this->yAxis->setNumberPrecision(3);
+	}
+
+	this->replot();
 }

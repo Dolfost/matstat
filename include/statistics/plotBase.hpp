@@ -48,6 +48,8 @@ public:
 	QCPGraph* standatrDeviation = nullptr;
 	QCPGraph* med = nullptr;
 	QCPGraph* walshMed = nullptr;
+
+	QCPTextElement* title = nullptr;
 private:
 	QLabel* coordinatesLabel = nullptr;
 	QTimer* coordinatesTimer = nullptr;
@@ -55,6 +57,9 @@ private:
 private slots:
 	void handleZoomX(const QCPRange & newRange);
 	void handleZoomY(const QCPRange & newRange);
+
+public slots:
+	void toggleLog(int state);
 
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;

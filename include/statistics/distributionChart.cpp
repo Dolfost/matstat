@@ -10,6 +10,7 @@
 
 DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	bars->setName("F(x) (class)");
+	title->setText("Distribution");
 	enableMed();
 	enableWalshMed();
 
