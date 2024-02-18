@@ -28,6 +28,7 @@ class DataVector {
 public:
 	DataVector(std::list<double>);
 	~DataVector() = default;
+	void setVector(std::list<double>);
 
 	std::list<double> vector();
 

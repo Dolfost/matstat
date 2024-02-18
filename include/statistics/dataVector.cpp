@@ -5,14 +5,18 @@
 #include <iterator>
 
 DataVector::DataVector(std::list<double> input) {
+	setVector(input);
+}
+
+void DataVector::setVector(std::list<double> input) {
 	dataVector = input;
 	dataVector.sort();
+	clearStatistics();
 }
 
 std::list<double> DataVector::vector() {
 	return dataVector;
 }
-
 
 
 ////// Statistics ////// 
