@@ -14,7 +14,7 @@ else
   set shortmess=aoO
 endif
 badd +4 main.cpp
-badd +1 include/statistics/plotBase.cpp
+badd +225 include/statistics/plotBase.cpp
 badd +62 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +1 include/statistics/dataSeries.hpp
@@ -26,9 +26,9 @@ badd +1 include/statistics/distributionChart.cpp
 badd +18 include/statistics/distributionChart.hpp
 badd +1 include/types.hpp
 badd +1 include/statistics/densityChart.hpp
-badd +1 include/statistics/densityChart.cpp
-badd +23 include/gui/mainWindow.hpp
-badd +66 include/gui/mainWindow.cpp
+badd +13 include/statistics/densityChart.cpp
+badd +31 include/gui/mainWindow.hpp
+badd +76 include/gui/mainWindow.cpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -52,11 +52,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 21) / 42)
+let s:l = 4 - ((3 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 10
+keepjumps 4
 normal! 022|
 tabnext
 edit include/gui/mainWindow.cpp
@@ -89,12 +89,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 66 - ((25 * winheight(0) + 21) / 42)
+let s:l = 76 - ((31 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 66
-normal! 0
+keepjumps 76
+normal! 050|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -112,11 +112,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 32 - ((23 * winheight(0) + 21) / 42)
+let s:l = 31 - ((23 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 32
+keepjumps 31
 normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 126 + 106) / 213)
@@ -153,12 +153,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 32 - ((14 * winheight(0) + 21) / 42)
+let s:l = 225 - ((25 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 32
-normal! 030|
+keepjumps 225
+normal! 029|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/plotBase.hpp", ":p")) | buffer include/statistics/plotBase.hpp | else | edit include/statistics/plotBase.hpp | endif
@@ -176,12 +176,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 62 - ((0 * winheight(0) + 21) / 42)
+let s:l = 62 - ((13 * winheight(0) + 22) / 44)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 62
-normal! 018|
+normal! 023|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 118 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 94 + 106) / 213)
@@ -203,7 +203,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 argglobal
 balt include/statistics/densityChart.hpp
@@ -247,7 +249,9 @@ normal! zt
 keepjumps 10
 normal! 012|
 wincmd w
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 tabnext
 edit include/statistics/distributionChart.cpp
@@ -267,7 +271,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 argglobal
 balt include/statistics/distributionChart.hpp
@@ -311,7 +317,9 @@ normal! zt
 keepjumps 1
 normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 tabnext
 edit include/statistics/dataSeries.cpp
@@ -331,7 +339,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 argglobal
 balt include/statistics/dataSeries.hpp
@@ -375,7 +385,9 @@ normal! zt
 keepjumps 3
 normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 tabnext
 edit include/statistics/dataVector.cpp
@@ -395,7 +407,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 121 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 91 + 106) / 213)
 argglobal
 balt include/statistics/dataVector.hpp
@@ -439,7 +453,9 @@ normal! zt
 keepjumps 31
 normal! 038|
 wincmd w
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 121 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 91 + 106) / 213)
 tabnext
 edit include/statistics/classSeries.cpp
@@ -459,7 +475,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 argglobal
 balt include/statistics/classSeries.hpp
@@ -503,7 +521,9 @@ normal! zt
 keepjumps 8
 normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe '2resize ' . ((&lines * 42 + 23) / 47)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
 tabnext
 edit include/types.hpp
@@ -538,7 +558,6 @@ if filereadable(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
 set hlsearch
-nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost
