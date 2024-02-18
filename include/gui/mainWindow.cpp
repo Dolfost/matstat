@@ -26,8 +26,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	chartsLayout->addWidget(distributionChart);
 
 	dataSeries = new DataSeries();
-	dataVector = new DataVector({});
+	dataVector = new DataVector(
+			{1,4,1,5,2,4,3,2,1,2,3,2,1,2,4,1,4,3,2,1,3,4,4}
+			);
 	classSeries = new ClassSeries(dataVector);
+	classSeries->makeSeries();
+	densityChart->fill(classSeries);
+	distributionChart->fill(classSeries);
 
 	createActions();
 
@@ -58,11 +63,17 @@ void MainWindow::createActions() {
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
 
-	QAction* toogleLogAct = new QAction("Log grid", this);
-	toogleLogAct->setCheckable(true);
-	openAct->setStatusTip("Toogle Log grid");
-	connect(toogleLogAct, &QAction::toggled, densityChart, &DensityChart::toggleLog);
-	viewMenu->addAction(toogleLogAct);
+	QAction* toogleDensityLogAct = new QAction("Density log grid", this);
+	toogleDensityLogAct->setCheckable(true);
+	openAct->setStatusTip("Toogle density log grid");
+	connect(toogleDensityLogAct, &QAction::toggled, densityChart, &DensityChart::toggleLog);
+	viewMenu->addAction(toogleDensityLogAct);
+
+	QAction* toogleDistributionLogAct = new QAction("Distribution log grid", this);
+	toogleDistributionLogAct->setCheckable(true);
+	openAct->setStatusTip("Toogle distribution log grid");
+	connect(toogleDistributionLogAct, &QAction::toggled, distributionChart, &DistributionChart::toggleLog);
+	viewMenu->addAction(toogleDistributionLogAct);
 }
 
 void MainWindow::open() {

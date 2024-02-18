@@ -119,7 +119,7 @@ void PlotBase::enableMean() {
 
 void PlotBase::plotMean() {
 	QVector<double> x{cs->dataVector->mean(), cs->dataVector->mean()}, y{yRange.lower, yRange.upper};
-	mean->addData(x, y);
+	mean->setData(x, y);
 }
 
 void PlotBase::enableStandartDeviation() {
@@ -222,8 +222,8 @@ void PlotBase::handleZoomY(const QCPRange& newRange) {
 	}
 }
 
-void PlotBase::toggleLog(int state) {
-	if (state == Qt::Checked) {
+void PlotBase::toggleLog(bool state) {
+	if (state == true) {
 		this->yAxis->setTicker(yLogTicker);
 		this->yAxis->setScaleType(QCPAxis::stLogarithmic);
 		this->yAxis2->setTicker(yLogTicker);

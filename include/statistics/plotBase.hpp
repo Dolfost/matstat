@@ -59,7 +59,7 @@ private slots:
 	void handleZoomY(const QCPRange & newRange);
 
 public slots:
-	void toggleLog(int state);
+	void toggleLog(bool state);
 
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;
