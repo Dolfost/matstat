@@ -209,15 +209,15 @@ void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 }
 
 void PlotBase::handleZoomX(const QCPRange& newRange) {
-	if (newRange.minRange < cs->dataVector->min()-100 ||
-			newRange.maxRange > cs->dataVector->max()+100) {
+	if (newRange.minRange < cs->dataVector->min() ||
+			newRange.maxRange > cs->dataVector->max()) {
 		this->xAxis->setRange(newRange.bounded(xRange.lower, xRange.upper));
 	}
 }
 
 void PlotBase::handleZoomY(const QCPRange& newRange) {
-	if (newRange.minRange < 0-1 ||
-			newRange.maxRange > cs->maxIntervalProbability()+1) {
+	if (newRange.minRange < 0 ||
+			newRange.maxRange > cs->maxIntervalProbability()) {
 		this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 	}
 }
