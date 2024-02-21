@@ -54,6 +54,8 @@ public:
 	std::list<double> walshAverages();
 
 	void clearStatistics();
+
+	QString report();
 	
 	// Vector operations
 	void standardize();
