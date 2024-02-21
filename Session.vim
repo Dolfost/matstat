@@ -14,12 +14,12 @@ else
   set shortmess=aoO
 endif
 badd +10 main.cpp
-badd +212 include/statistics/plotBase.cpp
+badd +242 include/statistics/plotBase.cpp
 badd +62 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +1 include/statistics/dataSeries.hpp
-badd +31 include/statistics/dataVector.hpp
-badd +1 include/statistics/dataVector.cpp
+badd +58 include/statistics/dataVector.hpp
+badd +269 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +1 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
@@ -27,8 +27,8 @@ badd +18 include/statistics/distributionChart.hpp
 badd +1 include/types.hpp
 badd +1 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
-badd +31 include/gui/mainWindow.hpp
-badd +1 include/gui/mainWindow.cpp
+badd +22 include/gui/mainWindow.hpp
+badd +88 include/gui/mainWindow.cpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -52,7 +52,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 15) / 31)
+let s:l = 10 - ((9 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -76,8 +76,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 93 + 80) / 160)
-exe 'vert 2resize ' . ((&columns * 66 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 86 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 61 + 74) / 148)
 argglobal
 balt include/statistics/plotBase.hpp
 setlocal fdm=manual
@@ -90,12 +90,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 212 - ((8 * winheight(0) + 15) / 31)
+let s:l = 242 - ((24 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 212
-normal! 019|
+keepjumps 242
+normal! 010|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/plotBase.hpp", ":p")) | buffer include/statistics/plotBase.hpp | else | edit include/statistics/plotBase.hpp | endif
@@ -113,15 +113,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 48 - ((13 * winheight(0) + 15) / 31)
+let s:l = 48 - ((14 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 48
 normal! 012|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 93 + 80) / 160)
-exe 'vert 2resize ' . ((&columns * 66 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 86 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 61 + 74) / 148)
 tabnext
 edit include/statistics/distributionChart.cpp
 let s:save_splitbelow = &splitbelow
@@ -140,10 +140,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
 balt include/statistics/distributionChart.hpp
 setlocal fdm=manual
@@ -156,7 +154,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 38 - ((24 * winheight(0) + 15) / 30)
+let s:l = 38 - ((27 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -179,17 +177,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 15) / 30)
+let s:l = 1 - ((0 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 tabnext
 edit include/gui/mainWindow.cpp
 let s:save_splitbelow = &splitbelow
@@ -208,8 +204,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 94 + 80) / 160)
-exe 'vert 2resize ' . ((&columns * 65 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 87 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 60 + 74) / 148)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -221,11 +217,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 78 - ((20 * winheight(0) + 15) / 31)
+let s:l = 88 - ((18 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 78
+keepjumps 88
 normal! 0
 wincmd w
 argglobal
@@ -244,15 +240,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 19 - ((8 * winheight(0) + 15) / 31)
+let s:l = 22 - ((12 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 19
-normal! 020|
+keepjumps 22
+normal! 021|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 94 + 80) / 160)
-exe 'vert 2resize ' . ((&columns * 65 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 87 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 60 + 74) / 148)
 tabnext
 edit include/statistics/dataVector.cpp
 let s:save_splitbelow = &splitbelow
@@ -271,10 +267,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 58 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 101 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 84 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 63 + 74) / 148)
 argglobal
 balt include/statistics/dataVector.hpp
 setlocal fdm=manual
@@ -287,12 +281,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 22 - ((12 * winheight(0) + 15) / 30)
+let s:l = 251 - ((8 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
-normal! 022|
+keepjumps 251
+normal! 019|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
@@ -310,17 +304,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 22 - ((21 * winheight(0) + 15) / 30)
+let s:l = 56 - ((25 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
-normal! 025|
+keepjumps 56
+normal! 011|
 wincmd w
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 58 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 101 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 84 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 63 + 74) / 148)
 tabnext
 edit include/statistics/densityChart.cpp
 let s:save_splitbelow = &splitbelow
@@ -339,10 +331,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
 balt include/statistics/densityChart.hpp
 setlocal fdm=manual
@@ -355,12 +345,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 39 - ((27 * winheight(0) + 15) / 30)
+let s:l = 21 - ((13 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 39
-normal! 022|
+keepjumps 21
+normal! 014|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/densityChart.hpp", ":p")) | buffer include/statistics/densityChart.hpp | else | edit include/statistics/densityChart.hpp | endif
@@ -378,17 +368,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((8 * winheight(0) + 15) / 30)
+let s:l = 10 - ((9 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 10
 normal! 012|
 wincmd w
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 tabnext
 edit include/statistics/dataSeries.cpp
 let s:save_splitbelow = &splitbelow
@@ -407,10 +395,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
 balt include/statistics/dataSeries.hpp
 setlocal fdm=manual
@@ -423,12 +409,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 15) / 30)
+let s:l = 30 - ((25 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 30
+normal! 09|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataSeries.hpp", ":p")) | buffer include/statistics/dataSeries.hpp | else | edit include/statistics/dataSeries.hpp | endif
@@ -446,17 +432,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 3 - ((2 * winheight(0) + 15) / 30)
+let s:l = 3 - ((2 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 3
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 tabnext
 edit include/statistics/classSeries.cpp
 let s:save_splitbelow = &splitbelow
@@ -475,10 +459,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 argglobal
 balt include/statistics/classSeries.hpp
 setlocal fdm=manual
@@ -491,7 +473,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 8 - ((7 * winheight(0) + 15) / 30)
+let s:l = 8 - ((7 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -514,17 +496,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 8 - ((7 * winheight(0) + 15) / 30)
+let s:l = 8 - ((7 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 8
 normal! 0
 wincmd w
-exe '1resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 1resize ' . ((&columns * 79 + 80) / 160)
-exe '2resize ' . ((&lines * 30 + 17) / 34)
-exe 'vert 2resize ' . ((&columns * 80 + 80) / 160)
+exe 'vert 1resize ' . ((&columns * 73 + 74) / 148)
+exe 'vert 2resize ' . ((&columns * 74 + 74) / 148)
 tabnext
 edit include/types.hpp
 argglobal
@@ -539,13 +519,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 15) / 31)
+let s:l = 1 - ((0 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 2
+tabnext 4
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
