@@ -27,7 +27,7 @@ struct Statistics {
 class DataVector {
 public:
 	DataVector(std::list<double> = {});
-	~DataVector() = default;
+	DataVector(DataVector&);
 	void setVector(std::list<double>);
 
 	std::list<double> vector();

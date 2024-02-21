@@ -8,6 +8,10 @@ DataVector::DataVector(std::list<double> input) {
 	setVector(input);
 }
 
+DataVector::DataVector(DataVector& vec) {
+	setVector(vec.vector());
+}
+
 void DataVector::setVector(std::list<double> input) {
 	dataVector = input;
 	dataVector.sort();

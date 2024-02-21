@@ -11,6 +11,9 @@
 #include "statistics/densityChart.hpp"
 #include "statistics/distributionChart.hpp"
 
+#include "vectorContainer.hpp"
+#include "vectorPicker.hpp"
+
 class MainWindow : public QMainWindow {
 public:
 	MainWindow(QWidget* parent = nullptr);
@@ -27,8 +30,13 @@ private:
 	DensityChart* densityChart = nullptr;
 	DistributionChart* distributionChart = nullptr;
 
+	VectorContainer* vectorContainer = nullptr;
+	VectorPicker* vectorPicker = nullptr;
+
 	QTextEdit* dataReportTextEdit = nullptr;
 
+	void createCharts();
+	void createVectorContainers();
 	void createActions();
 
 private slots:

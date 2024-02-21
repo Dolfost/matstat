@@ -58,12 +58,13 @@ private slots:
 
 public slots:
 	void toggleLog(bool state);
+	void zoomHome();
+	void clear();
 
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;
 
 	void fill(ClassSeries* cs);
-	void clear();
 };
 
 #endif // !_CHART_BASE_HPP_
