@@ -36,8 +36,6 @@ public:
 
 	ClassSeries* cs = nullptr;
 
-	QCPBars* bars = nullptr;
-
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
 	QSharedPointer<QCPAxisTicker> yTicker;
 	QSharedPointer<QCPAxisTickerLog> yLogTicker;
@@ -65,6 +63,7 @@ protected:
 	void mouseMoveEvent(QMouseEvent*) override;
 
 	void fill(ClassSeries* cs);
+	void clear();
 };
 
 #endif // !_CHART_BASE_HPP_

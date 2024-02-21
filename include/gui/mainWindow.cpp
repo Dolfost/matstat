@@ -26,13 +26,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	chartsLayout->addWidget(distributionChart);
 
 	dataSeries = new DataSeries();
-	dataVector = new DataVector(
-			{1,4,1,5,2,4,3,2,1,2,3,2,1,2,4,1,4,3,2,1,3,4,4}
-			);
+	dataVector = new DataVector();
 	classSeries = new ClassSeries(dataVector);
-	classSeries->makeSeries();
-	densityChart->fill(classSeries);
-	distributionChart->fill(classSeries);
 
 	createActions();
 
@@ -42,8 +37,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainLayout->addWidget(tabWidget);
 	QWidget* objectsTab = new QWidget();
 	QWidget* dataReportTab = new QWidget();
-	tabWidget->addTab(objectsTab, "Objects");
-	tabWidget->addTab(dataReportTab, "Data report");
+	tabWidget->addTab(objectsTab, "Обʼєкти даних");
+	tabWidget->addTab(dataReportTab, "Звіт");
 	QHBoxLayout* objectsTabLayout = new QHBoxLayout();
 	QHBoxLayout* dataReportTabLayout = new QHBoxLayout();
 	objectsTab->setLayout(objectsTabLayout);
@@ -57,31 +52,29 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 }
 
 void MainWindow::createActions() {
-	QMenu *fileMenu = menuBar()->addMenu("File");
-	QMenu *viewMenu = menuBar()->addMenu("View");
+	QMenu *fileMenu = menuBar()->addMenu("Файл");
+	QMenu *viewMenu = menuBar()->addMenu("Вигляд");
 
-    QAction* openAct = new QAction("Open...", this);
+    QAction* openAct = new QAction("Відкрити...", this);
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setStatusTip("Open an data vector");
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
 
-	QAction* toogleDensityLogAct = new QAction("Density log grid", this);
+	QAction* toogleDensityLogAct = new QAction("Логарифмічна сітка щільності", this);
 	toogleDensityLogAct->setCheckable(true);
-	openAct->setStatusTip("Toogle density log grid");
 	connect(toogleDensityLogAct, &QAction::toggled, densityChart, &DensityChart::toggleLog);
 	viewMenu->addAction(toogleDensityLogAct);
 
-	QAction* toogleDistributionLogAct = new QAction("Distribution log grid", this);
+	QAction* toogleDistributionLogAct = new QAction("Логарифмічна сітка розподілу", this);
 	toogleDistributionLogAct->setCheckable(true);
-	openAct->setStatusTip("Toogle distribution log grid");
 	connect(toogleDistributionLogAct, &QAction::toggled, distributionChart, &DistributionChart::toggleLog);
 	viewMenu->addAction(toogleDistributionLogAct);
 }
 
 void MainWindow::open() {
 	filepath = QFileDialog::getOpenFileName(this,
-		"Open vector", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
+		"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
 	dataSeries->readData(filepath);
 	this->statusBar()->showMessage(dataSeries->message());
 	dataVector->setVector(dataSeries->series()[0]);

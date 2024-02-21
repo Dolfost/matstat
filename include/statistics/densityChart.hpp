@@ -11,6 +11,7 @@ class DensityChart : public PlotBase {
 	Q_OBJECT
 public:
     DensityChart(QWidget* parent = nullptr);
+	QCPBars* bars = nullptr;
 
 	void fill(ClassSeries* clSr);
 };

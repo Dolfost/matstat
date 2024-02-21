@@ -12,6 +12,8 @@ class DistributionChart : public PlotBase {
 public:
     DistributionChart(QWidget* parent = nullptr);
 
+	QCPGraph* graph = nullptr;
+
 	void fill(ClassSeries* clSr);
 };
 

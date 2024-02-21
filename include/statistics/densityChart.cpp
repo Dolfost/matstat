@@ -9,17 +9,32 @@
 #include "plotBase.hpp"
 
 DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
+	title->setText("Щільність");
+
+	bars = new QCPBars(this->xAxis, this->yAxis);
 	bars->setName("f(x) (class)");
-	title->setText("Density");
+	bars->setWidthType(QCPBars::WidthType::wtPlotCoords);
+
+	QPen barsPen;
+	barsPen.setWidth(0);
+	bars->setPen(Qt::NoPen);
+	QBrush barsBrush;
+	barsBrush.setStyle(Qt::SolidPattern);
+	barsBrush.setColor("#2b8eff");
+	bars->setBrush(barsBrush);
+
 	enableMean();
 	enableStandartDeviation();
 	enableMed();
 	enableWalshMed();
+
+	this->yAxis->setLabel("f(x)");
 }
 
 void DensityChart::fill(ClassSeries* clSr) {
 	cs = clSr;
 
+	bars->setWidth(cs->step());
 
 	QVector<double> x, y;
 	for (size_t i = 0; i < cs->classCount(); i++) {
@@ -29,7 +44,7 @@ void DensityChart::fill(ClassSeries* clSr) {
 
 	bars->setData(x, y, true);
 
-	yRange = QCPRange(0, cs->maxIntervalProbability()*1.01);
+	yRange = QCPRange(0, cs->maxIntervalProbability());
 
 	plotMean();
 	plotStandartDeviation();
