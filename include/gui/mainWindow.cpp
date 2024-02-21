@@ -49,6 +49,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	objectsTab->setLayout(objectsTabLayout);
 	dataReportTab->setLayout(dataReportTabLayout);
 
+	dataReportTextEdit = new QTextEdit();
+	dataReportTabLayout->addWidget(dataReportTextEdit);
+
 	QCheckBox* box = new QCheckBox();
 	objectsTabLayout->addWidget(box);
 }
@@ -77,7 +80,7 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::open() {
-	QString filepath = QFileDialog::getOpenFileName(this,
+	filepath = QFileDialog::getOpenFileName(this,
 		"Open vector", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
 	dataSeries->readData(filepath);
 	this->statusBar()->showMessage(dataSeries->message());
@@ -91,4 +94,8 @@ void MainWindow::updateGui() {
 
 	densityChart->fill(classSeries);
 	distributionChart->fill(classSeries);
+
+	dataReportTextEdit->clear();
+	dataReportTextEdit->append("File " + filepath + "\n");
+	dataReportTextEdit->append(dataVector->report());
 }

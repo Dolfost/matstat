@@ -248,6 +248,29 @@ void DataVector::clearStatistics() {
 	stat.size.second = false;
 }
 
+QString DataVector::report() {
+	return QString(
+			"Мат. сподівння (v₁) %1\n"
+			"Варіабельність (u₂) %2\n"
+			"Медіана (MED) %3\n"
+			"Усічене середнє (α=0.25) %4\n"
+			"Медіана середніх Уолша (MED*) %5\n"
+			"CКВ (σ) %6\n"
+			"Абсолютне відхилення медіани (MAD) %7\n"
+			"Коеф. асиметрії (A) %8\n"
+			"Ексцесс %9\n"
+			"Коефіцієнт варіації (Пірсона) (W) %10\n"
+			).arg(mean())
+		.arg(variance())
+		.arg(med())
+		.arg(turncatedMean(0.25))
+		.arg(walshAveragesMed())
+		.arg(standardDeviation())
+		.arg(mad())
+		.arg(skew())
+		.arg(kurtosis())
+		.arg(variationCoef());
+}
 
 // Vector operations
 void DataVector::standardize() {

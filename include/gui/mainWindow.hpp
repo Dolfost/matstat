@@ -19,12 +19,15 @@ private:
 	QWidget* mainWidget = nullptr;
 	QVBoxLayout* mainLayout = nullptr;
 
+	QString filepath;
 	DataSeries* dataSeries = nullptr;
 	DataVector* dataVector = nullptr;
 	ClassSeries* classSeries = nullptr;
 
 	DensityChart* densityChart = nullptr;
 	DistributionChart* distributionChart = nullptr;
+
+	QTextEdit* dataReportTextEdit = nullptr;
 
 	void createActions();
 
