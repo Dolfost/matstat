@@ -23,9 +23,10 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	vectorPicker = new VectorPicker(this);
 
-	open();
+	this->resize(900,800);
 
-	this->setBaseSize(600, 700);
+
+	open();
 }
 
 void MainWindow::createCharts() {
@@ -60,6 +61,7 @@ void MainWindow::createVectorContainers() {
 	dataReportTab->setLayout(dataReportTabLayout);
 
 	dataReportTextEdit = new QTextEdit();
+	dataReportTextEdit->setReadOnly(true);
 	dataReportTabLayout->addWidget(dataReportTextEdit);
 
 	vectorContainer = new VectorContainer();
@@ -109,12 +111,13 @@ void MainWindow::createActions() {
 void MainWindow::open() {
 	// filepath = QFileDialog::getOpenFileName(this,
 	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp.txt"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+
 	dataSeries->readData(filepath);
 	this->statusBar()->showMessage(dataSeries->message());
 	dataVector->setVector(dataSeries->series()[0]);
 
-	vectorPicker->show();
+	vectorPicker->fileContents(filepath);
 
 	updateGui();
 }

@@ -4,13 +4,12 @@
 VectorContainer::VectorContainer() {
 	this->setColumnCount(100);
 	this->setRowCount(5);
+	this->setDragEnabled(true);
 	this->setSelectionBehavior(QAbstractItemView::SelectRows);
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	QHeaderView* verticalHeader = new QHeaderView(Qt::Vertical);
+	this->verticalHeader()->hide();
 	horizontalHeader = new QHeaderView(Qt::Horizontal);
-	verticalHeader->hide();
-	this->setVerticalHeader(verticalHeader);
 	this->setHorizontalHeader(horizontalHeader);
 
 	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс."}; 
