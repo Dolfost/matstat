@@ -19,7 +19,7 @@ private:
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
 
-	void addVector(std::list<double>);
+	void addVector(const std::list<double>&);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent* event) override;

@@ -22,7 +22,7 @@ VectorContainer::VectorContainer() {
 	}
 }
 
-void VectorContainer::addVector(std::list<double> vec) {
+void VectorContainer::addVector(const std::list<double>& vec) {
 	int rowIdx = this->rowCount();
 	this->insertRow(rowIdx);
 	DataVector* dv = new DataVector(vec);
@@ -65,11 +65,12 @@ void VectorContainer::addVector(std::list<double> vec) {
 }
 
 void VectorContainer::dragEnterEvent(QDragEnterEvent *event) {
-	QTableWidget::dragEnterEvent(event);
+	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist"))
+			event->acceptProposedAction();
 }
 
 void VectorContainer::dropEvent(QDropEvent* event) {
-const QMimeData* data = event->mimeData();
+	const QMimeData* data = event->mimeData();
 
     QByteArray encoded = data->data("application/x-qabstractitemmodeldatalist");
     QDataStream stream(&encoded, QIODevice::ReadOnly);
@@ -85,6 +86,8 @@ const QMimeData* data = event->mimeData();
     }
 
 	addVector(rowList);
+	
+	event->acceptProposedAction();
 }
 
 VerticalHeaderItem::VerticalHeaderItem() {

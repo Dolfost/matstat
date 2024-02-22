@@ -19,7 +19,7 @@ badd +61 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +15 include/statistics/dataSeries.hpp
 badd +30 include/statistics/dataVector.hpp
-badd +16 include/statistics/dataVector.cpp
+badd +1 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +14 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
@@ -29,8 +29,8 @@ badd +14 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +33 include/gui/mainWindow.hpp
 badd +1 include/gui/mainWindow.cpp
-badd +10 include/gui/vectorContainer.cpp
-badd +18 include/gui/vectorContainer.hpp
+badd +25 include/gui/vectorContainer.cpp
+badd +22 include/gui/vectorContainer.hpp
 badd +18 CMakeLists.txt
 badd +1 include/gui/vectorPicker.cpp
 badd +48 include/gui/vectorPicker.hpp
@@ -351,12 +351,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 19) / 38)
+let s:l = 25 - ((12 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 10
-normal! 029|
+keepjumps 25
+normal! 056|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainer.hpp", ":p")) | buffer include/gui/vectorContainer.hpp | else | edit include/gui/vectorContainer.hpp | endif
@@ -374,12 +374,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 22 - ((21 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 030|
+keepjumps 22
+normal! 025|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
