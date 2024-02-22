@@ -82,7 +82,7 @@ Status DataSeries::readData(QString fn) {
 	return dataSeries.size() == 0 ? Status::Warning : Status::Ok;
 }
 
-std::vector<std::list<double>>& DataSeries::series() {
+const std::vector<std::list<double>>& DataSeries::series() {
 	return dataSeries;
 }
 

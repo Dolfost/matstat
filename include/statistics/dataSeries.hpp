@@ -12,7 +12,7 @@ public:
 	DataSeries() = default;
 
 	Status readData(QString);
-	std::vector<std::list<double>>& series();
+	const std::vector<std::list<double>>& series();
 	size_t size();
 	unsigned short dimension();
 

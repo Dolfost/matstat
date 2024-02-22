@@ -51,7 +51,7 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 	return true;
 }
 
-std::vector<std::pair<int, double>> ClassSeries::series() {
+const std::vector<std::pair<int, double>>& ClassSeries::series() {
 	return classSeries;
 }
 

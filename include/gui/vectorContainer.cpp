@@ -4,6 +4,7 @@ VectorContainer::VectorContainer() {
 	this->setColumnCount(vectorInfoCells);
 	this->setRowCount(0);
 	this->setAcceptDrops(true);
+	this->setDragEnabled(false);
 	this->setSelectionBehavior(QAbstractItemView::SelectRows);
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setEditTriggers(QAbstractItemView::NoEditTriggers);

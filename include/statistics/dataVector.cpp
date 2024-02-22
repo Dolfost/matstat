@@ -4,21 +4,21 @@
 #include <cmath>
 #include <iterator>
 
-DataVector::DataVector(std::list<double> input) {
+DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
 }
 
-DataVector::DataVector(DataVector& vec) {
-	setVector(vec.vector());
+DataVector::DataVector(DataVector& dv) {
+	setVector(dv.vector());
 }
 
-void DataVector::setVector(std::list<double> input) {
+void DataVector::setVector(const std::list<double>& input) {
 	dataVector = input;
 	dataVector.sort();
 	clearStatistics();
 }
 
-std::list<double> DataVector::vector() {
+const std::list<double>& DataVector::vector() {
 	return dataVector;
 }
 

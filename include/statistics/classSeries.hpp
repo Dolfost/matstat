@@ -8,7 +8,7 @@ public:
 	ClassSeries (DataVector*);
 
 	bool makeSeries(unsigned short = 0);
-	std::vector<std::pair<int, double>> series();
+	const std::vector<std::pair<int, double>>& series();
 
 	DataVector* dataVector = nullptr;
 

@@ -26,11 +26,11 @@ struct Statistics {
 
 class DataVector {
 public:
-	DataVector(std::list<double> = {});
+	DataVector(const std::list<double>& = {});
 	DataVector(DataVector&);
-	void setVector(std::list<double>);
+	void setVector(const std::list<double>&);
 
-	std::list<double> vector();
+	const std::list<double>& vector();
 
 	size_t size();
 	double min();
