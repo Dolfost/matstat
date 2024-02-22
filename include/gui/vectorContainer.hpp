@@ -3,7 +3,9 @@
 
 #include <QTableWidget>
 #include <QHeaderView>
-#include <QtCore/qlist.h>
+#include <QList>
+#include <QMouseEvent>
+#include <QMimeData>
 
 #include "./statistics/dataVector.hpp"
 
@@ -13,9 +15,16 @@ public:
 
 private:
 	QHeaderView* horizontalHeader = nullptr;
-	QList<DataVector> vectorList;
-};
+	std::list<DataVector*> vectorList;
+	const short vectorInfoCells = 4;
+	signed int vectorCount = 0;
 
+	void addVector(std::list<double>);
+
+protected:
+	void dragEnterEvent(QDragEnterEvent* event) override;
+	void dropEvent(QDropEvent* event) override;
+};
 
 
 class VerticalHeaderItem : public QTableWidgetItem {

@@ -96,15 +96,46 @@ void VectorPicker::setContentsTab() {
 }
 
 void VectorPicker::setVectorsTab() {
-	vectorsTableWidget = new QTableWidget();
+	vectorsTableWidget = new VectorPickerTable();
 	vectorsTabLayout->addWidget(vectorsTableWidget);
-	vectorsTableWidget->setColumnCount(10);
-	vectorsTableWidget->setRowCount(10);
-	vectorsTableWidget->setDragEnabled(true);
-	vectorsTableWidget->setSelectionBehavior(
+}
+
+
+// VectorPickerTable
+VectorPickerTable::VectorPickerTable(QWidget* parent)
+	: QTableWidget(parent) {
+	this->setColumnCount(10);
+	this->setRowCount(10);
+
+	this->setDragEnabled(true);
+
+	this->setSelectionBehavior(
 			QAbstractItemView::SelectColumns);
-	vectorsTableWidget->setSelectionMode(
+	this->setSelectionMode(
 			QAbstractItemView::SingleSelection);
-	vectorsTableWidget->setEditTriggers(
+	this->setEditTriggers(
 			QAbstractItemView::NoEditTriggers);
 }
+
+// void VectorPickerTable::mousePressEvent(QMouseEvent *event) {
+//     if (event->button() == Qt::LeftButton)
+//         dragStartPosition = event->pos();
+//
+// 	QTableWidget::mousePressEvent(event);
+// }
+//
+// void VectorPickerTable::mouseMoveEvent(QMouseEvent *event) {
+//     if (!((event->pos() - dragStartPosition).manhattanLength()
+//          < QApplication::startDragDistance())) {
+//
+// 		QDrag *drag = new QDrag(this);
+// 		QMimeData *mimeData = new QMimeData;
+//
+// 		// mimeData->setData("", data);
+// 		drag->setMimeData(mimeData);
+//
+// 		Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction);
+// 	}
+//
+// 	QTableWidget::mouseMoveEvent(event);
+// }

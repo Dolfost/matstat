@@ -11,6 +11,11 @@
 #include <QTabWidget>
 #include <QHeaderView>
 
+#include <QMouseEvent>
+#include <QDrag>
+#include <QMimeData>
+#include <QApplication>
+
 class VectorPicker : public QDialog {
 public:
 	VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
@@ -30,6 +35,20 @@ private:
 	DataSeries dataSeries;
 
 	void fill();
+
+
+};
+
+class VectorPickerTable : public QTableWidget {
+public:
+	VectorPickerTable(QWidget* = nullptr);
+
+private:
+	QPoint dragStartPosition;
+
+protected:
+	// void mousePressEvent(QMouseEvent*) override;
+	// void mouseMoveEvent(QMouseEvent*) override;
 };
 
 #endif // !_VECTOR_PICKER_HPP_
