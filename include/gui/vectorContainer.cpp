@@ -3,7 +3,7 @@
 VectorContainer::VectorContainer() {
 	this->setColumnCount(vectorInfoCells);
 	this->setRowCount(0);
-	this->setAcceptDrops(true);
+	this->setAcceptDrops(false);
 	this->setDragEnabled(false);
 	this->setSelectionBehavior(QAbstractItemView::SelectRows);
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -22,8 +22,9 @@ VectorContainer::VectorContainer() {
 	}
 }
 
-void VectorContainer::addVector(const std::list<double>& vec) {
+void VectorContainer::insertVector(const std::list<double>& vec) {
 	int rowIdx = this->rowCount();
+
 	this->insertRow(rowIdx);
 	DataVector* dv = new DataVector(vec);
 	vectorList.push_back(dv);
@@ -49,7 +50,7 @@ void VectorContainer::addVector(const std::list<double>& vec) {
 	this->setItem(rowIdx, 3, maxItem);
 
 	auto list = dv->vector();
-    auto it = list.begin();
+	auto it = list.begin();
 	for (size_t col = vectorInfoCells; col < dv->size() + vectorInfoCells; col++) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem();
 		tableItem->setText(QString::number(*it));
@@ -64,33 +65,7 @@ void VectorContainer::addVector(const std::list<double>& vec) {
 	}
 }
 
-void VectorContainer::dragEnterEvent(QDragEnterEvent *event) {
-	if (event->mimeData()->hasFormat("application/x-qabstractitemmodeldatalist"))
-			event->acceptProposedAction();
-}
-
-void VectorContainer::dropEvent(QDropEvent* event) {
-	const QMimeData* data = event->mimeData();
-
-    QByteArray encoded = data->data("application/x-qabstractitemmodeldatalist");
-    QDataStream stream(&encoded, QIODevice::ReadOnly);
-
-    QList<QVariantList> columnDataList;
-	std::list<double> rowList;
-
-    while (!stream.atEnd()) {
-        int row, col;
-        QMap<int, QVariant> roleDataMap;
-        stream >> row >> col >> roleDataMap;
-		rowList.push_back(roleDataMap.first().toDouble());
-    }
-
-	addVector(rowList);
-	
-	event->acceptProposedAction();
-}
-
 VerticalHeaderItem::VerticalHeaderItem() {
-	QBrush background("#787f8a");
+	QBrush background("#414141");
 	this->setBackground(background);
 }

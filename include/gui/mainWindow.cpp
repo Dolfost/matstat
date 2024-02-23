@@ -9,6 +9,7 @@
 #include "statistics/distributionChart.hpp"
 
 #include <QWidget>
+#include <QtCore/qnamespace.h>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainWidget = new QWidget();
@@ -17,27 +18,41 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainWidget->setLayout(mainLayout);
 	this->setCentralWidget(mainWidget);
 
+	mainSplitter = new QSplitter;
+	mainSplitter->setOrientation(Qt::Vertical);
+	mainSplitter->setHandleWidth(12);
+
 	createCharts();
 	createVectorContainers();
 	createActions();
+
+	mainLayout->addWidget(mainSplitter);
 
 	vectorPicker = new VectorPicker(this);
 
 	this->resize(900,800);
 
-
-	open();
+	// open();
+	
+	connect(this->vectorPicker, &VectorPicker::vectorSelected,
+			vectorContainer, &VectorContainer::insertVector);
 }
 
 void MainWindow::createCharts() {
+	QWidget* chartWidget = new QWidget();
 	QHBoxLayout* chartsLayout = new QHBoxLayout();
-	mainLayout->addItem(chartsLayout);
+	chartsLayout->setSpacing(0);
+	chartsLayout->setContentsMargins(0,0,0,0);
+	chartWidget->setLayout(chartsLayout);
 
 	densityChart = new DensityChart(this);
 	distributionChart = new DistributionChart(this);
 
 	chartsLayout->addWidget(densityChart);
 	chartsLayout->addWidget(distributionChart);
+
+	mainSplitter->addWidget(chartWidget);
+	mainSplitter->setSizes({600, 300});
 
 	dataSeries = new DataSeries();
 	dataVector = new DataVector();
@@ -46,9 +61,8 @@ void MainWindow::createCharts() {
 
 void MainWindow::createVectorContainers() {
 	QTabWidget* tabWidget = new QTabWidget();
-	tabWidget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	// tabWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 	tabWidget->setDocumentMode(true);
-	mainLayout->addWidget(tabWidget);
 	QWidget* objectsTab = new QWidget();
 	QWidget* dataReportTab = new QWidget();
 	tabWidget->addTab(objectsTab, "Обʼєкти даних");
@@ -66,6 +80,8 @@ void MainWindow::createVectorContainers() {
 
 	vectorContainer = new VectorContainer();
 	objectsTabLayout->addWidget(vectorContainer);
+
+	mainSplitter->addWidget(tabWidget);
 }
 
 void MainWindow::createActions() {
@@ -111,7 +127,7 @@ void MainWindow::createActions() {
 void MainWindow::open() {
 	// filepath = QFileDialog::getOpenFileName(this,
 	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/dat.txt"; 
 
 	dataSeries->readData(filepath);
 	this->statusBar()->showMessage(dataSeries->message());

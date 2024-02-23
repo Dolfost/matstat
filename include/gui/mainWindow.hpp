@@ -15,12 +15,14 @@
 #include "vectorPicker.hpp"
 
 class MainWindow : public QMainWindow {
+	Q_OBJECT
 public:
-	MainWindow(QWidget* parent = nullptr);
+	explicit MainWindow(QWidget* parent = nullptr);
 
 private:
 	QWidget* mainWidget = nullptr;
 	QVBoxLayout* mainLayout = nullptr;
+	QSplitter* mainSplitter = nullptr;
 
 	QString filepath;
 	DataSeries* dataSeries = nullptr;

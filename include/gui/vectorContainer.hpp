@@ -20,10 +20,8 @@ private:
 	signed int vectorCount = 0;
 
 	void addVector(const std::list<double>&);
-
-protected:
-	void dragEnterEvent(QDragEnterEvent* event) override;
-	void dropEvent(QDropEvent* event) override;
+public slots:
+	void insertVector(const std::list<double>&);
 };
 
 

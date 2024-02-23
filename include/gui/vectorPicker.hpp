@@ -2,6 +2,7 @@
 #define _VECTOR_PICKER_HPP_
 
 #include "statistics/dataSeries.hpp"
+#include "statistics/dataVector.hpp"
 #include <QDialog>
 #include <QTableWidget>
 #include <QHBoxLayout>
@@ -17,8 +18,9 @@
 #include <QApplication>
 
 class VectorPicker : public QDialog {
+	Q_OBJECT
 public:
-	VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
+	explicit VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
 
 	void fileContents(QString);
 
@@ -30,25 +32,18 @@ private:
 	void setContentsTab();
 	void setVectorsTab();
 
-	QTableWidget* vectorTable = nullptr;
 	QStatusBar* statusBar = nullptr;
 	DataSeries dataSeries;
 
 	void fill();
 
-
-};
-
-class VectorPickerTable : public QTableWidget {
-public:
-	VectorPickerTable(QWidget* = nullptr);
-
-private:
-	QPoint dragStartPosition;
-
 protected:
-	// void mousePressEvent(QMouseEvent*) override;
-	// void mouseMoveEvent(QMouseEvent*) override;
+	void closeEvent(QCloseEvent*) override;
+private slots:
+	void cellDoubleClickedHandler(int, int);
+
+signals:
+	void vectorSelected(const std::list<double>&);
 };
 
 #endif // !_VECTOR_PICKER_HPP_

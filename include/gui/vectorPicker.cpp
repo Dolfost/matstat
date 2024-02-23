@@ -31,6 +31,9 @@ VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f)
 
 		setContentsTab();
 		setVectorsTab();
+
+		connect(vectorsTableWidget, &QTableWidget::cellDoubleClicked,
+				this, &VectorPicker::cellDoubleClickedHandler);
 }
 
 void VectorPicker::fileContents(QString filepath) {
@@ -96,46 +99,21 @@ void VectorPicker::setContentsTab() {
 }
 
 void VectorPicker::setVectorsTab() {
-	vectorsTableWidget = new VectorPickerTable();
+	vectorsTableWidget = new QTableWidget();
+	vectorsTableWidget->setSelectionBehavior(
+			QAbstractItemView::SelectColumns);
+	vectorsTableWidget->setSelectionMode(
+			QAbstractItemView::SingleSelection);
+	vectorsTableWidget->setEditTriggers(
+			QAbstractItemView::NoEditTriggers);
+
 	vectorsTabLayout->addWidget(vectorsTableWidget);
 }
 
-
-// VectorPickerTable
-VectorPickerTable::VectorPickerTable(QWidget* parent)
-	: QTableWidget(parent) {
-	this->setColumnCount(10);
-	this->setRowCount(10);
-
-	this->setDragEnabled(true);
-
-	this->setSelectionBehavior(
-			QAbstractItemView::SelectColumns);
-	this->setSelectionMode(
-			QAbstractItemView::SingleSelection);
-	this->setEditTriggers(
-			QAbstractItemView::NoEditTriggers);
+void VectorPicker::closeEvent(QCloseEvent* event) {
+	this->hide(); event->ignore();
 }
 
-// void VectorPickerTable::mousePressEvent(QMouseEvent *event) {
-//     if (event->button() == Qt::LeftButton)
-//         dragStartPosition = event->pos();
-//
-// 	QTableWidget::mousePressEvent(event);
-// }
-//
-// void VectorPickerTable::mouseMoveEvent(QMouseEvent *event) {
-//     if (!((event->pos() - dragStartPosition).manhattanLength()
-//          < QApplication::startDragDistance())) {
-//
-// 		QDrag *drag = new QDrag(this);
-// 		QMimeData *mimeData = new QMimeData;
-//
-// 		// mimeData->setData("", data);
-// 		drag->setMimeData(mimeData);
-//
-// 		Qt::DropAction dropAction = drag->exec(Qt::CopyAction | Qt::MoveAction);
-// 	}
-//
-// 	QTableWidget::mouseMoveEvent(event);
-// }
+void VectorPicker::cellDoubleClickedHandler(int row, int col) {
+	emit vectorSelected(dataSeries.series()[col]);
+}
