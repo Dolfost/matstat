@@ -11,10 +11,9 @@
 
 class VectorContainer : public QTableWidget {
 public:
-	VectorContainer();
+	VectorContainer(QWidget* = nullptr);
 
 private:
-	QHeaderView* horizontalHeader = nullptr;
 	std::list<DataVector*> vectorList;
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
@@ -25,9 +24,9 @@ public slots:
 };
 
 
-class VerticalHeaderItem : public QTableWidgetItem {
+class HorizontalHeaderItem : public QTableWidgetItem {
 public:
-	VerticalHeaderItem();
+	HorizontalHeaderItem();
 };
 
 #endif // !_VECTOR_CONTAINER_HPP_

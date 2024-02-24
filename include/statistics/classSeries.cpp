@@ -6,6 +6,11 @@ ClassSeries::ClassSeries(DataVector* vs) {
 }
 
 bool ClassSeries::makeSeries(unsigned short cc) {
+	if (dataVector->size() == 0) {
+		classSeries = {};
+		return false;
+	}
+
 	if (cc == 0) {
 		clsCnt = dataVector->size() >= 100 ?
 				cbrt(dataVector->size()) : sqrt(dataVector->size());

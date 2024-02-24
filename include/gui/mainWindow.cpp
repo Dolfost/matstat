@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	this->resize(900,800);
 
 	// open();
+	updateGui();
 	
 	connect(this->vectorPicker, &VectorPicker::vectorSelected,
 			vectorContainer, &VectorContainer::insertVector);
@@ -55,13 +56,12 @@ void MainWindow::createCharts() {
 	mainSplitter->setSizes({600, 300});
 
 	dataSeries = new DataSeries();
-	dataVector = new DataVector();
+	dataVector = new DataVector({});
 	classSeries = new ClassSeries(dataVector);
 }
 
 void MainWindow::createVectorContainers() {
 	QTabWidget* tabWidget = new QTabWidget();
-	// tabWidget->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
 	tabWidget->setDocumentMode(true);
 	QWidget* objectsTab = new QWidget();
 	QWidget* dataReportTab = new QWidget();
@@ -127,13 +127,15 @@ void MainWindow::createActions() {
 void MainWindow::open() {
 	// filepath = QFileDialog::getOpenFileName(this,
 	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/dat.txt"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 
 	dataSeries->readData(filepath);
 	this->statusBar()->showMessage(dataSeries->message());
 	dataVector->setVector(dataSeries->series()[0]);
 
 	vectorPicker->fileContents(filepath);
+	this->setFocus();
+	vectorPicker->setFocus();
 
 	updateGui();
 }

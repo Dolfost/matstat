@@ -20,7 +20,7 @@
 class VectorPicker : public QDialog {
 	Q_OBJECT
 public:
-	explicit VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
+	VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
 
 	void fileContents(QString);
 

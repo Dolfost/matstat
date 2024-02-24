@@ -1,6 +1,6 @@
 #include "vectorContainer.hpp"
 
-VectorContainer::VectorContainer() {
+VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(vectorInfoCells);
 	this->setRowCount(0);
 	this->setAcceptDrops(false);
@@ -9,13 +9,11 @@ VectorContainer::VectorContainer() {
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	this->verticalHeader()->hide();
-	horizontalHeader = new QHeaderView(Qt::Horizontal);
-	this->setHorizontalHeader(horizontalHeader);
 
-	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс."}; 
+	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс.", "Файл"}; 
 	QList<int> widths =   {90,      60,        75,     75}; 
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < vectorInfoCells; i++) {
 		QTableWidgetItem* item = new QTableWidgetItem();
 		item->setText(headers[i]);
 		this->setColumnWidth(i, widths[i]); this->setHorizontalHeaderItem(i, item);
@@ -33,21 +31,18 @@ void VectorContainer::insertVector(const std::list<double>& vec) {
 			(vec.size() + vectorInfoCells > this->columnCount() ?
 			 vec.size() + vectorInfoCells : this->columnCount()));
 
-	VerticalHeaderItem* nameItem = new VerticalHeaderItem();
-	nameItem->setText("V" + QString::number(++vectorCount));
-	this->setItem(rowIdx, 0, nameItem);
+	QStringList info = {
+		"V" + QString::number(++vectorCount),
+		QString::number(dv->size()),
+		QString::number(dv->min()),
+		QString::number(dv->max()),
+	};
 
-	VerticalHeaderItem* sizeItem = new VerticalHeaderItem();
-	sizeItem->setText(QString::number(dv->size()));
-	this->setItem(rowIdx, 1, sizeItem);
-
-	VerticalHeaderItem* minItem = new VerticalHeaderItem();
-	minItem->setText(QString::number(dv->min()));
-	this->setItem(rowIdx, 2, minItem);
-
-	VerticalHeaderItem* maxItem = new VerticalHeaderItem();
-	maxItem->setText(QString::number(dv->max()));
-	this->setItem(rowIdx, 3, maxItem);
+	for (int i = 0; i < vectorInfoCells; i++) {
+		HorizontalHeaderItem* item = new HorizontalHeaderItem;
+		item->setText(info[i]);
+		this->setItem(rowIdx, i, item);
+	}
 
 	auto list = dv->vector();
 	auto it = list.begin();
@@ -65,7 +60,7 @@ void VectorContainer::insertVector(const std::list<double>& vec) {
 	}
 }
 
-VerticalHeaderItem::VerticalHeaderItem() {
+HorizontalHeaderItem::HorizontalHeaderItem() {
 	QBrush background("#414141");
 	this->setBackground(background);
 }

@@ -8,6 +8,7 @@ VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f)
 	: QDialog(parent, f) {
 		this->setWindowTitle("Менеджер векторів");
 		this->setMinimumSize(300,400);
+		this->setAttribute(Qt::WA_DeleteOnClose, false);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
 		this->setLayout(mainLayout);
 		mainLayout->setContentsMargins(0,0,0,0);
@@ -55,15 +56,15 @@ void VectorPicker::fill() {
 
 	size_t row = 0, col = 0;
 	for (auto const& vector : data) {
+		row = 0;
 		for (auto const& x : vector) {
-			row = 0;
 			QTableWidgetItem* tableItem = new QTableWidgetItem;
 			tableItem->setText(QString::number(x));
 			vectorsTableWidget->setItem(row, col, tableItem);
 
-			col++;
+			row++;
 		}
-		row++;
+		col++;
 	}
 
 	QStringList headersList;
@@ -111,7 +112,8 @@ void VectorPicker::setVectorsTab() {
 }
 
 void VectorPicker::closeEvent(QCloseEvent* event) {
-	this->hide(); event->ignore();
+	this->hide();
+	event->ignore();
 }
 
 void VectorPicker::cellDoubleClickedHandler(int row, int col) {

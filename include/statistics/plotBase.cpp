@@ -93,9 +93,19 @@ void PlotBase::fill(ClassSeries* cs) {
 }
 
 void PlotBase::clear() {
-	for (int i = 0; i < this->graphCount(); i++) {
-		this->graph(i)->data().data()->clear();
+	for (int i = 0; i < this->plottableCount(); i++) {
+		QCPAbstractPlottable* plottable = this->plottable(i);
+
+		QCPGraph* graph;
+		QCPBars* bars;
+
+		if ((graph = qobject_cast<QCPGraph*>(plottable))) {
+			graph->data().data()->clear();
+		} else if ((bars = qobject_cast<QCPBars*>(plottable))) {
+			bars->data().data()->clear();
+		};
 	}
+
 	this->replot();
 }
 
