@@ -2,7 +2,6 @@
 #define _VECTOR_PICKER_HPP_
 
 #include "statistics/dataSeries.hpp"
-#include "statistics/dataVector.hpp"
 #include <QDialog>
 #include <QTableWidget>
 #include <QHBoxLayout>
@@ -11,6 +10,7 @@
 #include <QTextEdit>
 #include <QTabWidget>
 #include <QHeaderView>
+#include <QPushButton>
 
 #include <QMouseEvent>
 #include <QDrag>
@@ -25,9 +25,10 @@ public:
 	void fileContents(QString);
 
 private:
-	QHBoxLayout* vectorsTabLayout = nullptr;
-	QHBoxLayout* contentsTabLayout = nullptr;
+	QVBoxLayout* vectorsTabLayout = nullptr;
+	QVBoxLayout* contentsTabLayout = nullptr;
 	QTextEdit* contentsTextEdit = nullptr;
+	QPushButton* addContentsPushButton = nullptr;
 	QTableWidget* vectorsTableWidget = nullptr;
 	void setContentsTab();
 	void setVectorsTab();
@@ -40,7 +41,8 @@ private:
 protected:
 	void closeEvent(QCloseEvent*) override;
 private slots:
-	void cellDoubleClickedHandler(int, int);
+	void addVector(int, int);
+	void addContents();
 
 signals:
 	void vectorSelected(const std::list<double>&);

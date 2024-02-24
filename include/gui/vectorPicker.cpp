@@ -10,15 +10,16 @@ VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f)
 		this->setMinimumSize(300,400);
 		this->setAttribute(Qt::WA_DeleteOnClose, false);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
+		mainLayout->setSpacing(0);
 		this->setLayout(mainLayout);
 		mainLayout->setContentsMargins(0,0,0,0);
 		QTabWidget* tabWidget = new QTabWidget();
 		QWidget* contetnsTab = new QWidget();
-		contentsTabLayout = new QHBoxLayout();
+		contentsTabLayout = new QVBoxLayout();
 		contentsTabLayout->setContentsMargins(0,0,0,0);
 		contetnsTab->setLayout(contentsTabLayout);
 		QWidget* vectorsTab = new QWidget();
-		vectorsTabLayout = new QHBoxLayout();
+		vectorsTabLayout = new QVBoxLayout();
 		vectorsTabLayout->setContentsMargins(0,0,0,0);
 		vectorsTab->setLayout(vectorsTabLayout);
 
@@ -32,9 +33,6 @@ VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f)
 
 		setContentsTab();
 		setVectorsTab();
-
-		connect(vectorsTableWidget, &QTableWidget::cellDoubleClicked,
-				this, &VectorPicker::cellDoubleClickedHandler);
 }
 
 void VectorPicker::fileContents(QString filepath) {
@@ -76,18 +74,8 @@ void VectorPicker::fill() {
 	contentsTextEdit->clear();
 	QString textEditContents;
 
-	std::vector<std::list<double>::iterator> iterators;
-	for (auto& list : data) {
-		iterators.push_back(list.begin());
-	}
-
-	for (row = 0; row < data[0].size(); row++) {
-		for (col = 0; col < dataSeries.dimension(); col++) {
-			textEditContents.append(QString(
-						"%1 ")
-					.arg(*(iterators[col]++))
-					);
-		}
+	for (auto const& x : dataSeries.filewiseSeries()) {
+		textEditContents.append(QString::number(x) + " ");
 	}
 
 	contentsTextEdit->setText(textEditContents);
@@ -95,8 +83,17 @@ void VectorPicker::fill() {
 
 void VectorPicker::setContentsTab() {
 	contentsTextEdit = new QTextEdit();
+	addContentsPushButton = new QPushButton("Додати в вміст у контейнер");
+	addContentsPushButton->setContentsMargins(50,50,50,50);
+	QHBoxLayout* buttonLayout = new QHBoxLayout;
+	buttonLayout->setContentsMargins(5,0,5,0);
+	buttonLayout->addWidget(addContentsPushButton);
+	contentsTabLayout->setSpacing(3);
 	contentsTabLayout->addWidget(contentsTextEdit);
+	contentsTabLayout->addLayout(buttonLayout);
 	contentsTextEdit->setReadOnly(true);
+	connect(addContentsPushButton, &QPushButton::clicked,
+			this, &VectorPicker::addContents);
 }
 
 void VectorPicker::setVectorsTab() {
@@ -109,6 +106,8 @@ void VectorPicker::setVectorsTab() {
 			QAbstractItemView::NoEditTriggers);
 
 	vectorsTabLayout->addWidget(vectorsTableWidget);
+	connect(vectorsTableWidget, &QTableWidget::cellDoubleClicked,
+			this, &VectorPicker::addVector);
 }
 
 void VectorPicker::closeEvent(QCloseEvent* event) {
@@ -116,6 +115,10 @@ void VectorPicker::closeEvent(QCloseEvent* event) {
 	event->ignore();
 }
 
-void VectorPicker::cellDoubleClickedHandler(int row, int col) {
+void VectorPicker::addVector(int row, int col) {
 	emit vectorSelected(dataSeries.series()[col]);
+}
+
+void VectorPicker::addContents() {
+	emit vectorSelected(dataSeries.filewiseSeries());
 }

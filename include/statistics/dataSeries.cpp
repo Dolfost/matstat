@@ -4,6 +4,7 @@
 #include <QtCore/qnamespace.h>
 #include <QtCore/qstring.h>
 #include <QRegularExpression>
+#include <vector>
 
 #include "dataSeries.hpp"
 
@@ -74,6 +75,19 @@ Status DataSeries::readData(QString fn) {
 
 	dataSeries = tmpDataSeries;
 
+	filewiseDataSeries.clear();
+	std::vector<std::list<double>::iterator> iterators;
+	for (auto& list : tmpDataSeries) {
+		iterators.push_back(list.begin());
+	}
+
+	int row, col;
+	for (row = 0; row < tmpDataSeries[0].size(); row++) {
+		for (col = 0; col < dimensions; col++) {
+			filewiseDataSeries.push_back(*(iterators[col]++));
+		}
+	}
+
 	msg = QString("Прочитано %1 %2-вимірних даних з файлу '%3'.")
 		.arg(QString::number(dataSeries[0].size()))
 		.arg(QString::number(dimensions))
@@ -84,6 +98,10 @@ Status DataSeries::readData(QString fn) {
 
 const std::vector<std::list<double>>& DataSeries::series() {
 	return dataSeries;
+}
+
+const std::list<double>& DataSeries::filewiseSeries() {
+	return filewiseDataSeries;
 }
 
 size_t DataSeries::size() {

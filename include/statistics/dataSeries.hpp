@@ -13,6 +13,7 @@ public:
 
 	Status readData(QString);
 	const std::vector<std::list<double>>& series();
+	const std::list<double>& filewiseSeries();
 	size_t size();
 	unsigned short dimension();
 
@@ -24,6 +25,7 @@ private:
 	QString filename;
 
 	std::vector<std::list<double>> dataSeries;
+	std::list<double> filewiseDataSeries;
 	unsigned short dimensions = 0;
 
 

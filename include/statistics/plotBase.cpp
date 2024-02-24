@@ -61,13 +61,23 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis2->setVisible(true);
 	this->yAxis2->setTickLabels(false);
 
-	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)), this->xAxis2, SLOT(setRange(QCPRange)));
-	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)), this->yAxis2, SLOT(setRange(QCPRange)));
+	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
+			this->xAxis2, SLOT(setRange(QCPRange)));
+	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
+			this->yAxis2, SLOT(setRange(QCPRange)));
 
-	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)), SLOT(handleZoomX(QCPRange)));
-	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)), SLOT(handleZoomY(QCPRange)));
+	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
+			SLOT(handleZoomX(QCPRange)));
+	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
+			SLOT(handleZoomY(QCPRange)));
 
 	this->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+	xRange = QCPRange(-5, 5);
+	yRange = QCPRange(0, 1);
+	this->xAxis->setRange(xRange);
+	this->yAxis->setRange(yRange);
+	this->replot();
 
 	// coordinatesLabel setup
 	coordinatesLabel = new QLabel("", this);
@@ -241,7 +251,7 @@ void PlotBase::toggleLog(bool state) {
 }
 
 void PlotBase::zoomHome() {
-	handleZoomX({cs->dataVector->min(), cs->dataVector->max()});
-	handleZoomY({0,1});
+	handleZoomX(xRange);
+	handleZoomY(yRange);
 	replot();
 }
