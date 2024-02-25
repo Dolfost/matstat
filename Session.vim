@@ -28,9 +28,9 @@ badd +4 include/types.hpp
 badd +14 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +46 include/gui/mainWindow.hpp
-badd +1 include/gui/mainWindow.cpp
-badd +98 include/gui/vectorContainer.cpp
-badd +32 include/gui/vectorContainer.hpp
+badd +164 include/gui/mainWindow.cpp
+badd +110 include/gui/vectorContainer.cpp
+badd +30 include/gui/vectorContainer.hpp
 badd +18 CMakeLists.txt
 badd +1 include/gui/vectorPicker.cpp
 badd +44 include/gui/vectorPicker.hpp
@@ -288,12 +288,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 98 - ((25 * winheight(0) + 17) / 35)
+let s:l = 115 - ((29 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 98
-normal! 023|
+keepjumps 115
+normal! 025|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainer.hpp", ":p")) | buffer include/gui/vectorContainer.hpp | else | edit include/gui/vectorContainer.hpp | endif
@@ -311,12 +311,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 39 - ((31 * winheight(0) + 17) / 35)
+let s:l = 30 - ((22 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 39
-normal! 023|
+keepjumps 30
+normal! 013|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 138 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 74 + 106) / 213)
@@ -351,12 +351,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 39 - ((25 * winheight(0) + 17) / 35)
+let s:l = 164 - ((30 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 39
-normal! 063|
+keepjumps 164
+normal! 035|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -374,12 +374,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 46 - ((0 * winheight(0) + 17) / 35)
+let s:l = 27 - ((26 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 46
-normal! 025|
+keepjumps 27
+normal! 021|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
@@ -659,7 +659,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 5
+tabnext 6
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
