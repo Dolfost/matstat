@@ -29,7 +29,8 @@ private slots:
 	void emitDeleteAction();
 
 signals:
-	void activeSelected(DataVector&);
+	void vectorSelected(DataVector&);
+	void vectorDeleted(int);
 };
 
 

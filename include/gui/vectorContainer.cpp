@@ -79,6 +79,8 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 	connect(setActiveAction, &QAction::triggered,
 			this, &VectorContainer::emitActiveSelectedAction);
 	QAction* deleteAction = menu.addAction("Видалити");
+	connect(deleteAction, &QAction::triggered,
+			this, &VectorContainer::emitDeleteAction);
 
 	menu.exec(mapToGlobal(pos));
 }
@@ -86,10 +88,18 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 void VectorContainer::emitActiveSelectedAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	emit activeSelected(**it);
+	emit vectorSelected(**it);
 }
 
 void VectorContainer::emitDeleteAction() {
+	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::advance(it, this->currentRow());
+	delete *it;
+	vectorList.erase(it);
+
+	emit vectorDeleted(this->currentRow());
+
+	this->removeRow(this->currentRow());
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

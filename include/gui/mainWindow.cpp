@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	connect(this->vectorPicker, &VectorPicker::vectorSelected,
 			vectorContainer, &VectorContainer::insertVector);
-	connect(this->vectorContainer, &VectorContainer::activeSelected,
+	connect(this->vectorContainer, &VectorContainer::vectorSelected,
 			this, &MainWindow::setActiveVector);
 
 	open();
