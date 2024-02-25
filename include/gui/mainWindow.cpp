@@ -32,11 +32,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	this->resize(900,800);
 
-	// open();
 	updateGui();
-	
+
 	connect(this->vectorPicker, &VectorPicker::vectorSelected,
 			vectorContainer, &VectorContainer::insertVector);
+	connect(this->vectorContainer, &VectorContainer::activeSelected,
+			this, &MainWindow::setActiveVector);
+
+	open();
 }
 
 void MainWindow::createCharts() {
@@ -129,10 +132,6 @@ void MainWindow::open() {
 	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
 	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 
-	dataSeries->readData(filepath);
-	this->statusBar()->showMessage(dataSeries->message());
-	dataVector->setVector(dataSeries->series()[0]);
-
 	vectorPicker->fileContents(filepath);
 	this->setFocus();
 	vectorPicker->setFocus();
@@ -149,4 +148,9 @@ void MainWindow::updateGui() {
 	dataReportTextEdit->clear();
 	dataReportTextEdit->append("File " + filepath + "\n");
 	dataReportTextEdit->append(dataVector->report());
+}
+
+void MainWindow::setActiveVector(DataVector& dv) {
+	dataVector->setVector(dv.vector());
+	updateGui();
 }

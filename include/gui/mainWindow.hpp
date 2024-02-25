@@ -44,6 +44,8 @@ private:
 private slots:
 	void open();
 	void updateGui();
+
+	void setActiveVector(DataVector&);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

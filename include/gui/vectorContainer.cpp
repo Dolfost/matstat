@@ -1,4 +1,6 @@
 #include "vectorContainer.hpp"
+#include <QtCore/qpoint.h>
+#include <iterator>
 
 VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(vectorInfoCells);
@@ -9,6 +11,8 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	this->setSelectionMode(QAbstractItemView::SingleSelection);
 	this->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	this->verticalHeader()->hide();
+	this->setContextMenuPolicy(Qt::CustomContextMenu);
+
 
 	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс.", "Файл"}; 
 	QList<int> widths =   {90,      60,        75,     75}; 
@@ -18,6 +22,11 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 		item->setText(headers[i]);
 		this->setColumnWidth(i, widths[i]); this->setHorizontalHeaderItem(i, item);
 	}
+
+	connect(this, &QTableWidget::customContextMenuRequested,
+			this, &VectorContainer::showContextMenu);
+	connect(this, &QTableWidget::cellDoubleClicked,
+			this, &VectorContainer::emitActiveSelectedAction);
 }
 
 void VectorContainer::insertVector(const std::list<double>& vec) {
@@ -58,6 +67,29 @@ void VectorContainer::insertVector(const std::list<double>& vec) {
 		headerItem->setText(QString::number(i - vectorInfoCells+1));
 		this->setHorizontalHeaderItem(i, headerItem);
 	}
+}
+
+void VectorContainer::showContextMenu(const QPoint& pos) {
+	if (this->currentRow() == -1)
+		return;
+
+	QMenu menu;
+
+	QAction* setActiveAction = menu.addAction("Зробити активним");
+	connect(setActiveAction, &QAction::triggered,
+			this, &VectorContainer::emitActiveSelectedAction);
+	QAction* deleteAction = menu.addAction("Видалити");
+
+	menu.exec(mapToGlobal(pos));
+}
+
+void VectorContainer::emitActiveSelectedAction() {
+	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::advance(it, this->currentRow());
+	emit activeSelected(**it);
+}
+
+void VectorContainer::emitDeleteAction() {
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

@@ -4,12 +4,12 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QList>
-#include <QMouseEvent>
-#include <QMimeData>
+#include <QMenu>
 
 #include "./statistics/dataVector.hpp"
 
 class VectorContainer : public QTableWidget {
+	Q_OBJECT
 public:
 	VectorContainer(QWidget* = nullptr);
 
@@ -21,6 +21,15 @@ private:
 	void addVector(const std::list<double>&);
 public slots:
 	void insertVector(const std::list<double>&);
+
+private slots:
+	void showContextMenu(const QPoint&);
+
+	void emitActiveSelectedAction();
+	void emitDeleteAction();
+
+signals:
+	void activeSelected(DataVector&);
 };
 
 
