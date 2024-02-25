@@ -161,4 +161,5 @@ void MainWindow::openVectorPicker() {
 	vectorPicker->show();
 	this->setFocus();
 	vectorPicker->setFocus();
+	vectorPicker->activateWindow();
 }

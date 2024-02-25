@@ -25,8 +25,9 @@ public slots:
 private slots:
 	void showContextMenu(const QPoint&);
 
-	void emitActiveSelectedAction();
-	void emitDeleteAction();
+	void makeActiveAction();
+	void deleteAction();
+	void deleteAllAction();
 
 signals:
 	void vectorSelected(DataVector&);

@@ -26,7 +26,7 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	connect(this, &QTableWidget::customContextMenuRequested,
 			this, &VectorContainer::showContextMenu);
 	connect(this, &QTableWidget::cellDoubleClicked,
-			this, &VectorContainer::emitActiveSelectedAction);
+			this, &VectorContainer::makeActiveAction);
 }
 
 void VectorContainer::insertVector(const std::list<double>& vec) {
@@ -77,21 +77,24 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 
 	QAction* setActiveAction = menu.addAction("Зробити активним");
 	connect(setActiveAction, &QAction::triggered,
-			this, &VectorContainer::emitActiveSelectedAction);
+			this, &VectorContainer::makeActiveAction);
 	QAction* deleteAction = menu.addAction("Видалити");
 	connect(deleteAction, &QAction::triggered,
-			this, &VectorContainer::emitDeleteAction);
+			this, &VectorContainer::deleteAction);
+	QAction* deleteAllAction = menu.addAction("Видалити всі");
+	connect(deleteAllAction, &QAction::triggered,
+			this, &VectorContainer::deleteAllAction);
 
 	menu.exec(mapToGlobal(pos));
 }
 
-void VectorContainer::emitActiveSelectedAction() {
+void VectorContainer::makeActiveAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	emit vectorSelected(**it);
 }
 
-void VectorContainer::emitDeleteAction() {
+void VectorContainer::deleteAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	delete *it;
@@ -100,6 +103,12 @@ void VectorContainer::emitDeleteAction() {
 	emit vectorDeleted(this->currentRow());
 
 	this->removeRow(this->currentRow());
+}
+
+void VectorContainer::deleteAllAction() {
+	this->clearContents();
+	this->setRowCount(0);
+	vectorList.clear();
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {
