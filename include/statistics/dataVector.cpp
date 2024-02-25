@@ -1,8 +1,4 @@
 #include "dataVector.hpp"
-#include <QDebug>
-#include <cfloat>
-#include <cmath>
-#include <iterator>
 
 DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
@@ -288,6 +284,41 @@ void DataVector::standardize() {
 	clearStatistics();
 }
 
-void DataVector::transform(QString expression) {
+QString DataVector::transform(QString expression) {
+	QString msg;
+	exprtk::symbol_table<double> symbol_table;
+	exprtk::expression<double> expr;
+	exprtk::parser<double> parser;
 
+	double x;
+	symbol_table.remove_vararg_function("min");
+	symbol_table.remove_function("min");
+	symbol_table.add_variable("x", x);
+	symbol_table.add_constant("e", M_E);
+	symbol_table.add_constant("pi", M_PI);
+	symbol_table.add_constant("mean", mean());
+	symbol_table.add_constant("med", med());
+	symbol_table.add_constant("mad", mad());
+	symbol_table.add_constant("kutr", kurtosis());
+	symbol_table.add_constant("skew", skew());
+	symbol_table.add_constant("variance", variance());
+	symbol_table.add_constant("min", min());
+	symbol_table.add_constant("max", max());
+	expr.register_symbol_table(symbol_table);
+
+	if (!parser.compile(expression.toStdString(), expr)) {
+		msg.append(
+				"\nError computing f(x): " + QString(parser.error().c_str()) +
+				"\nExpression: " + QString(expression.toStdString().c_str()) + "\n");
+		return msg;
+	}
+
+	for (auto& vectorValue : dataVector) {
+		x = vectorValue;
+		vectorValue = expr.value();
+	}
+
+	clearStatistics();
+
+	return msg;
 }

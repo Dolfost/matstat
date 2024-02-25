@@ -18,9 +18,10 @@ private:
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
 
-	void addVector(const std::list<double>&);
+	void fillRow(int, DataVector*, QString = "");
+	void appendNamedVector(const std::list<double>&, QString = "");
 public slots:
-	void insertVector(const std::list<double>&);
+	void appendVector(const std::list<double>&);
 
 private slots:
 	void showContextMenu(const QPoint&);
@@ -28,6 +29,10 @@ private slots:
 	void makeActiveAction();
 	void deleteAction();
 	void deleteAllAction();
+	void standardizeAction();
+	void logAction();
+	void reverseAction();
+	void rightShiftAction();
 
 signals:
 	void vectorSelected(DataVector&);

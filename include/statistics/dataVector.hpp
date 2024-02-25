@@ -5,6 +5,9 @@
 #include <cstddef>
 #include <list>
 #include <map>
+#include <QDebug>
+#include <cfloat>
+#include "exprtk.hpp"
 
 struct Statistics {
 	std::map<double, double> rawMoment;
@@ -59,7 +62,7 @@ public:
 	
 	// Vector operations
 	void standardize();
-	void transform(QString expression);
+	QString transform(QString expression);
 
 private:
 	std::list<double> dataVector;
