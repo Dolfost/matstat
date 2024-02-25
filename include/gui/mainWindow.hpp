@@ -43,6 +43,7 @@ private:
 
 private slots:
 	void open();
+	void openVectorPicker();
 	void updateGui();
 
 	void setActiveVector(DataVector&);

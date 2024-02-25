@@ -93,9 +93,12 @@ void MainWindow::createActions() {
 
     QAction* openAct = new QAction("Відкрити...", this);
     openAct->setShortcuts(QKeySequence::Open);
-    openAct->setStatusTip("Open an data vector");
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
+
+    QAction* openVectorPickerAct = new QAction("Менеджер векторів", this);
+    connect(openVectorPickerAct, &QAction::triggered, this, &MainWindow::openVectorPicker);
+    fileMenu->addAction(openVectorPickerAct);
 
 
 	QAction* toogleDensityLogAct = 
@@ -133,8 +136,7 @@ void MainWindow::open() {
 	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 
 	vectorPicker->fileContents(filepath);
-	this->setFocus();
-	vectorPicker->setFocus();
+	openVectorPicker();
 
 	updateGui();
 }
@@ -153,4 +155,10 @@ void MainWindow::updateGui() {
 void MainWindow::setActiveVector(DataVector& dv) {
 	dataVector->setVector(dv.vector());
 	updateGui();
+}
+
+void MainWindow::openVectorPicker() {
+	vectorPicker->show();
+	this->setFocus();
+	vectorPicker->setFocus();
 }
