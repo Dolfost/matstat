@@ -116,9 +116,9 @@ void VectorPicker::closeEvent(QCloseEvent* event) {
 }
 
 void VectorPicker::addVector(int row, int col) {
-	emit vectorSelected(dataSeries.series()[col]);
+	emit vectorSelected(&dataSeries.series()[col]);
 }
 
 void VectorPicker::addContents() {
-	emit vectorSelected(dataSeries.filewiseSeries());
+	emit vectorSelected(&dataSeries.filewiseSeries());
 }

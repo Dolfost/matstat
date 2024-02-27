@@ -45,7 +45,7 @@ private slots:
 	void addContents();
 
 signals:
-	void vectorSelected(const std::list<double>&);
+	void vectorSelected(const std::list<double>*);
 };
 
 #endif // !_VECTOR_PICKER_HPP_

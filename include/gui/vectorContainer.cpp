@@ -28,20 +28,20 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 			this, &VectorContainer::makeActiveAction);
 }
 
-void VectorContainer::appendVector(const std::list<double>& vec) {
+void VectorContainer::appendVector(const std::list<double>* vec) {
 	appendNamedVector(vec);
 }
 
-void VectorContainer::appendNamedVector(const std::list<double>& vec, QString name) {
+void VectorContainer::appendNamedVector(const std::list<double>* vec, QString name) {
 	int row = this->rowCount();
 
 	this->insertRow(row);
-	DataVector* dv = new DataVector(vec);
+	DataVector* dv = new DataVector(*vec);
 	vectorList.push_back(dv);
 
 	this->setColumnCount( 
-			(vec.size() + vectorInfoCells > this->columnCount() ?
-			 vec.size() + vectorInfoCells : this->columnCount()));
+			(vec->size() + vectorInfoCells > this->columnCount() ?
+			 vec->size() + vectorInfoCells : this->columnCount()));
 	if (name.length() == 0)
 		name = "V" + QString::number(++vectorCount);
 
@@ -159,7 +159,7 @@ void VectorContainer::standardizeAction() {
 	DataVector* newVector = new DataVector((*it)->vector());
 	newVector->standardize();
 
-	appendNamedVector(newVector->vector(),
+	appendNamedVector(&newVector->vector(),
 			QString("S(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -170,7 +170,7 @@ void VectorContainer::logAction() {
 	DataVector* newVector = new DataVector((*it)->vector());
 	newVector->transform("log(x)");
 
-	appendNamedVector(newVector->vector(),
+	appendNamedVector(&newVector->vector(),
 			QString("LN(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -181,7 +181,7 @@ void VectorContainer::reverseAction() {
 	DataVector* newVector = new DataVector((*it)->vector());
 	newVector->transform("1/x");
 
-	appendNamedVector(newVector->vector(),
+	appendNamedVector(&newVector->vector(),
 			QString("R(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -192,7 +192,7 @@ void VectorContainer::rightShiftAction() {
 	DataVector* newVector = new DataVector((*it)->vector());
 	qDebug() << newVector->transform("x+abs(xmin)+1");
 
-	appendNamedVector(newVector->vector(),
+	appendNamedVector(&newVector->vector(),
 			QString("RS(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -201,10 +201,10 @@ void VectorContainer::transformAction() {
 	auto it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	TransformationFormulaEditor* tfe = 
-		new TransformationFormulaEditor(this->currentRow(), *it,
+		new TransformationFormulaEditor(&transformCount, *it,
 				this->item(this->currentRow(), 0)->text(), this);
 	connect(tfe, &TransformationFormulaEditor::vectorTransformed,
-			this, &VectorContainer::refillRow);
+			this, &VectorContainer::appendNamedVector);
 	connect(this, &VectorContainer::vectorDeleted,
 			tfe, &TransformationFormulaEditor::vectorDeletedHandler);
 }

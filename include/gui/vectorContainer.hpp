@@ -19,13 +19,14 @@ private:
 	std::list<DataVector*> vectorList;
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
+	signed int transformCount = 0;
 
-	void appendNamedVector(const std::list<double>&, QString = "");
+	void appendNamedVector(const std::list<double>*, QString = "");
 
 public slots:
 	void fillRow(int, DataVector*, QString = "");
 	void refillRow(int, DataVector*);
-	void appendVector(const std::list<double>&);
+	void appendVector(const std::list<double>*);
 
 private slots:
 	void showContextMenu(const QPoint&);
