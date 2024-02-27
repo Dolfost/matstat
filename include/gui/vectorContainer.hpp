@@ -6,6 +6,8 @@
 #include <QList>
 #include <QMenu>
 
+#include "gui/transformationFormulaEditor.hpp"
+
 #include "./statistics/dataVector.hpp"
 
 class VectorContainer : public QTableWidget {
@@ -18,9 +20,11 @@ private:
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
 
-	void fillRow(int, DataVector*, QString = "");
 	void appendNamedVector(const std::list<double>&, QString = "");
+
 public slots:
+	void fillRow(int, DataVector*, QString = "");
+	void refillRow(int, DataVector*);
 	void appendVector(const std::list<double>&);
 
 private slots:
@@ -33,6 +37,7 @@ private slots:
 	void logAction();
 	void reverseAction();
 	void rightShiftAction();
+	void transformAction();
 
 signals:
 	void vectorSelected(DataVector&);

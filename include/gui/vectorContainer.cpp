@@ -13,7 +13,6 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	this->verticalHeader()->hide();
 	this->setContextMenuPolicy(Qt::CustomContextMenu);
 
-
 	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс.", "Файл"}; 
 	QList<int> widths =   {90,      60,        75,     75}; 
 
@@ -79,6 +78,10 @@ void VectorContainer::fillRow(int row, DataVector* dv, QString name) {
 	}
 }
 
+void VectorContainer::refillRow(int idx, DataVector* dv) {
+	fillRow(idx, dv, this->item(idx, 0)->text());
+}
+
 void VectorContainer::showContextMenu(const QPoint& pos) {
 	if (this->currentRow() == -1)
 		return;
@@ -90,7 +93,7 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 	connect(setActiveAction, &QAction::triggered,
 			this, &VectorContainer::makeActiveAction);
 
-	QMenu* edit = menu.addMenu("Трансформації...");
+	QMenu* edit = menu.addMenu("Трансформації…");
 	QAction* normalizeAction = edit->addAction("Нормалізувати");
 	connect(normalizeAction, &QAction::triggered,
 			this, &VectorContainer::standardizeAction);
@@ -100,9 +103,15 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 	QAction* reverseAction = edit->addAction("Обернути");
 	connect(reverseAction, &QAction::triggered,
 			this, &VectorContainer::reverseAction);
-	QAction* rightShiftAction = edit->addAction("Зсув на min+1");
+	QAction* rightShiftAction = edit->addAction("Зсунути на xₘᵢₙ+1");
 	connect(rightShiftAction, &QAction::triggered,
 			this, &VectorContainer::rightShiftAction);
+	edit->addSeparator();
+	QAction* transformAction = edit->addAction("Власне перетворення…");
+	connect(transformAction, &QAction::triggered,
+			this, &VectorContainer::transformAction);
+
+	menu.addSeparator();
 
 	QAction* deleteAction = menu.addAction("Видалити");
 	connect(deleteAction, &QAction::triggered,
@@ -174,11 +183,21 @@ void VectorContainer::rightShiftAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector* newVector = new DataVector((*it)->vector());
-	qDebug() << newVector->transform("x+abs(min)+1");
+	qDebug() << newVector->transform("x+abs(xmin)+1");
 
 	appendNamedVector(newVector->vector(),
 			QString("RS(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
+}
+
+void VectorContainer::transformAction() {
+	auto it = vectorList.begin();
+	std::advance(it, this->currentRow());
+	TransformationFormulaEditor* tfe = 
+		new TransformationFormulaEditor(this->currentRow(), *it,
+				this->item(this->currentRow(), 0)->text(), this);
+	connect(tfe, &TransformationFormulaEditor::vectorTransformed,
+			this, &VectorContainer::refillRow);
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

@@ -291,25 +291,49 @@ QString DataVector::transform(QString expression) {
 	exprtk::parser<double> parser;
 
 	double x;
-	symbol_table.remove_vararg_function("min");
-	symbol_table.remove_function("min");
 	symbol_table.add_variable("x", x);
 	symbol_table.add_constant("e", M_E);
 	symbol_table.add_constant("pi", M_PI);
-	symbol_table.add_constant("mean", mean());
-	symbol_table.add_constant("med", med());
-	symbol_table.add_constant("mad", mad());
-	symbol_table.add_constant("kutr", kurtosis());
-	symbol_table.add_constant("skew", skew());
-	symbol_table.add_constant("variance", variance());
-	symbol_table.add_constant("min", min());
-	symbol_table.add_constant("max", max());
+
+	exprtkMean eMean(this);
+	symbol_table.add_function("mean", eMean);
+
+	exprtkMed eMed(this);
+	symbol_table.add_function("med", eMed);
+
+	exprtkMad eMad(this);
+	symbol_table.add_function("mad", eMad);
+
+	exprtkKurtosis eKurtosis(this);
+	symbol_table.add_function("kutrtosis", eKurtosis);
+
+	exprtkSkew eSkew(this);
+	symbol_table.add_function("skew", eSkew);
+
+	exprtkVariance eVariance(this);
+	symbol_table.add_function("variance", eVariance);
+
+	exprtkXmin eXmin(this);
+	symbol_table.add_function("xmin", eXmin);
+
+	exprtkXmax eXmax(this);
+	symbol_table.add_function("xmax", eXmax);
+
+	exprtkRawMoment eRawMoment(this);
+	symbol_table.add_function("rawMoment", eRawMoment);
+
+	exprtkCentralMoment eCentralMoment(this);
+	symbol_table.add_function("centralMoment", eCentralMoment);
+
+	exprtkTurncatedMean eTurncatedMean(this);
+	symbol_table.add_function("turncatedMean", eTurncatedMean);
+
 	expr.register_symbol_table(symbol_table);
 
 	if (!parser.compile(expression.toStdString(), expr)) {
 		msg.append(
-				"\nError computing f(x): " + QString(parser.error().c_str()) +
-				"\nExpression: " + QString(expression.toStdString().c_str()) + "\n");
+				"Error computing xₙ: " + QString(parser.error().c_str()) +
+				"\nExpression: '" + QString(expression.toStdString().c_str()) + "'\n");
 		return msg;
 	}
 
@@ -322,3 +346,5 @@ QString DataVector::transform(QString expression) {
 
 	return msg;
 }
+
+

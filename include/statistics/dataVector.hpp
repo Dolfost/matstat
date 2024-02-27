@@ -83,4 +83,115 @@ private:
 	void computeVariationCoef();
 };
 
+// exprtk functions
+struct exprtkMean final : public exprtk::ifunction<double> {
+	exprtkMean(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->mean();
+	}
+};
+
+struct exprtkMed final : public exprtk::ifunction<double> {
+	exprtkMed(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->med();
+	}
+};
+
+struct exprtkMad final : public exprtk::ifunction<double> {
+	exprtkMad(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->mad();
+	}
+};
+
+struct exprtkKurtosis final : public exprtk::ifunction<double> {
+	 exprtkKurtosis(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->kurtosis();
+	}
+};
+
+struct exprtkSkew final : public exprtk::ifunction<double> {
+	 exprtkSkew(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->skew();
+	}
+};
+
+struct exprtkVariance final : public exprtk::ifunction<double> {
+	exprtkVariance(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->variance();
+	}
+};
+
+struct exprtkXmin final : public exprtk::ifunction<double> {
+	exprtkXmin(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->min();
+	}
+};
+
+struct exprtkXmax final : public exprtk::ifunction<double> {
+	exprtkXmax(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->max();
+	}
+};
+
+struct exprtkRawMoment final : public exprtk::ifunction<double> {
+	exprtkRawMoment(DataVector* vec) : exprtk::ifunction<double>(1)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& degree) {
+		return dv->rawMoment(degree);
+	}
+};
+
+struct exprtkCentralMoment final : public exprtk::ifunction<double> {
+	exprtkCentralMoment(DataVector* vec) : exprtk::ifunction<double>(1)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& degree) {
+		return dv->centralMoment(degree);
+	}
+};
+
+struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
+	exprtkTurncatedMean(DataVector* vec) : exprtk::ifunction<double>(1)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& k) {
+		return dv->turncatedMean(k);
+	}
+};
+
 #endif // !_DATA_VECTOR_HPP_

@@ -27,4 +27,3 @@ set_target_properties(exprtk_cmake_lib PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CM
 
 # Export include directories
 target_include_directories(exprtk_cmake_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/../include)
-
