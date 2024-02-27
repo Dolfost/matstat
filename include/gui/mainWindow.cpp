@@ -152,8 +152,8 @@ void MainWindow::updateGui() {
 	dataReportTextEdit->append(dataVector->report());
 }
 
-void MainWindow::setActiveVector(DataVector& dv) {
-	dataVector->setVector(dv.vector());
+void MainWindow::setActiveVector(DataVector* dv) {
+	dataVector->setVector(dv->vector());
 	updateGui();
 }
 

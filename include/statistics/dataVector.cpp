@@ -286,49 +286,16 @@ void DataVector::standardize() {
 
 QString DataVector::transform(QString expression) {
 	QString msg;
-	exprtk::symbol_table<double> symbol_table;
+
 	exprtk::expression<double> expr;
 	exprtk::parser<double> parser;
+	setTransformationSymbolTable();
 
 	double x;
-	symbol_table.add_variable("x", x);
-	symbol_table.add_constant("e", M_E);
-	symbol_table.add_constant("pi", M_PI);
+	transformationSymbolTable.remove_variable("x");
+	transformationSymbolTable.add_variable("x", x);
 
-	exprtkMean eMean(this);
-	symbol_table.add_function("mean", eMean);
-
-	exprtkMed eMed(this);
-	symbol_table.add_function("med", eMed);
-
-	exprtkMad eMad(this);
-	symbol_table.add_function("mad", eMad);
-
-	exprtkKurtosis eKurtosis(this);
-	symbol_table.add_function("kutrtosis", eKurtosis);
-
-	exprtkSkew eSkew(this);
-	symbol_table.add_function("skew", eSkew);
-
-	exprtkVariance eVariance(this);
-	symbol_table.add_function("variance", eVariance);
-
-	exprtkXmin eXmin(this);
-	symbol_table.add_function("xmin", eXmin);
-
-	exprtkXmax eXmax(this);
-	symbol_table.add_function("xmax", eXmax);
-
-	exprtkRawMoment eRawMoment(this);
-	symbol_table.add_function("rawMoment", eRawMoment);
-
-	exprtkCentralMoment eCentralMoment(this);
-	symbol_table.add_function("centralMoment", eCentralMoment);
-
-	exprtkTurncatedMean eTurncatedMean(this);
-	symbol_table.add_function("turncatedMean", eTurncatedMean);
-
-	expr.register_symbol_table(symbol_table);
+	expr.register_symbol_table(transformationSymbolTable);
 
 	if (!parser.compile(expression.toStdString(), expr)) {
 		msg.append(
@@ -347,4 +314,72 @@ QString DataVector::transform(QString expression) {
 	return msg;
 }
 
+void DataVector::setTransformationSymbolTable() {
+	if (transformationSymbolTableReady)
+		return;
 
+	transformationSymbolTable.add_constant("e", M_E);
+	transformationSymbolTable.add_constant("pi", M_PI);
+
+	exprtkMean* eMean = new exprtkMean(this);
+	transformationSymbolTable
+		.add_function("mean", *eMean);
+
+	exprtkMed* eMed = new exprtkMed(this);
+	transformationSymbolTable
+	.add_function("med", *eMed);
+
+	exprtkMad* eMad = new exprtkMad(this);
+	transformationSymbolTable
+	.add_function("mad", *eMad);
+
+	exprtkKurtosis* eKurtosis = new exprtkKurtosis(this);
+	transformationSymbolTable
+	.add_function("kurtosis", *eKurtosis);
+
+	exprtkSkew* eSkew = new exprtkSkew(this);
+	transformationSymbolTable
+	.add_function("skew", *eSkew);
+
+	exprtkWalshAveragesMed* eWalshAveragesMed = new exprtkWalshAveragesMed(this);
+	transformationSymbolTable
+	.add_function("wam", *eWalshAveragesMed);
+
+	exprtkVariance* eVariance = new exprtkVariance(this);
+	transformationSymbolTable
+	.add_function("variance", *eVariance);
+
+	exprtkXmin* eXmin = new exprtkXmin(this);
+	transformationSymbolTable
+	.add_function("xmin", *eXmin);
+
+	exprtkXmax* eXmax = new exprtkXmax(this);
+	transformationSymbolTable
+	.add_function("xmax", *eXmax);
+
+	exprtkVariationCoef* eVariationCoef = new exprtkVariationCoef(this);
+	transformationSymbolTable
+	.add_function("cv", *eVariationCoef);
+
+	exprtkSize* eSize = new exprtkSize(this);
+	transformationSymbolTable
+	.add_function("size", *eSize);
+
+	exprtkStandartDeviation* eStandartDeviation = new exprtkStandartDeviation(this);
+	transformationSymbolTable
+	.add_function("standartDeviation", *eStandartDeviation);
+
+	exprtkRawMoment* eRawMoment = new exprtkRawMoment(this);
+	transformationSymbolTable
+	.add_function("rawMoment", *eRawMoment);
+
+	exprtkCentralMoment* eCentralMoment = new exprtkCentralMoment(this);
+	transformationSymbolTable
+	.add_function("centralMoment", *eCentralMoment);
+
+	exprtkTurncatedMean* eTurncatedMean = new exprtkTurncatedMean(this);
+	transformationSymbolTable
+	.add_function("turncatedMean", *eTurncatedMean);
+
+	transformationSymbolTableReady = true;
+}

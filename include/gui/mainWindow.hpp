@@ -46,7 +46,7 @@ private slots:
 	void openVectorPicker();
 	void updateGui();
 
-	void setActiveVector(DataVector&);
+	void setActiveVector(DataVector*);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

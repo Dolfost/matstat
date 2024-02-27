@@ -40,8 +40,8 @@ private slots:
 	void transformAction();
 
 signals:
-	void vectorSelected(DataVector&);
-	void vectorDeleted(int);
+	void vectorSelected(DataVector*);
+	void vectorDeleted(int, DataVector*);
 };
 
 

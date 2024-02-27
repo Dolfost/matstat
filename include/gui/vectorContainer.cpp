@@ -126,24 +126,31 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 void VectorContainer::makeActiveAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	emit vectorSelected(**it);
+	emit vectorSelected(*it);
 }
 
 void VectorContainer::deleteAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
+
+	emit vectorDeleted(this->currentRow(), *it);
+
 	delete *it;
 	vectorList.erase(it);
-
-	emit vectorDeleted(this->currentRow());
 
 	this->removeRow(this->currentRow());
 }
 
 void VectorContainer::deleteAllAction() {
+	int i = 0;
+	for (auto vector : vectorList) {
+		emit vectorDeleted(i, vector);
+		delete vector;
+		i++;
+	}
+	vectorList.clear();
 	this->clearContents();
 	this->setRowCount(0);
-	vectorList.clear();
 }
 
 void VectorContainer::standardizeAction() {
@@ -198,6 +205,8 @@ void VectorContainer::transformAction() {
 				this->item(this->currentRow(), 0)->text(), this);
 	connect(tfe, &TransformationFormulaEditor::vectorTransformed,
 			this, &VectorContainer::refillRow);
+	connect(this, &VectorContainer::vectorDeleted,
+			tfe, &TransformationFormulaEditor::vectorDeletedHandler);
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

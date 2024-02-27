@@ -65,8 +65,12 @@ public:
 	QString transform(QString expression);
 
 private:
+	exprtk::symbol_table<double> transformationSymbolTable;
 	std::list<double> dataVector;
 	Statistics stat;
+
+	bool transformationSymbolTableReady = false;
+	void setTransformationSymbolTable();
 
 	// Statistics computers
 	void computeMinMaxSize();
@@ -111,6 +115,36 @@ struct exprtkMad final : public exprtk::ifunction<double> {
 	DataVector* dv;
 	double operator()() {
 		return dv->mad();
+	}
+};
+
+struct exprtkWalshAveragesMed final : public exprtk::ifunction<double> {
+	exprtkWalshAveragesMed(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->walshAveragesMed();
+	}
+};
+
+struct exprtkSize final : public exprtk::ifunction<double> {
+	exprtkSize(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->size();
+	}
+};
+
+struct exprtkVariationCoef final : public exprtk::ifunction<double> {
+	exprtkVariationCoef(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->variationCoef();
 	}
 };
 
@@ -161,6 +195,16 @@ struct exprtkXmax final : public exprtk::ifunction<double> {
 	DataVector* dv;
 	double operator()() {
 		return dv->max();
+	}
+};
+
+struct exprtkStandartDeviation final : public exprtk::ifunction<double> {
+	exprtkStandartDeviation(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->standardDeviation();
 	}
 };
 
