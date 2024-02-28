@@ -62,6 +62,7 @@ public:
 	
 	// Vector operations
 	void standardize();
+	void removeOutliers();
 	QString transform(QString expression);
 
 private:
@@ -86,6 +87,7 @@ private:
 	void computeKurtosis();
 	void computeVariationCoef();
 };
+
 
 // exprtk functions
 struct exprtkMean final : public exprtk::ifunction<double> {

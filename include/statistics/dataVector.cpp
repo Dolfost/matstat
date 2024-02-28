@@ -1,4 +1,5 @@
 #include "dataVector.hpp"
+#include <cmath>
 
 DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
@@ -280,6 +281,44 @@ void DataVector::standardize() {
 	for (auto& x : dataVector) {
 		x = (x - meanValue)/standardDeviationValue;
 	}
+
+	clearStatistics();
+}
+
+void DataVector::removeOutliers() {
+	double a, b,
+		   t1 = 2+0.2*log10(0.04*size()),
+		   t2 = sqrt(19*sqrt(kurtosis()+2)+1);
+
+	if (skew() < -0.2) {
+		a = mean() - t2*variance();
+		b = mean() + t1*variance();
+	} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
+		a = mean() - t1*variance();
+		b = mean() + t1*variance();
+	} else {
+		a = mean() - t1*variance();
+		b = mean() + t2*variance();
+	}
+
+	std::list<double> newVector;
+
+	std::list<double>::iterator startIt = dataVector.begin();
+	std::list<double>::iterator endIt = dataVector.end();
+
+	while (startIt != dataVector.end()) {
+		if (*startIt > a)
+			break;
+		startIt++;
+	}
+
+	while (endIt != dataVector.begin()) {
+		if (*endIt < b)
+			break;
+		endIt--;
+	}
+
+	dataVector.assign(startIt, endIt);
 
 	clearStatistics();
 }

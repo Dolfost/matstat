@@ -93,23 +93,29 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 	connect(setActiveAction, &QAction::triggered,
 			this, &VectorContainer::makeActiveAction);
 
-	QMenu* edit = menu.addMenu("Трансформації…");
-	QAction* normalizeAction = edit->addAction("Нормалізувати");
+	QMenu* transform = menu.addMenu("Трансформації…");
+	QAction* normalizeAction = transform->addAction("Нормалізувати");
 	connect(normalizeAction, &QAction::triggered,
 			this, &VectorContainer::standardizeAction);
-	QAction* logAction = edit->addAction("Логарифмувати");
+	QAction* logAction = transform->addAction("Логарифмувати");
 	connect(logAction, &QAction::triggered,
 			this, &VectorContainer::logAction);
-	QAction* reverseAction = edit->addAction("Обернути");
+	QAction* reverseAction = transform->addAction("Обернути");
 	connect(reverseAction, &QAction::triggered,
 			this, &VectorContainer::reverseAction);
-	QAction* rightShiftAction = edit->addAction("Зсунути на xₘᵢₙ+1");
+	QAction* rightShiftAction = transform->addAction("Зсунути на xₘᵢₙ+1");
 	connect(rightShiftAction, &QAction::triggered,
 			this, &VectorContainer::rightShiftAction);
-	edit->addSeparator();
-	QAction* transformAction = edit->addAction("Власне перетворення…");
+	transform->addSeparator();
+	QAction* transformAction = transform->addAction("Власне перетворення…");
 	connect(transformAction, &QAction::triggered,
 			this, &VectorContainer::transformAction);
+
+	menu.addSeparator();
+
+	QAction* removeOutliersAction = menu.addAction("Видалити аномалії");
+	connect(removeOutliersAction, &QAction::triggered,
+			this, &VectorContainer::removeOutliersAction);
 
 	menu.addSeparator();
 
@@ -156,10 +162,10 @@ void VectorContainer::deleteAllAction() {
 void VectorContainer::standardizeAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector* newVector = new DataVector((*it)->vector());
-	newVector->standardize();
+	DataVector newVector((*it)->vector());
+	newVector.standardize();
 
-	appendNamedVector(&newVector->vector(),
+	appendNamedVector(&newVector.vector(),
 			QString("S(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -167,10 +173,10 @@ void VectorContainer::standardizeAction() {
 void VectorContainer::logAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector* newVector = new DataVector((*it)->vector());
-	newVector->transform("log(x)");
+	DataVector newVector((*it)->vector());
+	newVector.transform("log(x)");
 
-	appendNamedVector(&newVector->vector(),
+	appendNamedVector(&newVector.vector(),
 			QString("LN(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -178,10 +184,10 @@ void VectorContainer::logAction() {
 void VectorContainer::reverseAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector* newVector = new DataVector((*it)->vector());
-	newVector->transform("1/x");
+	DataVector newVector((*it)->vector());
+	newVector.transform("1/x");
 
-	appendNamedVector(&newVector->vector(),
+	appendNamedVector(&newVector.vector(),
 			QString("R(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -189,10 +195,10 @@ void VectorContainer::reverseAction() {
 void VectorContainer::rightShiftAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector* newVector = new DataVector((*it)->vector());
-	qDebug() << newVector->transform("x+abs(xmin)+1");
+	DataVector newVector((*it)->vector());
+	newVector.transform("x+abs(xmin)+1");
 
-	appendNamedVector(&newVector->vector(),
+	appendNamedVector(&newVector.vector(),
 			QString("RS(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -207,6 +213,17 @@ void VectorContainer::transformAction() {
 			this, &VectorContainer::appendNamedVector);
 	connect(this, &VectorContainer::vectorDeleted,
 			tfe, &TransformationFormulaEditor::vectorDeletedHandler);
+}
+
+void VectorContainer::removeOutliersAction() {
+	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::advance(it, this->currentRow());
+	DataVector newVector((*it)->vector());
+	newVector.removeOutliers();
+
+	appendNamedVector(&newVector.vector(),
+			QString("RMOUT(%1)")
+			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

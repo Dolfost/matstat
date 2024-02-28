@@ -39,6 +39,7 @@ private slots:
 	void reverseAction();
 	void rightShiftAction();
 	void transformAction();
+	void removeOutliersAction();
 
 signals:
 	void vectorSelected(DataVector*);
