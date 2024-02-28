@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QLabel>
+#include <QGroupBox>
 
 #include "Section.h"
 

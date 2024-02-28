@@ -21,14 +21,12 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 		QVBoxLayout* sublayout = new QVBoxLayout();
 		sublayout->setContentsMargins(8,8,8,8);
 		sublayout->setSpacing(8);
-		mainLayout->addLayout(sublayout);
 
-		QGridLayout* inputGridLayout = new QGridLayout;
-
+		QGroupBox* tipsGroup = new QGroupBox("Підказки");
+		tipsGroup->setLayout(new QVBoxLayout);
 
 		ui::Section* varsSection = new ui::Section("Змінні", 50);
 		QLabel* varsLabel = new QLabel("x — довільний елемент векторa");
-		varsLabel->adjustSize();
 		QVBoxLayout* varsSectionLay = new QVBoxLayout();
 		varsSectionLay->addWidget(varsLabel);
 		varsSection->setContentLayout(*varsSectionLay);
@@ -50,7 +48,6 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 				"turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
 				"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
 				"centralMoment(n) — центральний момент n-го порядку (n ∈ R)");
-		statisticsLabel->adjustSize();
 		QVBoxLayout* statisticsSectionLay = new QVBoxLayout();
 		statisticsSectionLay->addWidget(statisticsLabel);
 		statisticsSection->setContentLayout(*statisticsSectionLay);
@@ -65,7 +62,6 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 				"atan2(x,y), atanh(x), cos(x), cosh(x), cot(x), csc(x), sec(x), sin(x), sinc(c),\n"
 				"sinh(x), tan(x), tanh(x), deg2rad(x), deg2grad(x), rad2deg(x), grad2deg(x)"
 				);
-		generalLabel->adjustSize();
 		QVBoxLayout* generalSectionLay = new QVBoxLayout();
 		generalSectionLay->addWidget(generalLabel);
 		generalSection->setContentLayout(*generalSectionLay);
@@ -80,18 +76,22 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 		statusTextEdit = new QTextEdit();
 		statusTextEdit->setReadOnly(true);
 
-		sublayout->addWidget(varsSection);
-		sublayout->addWidget(statisticsSection);
-		sublayout->addWidget(generalSection);
+		tipsGroup->layout()->addWidget(varsSection);
+		tipsGroup->layout()->addWidget(statisticsSection);
+		tipsGroup->layout()->addWidget(generalSection);
 		varsSection->toggle(true);
 		statisticsSection->toggle(false);
 		generalSection->toggle(false);
 
+		QGridLayout* inputGridLayout = new QGridLayout;
 		inputGridLayout->addWidget(inputLabel, 0, 0);
 		inputGridLayout->addWidget(formulaLineEdit, 0, 1);
 
+		sublayout->addWidget(tipsGroup);
 		sublayout->addLayout(inputGridLayout);
 		sublayout->addWidget(transformButton);
+
+		mainLayout->addLayout(sublayout);
 		mainLayout->addWidget(statusTextEdit);
 
 		connect(transformButton, &QPushButton::clicked,
