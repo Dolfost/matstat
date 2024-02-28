@@ -1,6 +1,6 @@
 #include "mainWindow.hpp"
 
-#include "gui/vectorContainer.hpp"
+#include "gui/vectorContainerWidget.hpp"
 #include "statistics/dataSeries.hpp"
 #include "statistics/dataVector.hpp"
 #include "statistics/classSeries.hpp"
@@ -28,18 +28,18 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	mainLayout->addWidget(mainSplitter);
 
-	vectorPicker = new VectorPicker(this);
+	vectorPicker = new VectorPickerDialog(this);
 
 	this->resize(900,800);
 
 	updateGui();
 
-	connect(this->vectorPicker, &VectorPicker::vectorSelected,
-			vectorContainer, &VectorContainer::appendVector);
-	connect(this->vectorContainer, &VectorContainer::vectorSelected,
+	connect(this->vectorPicker, &VectorPickerDialog::vectorSelected,
+			vectorContainer, &VectorContainerWidget::appendVector);
+	connect(this->vectorContainer, &VectorContainerWidget::vectorSelected,
 			this, &MainWindow::setActiveVector);
 
-	connect(this->vectorContainer, &VectorContainer::outliersRemoved,
+	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 			this, &MainWindow::outliersRemovedHandler);
 
 	open();
@@ -84,7 +84,7 @@ void MainWindow::createVectorContainers() {
 	dataReportTextEdit->setReadOnly(true);
 	dataReportTabLayout->addWidget(dataReportTextEdit);
 
-	vectorContainer = new VectorContainer();
+	vectorContainer = new VectorContainerWidget();
 	objectsTabLayout->addWidget(vectorContainer);
 
 	mainSplitter->addWidget(tabWidget);

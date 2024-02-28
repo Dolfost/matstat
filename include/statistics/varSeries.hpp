@@ -14,8 +14,6 @@ public:
 	size_t variantsCount(); // r 
 
 	DataVector* dataVector = nullptr; // plain vector data
-
-	~VarSeries();
 private:
 	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
 	std::map<double, std::pair<int, double>> varSeries; 

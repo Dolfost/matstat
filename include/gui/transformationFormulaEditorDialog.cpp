@@ -1,8 +1,8 @@
-#include "transformationFormulaEditor.hpp"
+#include "transformationFormulaEditorDialog.hpp"
 #include "gui/Section.h"
 
 
-TransformationFormulaEditor::TransformationFormulaEditor(
+TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		int* i, DataVector* vec, QString name,
 		QWidget *parent, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
@@ -11,7 +11,6 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 		vecName = name;
 
 		this->setWindowTitle("Менеджер трансформацій [" + vecName + "]");
-		this->setMinimumSize(500,400);
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
 		this->setLayout(mainLayout);
@@ -95,12 +94,13 @@ TransformationFormulaEditor::TransformationFormulaEditor(
 		mainLayout->addWidget(statusTextEdit);
 
 		connect(transformButton, &QPushButton::clicked,
-				this, &TransformationFormulaEditor::transform);
+				this, &TransformationFormulaEditorDialog::transform);
 
+		this->resize(500, 350);
 		this->show();
 }
 
-void TransformationFormulaEditor::transform() {
+void TransformationFormulaEditorDialog::transform() {
 	DataVector tmpdv(*dv);
 	QString res = tmpdv.transform(formulaLineEdit->text());
 	if (res.length() != 0) {
@@ -114,7 +114,7 @@ void TransformationFormulaEditor::transform() {
 	}
 }
 
-void TransformationFormulaEditor::vectorDeletedHandler(int idx, DataVector* vec) {
+void TransformationFormulaEditorDialog::vectorDeletedHandler(int idx, DataVector* vec) {
 	if (dv == vec)
 		this->close();
 }

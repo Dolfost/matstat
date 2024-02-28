@@ -1,8 +1,8 @@
-#include "vectorContainer.hpp"
+#include "vectorContainerWidget.hpp"
 #include <QtCore/qpoint.h>
 #include <iterator>
 
-VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
+VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(vectorInfoCells);
 	this->setRowCount(0);
 	this->setAcceptDrops(false);
@@ -23,16 +23,16 @@ VectorContainer::VectorContainer(QWidget* parent) : QTableWidget(parent) {
 	}
 
 	connect(this, &QTableWidget::customContextMenuRequested,
-			this, &VectorContainer::showContextMenu);
+			this, &VectorContainerWidget::showContextMenu);
 	connect(this, &QTableWidget::cellDoubleClicked,
-			this, &VectorContainer::makeActiveAction);
+			this, &VectorContainerWidget::makeActiveAction);
 }
 
-void VectorContainer::appendVector(const std::list<double>* vec) {
+void VectorContainerWidget::appendVector(const std::list<double>* vec) {
 	appendNamedVector(vec);
 }
 
-void VectorContainer::appendNamedVector(const std::list<double>* vec, QString name) {
+void VectorContainerWidget::appendNamedVector(const std::list<double>* vec, QString name) {
 	int row = this->rowCount();
 
 	this->insertRow(row);
@@ -48,7 +48,7 @@ void VectorContainer::appendNamedVector(const std::list<double>* vec, QString na
 	fillRow(row, dv, name);
 }
 
-void VectorContainer::fillRow(int row, DataVector* dv, QString name) {
+void VectorContainerWidget::fillRow(int row, DataVector* dv, QString name) {
 	QStringList info = {
 		name,
 		QString::number(dv->size()),
@@ -78,11 +78,11 @@ void VectorContainer::fillRow(int row, DataVector* dv, QString name) {
 	}
 }
 
-void VectorContainer::refillRow(int idx, DataVector* dv) {
+void VectorContainerWidget::refillRow(int idx, DataVector* dv) {
 	fillRow(idx, dv, this->item(idx, 0)->text());
 }
 
-void VectorContainer::showContextMenu(const QPoint& pos) {
+void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	if (this->currentRow() == -1)
 		return;
 
@@ -91,51 +91,55 @@ void VectorContainer::showContextMenu(const QPoint& pos) {
 
 	QAction* setActiveAction = menu.addAction("Зробити активним");
 	connect(setActiveAction, &QAction::triggered,
-			this, &VectorContainer::makeActiveAction);
+			this, &VectorContainerWidget::makeActiveAction);
+
+	QAction* removeOutliersAction = menu.addAction("Видалити аномалії");
+	connect(removeOutliersAction, &QAction::triggered,
+			this, &VectorContainerWidget::removeOutliersAction);
 
 	QMenu* transform = menu.addMenu("Трансформації…");
 	QAction* normalizeAction = transform->addAction("Нормалізувати");
 	connect(normalizeAction, &QAction::triggered,
-			this, &VectorContainer::standardizeAction);
+			this, &VectorContainerWidget::standardizeAction);
 	QAction* logAction = transform->addAction("Логарифмувати");
 	connect(logAction, &QAction::triggered,
-			this, &VectorContainer::logAction);
+			this, &VectorContainerWidget::logAction);
 	QAction* reverseAction = transform->addAction("Обернути");
 	connect(reverseAction, &QAction::triggered,
-			this, &VectorContainer::reverseAction);
+			this, &VectorContainerWidget::reverseAction);
 	QAction* rightShiftAction = transform->addAction("Зсунути на xₘᵢₙ+1");
 	connect(rightShiftAction, &QAction::triggered,
-			this, &VectorContainer::rightShiftAction);
+			this, &VectorContainerWidget::rightShiftAction);
 	transform->addSeparator();
 	QAction* transformAction = transform->addAction("Власне перетворення…");
 	connect(transformAction, &QAction::triggered,
-			this, &VectorContainer::transformAction);
+			this, &VectorContainerWidget::transformAction);
 
 	menu.addSeparator();
 
-	QAction* removeOutliersAction = menu.addAction("Видалити аномалії");
-	connect(removeOutliersAction, &QAction::triggered,
-			this, &VectorContainer::removeOutliersAction);
+	QAction* infoAction = menu.addAction("Інформація про вектор");
+	connect(infoAction, &QAction::triggered,
+			this, &VectorContainerWidget::infoAction);
 
 	menu.addSeparator();
 
 	QAction* deleteAction = menu.addAction("Видалити");
 	connect(deleteAction, &QAction::triggered,
-			this, &VectorContainer::deleteAction);
+			this, &VectorContainerWidget::deleteAction);
 	QAction* deleteAllAction = menu.addAction("Видалити всі");
 	connect(deleteAllAction, &QAction::triggered,
-			this, &VectorContainer::deleteAllAction);
+			this, &VectorContainerWidget::deleteAllAction);
 
 	menu.exec(mapToGlobal(pos));
 }
 
-void VectorContainer::makeActiveAction() {
+void VectorContainerWidget::makeActiveAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	emit vectorSelected(*it);
 }
 
-void VectorContainer::deleteAction() {
+void VectorContainerWidget::deleteAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 
@@ -147,7 +151,7 @@ void VectorContainer::deleteAction() {
 	this->removeRow(this->currentRow());
 }
 
-void VectorContainer::deleteAllAction() {
+void VectorContainerWidget::deleteAllAction() {
 	int i = 0;
 	for (auto vector : vectorList) {
 		emit vectorDeleted(i, vector);
@@ -159,7 +163,7 @@ void VectorContainer::deleteAllAction() {
 	this->setRowCount(0);
 }
 
-void VectorContainer::standardizeAction() {
+void VectorContainerWidget::standardizeAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
@@ -170,7 +174,7 @@ void VectorContainer::standardizeAction() {
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
-void VectorContainer::logAction() {
+void VectorContainerWidget::logAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
@@ -181,7 +185,7 @@ void VectorContainer::logAction() {
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
-void VectorContainer::reverseAction() {
+void VectorContainerWidget::reverseAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
@@ -192,7 +196,7 @@ void VectorContainer::reverseAction() {
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
-void VectorContainer::rightShiftAction() {
+void VectorContainerWidget::rightShiftAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
@@ -203,19 +207,19 @@ void VectorContainer::rightShiftAction() {
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
-void VectorContainer::transformAction() {
+void VectorContainerWidget::transformAction() {
 	auto it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	TransformationFormulaEditor* tfe = 
-		new TransformationFormulaEditor(&transformCount, *it,
+	TransformationFormulaEditorDialog* tfe = 
+		new TransformationFormulaEditorDialog(&transformCount, *it,
 				this->item(this->currentRow(), 0)->text(), this);
-	connect(tfe, &TransformationFormulaEditor::vectorTransformed,
-			this, &VectorContainer::appendNamedVector);
-	connect(this, &VectorContainer::vectorDeleted,
-			tfe, &TransformationFormulaEditor::vectorDeletedHandler);
+	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
+			this, &VectorContainerWidget::appendNamedVector);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
 }
 
-void VectorContainer::removeOutliersAction() {
+void VectorContainerWidget::removeOutliersAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
@@ -229,6 +233,19 @@ void VectorContainer::removeOutliersAction() {
 	appendNamedVector(&newVector.vector(),
 			QString("RMOUT(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
+}
+
+void VectorContainerWidget::infoAction() {
+	auto it = vectorList.begin();
+	std::advance(it, this->currentRow());
+	VectorInfoDialog* tfe = 
+		new VectorInfoDialog(
+					*it,
+					this->item(this->currentRow(), 0)->text(), 
+					this
+				);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			tfe, &VectorInfoDialog::vectorDeletedHandler);
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

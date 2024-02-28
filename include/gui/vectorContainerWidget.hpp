@@ -1,19 +1,20 @@
-#ifndef _VECTOR_CONTAINER_HPP_
-#define _VECTOR_CONTAINER_HPP_
+#ifndef _VECTOR_CONTAINER_WIDGET_HPP_
+#define _VECTOR_CONTAINER_WIDGET_HPP_
 
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QList>
 #include <QMenu>
 
-#include "gui/transformationFormulaEditor.hpp"
+#include "gui/transformationFormulaEditorDialog.hpp"
+#include "gui/vectorInfoDialog.hpp"
 
 #include "./statistics/dataVector.hpp"
 
-class VectorContainer : public QTableWidget {
+class VectorContainerWidget : public QTableWidget {
 	Q_OBJECT
 public:
-	VectorContainer(QWidget* = nullptr);
+	VectorContainerWidget(QWidget* = nullptr);
 
 private:
 	std::list<DataVector*> vectorList;
@@ -40,6 +41,7 @@ private slots:
 	void rightShiftAction();
 	void transformAction();
 	void removeOutliersAction();
+	void infoAction();
 
 signals:
 	void vectorSelected(DataVector*);
@@ -53,4 +55,4 @@ public:
 	HorizontalHeaderItem();
 };
 
-#endif // !_VECTOR_CONTAINER_HPP_
+#endif // !_VECTOR_CONTAINER_WIDGET_HPP_

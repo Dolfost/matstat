@@ -1,5 +1,5 @@
-#ifndef _TRANSFORMATION_FORMULA_EDITOR_
-#define _TRANSFORMATION_FORMULA_EDITOR_
+#ifndef _TRANSFORMATION_FORMULA_EDITOR_DIALOG_
+#define _TRANSFORMATION_FORMULA_EDITOR_DIALOG_
 
 #include "statistics/dataVector.hpp"
 
@@ -14,11 +14,15 @@
 
 #include "Section.h"
 
-class TransformationFormulaEditor : public QDialog {
+class TransformationFormulaEditorDialog : public QDialog {
 	Q_OBJECT
 public:
-	TransformationFormulaEditor(int*, DataVector*, QString, QWidget* = nullptr,
-			Qt::WindowFlags = Qt::WindowFlags());
+	TransformationFormulaEditorDialog(int*,
+			DataVector*,
+			QString,
+			QWidget* = nullptr,
+			Qt::WindowFlags = Qt::WindowFlags()
+			);
 
 	bool transfromVector(const DataVector*);
 
@@ -39,4 +43,4 @@ signals:
 	void vectorTransformed(const std::list<double>*, QString);
 };
 
-#endif // !_TRANSFORMATION_FORMULA_EDITOR_
+#endif // !_TRANSFORMATION_FORMULA_EDITOR_DIALOG_

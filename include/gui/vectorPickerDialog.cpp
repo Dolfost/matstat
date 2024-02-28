@@ -1,10 +1,10 @@
-#include "vectorPicker.hpp"
+#include "vectorPickerDialog.hpp"
 #include <QtCore/qstringlist.h>
 #include <QtWidgets/qtabwidget.h>
 #include <QtWidgets/qwidget.h>
 #include <vector>
 
-VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f) 
+VectorPickerDialog::VectorPickerDialog(QWidget *parent, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
 		this->setWindowTitle("Менеджер векторів");
 		this->setMinimumSize(300,400);
@@ -35,7 +35,7 @@ VectorPicker::VectorPicker(QWidget *parent, Qt::WindowFlags f)
 		setVectorsTab();
 }
 
-void VectorPicker::fileContents(QString filepath) {
+void VectorPickerDialog::fileContents(QString filepath) {
 	Status ok = dataSeries.readData(filepath);
 	statusBar->showMessage(dataSeries.message());
 
@@ -46,7 +46,7 @@ void VectorPicker::fileContents(QString filepath) {
 	this->show();
 }
 
-void VectorPicker::fill() {
+void VectorPickerDialog::fill() {
 	std::vector<std::list<double>> data = dataSeries.series(); 
 	vectorsTableWidget->clear();
 	vectorsTableWidget->setRowCount(data[0].size());
@@ -81,7 +81,7 @@ void VectorPicker::fill() {
 	contentsTextEdit->setText(textEditContents);
 }
 
-void VectorPicker::setContentsTab() {
+void VectorPickerDialog::setContentsTab() {
 	contentsTextEdit = new QTextEdit();
 	addContentsPushButton = new QPushButton("Додати в вміст у контейнер");
 	addContentsPushButton->setContentsMargins(50,50,50,50);
@@ -93,10 +93,10 @@ void VectorPicker::setContentsTab() {
 	contentsTabLayout->addLayout(buttonLayout);
 	contentsTextEdit->setReadOnly(true);
 	connect(addContentsPushButton, &QPushButton::clicked,
-			this, &VectorPicker::addContents);
+			this, &VectorPickerDialog::addContents);
 }
 
-void VectorPicker::setVectorsTab() {
+void VectorPickerDialog::setVectorsTab() {
 	vectorsTableWidget = new QTableWidget();
 	vectorsTableWidget->setSelectionBehavior(
 			QAbstractItemView::SelectColumns);
@@ -107,18 +107,18 @@ void VectorPicker::setVectorsTab() {
 
 	vectorsTabLayout->addWidget(vectorsTableWidget);
 	connect(vectorsTableWidget, &QTableWidget::cellDoubleClicked,
-			this, &VectorPicker::addVector);
+			this, &VectorPickerDialog::addVector);
 }
 
-void VectorPicker::closeEvent(QCloseEvent* event) {
+void VectorPickerDialog::closeEvent(QCloseEvent* event) {
 	this->hide();
 	event->ignore();
 }
 
-void VectorPicker::addVector(int row, int col) {
+void VectorPickerDialog::addVector(int row, int col) {
 	emit vectorSelected(&dataSeries.series()[col]);
 }
 
-void VectorPicker::addContents() {
+void VectorPickerDialog::addContents() {
 	emit vectorSelected(&dataSeries.filewiseSeries());
 }

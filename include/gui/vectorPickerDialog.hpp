@@ -1,5 +1,5 @@
-#ifndef _VECTOR_PICKER_HPP_
-#define _VECTOR_PICKER_HPP_
+#ifndef _VECTOR_PICKER_DIALOG_HPP_
+#define _VECTOR_PICKER_DIALOG_HPP_
 
 #include "statistics/dataSeries.hpp"
 #include <QDialog>
@@ -17,10 +17,13 @@
 #include <QMimeData>
 #include <QApplication>
 
-class VectorPicker : public QDialog {
+class VectorPickerDialog : public QDialog {
 	Q_OBJECT
 public:
-	VectorPicker(QWidget* = nullptr, Qt::WindowFlags = Qt::WindowFlags());
+	VectorPickerDialog(
+			QWidget* = nullptr,
+			Qt::WindowFlags = Qt::WindowFlags()
+			);
 
 	void fileContents(QString);
 
@@ -48,4 +51,4 @@ signals:
 	void vectorSelected(const std::list<double>*);
 };
 
-#endif // !_VECTOR_PICKER_HPP_
+#endif // !_VECTOR_PICKER_DIALOG_HPP_
