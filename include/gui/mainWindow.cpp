@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorContainer, &VectorContainer::vectorSelected,
 			this, &MainWindow::setActiveVector);
 
+	connect(this->vectorContainer, &VectorContainer::outliersRemoved,
+			this, &MainWindow::outliersRemovedHandler);
+
 	open();
 }
 
@@ -163,3 +166,14 @@ void MainWindow::openVectorPicker() {
 	vectorPicker->setFocus();
 	vectorPicker->activateWindow();
 }
+
+void MainWindow::outliersRemovedHandler(bool ok) {
+	QString msg;
+	if (ok)
+		msg = "Аномалії прибрано.";
+	else
+		msg = "В результаті вилучення аномалій, вектор не змінився.";
+
+	this->statusBar()->showMessage(msg, messageTime);
+}
+

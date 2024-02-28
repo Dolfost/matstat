@@ -41,12 +41,17 @@ private:
 	void createVectorContainers();
 	void createActions();
 
+	int messageTime = 4000;
+
 private slots:
 	void open();
 	void openVectorPicker();
 	void updateGui();
 
 	void setActiveVector(DataVector*);
+
+	// handlers
+	void outliersRemovedHandler(bool);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

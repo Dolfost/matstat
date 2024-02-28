@@ -219,7 +219,12 @@ void VectorContainer::removeOutliersAction() {
 	std::list<DataVector*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	DataVector newVector((*it)->vector());
-	newVector.removeOutliers();
+	bool ok = newVector.removeOutliers();
+
+	emit outliersRemoved(ok);
+
+	if (!ok) // no entries removed
+		return;
 
 	appendNamedVector(&newVector.vector(),
 			QString("RMOUT(%1)")

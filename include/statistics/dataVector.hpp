@@ -62,7 +62,7 @@ public:
 	
 	// Vector operations
 	void standardize();
-	void removeOutliers();
+	bool removeOutliers();
 	QString transform(QString expression);
 
 private:

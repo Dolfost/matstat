@@ -285,7 +285,7 @@ void DataVector::standardize() {
 	clearStatistics();
 }
 
-void DataVector::removeOutliers() {
+bool DataVector::removeOutliers() {
 	double a, b,
 		   t1 = 2+0.2*log10(0.04*size()),
 		   t2 = sqrt(19*sqrt(kurtosis()+2)+1);
@@ -318,9 +318,13 @@ void DataVector::removeOutliers() {
 		endIt--;
 	}
 
+	if (endIt == dataVector.end() and startIt == dataVector.begin())
+		return false;
+
 	dataVector.assign(startIt, endIt);
 
 	clearStatistics();
+	return true;
 }
 
 QString DataVector::transform(QString expression) {
