@@ -10,6 +10,7 @@
 
 #include <QWidget>
 #include <QtCore/qnamespace.h>
+#include <QtWidgets/qgroupbox.h>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainWidget = new QWidget();
@@ -67,27 +68,15 @@ void MainWindow::createCharts() {
 }
 
 void MainWindow::createVectorContainers() {
-	QTabWidget* tabWidget = new QTabWidget();
-	tabWidget->setDocumentMode(true);
-	QWidget* objectsTab = new QWidget();
-	QWidget* dataReportTab = new QWidget();
-	tabWidget->addTab(objectsTab, "Обʼєкти даних");
-	tabWidget->addTab(dataReportTab, "Звіт");
-	QHBoxLayout* objectsTabLayout = new QHBoxLayout();
-	objectsTabLayout->setContentsMargins(0,0,0,0);
-	QHBoxLayout* dataReportTabLayout = new QHBoxLayout();
-	dataReportTabLayout->setContentsMargins(0,0,0,0);
-	objectsTab->setLayout(objectsTabLayout);
-	dataReportTab->setLayout(dataReportTabLayout);
-
-	dataReportTextEdit = new QTextEdit();
-	dataReportTextEdit->setReadOnly(true);
-	dataReportTabLayout->addWidget(dataReportTextEdit);
+	QGroupBox* objectsBox = new QGroupBox("Обʼєкти даних");
+	QHBoxLayout* objectsLayout = new QHBoxLayout();
+	objectsLayout->setContentsMargins(0,0,0,0);
+	objectsBox->setLayout(objectsLayout);
 
 	vectorContainer = new VectorContainerWidget();
-	objectsTabLayout->addWidget(vectorContainer);
+	objectsLayout->addWidget(vectorContainer);
 
-	mainSplitter->addWidget(tabWidget);
+	mainSplitter->addWidget(objectsBox);
 }
 
 void MainWindow::createActions() {
@@ -149,10 +138,6 @@ void MainWindow::updateGui() {
 
 	densityChart->fill(classSeries);
 	distributionChart->fill(classSeries);
-
-	dataReportTextEdit->clear();
-	dataReportTextEdit->append("File " + filepath + "\n");
-	dataReportTextEdit->append(dataVector->report());
 }
 
 void MainWindow::setActiveVector(DataVector* dv) {

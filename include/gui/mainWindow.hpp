@@ -35,8 +35,6 @@ private:
 	VectorContainerWidget* vectorContainer = nullptr;
 	VectorPickerDialog* vectorPicker = nullptr;
 
-	QTextEdit* dataReportTextEdit = nullptr;
-
 	void createCharts();
 	void createVectorContainers();
 	void createActions();
