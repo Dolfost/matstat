@@ -16,10 +16,10 @@ endif
 badd +13 main.cpp
 badd +1 include/statistics/plotBase.cpp
 badd +61 include/statistics/plotBase.hpp
-badd +80 include/statistics/dataSeries.cpp
+badd +1 include/statistics/dataSeries.cpp
 badd +28 include/statistics/dataSeries.hpp
 badd +65 include/statistics/dataVector.hpp
-badd +249 include/statistics/dataVector.cpp
+badd +1 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +28 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
@@ -28,18 +28,18 @@ badd +4 include/types.hpp
 badd +14 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +15 include/gui/mainWindow.hpp
-badd +69 include/gui/mainWindow.cpp
+badd +145 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +408 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
 badd +10 include/gui/vectorContainerWidget.hpp
-badd +100 include/gui/transformationFormulaEditorDialog.cpp
+badd +1 include/gui/transformationFormulaEditorDialog.cpp
 badd +54 include/gui/vectorPickerDialog.hpp
 badd +20 include/gui/transformationFormulaEditorDialog.hpp
-badd +116 include/gui/vectorPickerDialog.cpp
-badd +246 include/gui/vectorContainerWidget.cpp
+badd +1 include/gui/vectorPickerDialog.cpp
+badd +1 include/gui/vectorContainerWidget.cpp
 badd +5 include/gui/vectorInfoDialog.hpp
-badd +36 include/gui/vectorInfoDialog.cpp
+badd +1 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
 argglobal
 %argdel
@@ -310,6 +310,7 @@ if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffe
 if &buftype ==# 'terminal'
   silent file include/gui/vectorContainerWidget.hpp
 endif
+balt include/gui/vectorContainerWidget.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -361,11 +362,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 36 - ((8 * winheight(0) + 16) / 32)
+let s:l = 21 - ((13 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 36
+keepjumps 21
 normal! 028|
 wincmd w
 argglobal
@@ -424,12 +425,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 69 - ((8 * winheight(0) + 16) / 32)
+let s:l = 145 - ((8 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 69
-normal! 043|
+keepjumps 145
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -447,12 +448,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 15 - ((14 * winheight(0) + 16) / 32)
+let s:l = 55 - ((31 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 15
-normal! 028|
+keepjumps 55
+normal! 04|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 112 + 85) / 171)
 exe 'vert 2resize ' . ((&columns * 58 + 85) / 171)
@@ -499,6 +500,7 @@ if bufexists(fnamemodify("include/gui/transformationFormulaEditorDialog.hpp", ":
 if &buftype ==# 'terminal'
   silent file include/gui/transformationFormulaEditorDialog.hpp
 endif
+balt include/gui/transformationFormulaEditorDialog.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -562,6 +564,7 @@ if bufexists(fnamemodify("include/gui/vectorPickerDialog.hpp", ":p")) | buffer i
 if &buftype ==# 'terminal'
   silent file include/gui/vectorPickerDialog.hpp
 endif
+balt include/gui/vectorPickerDialog.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -813,7 +816,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 6
+tabnext 7
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
