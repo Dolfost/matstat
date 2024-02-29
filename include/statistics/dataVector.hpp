@@ -14,6 +14,11 @@ struct Statistics {
 	std::map<double, double> centralMoment; // sample central moment
 	std::map<size_t, double> turncatedMean;
 
+	std::map<double, double> normQuantile;
+	std::map<std::pair<double, int>, double> studQuantile;
+	std::map<std::pair<double, int>, double> pearQuantile;
+	std::map<std::tuple<double, int, int>, double> fishQuantile;
+
 	std::pair<double, bool> standardDeviation{0, false}; // sample variance
 	std::pair<double, bool> mad{0, false}; // median absolute deviation
 	std::pair<double, bool> skew{0, false}; // sample asymetry coef
@@ -54,6 +59,11 @@ public:
 	double standardDeviation();
 	double turncatedMean(double degree);
 
+	double normQuantile(double);
+	double studQuantile(double, int);
+	double pearQuantile(double, int);
+	double fishQuantile(double, int, int);
+
 	std::list<double> walshAverages();
 
 	void clearStatistics();
@@ -64,6 +74,8 @@ public:
 	void standardize();
 	bool removeOutliers();
 	QString transform(QString expression);
+
+	static const QString exprtkFuncitons;
 
 private:
 	exprtk::symbol_table<double> transformationSymbolTable;
@@ -86,6 +98,11 @@ private:
 	void computeSkew();
 	void computeKurtosis();
 	void computeVariationCoef();
+
+	void computeNormQuantile(double);
+	void computeStudQuantile(double, int);
+	void computePearQuantile(double, int);
+	void computeFishQuantile(double, int, int);
 };
 
 
@@ -237,6 +254,46 @@ struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
 	DataVector* dv;
 	double operator()(const double& k) {
 		return dv->turncatedMean(k);
+	}
+};
+
+struct exprtkNormQuantile final : public exprtk::ifunction<double> {
+	exprtkNormQuantile(DataVector* vec) : exprtk::ifunction<double>(1)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& alpha) {
+		return dv->normQuantile(alpha);
+	}
+};
+
+struct exprtkStudQuantile final : public exprtk::ifunction<double> {
+	exprtkStudQuantile(DataVector* vec) : exprtk::ifunction<double>(2)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& alpha, const double& v) {
+		return dv->studQuantile(alpha, v);
+	}
+};
+
+struct exprtkPearQuantile final : public exprtk::ifunction<double> {
+	exprtkPearQuantile(DataVector* vec) : exprtk::ifunction<double>(2)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& alpha, const double& v) {
+		return dv->pearQuantile(alpha, v);
+	}
+};
+
+struct exprtkFishQuantile final : public exprtk::ifunction<double> {
+	exprtkFishQuantile(DataVector* vec) : exprtk::ifunction<double>(3)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& alpha, const double& v1, const double& v2) {
+		return dv->fishQuantile(alpha, v1, v2);
 	}
 };
 

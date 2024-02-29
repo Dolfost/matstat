@@ -121,6 +121,34 @@ double DataVector::variationCoef() {
 	return stat.variationCoef.first;
 }
 
+double DataVector::normQuantile(double alpha) {
+	if (stat.normQuantile.count(alpha) != 1)
+		computeNormQuantile(alpha);
+
+	return stat.normQuantile[alpha];
+}
+
+double DataVector::pearQuantile(double alpha, int v) {
+	if (stat.pearQuantile.count({alpha, v}) != 1)
+		computePearQuantile(alpha, v);
+
+	return stat.pearQuantile[{alpha, v}];
+}
+
+double DataVector::studQuantile(double alpha, int v) {
+	if (stat.studQuantile.count({alpha, v}) != 1)
+		computeStudQuantile(alpha, v);
+
+	return stat.studQuantile[{alpha, v}];
+}
+
+double DataVector::fishQuantile(double alpha, int v1, int v2) {
+	if (stat.fishQuantile.count({alpha, v1, v2}) != 1)
+		computeFishQuantile(alpha, v1, v2);
+
+	return stat.fishQuantile[{alpha, v1, v2}];
+}
+
 // statistic computers //
 void DataVector::computeMinMaxSize() {
 	stat.min.first = dataVector.front();
@@ -236,6 +264,11 @@ void DataVector::clearStatistics() {
 	stat.turncatedMean.clear();
 	stat.walshAverages.first.clear();
 
+	stat.normQuantile.clear();
+	stat.studQuantile.clear();
+	stat.pearQuantile.clear();
+	stat.fishQuantile.clear();
+
 	stat.standardDeviation.second = false;
 	stat.mad.second = false;
 	stat.skew.second = false;
@@ -271,6 +304,71 @@ QString DataVector::report() {
 		.arg(skew())
 		.arg(kurtosis())
 		.arg(variationCoef());
+}
+
+void DataVector::computeNormQuantile(double alpha) {
+	double* quantile = &stat.normQuantile[alpha];
+
+	const double 
+		c0 = 2.515517,
+		c1 = 0.802853,
+		c2 = 0.010328,
+		d1 = 1.432788,
+		d2 = 0.1892659,
+		d3 = 0.001308,
+		t = sqrt(log(1/(alpha*alpha))),
+		ea = 4.5e-4;
+
+	*quantile = t - (c0 + c1*t + c2*t*t) /
+		(1 + d1*t+d2*t*t + d3*t*t*t) + ea;
+}
+
+void DataVector::computeStudQuantile(double alpha, int v) {
+	double *quantile = &stat.studQuantile[{alpha, v}];
+
+	const double
+		nq = normQuantile(alpha),
+		nq2 = nq*nq,
+		nq3 = nq2*nq,
+		nq5 = nq3*nq2,
+		nq7 = nq5*nq2,
+		nq9 = nq7*nq2,
+		g1 = (nq3+ nq)/4,
+		g2 = (5*nq5 + 16*nq3 + 3*nq)/96,
+		g3 = (3*nq7 + 19*nq5 + 17*nq3 - 15*nq)/384,
+		g4 = (79*nq9 + 779*nq7 + 1482*nq5 - 1920*nq3 - 945*nq)/92160;
+
+	*quantile = nq + g1/v + g2/pow(v, 2) + g3/pow(v, 3) + g4/pow(v, 4);
+}
+
+void DataVector::computePearQuantile(double alpha, int v) {
+	double* quantile = &stat.pearQuantile[{alpha, v}];
+
+	*quantile = v*pow(1 - 2.0/(9*v) + normQuantile(alpha)*sqrt(2.0/(9*v)), 3);
+}
+
+void DataVector::computeFishQuantile(double alpha, int v1, int v2) {
+	double* quantile = &stat.fishQuantile[{alpha, v1, v2}];
+
+	const double
+		sigma = 1.0/v1 + 1.0/v2,
+		delta = 1.0/v1 - 1.0/v2,
+		sigmaSqrtBy2 = sqrt(sigma/2),
+		nq = normQuantile(alpha),
+		nq2 = nq*nq,
+		nq3 = nq2*nq,
+		nq4 = nq3*nq4,
+		nq5 = nq4*nq,
+		z = nq*sigmaSqrtBy2 - delta*(nq*nq+2)/6 + 
+			sigmaSqrtBy2*((sigma*(nq2 + 3*nq)/24 + 
+			(pow(delta, 2)*(nq3 +11*nq))/(72*sigma))) -
+			(delta*sigma*(nq4+9*nq2+8))/120 +
+			(pow(delta, 3)*(3*nq4 + 7*nq2 - 16))/(3240*sigma) +
+			sigmaSqrtBy2*(pow(sigma, 2)*(nq5 + 20*nq3 +15*nq)/1920 + 
+			pow(delta, 4)*(nq5 + 44*nq3 + 183*nq)/2880 + 
+			pow(delta, 4)*(9*nq5 - 284*nq3 - 1513*nq)/(155520 * pow(sigma, 2)));
+
+	*quantile = exp(2*z);
 }
 
 // Vector operations
@@ -424,5 +522,42 @@ void DataVector::setTransformationSymbolTable() {
 	transformationSymbolTable
 	.add_function("turncatedMean", *eTurncatedMean);
 
+	exprtkNormQuantile* eNormQuantile = new exprtkNormQuantile(this);
+	transformationSymbolTable
+	.add_function("normQuantile", *eNormQuantile);
+
+	exprtkStudQuantile* eStudQuantile = new exprtkStudQuantile(this);
+	transformationSymbolTable
+	.add_function("studQuantile", *eStudQuantile);
+
+	exprtkPearQuantile* ePearQuantile = new exprtkPearQuantile(this);
+	transformationSymbolTable
+	.add_function("pearQuantile", *ePearQuantile);
+
+	exprtkFishQuantile* eFishQuantile = new exprtkFishQuantile(this);
+	transformationSymbolTable
+	.add_function("fishQuantile", *eFishQuantile);
+
 	transformationSymbolTableReady = true;
 }
+
+const QString DataVector::exprtkFuncitons = 
+		"med() — медіана\n"
+		"xmin() — наймешний xᵢ\n"
+		"xmax() — найбільший xᵢ\n"
+		"size() — розмір вектора\n"
+		"variance() — варіабельніть\n"
+		"skew() — коефіцієнт асиметрії\n"
+		"wam() — медіана середніх Уолша\n"
+		"kurtosis() —  коеіцієнт ексцесу\n"
+		"mean() — математичне сподівання\n"
+		"mad() — абсолютне відхилення медіани\n"
+		"cv() — коефіцієнт варіації (Пірсона)\n"
+		"standartDeviation() — середньоквадратичне відхилення\n"
+		"turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
+		"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
+		"centralMoment(n) — центральний момент n-го порядку (n ∈ R)\n"
+		"normQuantile(a) — квантиль нормального розподілу\n"
+		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
+		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
+		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n";

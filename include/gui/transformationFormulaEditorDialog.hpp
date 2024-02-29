@@ -12,6 +12,8 @@
 #include <QLabel>
 #include <QGroupBox>
 
+#include "types.hpp"
+
 #include "Section.h"
 
 class TransformationFormulaEditorDialog : public QDialog {

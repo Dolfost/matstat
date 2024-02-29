@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 			this, &MainWindow::outliersRemovedHandler);
 
-	// open();
+	open();
 }
 
 void MainWindow::createCharts() {
@@ -123,9 +123,9 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::open() {
-	filepath = QFileDialog::getOpenFileName(this,
-		"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
-	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	// filepath = QFileDialog::getOpenFileName(this,
+	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 
 	vectorPicker->fileContents(filepath);
 	openVectorPicker();
