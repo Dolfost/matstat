@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     // "Open data", QDir::homePath(), "Text files (*.txt *.csv)");
 
 	DataSeries* ds = new DataSeries();
-	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/random_numbers2.txt");
+	Status ok = ds->readData("/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp1.txt");
 
 	qDebug() << ds->message();
 	qDebug() << "DATA SERIES:"; for (auto& i : ds->series()) {
