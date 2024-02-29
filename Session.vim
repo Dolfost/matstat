@@ -28,7 +28,7 @@ badd +4 include/types.hpp
 badd +14 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +15 include/gui/mainWindow.hpp
-badd +145 include/gui/mainWindow.cpp
+badd +127 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +408 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -37,9 +37,9 @@ badd +1 include/gui/transformationFormulaEditorDialog.cpp
 badd +54 include/gui/vectorPickerDialog.hpp
 badd +20 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
-badd +1 include/gui/vectorContainerWidget.cpp
+badd +120 include/gui/vectorContainerWidget.cpp
 badd +5 include/gui/vectorInfoDialog.hpp
-badd +1 include/gui/vectorInfoDialog.cpp
+badd +23 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
 argglobal
 %argdel
@@ -298,12 +298,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 12 - ((11 * winheight(0) + 16) / 32)
+let s:l = 129 - ((19 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 12
-normal! 016|
+keepjumps 129
+normal! 053|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
@@ -362,12 +362,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 21 - ((13 * winheight(0) + 16) / 32)
+let s:l = 23 - ((17 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 21
-normal! 028|
+keepjumps 23
+normal! 056|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorInfoDialog.hpp", ":p")) | buffer include/gui/vectorInfoDialog.hpp | else | edit include/gui/vectorInfoDialog.hpp | endif
@@ -425,12 +425,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 145 - ((8 * winheight(0) + 16) / 32)
+let s:l = 86 - ((16 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 145
-normal! 0
+keepjumps 86
+normal! 045|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -816,7 +816,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 1
 normal! 0
-tabnext 7
+tabnext 6
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
