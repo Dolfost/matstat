@@ -10,6 +10,9 @@ VectorInfoDialog::VectorInfoDialog(
 		dv = vec;
 		vecName = name;
 
+		VarSeries varSeries(dv);
+		varSeries.makeSeries();
+
 		this->setWindowTitle("Інформація про вектор " + vecName);
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
@@ -20,6 +23,7 @@ VectorInfoDialog::VectorInfoDialog(
 		QGroupBox* gropupBox = new QGroupBox("Точкові оцінки");
 		auto* lay = new QVBoxLayout;
 		QTableWidget* charTable = new QTableWidget;
+		charTable->verticalHeader()->hide();
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		charTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		lay->setContentsMargins(0,0,0,0);
@@ -35,6 +39,10 @@ VectorInfoDialog::VectorInfoDialog(
 		{"Математичне сподівання", "v₁", QString::number(dv->mean(), 'f', precision)},
 		{"Дисперсія", "μ₂", QString::number(dv->variance(), 'f', precision)},
 		{"Медіана", "MED", QString::number(dv->med(), 'f', precision)},
+		{"Розмір", "N", QString::number(dv->size())},
+		{"Найменше спостереження", "xₘᵢₙ", QString::number(dv->min(), 'f', precision)},
+		{"Найбільше спостереження", "xₘₐₓ", QString::number(dv->max(), 'f', precision)},
+		{"Кількість варіант", "r", QString::number(varSeries.variantsCount())},
 		{"Медіана серідніх Уолша", "WAM", QString::number(dv->walshAveragesMed(), 'f', precision)},
 		{"Середньоквадратичне відхилення", "СКВ", QString::number(dv->standardDeviation(), 'f', precision)},
 		{"Абсолютне відхилення медіани", "MAD", QString::number(dv->mad(), 'f', precision)},
@@ -79,13 +87,12 @@ VectorInfoDialog::VectorInfoDialog(
 			row++;
 		}
 
-
-
 		ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
 		lay = new QVBoxLayout;
 		lay->setContentsMargins(0,0,0,0);
 		section->setContentLayout(*lay);
 		charTable = new QTableWidget();
+		charTable->verticalHeader()->hide();
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		lay->addWidget(charTable);
 		mainLayout->addWidget(section);
@@ -100,15 +107,20 @@ VectorInfoDialog::VectorInfoDialog(
 		lay->addWidget(charTable);
 		mainLayout->addWidget(section);
 
+		QLabel* varSeriesLabel = new QLabel(QString(
+			"N = %1, r = %2, ΔN = %3")
+				.arg(dv->size())
+				.arg(varSeries.variantsCount())
+				.arg(dv->size() - varSeries.variantsCount()));
+		lay->addWidget(varSeriesLabel);
+
 		charTable->setRowCount(3);
+		charTable->setColumnCount(varSeries.variantsCount());
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		charTable->setColumnCount(dv->size());
 		charTable->setVerticalHeaderLabels(
 				{"Варіанта", "Кількість", "Відносна частота"}
 				);
 
-		VarSeries varSeries(dv);
-		varSeries.makeSeries();
 		col = 0;
 		for (auto const& [variant, value] : varSeries.series()) {
 			QTableWidgetItem* tableItem = new QTableWidgetItem(

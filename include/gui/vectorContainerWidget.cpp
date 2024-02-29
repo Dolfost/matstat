@@ -117,7 +117,7 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 
 	menu.addSeparator();
 
-	QAction* infoAction = menu.addAction("Інформація про вектор");
+	QAction* infoAction = menu.addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered,
 			this, &VectorContainerWidget::infoAction);
 

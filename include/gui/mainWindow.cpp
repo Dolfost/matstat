@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 			this, &MainWindow::outliersRemovedHandler);
 
-	open();
+	// open();
 }
 
 void MainWindow::createCharts() {
@@ -83,12 +83,12 @@ void MainWindow::createActions() {
 	QMenu *fileMenu = menuBar()->addMenu("Файл");
 	QMenu *viewMenu = menuBar()->addMenu("Вигляд");
 
-    QAction* openAct = new QAction("Відкрити...", this);
+    QAction* openAct = new QAction("Відкрити…", this);
     openAct->setShortcuts(QKeySequence::Open);
     connect(openAct, &QAction::triggered, this, &MainWindow::open);
     fileMenu->addAction(openAct);
 
-    QAction* openVectorPickerAct = new QAction("Менеджер векторів", this);
+    QAction* openVectorPickerAct = new QAction("Менеджер векторів…", this);
     connect(openVectorPickerAct, &QAction::triggered, this, &MainWindow::openVectorPicker);
     fileMenu->addAction(openVectorPickerAct);
 
@@ -123,9 +123,9 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::open() {
-	// filepath = QFileDialog::getOpenFileName(this,
-	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	filepath = QFileDialog::getOpenFileName(this,
+		"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
+	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 
 	vectorPicker->fileContents(filepath);
 	openVectorPicker();
