@@ -557,6 +557,10 @@ void DataVector::setTransformationSymbolTable() {
 	transformationSymbolTable
 	.add_function("fishQuantile", *eFishQuantile);
 
+	exprtkBeta* eBeta = new exprtkBeta(this);
+	transformationSymbolTable
+	.add_function("beta", *eBeta);
+
 	transformationSymbolTableReady = true;
 }
 
@@ -579,4 +583,5 @@ const QString DataVector::exprtkFuncitons =
 		"normQuantile(a) — квантиль нормального розподілу\n"
 		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
 		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
-		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n";
+		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
+		"beta(k) — бета коефіцієнт";

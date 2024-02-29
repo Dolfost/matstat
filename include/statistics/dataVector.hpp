@@ -301,4 +301,14 @@ struct exprtkFishQuantile final : public exprtk::ifunction<double> {
 	}
 };
 
+struct exprtkBeta final : public exprtk::ifunction<double> {
+	exprtkBeta(DataVector* vec) : exprtk::ifunction<double>(1)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(const double& k) {
+		return dv->beta(k);
+	}
+};
+
 #endif // !_DATA_VECTOR_HPP_
