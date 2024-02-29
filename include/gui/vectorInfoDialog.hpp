@@ -15,6 +15,8 @@
 #include <QTabWidget>
 #include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QList>
+#include <QStringList>
 
 #include "Section.h"
 

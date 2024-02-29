@@ -21,7 +21,7 @@ VectorInfoDialog::VectorInfoDialog(
 		mainLayout->setSpacing(8);
 
 		QGroupBox* gropupBox = new QGroupBox("Точкові оцінки");
-		auto* lay = new QVBoxLayout;
+		auto* lay = new QHBoxLayout;
 		QTableWidget* charTable = new QTableWidget;
 		charTable->verticalHeader()->hide();
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -70,7 +70,6 @@ VectorInfoDialog::VectorInfoDialog(
 			230, 80, 120
 		};
 
-
 		charTable->setRowCount(contents.length());
 		charTable->setColumnCount(contents[0].length());
 		charTable->setHorizontalHeaderLabels(headers);
@@ -88,31 +87,75 @@ VectorInfoDialog::VectorInfoDialog(
 		}
 
 		ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
-		lay = new QVBoxLayout;
+		lay = new QHBoxLayout;
 		lay->setContentsMargins(0,0,0,0);
-		section->setContentLayout(*lay);
 		charTable = new QTableWidget();
-		charTable->verticalHeader()->hide();
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+		charTable->setRowCount(4);
+		charTable->setColumnCount(2);
+		headers = {"Величина", "Значення"};
+		charTable->verticalHeader()->hide();
+		charTable->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+		charTable->setHorizontalHeaderLabels(headers);
 		lay->addWidget(charTable);
 		mainLayout->addWidget(section);
+		QList<QStringList> deviation = {
+			{"σ{v₁}", QString::number(dv->meanDeviation(), 'f', precision)},
+			{"σ{μ₂}", QString::number(dv->varianceDeviation(), 'f', precision)},
+			{"σ{A}", QString::number(dv->skewDeviation(), 'f', precision)},
+			{"σ{E}", QString::number(dv->kurtosisDeviation(), 'f', precision)},
+		};
+		charTable->setColumnWidth(0, 75);
+		charTable->setColumnWidth(1, 150);
+		for (row = 0; row < charTable->rowCount(); row++) {
+			for (col = 0; col < charTable->columnCount(); col++) {
+				QTableWidgetItem* tableItem = new QTableWidgetItem(deviation[row][col]);
+				charTable->setItem(row, col, tableItem);
+			}
+		}
+		section->setContentLayout(*lay);
+
+		charTable = new QTableWidget();
+		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+		charTable->setRowCount(4);
+		headers = {"Величина"};
+		charTable->verticalHeader()->hide();
+		charTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+		lay->addWidget(charTable);
+		QList<double> probs = {
+			0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65,
+			0.6, 0.55, 0.5, 0.45, 0.4
+		};
+
+		charTable->setColumnCount(probs.length()+1);
+		charTable->setColumnWidth(0, 70);
+
+		charTable->setItem(0, 0, new QTableWidgetItem("θv₁"));
+		charTable->setItem(1, 0, new QTableWidgetItem("θμ₂"));
+		charTable->setItem(2, 0, new QTableWidgetItem("θA"));
+		charTable->setItem(3, 0, new QTableWidgetItem("θE"));
+
+		for (col = 1 ; col < charTable->columnCount(); col++) {
+			headers.append("𝛼 = " + QString::number(probs[col-1]));
+			charTable->setItem(0, col, new QTableWidgetItem("fd"));
+			charTable->setItem(1, col, new QTableWidgetItem("df"));
+			charTable->setItem(2, col, new QTableWidgetItem("gjl"));
+			charTable->setItem(3, col, new QTableWidgetItem("glj;"));
+		}
+
+		charTable->setHorizontalHeaderLabels(headers);
+
+
 
 
 		section = new ui::Section("Варіаційний ряд", 100);
-		lay = new QVBoxLayout;
+		lay = new QHBoxLayout;
 		lay->setContentsMargins(0,0,0,0);
 		charTable = new QTableWidget;
 		charTable->setFixedHeight(120);
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		lay->addWidget(charTable);
 		mainLayout->addWidget(section);
-
-		QLabel* varSeriesLabel = new QLabel(QString(
-			"N = %1, r = %2, ΔN = %3")
-				.arg(dv->size())
-				.arg(varSeries.variantsCount())
-				.arg(dv->size() - varSeries.variantsCount()));
-		lay->addWidget(varSeriesLabel);
 
 		charTable->setRowCount(3);
 		charTable->setColumnCount(varSeries.variantsCount());
