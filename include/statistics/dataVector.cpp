@@ -265,11 +265,44 @@ double DataVector::beta(int k) {
 	return stat.beta.count(k);
 }
 
+double DataVector::meanDeviation() {
+	if (stat.meanDeviation.second == false)
+		computeMeanDeviation();
+
+	return stat.meanDeviation.first;
+}
+
+double DataVector::varianceDeviation() {
+	if (stat.varianceDeviation.second == false)
+		computeVarianceDeviation();
+
+	return stat.varianceDeviation.first;
+}
+
+double DataVector::skewDeviation() {
+	if (stat.skewDeiviation.second == false)
+		computeSkewDeviation();
+
+	return stat.skewDeiviation.first;
+}
+
+double DataVector::kurtosisDeviation() {
+	if (stat.kurtosisDeviation.second == false)
+		computeKurtosisDeviation();
+
+	return stat.kurtosisDeviation.first;
+}
+
 void DataVector::clearStatistics() {
 	stat.rawMoment.clear();
 	stat.centralMoment.clear();
 	stat.turncatedMean.clear();
 	stat.walshAverages.first.clear();
+
+	stat.meanDeviation.second = false;
+	stat.varianceDeviation.second = false;
+	stat.skewDeiviation.second = false;
+	stat.kurtosisDeviation.second = false;
 
 	stat.normQuantile.clear();
 	stat.studQuantile.clear();
@@ -388,6 +421,32 @@ void DataVector::computeBeta(int k) {
 			pow(centralMoment(2), k+3);
 	else
 		*betaValue = centralMoment(2*k+1)/pow(centralMoment(2), k+1);
+}
+
+void DataVector::computeMeanDeviation() {
+	stat.meanDeviation.first = standardDeviation()/sqrt(size());
+	stat.standardDeviation.second = true;
+}
+
+void DataVector::computeVarianceDeviation() {
+	stat.varianceDeviation.first = sqrt((1.0/size()) *
+			(centralMoment(4) - (size() - 3.0)/(size() - 1.0) * 
+			 pow(standardDeviation(), 4)));
+	stat.varianceDeviation.second = true;
+}
+
+void DataVector::computeSkewDeviation() {
+	stat.skewDeiviation.first = sqrt(
+			(1.0/(4*size()))*(4*beta(4) - 12*beta(3) -
+			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36));
+	stat.skewDeiviation.second = true;
+}
+
+void DataVector::computeKurtosisDeviation() {
+	stat.kurtosisDeviation.first = sqrt(
+			(1.0/size())*(beta(6) - 4*beta(4)*beta(2)-8*beta(3) +
+			4*pow(beta(2), 2) + 16*beta(2)*beta(1) + 16*beta(1)));
+	stat.kurtosisDeviation.second = true;
 }
 
 // Vector operations

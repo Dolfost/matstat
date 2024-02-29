@@ -19,7 +19,7 @@ struct Statistics {
 	std::map<std::pair<double, int>, double> pearQuantile;
 	std::map<std::tuple<double, int, int>, double> fishQuantile;
 
-	std::map<int, double> beta; // used for statistics calculation Deviation
+	std::map<int, double> beta; // used for statistics Deviation calculation 
 
 	std::pair<double, bool> standardDeviation{0, false}; // sample variance
 	std::pair<double, bool> mad{0, false}; // median absolute deviation
@@ -27,6 +27,12 @@ struct Statistics {
 	std::pair<double, bool> kurtosis{0, false}; // sample excess kurtosis
 	std::pair<double, bool> walshAveragesMed{0, false};
 	std::pair<double, bool> variationCoef{0, false}; // (Pearson) coefficient of variation
+
+	std::pair<double, bool> meanDeviation{0, false};
+	std::pair<double, bool> varianceDeviation{0, false};
+	std::pair<double, bool> kurtosisDeviation{0, false};
+	std::pair<double, bool> skewDeiviation{0, false};
+
 	std::pair<std::list<double>, bool> walshAverages{{}, false};
 
 	std::pair<double, bool> min{0, false};
@@ -55,6 +61,11 @@ public:
 	double kurtosis();
 	double walshAveragesMed();
 	double variationCoef();
+
+	double meanDeviation();
+	double varianceDeviation();
+	double skewDeviation();
+	double kurtosisDeviation();
 
 	double rawMoment(double degree);
 	double centralMoment(double degree);
@@ -102,6 +113,11 @@ private:
 	void computeKurtosis();
 	void computeVariationCoef();
 	void computeBeta(int);
+
+	void computeMeanDeviation();
+	void computeVarianceDeviation();
+	void computeSkewDeviation();
+	void computeKurtosisDeviation();
 
 	void computeNormQuantile(double);
 	void computeStudQuantile(double, int);
