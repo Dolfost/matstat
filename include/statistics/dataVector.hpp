@@ -19,6 +19,8 @@ struct Statistics {
 	std::map<std::pair<double, int>, double> pearQuantile;
 	std::map<std::tuple<double, int, int>, double> fishQuantile;
 
+	std::map<int, double> beta; // used for statistics calculation Deviation
+
 	std::pair<double, bool> standardDeviation{0, false}; // sample variance
 	std::pair<double, bool> mad{0, false}; // median absolute deviation
 	std::pair<double, bool> skew{0, false}; // sample asymetry coef
@@ -58,6 +60,7 @@ public:
 	double centralMoment(double degree);
 	double standardDeviation();
 	double turncatedMean(double degree);
+	double beta(int);
 
 	double normQuantile(double);
 	double studQuantile(double, int);
@@ -98,6 +101,7 @@ private:
 	void computeSkew();
 	void computeKurtosis();
 	void computeVariationCoef();
+	void computeBeta(int);
 
 	void computeNormQuantile(double);
 	void computeStudQuantile(double, int);

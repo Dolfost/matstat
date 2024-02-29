@@ -258,6 +258,13 @@ void DataVector::computeVariationCoef() {
 	stat.variationCoef.second = true;
 }
 
+double DataVector::beta(int k) {
+	if (stat.beta.count(k) != 1)
+		computeBeta(k);
+
+	return stat.beta.count(k);
+}
+
 void DataVector::clearStatistics() {
 	stat.rawMoment.clear();
 	stat.centralMoment.clear();
@@ -268,6 +275,8 @@ void DataVector::clearStatistics() {
 	stat.studQuantile.clear();
 	stat.pearQuantile.clear();
 	stat.fishQuantile.clear();
+
+	stat.beta.clear();
 
 	stat.standardDeviation.second = false;
 	stat.mad.second = false;
@@ -369,6 +378,16 @@ void DataVector::computeFishQuantile(double alpha, int v1, int v2) {
 			pow(delta, 4)*(9*nq5 - 284*nq3 - 1513*nq)/(155520 * pow(sigma, 2)));
 
 	*quantile = exp(2*z);
+}
+
+void DataVector::computeBeta(int k) {
+	double* betaValue = &stat.beta[k];
+
+	if (k%2)
+		*betaValue = centralMoment(3)*centralMoment(2*k+3) /
+			pow(centralMoment(2), k+3);
+	else
+		*betaValue = centralMoment(2*k+1)/pow(centralMoment(2), k+1);
 }
 
 // Vector operations
