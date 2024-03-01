@@ -115,9 +115,9 @@ double DataVector::kurtosis(Measure m) {
 		computeKurtosis();
 
 	if (m == Measure::Population)
-		return stat.kurtosis.second;
+		return stat.kurtosis.first.first;
 	if (m == Measure::Sample)
-		return stat.kurtosis.second;
+		return stat.kurtosis.first.second;
 	else
 	 return qQNaN();
 }
@@ -241,12 +241,12 @@ void DataVector::computeMad() {
 	double medValue = med();
 
 	for (auto const& i : dataVector) {
-		madVector.push_back(i - medValue);
+		madVector.push_back(abs(i - medValue));
 	}
 
 	DataVector madDataVector(madVector);
 
-	stat.mad.first = madDataVector.med();
+	stat.mad.first = 1.483*madDataVector.med();
 
 	stat.mad.second = true;
 }
