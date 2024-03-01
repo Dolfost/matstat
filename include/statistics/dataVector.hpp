@@ -10,8 +10,12 @@
 #include "exprtk.hpp"
 
 struct Statistics {
-	std::map<double, double> rawMoment;
-	std::map<double, double> centralMoment; // sample central moment
+	// population/sample statistics map has the format
+	// std::map<degree, std::pair<population, sample>>
+
+	std::map<double, double> rawMoment; 
+	// population/sample central moment
+	std::map<double, std::pair<double, double>> centralMoment;
 	std::map<size_t, double> turncatedMean;
 
 	std::map<double, double> normQuantile;
@@ -21,12 +25,18 @@ struct Statistics {
 
 	std::map<int, double> beta; // used for statistics Deviation calculation 
 
-	std::pair<double, bool> standardDeviation{0, false}; // sample variance
-	std::pair<double, bool> mad{0, false}; // median absolute deviation
-	std::pair<double, bool> skew{0, false}; // sample asymetry coef
-	std::pair<double, bool> kurtosis{0, false}; // sample excess kurtosis
-	std::pair<double, bool> walshAveragesMed{0, false};
-	std::pair<double, bool> variationCoef{0, false}; // (Pearson) coefficient of variation
+	std::pair<std::pair<double, double>, bool> 
+		standardDeviation{{0, 0}, false}; // population/sample variance
+	std::pair<double, bool>
+		mad{0, false}; // median absolute deviation
+	std::pair<std::pair<double, double>, bool>
+		skew{{0,0}, false}; // population/sample asymetry coef
+	std::pair<std::pair<double, double>, bool>
+		kurtosis{{0,0}, false}; // population/sample kurtosis excess coef
+	std::pair<double, bool>
+		walshAveragesMed{0, false}; // Walsh averages median
+	std::pair<std::pair<double, double>, bool> 
+		variationCoef{{0,0}, false}; // (Pearson) coefficient of variation
 
 	std::pair<double, bool> meanDeviation{0, false};
 	std::pair<double, bool> varianceDeviation{0, false};
@@ -52,15 +62,20 @@ public:
 	double min();
 	double max();
 
-	// Statistics
+	// Statistics measures
+	enum Measure {
+		Unknown,
+		Population,
+		Sample
+	};
 	double mean();
-	double variance();
+	double variance(Measure = Sample);
 	double med();
 	double mad();
-	double skew();
-	double kurtosis();
+	double skew(Measure = Sample);
+	double kurtosis(Measure = Sample);
 	double walshAveragesMed();
-	double variationCoef();
+	double variationCoef(Measure = Sample);
 
 	double meanDeviation();
 	double varianceDeviation();
@@ -68,8 +83,8 @@ public:
 	double kurtosisDeviation();
 
 	double rawMoment(double degree);
-	double centralMoment(double degree);
-	double standardDeviation();
+	double centralMoment(double degree, Measure = Sample);
+	double standardDeviation(Measure = Sample);
 	double turncatedMean(double degree);
 	double beta(int);
 
@@ -90,6 +105,7 @@ public:
 	QString transform(QString expression);
 
 	static const QString exprtkFuncitons;
+
 
 private:
 	exprtk::symbol_table<double> transformationSymbolTable;
@@ -112,7 +128,7 @@ private:
 	void computeSkew();
 	void computeKurtosis();
 	void computeVariationCoef();
-	void computeBeta(int);
+	void computeBeta(int k);
 
 	void computeMeanDeviation();
 	void computeVarianceDeviation();
@@ -177,43 +193,86 @@ struct exprtkSize final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkVariationCoef final : public exprtk::ifunction<double> {
-	exprtkVariationCoef(DataVector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkVariationCoef final : public exprtk::igeneric_function<double> {
+	exprtkVariationCoef(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()() {
-		return dv->variationCoef();
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[0]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+return dv->variationCoef(measure);
 	}
 };
 
-struct exprtkKurtosis final : public exprtk::ifunction<double> {
-	 exprtkKurtosis(DataVector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkKurtosis final : public exprtk::igeneric_function<double> {
+	exprtkKurtosis(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()() {
-		return dv->kurtosis();
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[0]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->kurtosis(measure);
 	}
 };
 
-struct exprtkSkew final : public exprtk::ifunction<double> {
-	 exprtkSkew(DataVector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkSkew final : public exprtk::igeneric_function<double> {
+	exprtkSkew(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()() {
-		return dv->skew();
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[0]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->skew(measure);
 	}
 };
 
-struct exprtkVariance final : public exprtk::ifunction<double> {
-	exprtkVariance(DataVector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkVariance final : public exprtk::igeneric_function<double> {
+	exprtkVariance(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()() {
-		return dv->variance();
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[0]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->variance(measure);
 	}
 };
 
@@ -237,13 +296,24 @@ struct exprtkXmax final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkStandartDeviation final : public exprtk::ifunction<double> {
-	exprtkStandartDeviation(DataVector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkStandartDeviation final : public exprtk::igeneric_function<double> {
+	exprtkStandartDeviation(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()() {
-		return dv->standardDeviation();
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[0]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->standardDeviation(measure);
 	}
 };
 
@@ -257,13 +327,25 @@ struct exprtkRawMoment final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkCentralMoment final : public exprtk::ifunction<double> {
-	exprtkCentralMoment(DataVector* vec) : exprtk::ifunction<double>(1)  {
+struct exprtkCentralMoment final : public exprtk::igeneric_function<double> {
+	exprtkCentralMoment(DataVector* vec) : exprtk::igeneric_function<double>("TS")  {
 		dv = vec;
 	}
 	DataVector* dv;
-	double operator()(const double& degree) {
-		return dv->centralMoment(degree);
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::scalar_view scalar_t;
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[1]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->centralMoment(scalar_t(parameters[0]), measure);
 	}
 };
 

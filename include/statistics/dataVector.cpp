@@ -1,4 +1,5 @@
 #include "dataVector.hpp"
+#include <QtCore/qnumeric.h>
 #include <cmath>
 
 DataVector::DataVector(const std::list<double>& input) {
@@ -43,14 +44,20 @@ double DataVector::mean() {
 	return rawMoment(1);
 }
 
-double DataVector::variance() {
-	return centralMoment(2);
+double DataVector::variance(Measure m) {
+	return centralMoment(2, m);
 }
 
-double DataVector::standardDeviation() {
+double DataVector::standardDeviation(Measure m) {
 	if (!stat.standardDeviation.second)
 		computeStandardDeviation();
-	return stat.standardDeviation.first;
+
+	if (m == Measure::Population)
+		return stat.standardDeviation.first.first;
+	if (m == Measure::Sample)
+		return stat.standardDeviation.first.second;
+	else
+		return qQNaN();
 }
 
 double DataVector::rawMoment(double degree) {
@@ -60,11 +67,16 @@ double DataVector::rawMoment(double degree) {
 	return stat.rawMoment[degree];
 }
 
-double DataVector::centralMoment(double degree) {
+double DataVector::centralMoment(double degree, Measure m) {
 	if (stat.centralMoment.count(degree) != 1)
 		computeCentralMoment(degree);
 
-	return stat.centralMoment[degree];
+	if (m == Measure::Population)
+		return stat.centralMoment[degree].first;
+	if (m == Measure::Sample)
+		return stat.centralMoment[degree].second;
+	else
+	 return qQNaN();
 }
 
 double DataVector::turncatedMean(double degree) {
@@ -86,18 +98,28 @@ double DataVector::mad() {
 	return stat.mad.first;
 }
 
-double DataVector::skew() {
+double DataVector::skew(Measure m) {
 	if (!stat.skew.second)
 		computeSkew();
 
-	return stat.skew.first;
+	if (m == Measure::Population)
+		return stat.skew.first.first;
+	if (m == Measure::Sample)
+		return stat.skew.first.second;
+	else
+	 return qQNaN();
 }
 
-double DataVector::kurtosis() {
+double DataVector::kurtosis(Measure m) {
 	if (!stat.kurtosis.second)
 		computeKurtosis();
 
-	return stat.kurtosis.first;
+	if (m == Measure::Population)
+		return stat.kurtosis.second;
+	if (m == Measure::Sample)
+		return stat.kurtosis.second;
+	else
+	 return qQNaN();
 }
 
 std::list<double> DataVector::walshAverages() {
@@ -114,11 +136,16 @@ double DataVector::walshAveragesMed() {
 	return stat.walshAveragesMed.first;
 }
 
-double DataVector::variationCoef() {
+double DataVector::variationCoef(Measure m) {
 	if (!stat.variationCoef.second)
 		computeVariationCoef();
 
-	return stat.variationCoef.first;
+	if (m == Measure::Population)
+		return stat.variationCoef.first.first;
+	if (m == Measure::Sample)
+		return stat.variationCoef.first.second;
+	else
+	 return qQNaN();
 }
 
 double DataVector::normQuantile(double alpha) {
@@ -171,18 +198,25 @@ void DataVector::computeRawMoment(double degree) {
 }
 
 void DataVector::computeCentralMoment(double degree) {
-	double* moment = &stat.centralMoment[degree];
+	double* populationMoment = &stat.centralMoment[degree].first;
+	double* sampleMoment = &stat.centralMoment[degree].second;
 	double meanValue = mean();
+	double moment = 0;
 
 	for (auto const& i : dataVector) {
-		*moment += std::pow(i - meanValue, degree);
+		moment += std::pow(i - meanValue, degree);
 	}
 
-	*moment /= (size() - 1);
+	*populationMoment = moment/size();
+	*sampleMoment = moment/(size()-1);
 }
 
 void DataVector::computeStandardDeviation() {
-	stat.standardDeviation.first = std::sqrt(centralMoment(2));
+	stat.standardDeviation.first.first = 
+		std::sqrt(centralMoment(2, Measure::Population));
+	stat.standardDeviation.first.second = 
+		std::sqrt(centralMoment(2, Measure::Sample));
+
 	stat.standardDeviation.second = true;
 }
 
@@ -213,22 +247,29 @@ void DataVector::computeMad() {
 	DataVector madDataVector(madVector);
 
 	stat.mad.first = madDataVector.med();
+
 	stat.mad.second = true;
 }
 
 void DataVector::computeSkew() {
 	double N = size();
+	stat.skew.first.first = 
+		centralMoment(3, Measure::Population) /
+		pow(standardDeviation(Measure::Population), 3);
+	stat.skew.first.second = (std::sqrt(N*(N-1))/(N-2)) * 
+		stat.skew.first.first;
 
-	stat.skew.first = (std::sqrt(N*(N-1))*centralMoment(3)) / 
-		(rawMoment(3)*(N-2));
 	stat.skew.second = true;
 }
 
 void DataVector::computeKurtosis() {
 	double N = size();
 
-	stat.kurtosis.first = ((std::pow(N, 2)-1)/((N-2)*(N-3))) * 
-		((centralMoment(4)/rawMoment(4) - 3) + 6/(N+1));
+	stat.kurtosis.first.first = centralMoment(4, Measure::Population) / 
+		pow(standardDeviation(Measure::Population), 4);
+	stat.kurtosis.first.second = ((std::pow(N, 2)-1)/((N-2)*(N-3))) * 
+		((stat.kurtosis.first.first - 3) + 6/(N+1));
+
 	stat.kurtosis.second = true;
 }
 
@@ -250,10 +291,13 @@ void DataVector::computeWalshAveragesMed() {
 }
 
 void DataVector::computeVariationCoef() {
-	if (mean() == 0)
-		stat.variationCoef.first = DBL_MAX;
-	else
-		stat.variationCoef.first = variance()/mean();
+	if (mean() == 0) {
+		stat.variationCoef.first.first = DBL_MAX;
+		stat.variationCoef.first.second = DBL_MAX;
+	} else {
+		stat.variationCoef.first.first = variance(Measure::Population)/mean();
+		stat.variationCoef.first.second = variance(Measure::Sample)/mean();
+	}
 
 	stat.variationCoef.second = true;
 }
@@ -417,10 +461,12 @@ void DataVector::computeBeta(int k) {
 	double* betaValue = &stat.beta[k];
 
 	if (k%2)
-		*betaValue = centralMoment(3)*centralMoment(2*k+3) /
-			pow(centralMoment(2), k+3);
+		*betaValue = centralMoment(3, Measure::Population) * 
+			centralMoment(2*k+3, Measure::Population) /
+			pow(centralMoment(2, Measure::Population), k+3);
 	else
-		*betaValue = centralMoment(2*k+1)/pow(centralMoment(2), k+1);
+		*betaValue = centralMoment(2*k+1, Measure::Population) /
+			pow(centralMoment(2, Measure::Population), k+1);
 }
 
 void DataVector::computeMeanDeviation() {
@@ -452,7 +498,7 @@ void DataVector::computeKurtosisDeviation() {
 // Vector operations
 void DataVector::standardize() {
 	double meanValue = mean();
-	double standardDeviationValue = standardDeviation();
+	double standardDeviationValue = standardDeviation(Measure::Sample);
 
 	for (auto& x : dataVector) {
 		x = (x - meanValue)/standardDeviationValue;
@@ -464,17 +510,17 @@ void DataVector::standardize() {
 bool DataVector::removeOutliers() {
 	double a, b,
 		   t1 = 2+0.2*log10(0.04*size()),
-		   t2 = sqrt(19*sqrt(kurtosis()+2)+1);
+		   t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
 
 	if (skew() < -0.2) {
-		a = mean() - t2*variance();
-		b = mean() + t1*variance();
+		a = mean() - t2*variance(Measure::Sample);
+		b = mean() + t1*variance(Measure::Sample);
 	} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
-		a = mean() - t1*variance();
-		b = mean() + t1*variance();
+		a = mean() - t1*variance(Measure::Sample);
+		b = mean() + t1*variance(Measure::Sample);
 	} else {
-		a = mean() - t1*variance();
-		b = mean() + t2*variance();
+		a = mean() - t1*variance(Measure::Sample);
+		b = mean() + t2*variance(Measure::Sample);
 	}
 
 	std::list<double> newVector;
@@ -624,23 +670,26 @@ void DataVector::setTransformationSymbolTable() {
 }
 
 const QString DataVector::exprtkFuncitons = 
+		"Аргументи:\n "
+		"m — тип оцінки. 'pop' – зсунена, 'spl' – не зсунена\n"
+		"Функції:\n"
 		"med() — медіана\n"
 		"xmin() — наймешний xᵢ\n"
 		"xmax() — найбільший xᵢ\n"
 		"size() — розмір вектора\n"
-		"variance() — варіабельніть\n"
-		"skew() — коефіцієнт асиметрії\n"
+		"variance(m) — варіабельніть\n"
+		"skew(m) — коефіцієнт асиметрії\n"
 		"wam() — медіана середніх Уолша\n"
-		"kurtosis() —  коеіцієнт ексцесу\n"
+		"kurtosis(m) —  коеіцієнт ексцесу\n"
 		"mean() — математичне сподівання\n"
 		"mad() — абсолютне відхилення медіани\n"
-		"cv() — коефіцієнт варіації (Пірсона)\n"
-		"standartDeviation() — середньоквадратичне відхилення\n"
+		"cv(m) — коефіцієнт варіації (Пірсона)\n"
+		"standartDeviation(m) — середньоквадратичне відхилення\n"
 		"turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
 		"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
-		"centralMoment(n) — центральний момент n-го порядку (n ∈ R)\n"
+		"centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
 		"normQuantile(a) — квантиль нормального розподілу\n"
 		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
 		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
 		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
-		"beta(k) — бета коефіцієнт";
+		"beta(k) — бета–коефіцієнт";

@@ -97,5 +97,5 @@ void TransformationFormulaEditorDialog::vectorDeletedHandler(int idx, DataVector
 }
 
 /* formula that uses all functions (for test purposes): 
- * x+med()+xmin()+xmax()+size()+variance()+skew()+wam()+kurtosis()+mean()+mad()+cv()+standartDeviation()+turncatedMean(0.25)+rawMoment(5)+centralMoment(5)
+x+med()+xmin()+xmax()+size()+variance()+skew()+wam()+kurtosis()+mean()+mad()+cv()+standartDeviation()+turncatedMean(0.25)+rawMoment(5)+centralMoment(5)
  */
