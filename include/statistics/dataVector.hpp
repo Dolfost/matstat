@@ -94,7 +94,7 @@ public:
 	double kurtosisDeviation();
 
 	double meanConfidence(double, Limit);
-	double variationConfidence(double, Limit);
+	double varianceConfidence(double, Limit);
 	double skewConfidence(double, Limit);
 	double kurtosisConfidence(double, Limit);
 
@@ -152,7 +152,7 @@ private:
 	void computeKurtosisDeviation();
 
 	void computeMeanConfidence(double);
-	void computeVariationConfidence(double);
+	void computeVarianceConfidence(double);
 	void computeSkewConfidence(double);
 	void computeKurtosisConfidence(double);
 

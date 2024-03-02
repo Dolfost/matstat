@@ -148,7 +148,7 @@ VectorInfoDialog::VectorInfoDialog(
 						QString::number(dv->meanConfidence(probs[prob], 
 								DataVector::Limit::Lower), 'f', precision)));
 			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
-							dv->variationConfidence(probs[prob],
+							dv->varianceConfidence(probs[prob],
 								DataVector::Limit::Lower), 'f', precision)));
 			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
 							dv->skewConfidence(probs[prob], 
@@ -158,15 +158,15 @@ VectorInfoDialog::VectorInfoDialog(
 								DataVector::Limit::Lower), 'f', precision)));
 		}
 
-		headers.append("θ зсунута");
+		headers.append("θ не зсунута");
 		charTable->setItem(0, col, new QTableWidgetItem(
 					QString::number(dv->mean(), 'f', precision)));
 		charTable->setItem(1, col, new QTableWidgetItem(
-					QString::number(dv->variance(DataVector::Measure::Population), 'f', precision)));
+					QString::number(dv->variance(DataVector::Measure::Sample), 'f', precision)));
 		charTable->setItem(2, col, new QTableWidgetItem(
-					QString::number(dv->skew(DataVector::Measure::Population), 'f', precision)));
+					QString::number(dv->skew(DataVector::Measure::Sample), 'f', precision)));
 		charTable->setItem(3, col, new QTableWidgetItem(
-					QString::number(dv->kurtosis(DataVector::Measure::Population), 'f', precision)));
+					QString::number(dv->kurtosis(DataVector::Measure::Sample), 'f', precision)));
 
 		for (int from = col; col < charTable->columnCount(); col++) {
 			int prob = probs.length() - (col - from) - 1;
@@ -175,7 +175,7 @@ VectorInfoDialog::VectorInfoDialog(
 						QString::number(dv->meanConfidence(probs[prob], 
 								DataVector::Limit::Upper), 'f', precision)));
 			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
-							dv->variationConfidence(probs[prob],
+							dv->varianceConfidence(probs[prob],
 								DataVector::Limit::Upper), 'f', precision)));
 			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
 							dv->skewConfidence(probs[prob], 

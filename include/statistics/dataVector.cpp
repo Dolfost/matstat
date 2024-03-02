@@ -195,9 +195,9 @@ double DataVector::meanConfidence(double alpha, Limit lim) {
 		return qQNaN();
 }
 
-double DataVector::variationConfidence(double alpha, Limit lim) {
+double DataVector::varianceConfidence(double alpha, Limit lim) {
 	if (stat.varianceConfidence.count(alpha) != 1)
-		computeVariationConfidence(alpha);
+		computeVarianceConfidence(alpha);
 
 	if (lim == Limit::Lower)
 		return stat.varianceConfidence[alpha].first;
@@ -513,13 +513,16 @@ void DataVector::computeFishQuantile(double alpha, int v1, int v2) {
 void DataVector::computeBeta(int k) {
 	double* betaValue = &stat.beta[k];
 
-	if (k%2)
-		*betaValue = centralMoment(3, Measure::Population) * 
-			centralMoment(2*k+3, Measure::Population) /
+	if (k%2) {
+		k /= 2; 
+		*betaValue = (centralMoment(3, Measure::Population) * 
+			centralMoment(2*k+3, Measure::Population)) /
 			pow(centralMoment(2, Measure::Population), k+3);
-	else
-		*betaValue = centralMoment(2*k+1, Measure::Population) /
+	} else {
+		k /= 2; 
+		*betaValue = centralMoment(2*k+2, Measure::Population) /
 			pow(centralMoment(2, Measure::Population), k+1);
+	}
 }
 
 void DataVector::computeMeanDeviation() {
@@ -535,16 +538,21 @@ void DataVector::computeVarianceDeviation() {
 }
 
 void DataVector::computeSkewDeviation() {
+	qDebug() << "WHY THIS HAPPENS" << 
+		(1.0/(4*size())) *(4*beta(4) - 12*beta(3) -
+			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36);
 	stat.skewDeiviation.first = sqrt(
-			(1.0/(4*size()))*(4*beta(4) - 12*beta(3) -
-			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36));
+			(4*beta(4) - 12*beta(3) -
+			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36) /
+			 (4*size()));
 	stat.skewDeiviation.second = true;
 }
 
 void DataVector::computeKurtosisDeviation() {
 	stat.kurtosisDeviation.first = sqrt(
 			(1.0/size())*(beta(6) - 4*beta(4)*beta(2)-8*beta(3) +
-			4*pow(beta(2), 2) + 16*beta(2)*beta(1) + 16*beta(1)));
+			4*pow(beta(2), 3) - pow(beta(2), 2) +
+			16*beta(2)*beta(1) + 16*beta(1)));
 	stat.kurtosisDeviation.second = true;
 }
 
@@ -565,7 +573,7 @@ void DataVector::computeMeanConfidence(double alpha) {
 	}
 }
 
-void DataVector::computeVariationConfidence(double alpha) {
+void DataVector::computeVarianceConfidence(double alpha) {
 	double* lower = &stat.varianceConfidence[alpha].first;
 	double* upper = &stat.varianceConfidence[alpha].second;
 
@@ -604,8 +612,8 @@ void DataVector::computeSkewConfidence(double alpha) {
 }
 
 void DataVector::computeKurtosisConfidence(double alpha) {
-	double* lower = &stat.skewConfidence[alpha].first;
-	double* upper = &stat.skewConfidence[alpha].second;
+	double* lower = &stat.kurtosisConfidence[alpha].first;
+	double* upper = &stat.kurtosisConfidence[alpha].second;
 
 	if (size() > 60) {
 		*lower = kurtosis(Measure::Population) -
