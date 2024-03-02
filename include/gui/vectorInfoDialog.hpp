@@ -20,24 +20,24 @@
 
 #include "Section.h"
 
+#include "guiTypes.hpp"
+
 class VectorInfoDialog : public QDialog {
 	Q_OBJECT
 public:
 	VectorInfoDialog(
-			DataVector*,
-			QString,
+			VectorEntry*,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 
 private:
 
-	DataVector* dv = nullptr;
+	VectorEntry* ve = nullptr;
 	int precision = 6;
-	QString vecName;
 
 public slots:
-	void vectorDeletedHandler(int, DataVector*);
+	void vectorDeletedHandler(int, VectorEntry*);
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_

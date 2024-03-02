@@ -28,32 +28,34 @@ VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(par
 			this, &VectorContainerWidget::makeActiveAction);
 }
 
-void VectorContainerWidget::appendVector(const std::list<double>* vec) {
-	appendNamedVector(vec);
-}
-
-void VectorContainerWidget::appendNamedVector(const std::list<double>* vec, QString name) {
+void VectorContainerWidget::appendVector(VectorEntry* vectorEntry) {
 	int row = this->rowCount();
 
 	this->insertRow(row);
-	DataVector* dv = new DataVector(*vec);
-	vectorList.push_back(dv);
+	vectorList.push_back(vectorEntry);
 
 	this->setColumnCount( 
-			(vec->size() + vectorInfoCells > this->columnCount() ?
-			 vec->size() + vectorInfoCells : this->columnCount()));
-	if (name.length() == 0)
-		name = "V" + QString::number(++vectorCount);
+			(vectorEntry->vector->size() + vectorInfoCells > this->columnCount() ?
+			vectorEntry->vector->size() + vectorInfoCells : this->columnCount()));
+	if (vectorEntry->name.length() == 0)
+		vectorEntry->name = "V" + QString::number(++vectorCount);
 
-	fillRow(row, dv, name);
+	fillRow(row, vectorEntry);
 }
 
-void VectorContainerWidget::fillRow(int row, DataVector* dv, QString name) {
+void VectorContainerWidget::appendList(const std::list<double>* vec, QString name) {
+	VectorEntry* vectorEntry = new VectorEntry;
+	vectorEntry->vector = new DataVector(*vec);
+	vectorEntry->name = name;
+	appendVector(vectorEntry);
+}
+
+void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 	QStringList info = {
-		name,
-		QString::number(dv->size()),
-		QString::number(dv->min()),
-		QString::number(dv->max()),
+		vectorEntry->name,
+		QString::number(vectorEntry->vector->size()),
+		QString::number(vectorEntry->vector->min()),
+		QString::number(vectorEntry->vector->max()),
 	};
 
 	for (int i = 0; i < vectorInfoCells; i++) {
@@ -62,9 +64,11 @@ void VectorContainerWidget::fillRow(int row, DataVector* dv, QString name) {
 		this->setItem(row, i, item);
 	}
 
-	auto list = dv->vector();
+	auto list = vectorEntry->vector->vector();
 	auto it = list.begin();
-	for (size_t col = vectorInfoCells; col < dv->size() + vectorInfoCells; col++) {
+	for (size_t col = vectorInfoCells;
+			col < vectorEntry->vector->size() + vectorInfoCells;
+			col++) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem();
 		tableItem->setText(QString::number(*it));
 		it++;
@@ -78,8 +82,8 @@ void VectorContainerWidget::fillRow(int row, DataVector* dv, QString name) {
 	}
 }
 
-void VectorContainerWidget::refillRow(int idx, DataVector* dv) {
-	fillRow(idx, dv, this->item(idx, 0)->text());
+void VectorContainerWidget::refillRow(int idx, VectorEntry* vectorEntry) {
+	fillRow(idx, vectorEntry);
 }
 
 void VectorContainerWidget::showContextMenu(const QPoint& pos) {
@@ -134,18 +138,18 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 }
 
 void VectorContainerWidget::makeActiveAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	emit vectorSelected(*it);
 }
 
 void VectorContainerWidget::deleteAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 
 	emit vectorDeleted(this->currentRow(), *it);
 
-	delete *it;
+	delete (*it)->vector;
 	vectorList.erase(it);
 
 	this->removeRow(this->currentRow());
@@ -153,9 +157,9 @@ void VectorContainerWidget::deleteAction() {
 
 void VectorContainerWidget::deleteAllAction() {
 	int i = 0;
-	for (auto vector : vectorList) {
-		emit vectorDeleted(i, vector);
-		delete vector;
+	for (auto vectorEntry : vectorList) {
+		emit vectorDeleted(i, vectorEntry);
+		delete vectorEntry->vector;
 		i++;
 	}
 	vectorList.clear();
@@ -164,45 +168,45 @@ void VectorContainerWidget::deleteAllAction() {
 }
 
 void VectorContainerWidget::standardizeAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector());
+	DataVector newVector((*it)->vector->vector());
 	newVector.standardize();
 
-	appendNamedVector(&newVector.vector(),
+	appendList(&newVector.vector(),
 			QString("S(%1)")
-			.arg(this->item(this->currentRow(), 0)->text()));
+			.arg((*it)->name));
 }
 
 void VectorContainerWidget::logAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector());
+	DataVector newVector((*it)->vector->vector());
 	newVector.transform("log(x)");
 
-	appendNamedVector(&newVector.vector(),
+	appendList(&newVector.vector(),
 			QString("LN(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
 void VectorContainerWidget::reverseAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector());
+	DataVector newVector((*it)->vector->vector());
 	newVector.transform("1/x");
 
-	appendNamedVector(&newVector.vector(),
+	appendList(&newVector.vector(),
 			QString("R(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
 
 void VectorContainerWidget::rightShiftAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector());
+	DataVector newVector((*it)->vector->vector());
 	newVector.transform("x+abs(xmin)+1");
 
-	appendNamedVector(&newVector.vector(),
+	appendList(&newVector.vector(),
 			QString("RS(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -211,18 +215,17 @@ void VectorContainerWidget::transformAction() {
 	auto it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	TransformationFormulaEditorDialog* tfe = 
-		new TransformationFormulaEditorDialog(&transformCount, *it,
-				this->item(this->currentRow(), 0)->text(), this);
+		new TransformationFormulaEditorDialog(*it, this);
 	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
-			this, &VectorContainerWidget::appendNamedVector);
+			this, &VectorContainerWidget::appendVector);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::removeOutliersAction() {
-	std::list<DataVector*>::iterator it = vectorList.begin();
+	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector());
+	DataVector newVector((*it)->vector->vector());
 	bool ok = newVector.removeOutliers();
 
 	emit outliersRemoved(ok);
@@ -230,7 +233,7 @@ void VectorContainerWidget::removeOutliersAction() {
 	if (!ok) // no entries removed
 		return;
 
-	appendNamedVector(&newVector.vector(),
+	appendList(&newVector.vector(),
 			QString("RMOUT(%1)")
 			.arg(this->item(this->currentRow(), 0)->text()));
 }
@@ -239,11 +242,7 @@ void VectorContainerWidget::infoAction() {
 	auto it = vectorList.begin();
 	std::advance(it, this->currentRow());
 	VectorInfoDialog* tfe = 
-		new VectorInfoDialog(
-					*it,
-					this->item(this->currentRow(), 0)->text(), 
-					this
-				);
+		new VectorInfoDialog(*it, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &VectorInfoDialog::vectorDeletedHandler);
 }

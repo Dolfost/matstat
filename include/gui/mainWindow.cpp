@@ -35,8 +35,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	updateGui();
 
-	connect(this->vectorPicker, &VectorPickerDialog::vectorSelected,
-			vectorContainer, &VectorContainerWidget::appendVector);
+	connect(this->vectorPicker, SIGNAL(vectorSelected(const std::list<double>*)),
+			vectorContainer, SLOT(appendList(const std::list<double>*)));
 	connect(this->vectorContainer, &VectorContainerWidget::vectorSelected,
 			this, &MainWindow::setActiveVector);
 
@@ -140,8 +140,8 @@ void MainWindow::updateGui() {
 	distributionChart->fill(classSeries);
 }
 
-void MainWindow::setActiveVector(DataVector* dv) {
-	dataVector->setVector(dv->vector());
+void MainWindow::setActiveVector(VectorEntry* vectorEntry) {
+	dataVector->setVector(vectorEntry->vector->vector());
 	updateGui();
 }
 

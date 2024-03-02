@@ -3,14 +3,12 @@
 
 
 TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
-		int* i, DataVector* vec, QString name,
+		VectorEntry* vectorEntry,
 		QWidget *parent, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
-		dv = vec;
-		transformIdx = i;
-		vecName = name;
+		ve = vectorEntry;
 
-		this->setWindowTitle("Менеджер трансформацій [" + vecName + "]");
+		this->setWindowTitle("Менеджер трансформацій " + ve->name);
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
 		this->setLayout(mainLayout);
@@ -47,7 +45,7 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		formulaLineEdit = new QLineEdit();
 		formulaLineEdit->setPlaceholderText("Введіть формулу для xᵢ відносно x...");
 
-		transformButton = new QPushButton("Трансформувати вектор " + vecName);
+		transformButton = new QPushButton("Трансформувати вектор " + ve->name);
 
 		statusTextEdit = new QTextEdit();
 		statusTextEdit->setReadOnly(true);
@@ -78,21 +76,23 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 }
 
 void TransformationFormulaEditorDialog::transform() {
-	DataVector tmpdv(*dv);
-	QString res = tmpdv.transform(formulaLineEdit->text());
+	VectorEntry* newVectorEntry = new VectorEntry;
+	newVectorEntry->vector = new DataVector(ve->vector->vector());
+	QString res = newVectorEntry->vector->transform(formulaLineEdit->text());
 	if (res.length() != 0) {
 		statusTextEdit->setText(res);
+		delete newVectorEntry;
 	} else {
-		QString name = "TR" + QString::number(++(*transformIdx)) + "(" + vecName + ")";
+		newVectorEntry->name = "TR(" + ve->name + ")";
 		statusTextEdit->setText("Вектор перетворено вдало.\n"
 				"Новий вектор було збережено у " +
-				name + "\n\nxᵢ = " + formulaLineEdit->text() + ".");
-		emit vectorTransformed(&tmpdv.vector(), name);
+				newVectorEntry->name + "\n\nxᵢ = " + formulaLineEdit->text() + ".");
+		emit vectorTransformed(newVectorEntry);
 	}
 }
 
-void TransformationFormulaEditorDialog::vectorDeletedHandler(int idx, DataVector* vec) {
-	if (dv == vec)
+void TransformationFormulaEditorDialog::vectorDeletedHandler(int idx, VectorEntry* vectorEntry) {
+	if (ve == vectorEntry)
 		this->close();
 }
 

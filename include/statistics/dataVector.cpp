@@ -122,6 +122,18 @@ double DataVector::kurtosis(Measure m) {
 	 return qQNaN();
 }
 
+double DataVector::counterKurtosis(Measure m) {
+	if (!stat.counterKurtosis.second)
+		computeCounterKurtosis();
+
+	if (m == Measure::Population)
+		return stat.counterKurtosis.first.first;
+	if (m == Measure::Sample)
+		return stat.counterKurtosis.first.second;
+	else
+	 return qQNaN();
+}
+
 std::list<double> DataVector::walshAverages() {
 	if (!stat.walshAverages.second)
 		computeWalshAverages();
@@ -146,6 +158,13 @@ double DataVector::variationCoef(Measure m) {
 		return stat.variationCoef.first.second;
 	else
 	 return qQNaN();
+}
+
+double DataVector::nonparametricVariationCoef() {
+	if (!stat.nonparametricVariationCoef.second)
+		computeNonparametricVariationCoef();
+
+	return stat.nonparametricVariationCoef.first;
 }
 
 double DataVector::beta(int k) {
@@ -355,6 +374,15 @@ void DataVector::computeKurtosis() {
 	stat.kurtosis.second = true;
 }
 
+void DataVector::computeCounterKurtosis() {
+	stat.counterKurtosis.first.first = 1.0/sqrt(
+			abs(kurtosis(Measure::Sample)));
+	stat.counterKurtosis.first.second = 1.0/sqrt(
+			abs(kurtosis(Measure::Population)));
+
+	stat.counterKurtosis.second = true;
+}
+
 void DataVector::computeWalshAverages() {
 	for (auto const& i : dataVector) {
 		for (auto const& j : dataVector) {
@@ -382,6 +410,11 @@ void DataVector::computeVariationCoef() {
 	}
 
 	stat.variationCoef.second = true;
+}
+
+void DataVector::computeNonparametricVariationCoef() {
+	stat.nonparametricVariationCoef.first = mad()/med();
+	stat.nonparametricVariationCoef.second = true;
 }
 
 
@@ -413,6 +446,8 @@ void DataVector::clearStatistics() {
 	stat.skew.second = false;
 	stat.kurtosis.second = false;
 	stat.variationCoef.second = false;
+	stat.counterKurtosis.second = false;
+	stat.nonparametricVariationCoef.second = false;
 	stat.walshAverages.second = false;
 	stat.walshAveragesMed.second = false;
 
@@ -801,6 +836,15 @@ void DataVector::setTransformationSymbolTable() {
 	transformationSymbolTable
 	.add_function("beta", *eBeta);
 
+	exprtkCounterKurtosis* eCounterKurtosis = new exprtkCounterKurtosis(this);
+	transformationSymbolTable
+	.add_function("counterKurtosis", *eCounterKurtosis);
+
+	exprtkNonparametricVariationCoef* eNonparametricVariationCoef =
+		new exprtkNonparametricVariationCoef(this);
+	transformationSymbolTable
+	.add_function("nonparametricCv", *eNonparametricVariationCoef);
+
 	transformationSymbolTableReady = true;
 }
 
@@ -816,9 +860,11 @@ const QString DataVector::exprtkFuncitons =
 		"skew(m) — коефіцієнт асиметрії\n"
 		"wam() — медіана середніх Уолша\n"
 		"kurtosis(m) —  коеіцієнт ексцесу\n"
+		"counterKurtosis(m) —  коеіцієнт контрексцесу\n"
 		"mean() — математичне сподівання\n"
 		"mad() — абсолютне відхилення медіани\n"
 		"cv(m) — коефіцієнт варіації (Пірсона)\n"
+		"counterCv(m) — непараметричний коефіцієнт варіації\n"
 		"standartDeviation(m) — середньоквадратичне відхилення\n"
 		"turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
 		"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"

@@ -11,23 +11,25 @@
 
 #include "./statistics/dataVector.hpp"
 
+#include "guiTypes.hpp"
+
+
 class VectorContainerWidget : public QTableWidget {
 	Q_OBJECT
 public:
 	VectorContainerWidget(QWidget* = nullptr);
 
 private:
-	std::list<DataVector*> vectorList;
+	std::list<VectorEntry*> vectorList;
 	const short vectorInfoCells = 4;
 	signed int vectorCount = 0;
-	signed int transformCount = 0;
 
-	void appendNamedVector(const std::list<double>*, QString = "");
 
 public slots:
-	void fillRow(int, DataVector*, QString = "");
-	void refillRow(int, DataVector*);
-	void appendVector(const std::list<double>*);
+	void appendList(const std::list<double>*, QString = "");
+	void appendVector(VectorEntry*);
+	void fillRow(int, VectorEntry*);
+	void refillRow(int, VectorEntry*);
 
 private slots:
 	void showContextMenu(const QPoint&);
@@ -44,8 +46,8 @@ private slots:
 	void infoAction();
 
 signals:
-	void vectorSelected(DataVector*);
-	void vectorDeleted(int, DataVector*);
+	void vectorSelected(VectorEntry*);
+	void vectorDeleted(int, VectorEntry*);
 	void outliersRemoved(bool);
 };
 

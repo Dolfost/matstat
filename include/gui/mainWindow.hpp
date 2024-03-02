@@ -14,6 +14,8 @@
 #include "vectorContainerWidget.hpp"
 #include "vectorPickerDialog.hpp"
 
+#include "guiTypes.hpp"
+
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 public:
@@ -46,7 +48,7 @@ private slots:
 	void openVectorPicker();
 	void updateGui();
 
-	void setActiveVector(DataVector*);
+	void setActiveVector(VectorEntry*);
 
 	// handlers
 	void outliersRemovedHandler(bool);

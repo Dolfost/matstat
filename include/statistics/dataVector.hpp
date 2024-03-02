@@ -35,10 +35,14 @@ struct Statistics {
 		skew{{0,0}, false}; // population/sample asymetry coef
 	std::pair<std::pair<double, double>, bool>
 		kurtosis{{0,0}, false}; // population/sample kurtosis excess coef
+	std::pair<std::pair<double, double>, bool>
+		counterKurtosis{{0,0}, false};
 	std::pair<double, bool>
 		walshAveragesMed{0, false}; // Walsh averages median
 	std::pair<std::pair<double, double>, bool> 
 		variationCoef{{0,0}, false}; // (Pearson) coefficient of variation
+	std::pair<double, bool> 
+		nonparametricVariationCoef{0, false};
 
 	std::pair<double, bool> meanDeviation{0, false};
 	std::pair<double, bool> varianceDeviation{0, false};
@@ -85,8 +89,10 @@ public:
 	double mad();
 	double skew(Measure = Sample);
 	double kurtosis(Measure = Sample);
+	double counterKurtosis(Measure = Sample);
 	double walshAveragesMed();
 	double variationCoef(Measure = Sample);
+	double nonparametricVariationCoef();
 
 	double meanDeviation();
 	double varianceDeviation();
@@ -143,7 +149,9 @@ private:
 	void computeMad();
 	void computeSkew();
 	void computeKurtosis();
+	void computeCounterKurtosis();
 	void computeVariationCoef();
+	void computeNonparametricVariationCoef();
 	void computeBeta(int k);
 
 	void computeMeanDeviation();
@@ -370,6 +378,27 @@ struct exprtkCentralMoment final : public exprtk::igeneric_function<double> {
 	}
 };
 
+struct exprtkCounterKurtosis final : public exprtk::igeneric_function<double> {
+	exprtkCounterKurtosis(DataVector* vec) : exprtk::igeneric_function<double>("S")  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()(parameter_list_t parameters) {
+		typedef typename generic_type::string_view string_t;
+		string_t m(parameters[1]);
+		std::string mstr = m.begin();
+		DataVector::Measure measure;
+		if (mstr == "pop")
+			measure = DataVector::Measure::Population;
+		else if (mstr == "spl")
+			measure = DataVector::Measure::Sample;
+		else 
+			measure = DataVector::Measure::Unknown;
+
+		return dv->counterKurtosis(measure);
+	}
+};
+
 struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
 	exprtkTurncatedMean(DataVector* vec) : exprtk::ifunction<double>(1)  {
 		dv = vec;
@@ -377,6 +406,16 @@ struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
 	DataVector* dv;
 	double operator()(const double& k) {
 		return dv->turncatedMean(k);
+	}
+};
+
+struct exprtkNonparametricVariationCoef final : public exprtk::ifunction<double> {
+	exprtkNonparametricVariationCoef(DataVector* vec) : exprtk::ifunction<double>(0)  {
+		dv = vec;
+	}
+	DataVector* dv;
+	double operator()() {
+		return dv->nonparametricVariationCoef();
 	}
 };
 

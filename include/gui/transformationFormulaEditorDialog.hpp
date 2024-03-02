@@ -16,33 +16,30 @@
 
 #include "Section.h"
 
+#include "guiTypes.hpp"
+
 class TransformationFormulaEditorDialog : public QDialog {
 	Q_OBJECT
 public:
-	TransformationFormulaEditorDialog(int*,
-			DataVector*,
-			QString,
+	TransformationFormulaEditorDialog(
+			VectorEntry*,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
-
-	bool transfromVector(const DataVector*);
 
 private:
 	QLineEdit* formulaLineEdit = nullptr;
 	QPushButton* transformButton = nullptr;
 	QTextEdit* statusTextEdit = nullptr;
 
-	DataVector* dv = nullptr;
-	int* transformIdx = nullptr;
-	QString vecName;
+	VectorEntry* ve = nullptr;
 
 public slots:
 	void transform();
-	void vectorDeletedHandler(int, DataVector*);
+	void vectorDeletedHandler(int, VectorEntry*);
 
 signals:
-	void vectorTransformed(const std::list<double>*, QString);
+	void vectorTransformed(VectorEntry*);
 };
 
 #endif // !_TRANSFORMATION_FORMULA_EDITOR_DIALOG_
