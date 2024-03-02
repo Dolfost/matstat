@@ -2,6 +2,8 @@
 #define _DATA_VECTOR_HPP_
 
 #include <QtCore/qstring.h>
+#include <QtGui/qeventpoint.h>
+#include <QtPrintSupport/qprinter.h>
 #include <cstddef>
 #include <list>
 #include <map>
@@ -43,6 +45,11 @@ struct Statistics {
 	std::pair<double, bool> kurtosisDeviation{0, false};
 	std::pair<double, bool> skewDeiviation{0, false};
 
+	std::map<double, std::pair<double, double>> meanConfidence;
+	std::map<double, std::pair<double, double>> varianceConfidence;
+	std::map<double, std::pair<double, double>> kurtosisConfidence;
+	std::map<double, std::pair<double, double>> skewConfidence;
+
 	std::pair<std::list<double>, bool> walshAverages{{}, false};
 
 	std::pair<double, bool> min{0, false};
@@ -68,6 +75,10 @@ public:
 		Population,
 		Sample
 	};
+	enum Limit {
+		Lower,
+		Upper 
+	};
 	double mean();
 	double variance(Measure = Sample);
 	double med();
@@ -81,6 +92,11 @@ public:
 	double varianceDeviation();
 	double skewDeviation();
 	double kurtosisDeviation();
+
+	double meanConfidence(double, Limit);
+	double variationConfidence(double, Limit);
+	double skewConfidence(double, Limit);
+	double kurtosisConfidence(double, Limit);
 
 	double rawMoment(double degree);
 	double centralMoment(double degree, Measure = Sample);
@@ -134,6 +150,11 @@ private:
 	void computeVarianceDeviation();
 	void computeSkewDeviation();
 	void computeKurtosisDeviation();
+
+	void computeMeanConfidence(double);
+	void computeVariationConfidence(double);
+	void computeSkewConfidence(double);
+	void computeKurtosisConfidence(double);
 
 	void computeNormQuantile(double);
 	void computeStudQuantile(double, int);

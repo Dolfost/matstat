@@ -130,11 +130,10 @@ VectorInfoDialog::VectorInfoDialog(
 		charTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		lay->addWidget(charTable);
 		QList<double> probs = {
-			0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65,
-			0.6, 0.55, 0.5, 0.45, 0.4
+			0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8
 		};
 
-		charTable->setColumnCount(probs.length()+1);
+		charTable->setColumnCount(probs.length()*2+2);
 		charTable->setColumnWidth(0, 70);
 
 		charTable->setItem(0, 0, new QTableWidgetItem("θv₁"));
@@ -142,18 +141,51 @@ VectorInfoDialog::VectorInfoDialog(
 		charTable->setItem(2, 0, new QTableWidgetItem("θA"));
 		charTable->setItem(3, 0, new QTableWidgetItem("θE"));
 
-		for (col = 1 ; col < charTable->columnCount(); col++) {
-			headers.append("𝛼 = " + QString::number(probs[col-1]));
-			charTable->setItem(0, col, new QTableWidgetItem("fd"));
-			charTable->setItem(1, col, new QTableWidgetItem("df"));
-			charTable->setItem(2, col, new QTableWidgetItem("gjl"));
-			charTable->setItem(3, col, new QTableWidgetItem("glj;"));
+		for (col = 1 ; col < probs.length()+1; col++) {
+			int prob = col - 1;
+			headers.append("INF 𝛼 = " + QString::number(probs[prob]));
+			charTable->setItem(0, col, new QTableWidgetItem(
+						QString::number(dv->meanConfidence(probs[prob], 
+								DataVector::Limit::Lower), 'f', precision)));
+			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
+							dv->variationConfidence(probs[prob],
+								DataVector::Limit::Lower), 'f', precision)));
+			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
+							dv->skewConfidence(probs[prob], 
+								DataVector::Limit::Lower), 'f', precision)));
+			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
+							dv->kurtosisConfidence(probs[prob],
+								DataVector::Limit::Lower), 'f', precision)));
+		}
+
+		headers.append("θ зсунута");
+		charTable->setItem(0, col, new QTableWidgetItem(
+					QString::number(dv->mean(), 'f', precision)));
+		charTable->setItem(1, col, new QTableWidgetItem(
+					QString::number(dv->variance(DataVector::Measure::Population), 'f', precision)));
+		charTable->setItem(2, col, new QTableWidgetItem(
+					QString::number(dv->skew(DataVector::Measure::Population), 'f', precision)));
+		charTable->setItem(3, col, new QTableWidgetItem(
+					QString::number(dv->kurtosis(DataVector::Measure::Population), 'f', precision)));
+
+		for (int from = col; col < charTable->columnCount(); col++) {
+			int prob = probs.length() - (col - from) - 1;
+			headers.append("SUP 𝛼 = " + QString::number(probs[prob]));
+			charTable->setItem(0, col, new QTableWidgetItem(
+						QString::number(dv->meanConfidence(probs[prob], 
+								DataVector::Limit::Upper), 'f', precision)));
+			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
+							dv->variationConfidence(probs[prob],
+								DataVector::Limit::Upper), 'f', precision)));
+			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
+							dv->skewConfidence(probs[prob], 
+								DataVector::Limit::Upper), 'f', precision)));
+			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
+							dv->kurtosisConfidence(probs[prob],
+								DataVector::Limit::Upper), 'f', precision)));
 		}
 
 		charTable->setHorizontalHeaderLabels(headers);
-
-
-
 
 		section = new ui::Section("Варіаційний ряд", 100);
 		lay = new QHBoxLayout;
