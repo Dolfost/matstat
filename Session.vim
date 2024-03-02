@@ -19,16 +19,16 @@ badd +61 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +28 include/statistics/dataSeries.hpp
 badd +412 include/statistics/dataVector.hpp
-badd +75 include/statistics/dataVector.cpp
+badd +201 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +28 include/statistics/classSeries.hpp
-badd +1 include/statistics/distributionChart.cpp
+badd +43 include/statistics/distributionChart.cpp
 badd +15 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +14 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +15 include/gui/mainWindow.hpp
-badd +128 include/gui/mainWindow.cpp
+badd +1 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +2286 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -39,7 +39,7 @@ badd +15 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
 badd +1 include/gui/vectorContainerWidget.cpp
 badd +41 include/gui/vectorInfoDialog.hpp
-badd +74 include/gui/vectorInfoDialog.cpp
+badd +69 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
 argglobal
 %argdel
@@ -171,12 +171,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 22 - ((9 * winheight(0) + 17) / 35)
+let s:l = 15 - ((11 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 22
-normal! 017|
+keepjumps 15
+normal! 030|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/densityChart.hpp", ":p")) | buffer include/statistics/densityChart.hpp | else | edit include/statistics/densityChart.hpp | endif
@@ -362,12 +362,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 74 - ((26 * winheight(0) + 17) / 35)
+let s:l = 69 - ((10 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 74
-normal! 029|
+keepjumps 69
+normal! 027|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorInfoDialog.hpp", ":p")) | buffer include/gui/vectorInfoDialog.hpp | else | edit include/gui/vectorInfoDialog.hpp | endif
@@ -639,12 +639,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 16 - ((0 * winheight(0) + 17) / 35)
+let s:l = 16 - ((8 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 16
-normal! 041|
+normal! 046|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 76 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 115 + 96) / 192)
@@ -680,11 +680,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 200 - ((17 * winheight(0) + 17) / 35)
+let s:l = 501 - ((19 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 200
+keepjumps 501
 normal! 018|
 wincmd w
 argglobal
@@ -703,12 +703,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 31 - ((17 * winheight(0) + 17) / 35)
+let s:l = 70 - ((8 * winheight(0) + 17) / 35)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 31
-normal! 049|
+keepjumps 70
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 77 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 114 + 96) / 192)
@@ -816,7 +816,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 21
 normal! 0
-tabnext 6
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

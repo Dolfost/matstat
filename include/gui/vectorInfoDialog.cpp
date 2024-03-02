@@ -2,6 +2,7 @@
 #include "gui/Section.h"
 #include <QtCore/qcontainerfwd.h>
 #include <locale>
+#include <numeric>
 
 VectorInfoDialog::VectorInfoDialog(
 		DataVector* vec, QString name,
@@ -58,14 +59,14 @@ VectorInfoDialog::VectorInfoDialog(
 
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Центральний момент " + QString::number(x) + " порядку",
-				"μ" + QString(QChar(0x2080+x-1)), QString::number(dv->centralMoment(x), 'f', precision),
+				"μ" + QString(QChar(0x2080+x)), QString::number(dv->centralMoment(x), 'f', precision),
 				QString::number(dv->centralMoment(x, DataVector::Measure::Population), 'f', precision)});
 		}
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Початковий момент " + QString::number(x) + " порядку",
-				"v" + QString(QChar(0x2080+x-1)), QString::number(dv->rawMoment(x), 'f', precision), "—"});
+				"v" + QString(QChar(0x2080+x)), QString::number(dv->rawMoment(x), 'f', precision), "—"});
 		}
-		for (double x = 0.05; x <= 0.5 ; x+=0.05) {
+		for (double x = 0.0; x <= 0.5 ; x+=0.05) {
 		contents.append({"Усічене середнє (α=" + QString::number(x) + ")", 
 				"X*", QString::number(dv->turncatedMean(x), 'f', precision), "—"});
 		}
@@ -74,6 +75,7 @@ VectorInfoDialog::VectorInfoDialog(
 			230, 80, 200, 200
 		};
 
+		charTable->setMinimumWidth(std::accumulate(columnWidths.begin(), columnWidths.end(), 20));
 		charTable->setRowCount(contents.length());
 		charTable->setColumnCount(contents[0].length());
 		charTable->setHorizontalHeaderLabels(headers);
@@ -99,6 +101,7 @@ VectorInfoDialog::VectorInfoDialog(
 		charTable->setColumnCount(2);
 		headers = {"Величина", "Значення"};
 		charTable->verticalHeader()->hide();
+		charTable->setFixedHeight(165);
 		charTable->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
 		charTable->setHorizontalHeaderLabels(headers);
 		lay->addWidget(charTable);
@@ -156,7 +159,7 @@ VectorInfoDialog::VectorInfoDialog(
 		lay = new QHBoxLayout;
 		lay->setContentsMargins(0,0,0,0);
 		charTable = new QTableWidget;
-		charTable->setFixedHeight(120);
+		charTable->setFixedHeight(130);
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		lay->addWidget(charTable);
 		mainLayout->addWidget(section);
