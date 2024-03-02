@@ -33,7 +33,7 @@ public:
 private:
 
 	DataVector* dv = nullptr;
-	int precision = 4;
+	int precision = 6;
 	QString vecName;
 
 public slots:

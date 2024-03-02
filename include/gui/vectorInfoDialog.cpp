@@ -59,7 +59,7 @@ VectorInfoDialog::VectorInfoDialog(
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Центральний момент " + QString::number(x) + " порядку",
 				"μ" + QString(QChar(0x2080+x-1)), QString::number(dv->centralMoment(x), 'f', precision),
-				QString::number(dv->centralMoment(DataVector::Measure::Population), 'f', precision)});
+				QString::number(dv->centralMoment(x, DataVector::Measure::Population), 'f', precision)});
 		}
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Початковий момент " + QString::number(x) + " порядку",
@@ -71,7 +71,7 @@ VectorInfoDialog::VectorInfoDialog(
 		}
 
 		QList<int> columnWidths = {
-			230, 80, 120, 120
+			230, 80, 200, 200
 		};
 
 		charTable->setRowCount(contents.length());
