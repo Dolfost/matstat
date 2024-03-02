@@ -149,7 +149,7 @@ void VectorContainerWidget::deleteAction() {
 
 	emit vectorDeleted(this->currentRow(), *it);
 
-	delete (*it)->vector;
+	delete *it;
 	vectorList.erase(it);
 
 	this->removeRow(this->currentRow());
@@ -159,7 +159,7 @@ void VectorContainerWidget::deleteAllAction() {
 	int i = 0;
 	for (auto vectorEntry : vectorList) {
 		emit vectorDeleted(i, vectorEntry);
-		delete vectorEntry->vector;
+		delete vectorEntry;
 		i++;
 	}
 	vectorList.clear();
