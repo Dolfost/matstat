@@ -17,9 +17,8 @@ public:
 	double maxIntervalProbability(); // max P_i
 	size_t maxIntervalCount(); // max N_i
 	size_t classCount(); // M
-	
-	
-	~ClassSeries();
+	size_t calculateClassCount();
+
 private:
 	// iterates as x = (h+0.5)i; i is the vector index
 	// has size of M for O(n) access speed

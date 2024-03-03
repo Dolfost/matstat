@@ -12,10 +12,7 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 	}
 
 	if (cc == 0) {
-		clsCnt = dataVector->size() >= 100 ?
-				cbrt(dataVector->size()) : sqrt(dataVector->size());
-		if (clsCnt % 2 == 0)
-			clsCnt--;
+		calculateClassCount();
 	} else {
 		clsCnt = cc;
 	}
@@ -54,6 +51,15 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 	}
 
 	return true;
+}
+
+size_t ClassSeries::calculateClassCount() {
+	clsCnt = dataVector->size() >= 100 ?
+			cbrt(dataVector->size()) : sqrt(dataVector->size());
+	if (clsCnt % 2 == 0)
+		clsCnt--;
+
+	return clsCnt;
 }
 
 const std::vector<std::pair<int, double>>& ClassSeries::series() {

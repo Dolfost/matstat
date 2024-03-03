@@ -19,31 +19,31 @@ badd +37 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
 badd +418 include/statistics/dataVector.hpp
-badd +1 include/statistics/dataVector.cpp
-badd +1 include/statistics/classSeries.cpp
-badd +25 include/statistics/classSeries.hpp
+badd +730 include/statistics/dataVector.cpp
+badd +10 include/statistics/classSeries.cpp
+badd +21 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
 badd +18 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
-badd +39 include/gui/mainWindow.hpp
-badd +84 include/gui/mainWindow.cpp
+badd +58 include/gui/mainWindow.hpp
+badd +187 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
-badd +2286 exprtk_cmake/readme.txt
+badd +12 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
 badd +29 include/gui/vectorContainerWidget.hpp
 badd +1 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
 badd +41 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
-badd +49 include/gui/vectorContainerWidget.cpp
+badd +50 include/gui/vectorContainerWidget.cpp
 badd +29 include/gui/vectorInfoDialog.hpp
-badd +1 include/gui/vectorInfoDialog.cpp
+badd +229 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
-badd +26 include/gui/vectorProcessorWidget.hpp
-badd +6 include/gui/vectorProcessorWidget.cpp
-badd +11 include/gui/guiTypes.hpp
+badd +9 include/gui/vectorProcessorWidget.hpp
+badd +35 include/gui/vectorProcessorWidget.cpp
+badd +18 include/gui/guiTypes.hpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -54,7 +54,72 @@ tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
 tabrewind
+edit include/statistics/dataVector.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+argglobal
+balt include/statistics/dataVector.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 730 - ((18 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 730
+normal! 05|
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/statistics/dataVector.hpp
+endif
+balt include/statistics/dataVector.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 418 - ((0 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 418
+normal! 047|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+tabnext
 edit main.cpp
 argglobal
 setlocal fdm=manual
@@ -67,7 +132,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 18) / 36)
+let s:l = 1 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -105,7 +170,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 229 - ((32 * winheight(0) + 18) / 36)
+let s:l = 229 - ((34 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -128,7 +193,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((22 * winheight(0) + 18) / 36)
+let s:l = 29 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -151,12 +216,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 51 - ((23 * winheight(0) + 13) / 27)
+let s:l = 28 - ((18 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 51
-normal! 0
+keepjumps 28
+normal! 031|
 tabnext
 edit include/gui/vectorProcessorWidget.cpp
 let s:save_splitbelow = &splitbelow
@@ -189,12 +254,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 6 - ((5 * winheight(0) + 13) / 27)
+let s:l = 35 - ((10 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 6
-normal! 0
+keepjumps 35
+normal! 037|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorProcessorWidget.hpp", ":p")) | buffer include/gui/vectorProcessorWidget.hpp | else | edit include/gui/vectorProcessorWidget.hpp | endif
@@ -212,11 +277,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 34 - ((22 * winheight(0) + 13) / 27)
+let s:l = 36 - ((21 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 34
+keepjumps 36
 normal! 021|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
@@ -253,11 +318,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 49 - ((16 * winheight(0) + 13) / 27)
+let s:l = 50 - ((23 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 49
+keepjumps 50
 normal! 029|
 wincmd w
 argglobal
@@ -276,7 +341,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((0 * winheight(0) + 13) / 27)
+let s:l = 29 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -285,6 +350,70 @@ normal! 015|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+tabnext
+edit include/statistics/classSeries.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
+argglobal
+balt include/statistics/classSeries.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 71 - ((25 * winheight(0) + 19) / 38)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 71
+normal! 0
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/statistics/classSeries.hpp", ":p")) | buffer include/statistics/classSeries.hpp | else | edit include/statistics/classSeries.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/statistics/classSeries.hpp
+endif
+balt include/statistics/classSeries.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 21 - ((20 * winheight(0) + 19) / 38)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 21
+normal! 0
+wincmd w
+exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
 tabnext
 edit include/gui/guiTypes.hpp
 argglobal
@@ -299,12 +428,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 11 - ((10 * winheight(0) + 13) / 27)
+let s:l = 6 - ((5 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 11
-normal! 040|
+keepjumps 6
+normal! 0
 tabnext
 edit include/gui/mainWindow.cpp
 let s:save_splitbelow = &splitbelow
@@ -336,12 +465,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 84 - ((16 * winheight(0) + 13) / 27)
+let s:l = 187 - ((37 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 84
-normal! 037|
+keepjumps 187
+normal! 023|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -359,12 +488,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 39 - ((16 * winheight(0) + 13) / 27)
+let s:l = 58 - ((21 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 39
-normal! 042|
+keepjumps 58
+normal! 038|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 112 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 79 + 96) / 192)
@@ -399,7 +528,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 83 - ((17 * winheight(0) + 18) / 36)
+let s:l = 83 - ((19 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -422,7 +551,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 42 - ((31 * winheight(0) + 18) / 36)
+let s:l = 42 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -431,71 +560,7 @@ normal! 016|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 119 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 72 + 96) / 192)
-tabnext
-edit include/statistics/dataVector.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
-argglobal
-balt include/statistics/dataVector.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 843 - ((25 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 843
-normal! 08|
-wincmd w
-argglobal
-if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
-if &buftype ==# 'terminal'
-  silent file include/statistics/dataVector.hpp
-endif
-balt include/statistics/dataVector.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 418 - ((28 * winheight(0) + 18) / 36)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 418
-normal! 047|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
-tabnext 7
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

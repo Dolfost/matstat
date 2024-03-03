@@ -37,11 +37,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	connect(this->vectorPicker, SIGNAL(vectorSelected(const std::list<double>*)),
 			vectorContainer, SLOT(appendList(const std::list<double>*)));
-	connect(this->vectorContainer, &VectorContainerWidget::vectorSelected,
-			this, &MainWindow::setActiveVector);
 
+	connect(this->vectorContainer, &VectorContainerWidget::vectorSelected,
+			vectorProcessor, &VectorProcessorWidget::appendVector);
 	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 			this, &MainWindow::outliersRemovedHandler);
+
+	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
+			this, &MainWindow::vectorProcessorDuplicateHandler);
 
 	open();
 }
@@ -177,3 +180,9 @@ void MainWindow::outliersRemovedHandler(bool ok) {
 	this->statusBar()->showMessage(msg, messageTime);
 }
 
+void MainWindow::vectorProcessorDuplicateHandler(VectorEntry* vectorEntry,
+		VectorProcessorWidget::Tab t) {
+	this->statusBar()->showMessage("Вектор '" + vectorEntry->name + 
+			"' вже доданий до вкладки " + vectorProcessor->tabName[t],
+			messageTime);
+}
