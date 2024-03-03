@@ -12,6 +12,7 @@
 #include "statistics/distributionChart.hpp"
 
 #include "vectorContainerWidget.hpp"
+#include "vectorProcessorWidget.hpp"
 #include "vectorPickerDialog.hpp"
 
 #include "guiTypes.hpp"
@@ -35,6 +36,7 @@ private:
 	DistributionChart* distributionChart = nullptr;
 
 	VectorContainerWidget* vectorContainer = nullptr;
+	VectorProcessorWidget* vectorProcessor = nullptr;
 	VectorPickerDialog* vectorPicker = nullptr;
 
 	void createCharts();

@@ -68,15 +68,30 @@ void MainWindow::createCharts() {
 }
 
 void MainWindow::createVectorContainers() {
-	QGroupBox* objectsBox = new QGroupBox("Обʼєкти даних");
-	QHBoxLayout* objectsLayout = new QHBoxLayout();
+	QWidget* containersWidget = new QWidget;
+	containersWidget->setLayout(new QHBoxLayout);
+	containersWidget->layout()->setContentsMargins(0,0,0,0);
+	containersWidget->layout()->setSpacing(0);
+
+	QGroupBox* objectsBox = new QGroupBox("Вектори даних");
+	QVBoxLayout* objectsLayout = new QVBoxLayout();
 	objectsLayout->setContentsMargins(0,0,0,0);
 	objectsBox->setLayout(objectsLayout);
-
 	vectorContainer = new VectorContainerWidget();
 	objectsLayout->addWidget(vectorContainer);
 
-	mainSplitter->addWidget(objectsBox);
+	QGroupBox* processorBox = new QGroupBox("Візуалізація векторів");
+	processorBox->setFixedWidth(280);
+	QVBoxLayout* processorLayout = new QVBoxLayout();
+	processorLayout->setContentsMargins(0,0,0,0);
+	processorBox->setLayout(processorLayout);
+	vectorProcessor = new VectorProcessorWidget();
+	processorLayout->addWidget(vectorProcessor);
+
+	containersWidget->layout()->addWidget(processorBox);
+	containersWidget->layout()->addWidget(objectsBox);
+
+	mainSplitter->addWidget(containersWidget);
 }
 
 void MainWindow::createActions() {
