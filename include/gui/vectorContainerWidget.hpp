@@ -47,7 +47,7 @@ private slots:
 
 signals:
 	void vectorSelected(VectorEntry*);
-	void vectorDeleted(int, VectorEntry*);
+	void vectorDeleted(VectorEntry*);
 	void outliersRemoved(bool);
 };
 

@@ -225,7 +225,7 @@ VectorInfoDialog::VectorInfoDialog(
 		this->show();
 }
 
-void VectorInfoDialog::vectorDeletedHandler(int idx, VectorEntry* vectorEntry) {
+void VectorInfoDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
 	if (vectorEntry == ve)
 		this->close();
 }

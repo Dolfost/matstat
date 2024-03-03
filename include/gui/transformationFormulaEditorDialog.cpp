@@ -91,7 +91,7 @@ void TransformationFormulaEditorDialog::transform() {
 	}
 }
 
-void TransformationFormulaEditorDialog::vectorDeletedHandler(int idx, VectorEntry* vectorEntry) {
+void TransformationFormulaEditorDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
 	if (ve == vectorEntry)
 		this->close();
 }

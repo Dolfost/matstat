@@ -13,37 +13,37 @@ if &shortmess =~ 'A'
 else
   set shortmess=aoO
 endif
-badd +13 main.cpp
+badd +1 main.cpp
 badd +1 include/statistics/plotBase.cpp
 badd +37 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
 badd +418 include/statistics/dataVector.hpp
-badd +730 include/statistics/dataVector.cpp
-badd +10 include/statistics/classSeries.cpp
+badd +1 include/statistics/dataVector.cpp
+badd +62 include/statistics/classSeries.cpp
 badd +21 include/statistics/classSeries.hpp
 badd +1 include/statistics/distributionChart.cpp
 badd +18 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
-badd +58 include/gui/mainWindow.hpp
-badd +187 include/gui/mainWindow.cpp
+badd +49 include/gui/mainWindow.hpp
+badd +151 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +12 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
-badd +29 include/gui/vectorContainerWidget.hpp
-badd +1 include/gui/transformationFormulaEditorDialog.cpp
+badd +50 include/gui/vectorContainerWidget.hpp
+badd +94 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
-badd +41 include/gui/transformationFormulaEditorDialog.hpp
+badd +39 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
-badd +50 include/gui/vectorContainerWidget.cpp
-badd +29 include/gui/vectorInfoDialog.hpp
-badd +229 include/gui/vectorInfoDialog.cpp
+badd +150 include/gui/vectorContainerWidget.cpp
+badd +40 include/gui/vectorInfoDialog.hpp
+badd +228 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
-badd +9 include/gui/vectorProcessorWidget.hpp
-badd +35 include/gui/vectorProcessorWidget.cpp
-badd +18 include/gui/guiTypes.hpp
+badd +73 include/gui/vectorProcessorWidget.hpp
+badd +188 include/gui/vectorProcessorWidget.cpp
+badd +6 include/gui/guiTypes.hpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -73,7 +73,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 38 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe '2resize ' . ((&lines * 38 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 argglobal
 balt include/statistics/dataVector.hpp
@@ -87,7 +89,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 730 - ((18 * winheight(0) + 19) / 39)
+let s:l = 730 - ((18 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -110,14 +112,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 418 - ((0 * winheight(0) + 19) / 39)
+let s:l = 418 - ((0 * winheight(0) + 19) / 38)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 418
 normal! 047|
 wincmd w
+exe '1resize ' . ((&lines * 38 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe '2resize ' . ((&lines * 38 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 tabnext
 edit main.cpp
@@ -132,7 +136,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 19) / 38)
+let s:l = 1 - ((0 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -156,7 +160,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 108 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 83 + 96) / 192)
 argglobal
 balt include/gui/vectorInfoDialog.hpp
@@ -170,12 +176,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 229 - ((34 * winheight(0) + 19) / 38)
+let s:l = 213 - ((13 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 229
-normal! 019|
+keepjumps 213
+normal! 044|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorInfoDialog.hpp", ":p")) | buffer include/gui/vectorInfoDialog.hpp | else | edit include/gui/vectorInfoDialog.hpp | endif
@@ -193,14 +199,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((0 * winheight(0) + 19) / 38)
+let s:l = 40 - ((26 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 29
-normal! 025|
+keepjumps 40
+normal! 030|
 wincmd w
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 108 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 83 + 96) / 192)
 tabnext
 edit include/gui/vectorPickerDialog.hpp
@@ -216,7 +224,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 28 - ((18 * winheight(0) + 19) / 38)
+let s:l = 28 - ((17 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -240,8 +248,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 1resize ' . ((&columns * 90 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 101 + 96) / 192)
 argglobal
 balt include/gui/vectorProcessorWidget.hpp
 setlocal fdm=manual
@@ -254,12 +262,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 35 - ((10 * winheight(0) + 19) / 38)
+let s:l = 188 - ((25 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 35
-normal! 037|
+keepjumps 188
+normal! 052|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorProcessorWidget.hpp", ":p")) | buffer include/gui/vectorProcessorWidget.hpp | else | edit include/gui/vectorProcessorWidget.hpp | endif
@@ -277,15 +285,15 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 36 - ((21 * winheight(0) + 19) / 38)
+let s:l = 71 - ((30 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 36
-normal! 021|
+keepjumps 71
+normal! 0
 wincmd w
-exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
+exe 'vert 1resize ' . ((&columns * 90 + 96) / 192)
+exe 'vert 2resize ' . ((&columns * 101 + 96) / 192)
 tabnext
 edit include/gui/vectorContainerWidget.cpp
 let s:save_splitbelow = &splitbelow
@@ -304,7 +312,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 argglobal
 balt include/gui/vectorContainerWidget.hpp
@@ -318,12 +328,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 50 - ((23 * winheight(0) + 19) / 38)
+let s:l = 150 - ((13 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 50
-normal! 029|
+keepjumps 150
+normal! 05|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
@@ -341,14 +351,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((0 * winheight(0) + 19) / 38)
+let s:l = 50 - ((26 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 29
-normal! 015|
+keepjumps 50
+normal! 023|
 wincmd w
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 tabnext
 edit include/statistics/classSeries.cpp
@@ -368,7 +380,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
 argglobal
 balt include/statistics/classSeries.hpp
@@ -382,11 +396,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 71 - ((25 * winheight(0) + 19) / 38)
+let s:l = 62 - ((14 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 71
+keepjumps 62
 normal! 0
 wincmd w
 argglobal
@@ -405,14 +419,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 21 - ((20 * winheight(0) + 19) / 38)
+let s:l = 21 - ((0 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 21
 normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
 tabnext
 edit include/gui/guiTypes.hpp
@@ -428,7 +444,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 6 - ((5 * winheight(0) + 19) / 39)
+let s:l = 6 - ((5 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -452,7 +468,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 112 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 79 + 96) / 192)
 argglobal
 setlocal fdm=manual
@@ -465,12 +483,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 187 - ((37 * winheight(0) + 19) / 39)
+let s:l = 151 - ((10 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 187
-normal! 023|
+keepjumps 151
+normal! 035|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -488,14 +506,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 58 - ((21 * winheight(0) + 19) / 39)
+let s:l = 31 - ((8 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 58
-normal! 038|
+keepjumps 31
+normal! 0
 wincmd w
+exe '1resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 112 + 96) / 192)
+exe '2resize ' . ((&lines * 36 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 79 + 96) / 192)
 tabnext
 edit include/gui/transformationFormulaEditorDialog.cpp
@@ -515,7 +535,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 29 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 119 + 96) / 192)
+exe '2resize ' . ((&lines * 29 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 72 + 96) / 192)
 argglobal
 setlocal fdm=manual
@@ -528,12 +550,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 83 - ((19 * winheight(0) + 19) / 39)
+let s:l = 94 - ((20 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 83
-normal! 0
+keepjumps 94
+normal! 061|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/transformationFormulaEditorDialog.hpp", ":p")) | buffer include/gui/transformationFormulaEditorDialog.hpp | else | edit include/gui/transformationFormulaEditorDialog.hpp | endif
@@ -551,14 +573,16 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 42 - ((0 * winheight(0) + 19) / 39)
+let s:l = 39 - ((8 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 42
-normal! 016|
+keepjumps 39
+normal! 031|
 wincmd w
+exe '1resize ' . ((&lines * 29 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 119 + 96) / 192)
+exe '2resize ' . ((&lines * 29 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 72 + 96) / 192)
 tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'

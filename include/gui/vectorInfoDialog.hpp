@@ -37,7 +37,7 @@ private:
 	int precision = 6;
 
 public slots:
-	void vectorDeletedHandler(int, VectorEntry*);
+	void vectorDeletedHandler(VectorEntry*);
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_

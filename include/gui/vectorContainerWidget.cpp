@@ -147,7 +147,7 @@ void VectorContainerWidget::deleteAction() {
 	std::list<VectorEntry*>::iterator it = vectorList.begin();
 	std::advance(it, this->currentRow());
 
-	emit vectorDeleted(this->currentRow(), *it);
+	emit vectorDeleted(*it);
 
 	delete *it;
 	vectorList.erase(it);
@@ -156,11 +156,9 @@ void VectorContainerWidget::deleteAction() {
 }
 
 void VectorContainerWidget::deleteAllAction() {
-	int i = 0;
 	for (auto vectorEntry : vectorList) {
-		emit vectorDeleted(i, vectorEntry);
+		emit vectorDeleted(vectorEntry);
 		delete vectorEntry;
-		i++;
 	}
 	vectorList.clear();
 	this->clearContents();

@@ -36,7 +36,7 @@ private:
 
 public slots:
 	void transform();
-	void vectorDeletedHandler(int, VectorEntry*);
+	void vectorDeletedHandler(VectorEntry*);
 
 signals:
 	void vectorTransformed(VectorEntry*);

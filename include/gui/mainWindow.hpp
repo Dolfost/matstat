@@ -28,9 +28,6 @@ private:
 	QSplitter* mainSplitter = nullptr;
 
 	QString filepath;
-	DataSeries* dataSeries = nullptr;
-	DataVector* dataVector = nullptr;
-	ClassSeries* classSeries = nullptr;
 
 	DensityChart* densityChart = nullptr;
 	DistributionChart* distributionChart = nullptr;
@@ -48,9 +45,8 @@ private:
 private slots:
 	void open();
 	void openVectorPicker();
-	void updateGui();
 
-	void setActiveVector(VectorEntry*);
+	void plot2D(VectorEntry*, int);
 
 	// handlers
 	void outliersRemovedHandler(bool);

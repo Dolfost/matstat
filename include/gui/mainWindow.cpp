@@ -1,7 +1,6 @@
 #include "mainWindow.hpp"
 
 #include "gui/vectorContainerWidget.hpp"
-#include "statistics/dataSeries.hpp"
 #include "statistics/dataVector.hpp"
 #include "statistics/classSeries.hpp"
 
@@ -33,8 +32,6 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	this->resize(900,800);
 
-	updateGui();
-
 	connect(this->vectorPicker, SIGNAL(vectorSelected(const std::list<double>*)),
 			vectorContainer, SLOT(appendList(const std::list<double>*)));
 
@@ -42,9 +39,13 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			vectorProcessor, &VectorProcessorWidget::appendVector);
 	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 			this, &MainWindow::outliersRemovedHandler);
+	connect(this->vectorContainer, &VectorContainerWidget::vectorDeleted,
+			this->vectorProcessor, &VectorProcessorWidget::vectorDeletedHandler);
 
 	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
 			this, &MainWindow::vectorProcessorDuplicateHandler);
+	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
+			this, &MainWindow::plot2D);
 
 	open();
 }
@@ -64,10 +65,6 @@ void MainWindow::createCharts() {
 
 	mainSplitter->addWidget(chartWidget);
 	mainSplitter->setSizes({600, 300});
-
-	dataSeries = new DataSeries();
-	dataVector = new DataVector({});
-	classSeries = new ClassSeries(dataVector);
 }
 
 void MainWindow::createVectorContainers() {
@@ -147,20 +144,14 @@ void MainWindow::open() {
 
 	vectorPicker->fileContents(filepath);
 	openVectorPicker();
-
-	updateGui();
 }
 
-void MainWindow::updateGui() {
-	classSeries->makeSeries();
+void MainWindow::plot2D(VectorEntry* ve, int clscnt) {
+	ClassSeries classSeries(ve->vector);;
+	classSeries.makeSeries(clscnt);
 
-	densityChart->fill(classSeries);
-	distributionChart->fill(classSeries);
-}
-
-void MainWindow::setActiveVector(VectorEntry* vectorEntry) {
-	dataVector->setVector(vectorEntry->vector->vector());
-	updateGui();
+	densityChart->fill(&classSeries);
+	distributionChart->fill(&classSeries);
 }
 
 void MainWindow::openVectorPicker() {
