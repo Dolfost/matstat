@@ -1,4 +1,5 @@
 #include "vectorProcessorWidget.hpp"
+#include <QtCore/qlogging.h>
 #include <QtCore/qnamespace.h>
 #include <QtWidgets/qboxlayout.h>
 #include <QtWidgets/qtreewidget.h>
@@ -38,7 +39,6 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 
 	QTreeWidgetItem *item = new QTreeWidgetItem(ItemType::Vector);
 	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPlay));
-    item->setText(0, vectorEntry->name);
 	item->setData(0, Qt::DisplayRole, QVariant(vectorEntry->name));
 	item->setData(0, Qt::UserRole, QVariant::fromValue(vectorEntry));
 
@@ -67,21 +67,21 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 	}
 }
 
-void VectorProcessorWidget::append1dVector(QTreeWidgetItem* item,
+void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
 	ClassSeries cs(vectorEntry->vector);
 	QTreeWidgetItem* classItem = new QTreeWidgetItem(ItemType::ClassCount2D);
 	classItem->setIcon(0, this->style()->standardIcon(QStyle::SP_BrowserReload));
 	classItem->setData(0, Qt::EditRole,
 				QVariant(int(cs.calculateClassCount())));
-	item->addChild(classItem);
+	parent->addChild(classItem);
 }
 
-void VectorProcessorWidget::append2dVector(QTreeWidgetItem* item,
+void VectorProcessorWidget::append2dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
 }
 
-void VectorProcessorWidget::append3dVector(QTreeWidgetItem* item,
+void VectorProcessorWidget::append3dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
 }
 
@@ -96,17 +96,17 @@ void VectorProcessorWidget::showContextMenu(const QPoint& point) {
 	switch (item->type()) {
 		case ItemType::Vector:
 			{
-				QAction* makeActiveAction = menu.addAction("Зробити активним");
-				connect(makeActiveAction, &QAction::triggered,
-						this, &VectorProcessorWidget::makeActiveAction);
-				QAction* removeAction = menu.addAction("Прибрати");
-				connect(removeAction, &QAction::triggered,
-						this, &VectorProcessorWidget::removeAction);
-				break;
+				if (item->data(0, Qt::UserRole+1).value<bool>()) {
+					QAction* deactivateAction = menu.addAction("Прибрати з активних");
+					connect(deactivateAction, &QAction::triggered,
+							this, &VectorProcessorWidget::deactivateAction);
+				} else {
+					QAction* makeActiveAction = menu.addAction("Додати до активних");
+					connect(makeActiveAction, &QAction::triggered,
+							this, &VectorProcessorWidget::makeActiveAction);
+				}
 			}
-
-		default:
-			return;
+			break;
 	}
 
 
@@ -120,6 +120,17 @@ void VectorProcessorWidget::showContextMenu(const QPoint& point) {
 		case Tab::FourD:
 			fourDContextMenu(&menu);
 			break;
+	}
+
+	switch (item->type()) {
+		case ItemType::Vector:
+			{
+				menu.addSeparator();
+				QAction* removeAction = menu.addAction("Прибрати з списку");
+				connect(removeAction, &QAction::triggered,
+						this, &VectorProcessorWidget::removeAction);
+				break;
+			}
 	}
 
 	menu.exec(mapToGlobal(point));
@@ -136,61 +147,58 @@ void VectorProcessorWidget::fourDContextMenu(QMenu* menu) {
 
 }
 
+void VectorProcessorWidget::deactivateAction() {
+	int idx = this->currentIndex();
+	QTreeWidgetItem* item = tree[idx]->currentItem();
+
+	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPlay));
+	item->setData(0, Qt::UserRole+1, QVariant(false));
+	auto it = std::find(activeItems[idx].begin(), activeItems[idx].end(), item);
+	if (it != activeItems[idx].end())
+		activeItems[idx].erase(it);
+}
+
 void VectorProcessorWidget::makeActiveAction() {
 	int idx = this->currentIndex();
 	QTreeWidgetItem* item = tree[idx]->currentItem();
-	VectorEntry* ve = item->data(0, Qt::UserRole).value<VectorEntry*>();
 	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPause));
+	item->setData(0, Qt::UserRole+1, QVariant(true));
 
+	if (activeItems[idx].length() == idx + 1) {
+		activeItems[idx].first()->setIcon(0, this->style()->
+				standardIcon(QStyle::SP_MediaPlay));
+		activeItems[idx].first()->setData(0, Qt::UserRole+1, QVariant(false));
+		activeItems[idx].pop_front();
+	}
+
+	activeItems[idx].push_back(item);
 	switch (idx) {
 		case Tab::TwoD:
-			if (twoDActiveItems.length() == 1) {
-				twoDActiveItems[0]->setIcon(0, this->style()->
-						standardIcon(QStyle::SP_MediaPlay));
-				twoDActiveItems.pop_front();
-			}
 
-			twoDActiveItems.push_back(item);
-
-			emit twoDVectorsSelected(twoDActiveItems[0]->
+			emit twoDVectorsSelected(activeItems[idx].front()->
 					data(0, Qt::UserRole).value<VectorEntry*>(), 
 					item->child(2)->data(0, Qt::EditRole).value<int>());
 			break;
 
 		case Tab::ThreeD:
-			if (threeDActiveItems.length() == 2) {
-				threeDActiveItems[0]->setIcon(0, this->style()->
-						standardIcon(QStyle::SP_MediaPlay));
-				threeDActiveItems.pop_front();
-			}
-			threeDActiveItems.push_back(item);
-
-			if (threeDActiveItems.length() == 2)
+			if (activeItems[idx].length() == 2)
 				emit threeDVectorsSelected(
-					threeDActiveItems[0]->data(0, Qt::UserRole).
+					activeItems[idx][0]->data(0, Qt::UserRole).
 					value<VectorEntry*>(), 
-					threeDActiveItems[1]->data(0, Qt::UserRole).
+					activeItems[idx][1]->data(0, Qt::UserRole).
 					value<VectorEntry*>()
 					);
 						
 			break;
 
 		case Tab::FourD:
-			if (fourDActiveItems.length() == 3) {
-				fourDActiveItems[0]->setIcon(0, this->style()->
-						standardIcon(QStyle::SP_MediaPlay));
-				fourDActiveItems.pop_front();
-			}
-
-			fourDActiveItems.push_back(item);
-
-			if (fourDActiveItems.length() == 3)
+			if (activeItems[idx].length() == 3)
 				emit fourDVectorsSelected(
-					fourDActiveItems[0]->data(0, Qt::UserRole).
+					activeItems[idx][0]->data(0, Qt::UserRole).
 					value<VectorEntry*>(), 
-					fourDActiveItems[1]->data(0, Qt::UserRole).
+					activeItems[idx][1]->data(0, Qt::UserRole).
 					value<VectorEntry*>(),
-					fourDActiveItems[2]->data(0, Qt::UserRole).
+					activeItems[idx][2]->data(0, Qt::UserRole).
 					value<VectorEntry*>()
 					);
 			break;
@@ -210,8 +218,11 @@ void VectorProcessorWidget::removeAction() {
 }
 
 void VectorProcessorWidget::vectorDeletedHandler(VectorEntry* ve) {
+	qDebug() << "ve" << ve;
 	for (int idx = 0; idx < Tab::Count; idx++) {
-		for (int i = 0; tree[idx]->topLevelItemCount(); i++) {
+		qDebug() << "tree" << tree[idx];
+		for (int i = 0; i < tree[idx]->topLevelItemCount(); i++) {
+			qDebug() << "item" << tree[idx]->topLevelItem(i);
 			if (tree[idx]->topLevelItem(i)->data(0, Qt::UserRole).
 					value<VectorEntry*>() == ve) {
 				removeVectorEntryFromLists(tree[idx]->topLevelItem(i));
@@ -224,15 +235,11 @@ void VectorProcessorWidget::vectorDeletedHandler(VectorEntry* ve) {
 }
 
 void VectorProcessorWidget::removeVectorEntryFromLists(QTreeWidgetItem* item) {
-	auto it = std::find(twoDActiveItems.begin(), twoDActiveItems.end(), item);
-	if (it != twoDActiveItems.end())
-		twoDActiveItems.erase(it);
-
-	it = std::find(threeDActiveItems.begin(), threeDActiveItems.end(), item);
-	if (it != threeDActiveItems.end())
-		threeDActiveItems.erase(it);
-
-	it = std::find(fourDActiveItems.begin(), fourDActiveItems.end(), item);
-	if (it != fourDActiveItems.end())
-		fourDActiveItems.erase(it);
+	for (auto& lst : activeItems) {
+		for (auto& i : lst) {
+			auto it = std::find(lst.begin(), lst.end(), item);
+			if (it != lst.end())
+				lst.erase(it);
+		}	
+	}
 }

@@ -46,12 +46,10 @@ private:
 	void threeDContextMenu(QMenu*);
 	void fourDContextMenu(QMenu*);
 
-	QList<QTreeWidgetItem*> twoDActiveItems;
-	QList<QTreeWidgetItem*> threeDActiveItems;
-	QList<QTreeWidgetItem*> fourDActiveItems;
+	QList<QTreeWidgetItem*> activeItems[3];
 public slots:
-	void vectorDeletedHandler(VectorEntry*);
 	void appendVector(VectorEntry*);
+	void vectorDeletedHandler(VectorEntry*);
 
 private slots:
 	void append1dVector(QTreeWidgetItem* item, VectorEntry*);
@@ -61,6 +59,7 @@ private slots:
 	void showContextMenu(const QPoint&);
 
 	void makeActiveAction();
+	void deactivateAction();
 	void removeAction();
 	void removeVectorEntryFromLists(QTreeWidgetItem*);
 
