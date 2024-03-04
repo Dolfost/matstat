@@ -37,7 +37,7 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 	}
 
 	QTreeWidgetItem *item = new QTreeWidgetItem(ItemType::Vector);
-	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaStop));
+	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPlay));
     item->setText(0, vectorEntry->name);
 	item->setData(0, Qt::DisplayRole, QVariant(vectorEntry->name));
 	item->setData(0, Qt::UserRole, QVariant::fromValue(vectorEntry));
@@ -140,20 +140,59 @@ void VectorProcessorWidget::makeActiveAction() {
 	int idx = this->currentIndex();
 	QTreeWidgetItem* item = tree[idx]->currentItem();
 	VectorEntry* ve = item->data(0, Qt::UserRole).value<VectorEntry*>();
+	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPause));
 
 	switch (idx) {
 		case Tab::TwoD:
-			twoDActiveItems.clear();
+			if (twoDActiveItems.length() == 1) {
+				twoDActiveItems[0]->setIcon(0, this->style()->
+						standardIcon(QStyle::SP_MediaPlay));
+				twoDActiveItems.pop_front();
+			}
+
 			twoDActiveItems.push_back(item);
+
 			emit twoDVectorsSelected(twoDActiveItems[0]->
 					data(0, Qt::UserRole).value<VectorEntry*>(), 
 					item->child(2)->data(0, Qt::EditRole).value<int>());
 			break;
 
 		case Tab::ThreeD:
+			if (threeDActiveItems.length() == 2) {
+				threeDActiveItems[0]->setIcon(0, this->style()->
+						standardIcon(QStyle::SP_MediaPlay));
+				threeDActiveItems.pop_front();
+			}
+			threeDActiveItems.push_back(item);
+
+			if (threeDActiveItems.length() == 2)
+				emit threeDVectorsSelected(
+					threeDActiveItems[0]->data(0, Qt::UserRole).
+					value<VectorEntry*>(), 
+					threeDActiveItems[1]->data(0, Qt::UserRole).
+					value<VectorEntry*>()
+					);
+						
 			break;
 
 		case Tab::FourD:
+			if (fourDActiveItems.length() == 3) {
+				fourDActiveItems[0]->setIcon(0, this->style()->
+						standardIcon(QStyle::SP_MediaPlay));
+				fourDActiveItems.pop_front();
+			}
+
+			fourDActiveItems.push_back(item);
+
+			if (fourDActiveItems.length() == 3)
+				emit fourDVectorsSelected(
+					fourDActiveItems[0]->data(0, Qt::UserRole).
+					value<VectorEntry*>(), 
+					fourDActiveItems[1]->data(0, Qt::UserRole).
+					value<VectorEntry*>(),
+					fourDActiveItems[2]->data(0, Qt::UserRole).
+					value<VectorEntry*>()
+					);
 			break;
 
 		default:
