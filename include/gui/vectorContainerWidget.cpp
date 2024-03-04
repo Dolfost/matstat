@@ -93,7 +93,7 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	QMenu menu;
 
 
-	QAction* setActiveAction = menu.addAction("Зробити активним");
+	QAction* setActiveAction = menu.addAction("Додати до процессора");
 	connect(setActiveAction, &QAction::triggered,
 			this, &VectorContainerWidget::makeActiveAction);
 

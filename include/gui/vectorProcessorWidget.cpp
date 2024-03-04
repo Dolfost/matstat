@@ -14,8 +14,11 @@ VectorProcessorWidget::VectorProcessorWidget(
 
 		tree[i]->setHeaderLabel("Вектор");
 		tree[i]->setContextMenuPolicy(Qt::CustomContextMenu);
+		tree[i]->setExpandsOnDoubleClick(false);
 		connect(tree[i], &QTreeWidget::customContextMenuRequested,
 				this, &VectorProcessorWidget::showContextMenu);
+		connect(tree[i], &QTreeWidget::itemDoubleClicked,
+				this, &VectorProcessorWidget::itemDoubleClikedHandler);
 
 		tab[i]->setLayout(new QVBoxLayout);
 		tab[i]->layout()->addWidget(tree[i]);
@@ -23,7 +26,6 @@ VectorProcessorWidget::VectorProcessorWidget(
 
 		this->addTab(tab[i], tabName[i]);
 	}
-
 }
 
 void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
@@ -40,6 +42,7 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 	QTreeWidgetItem *item = new QTreeWidgetItem(ItemType::Vector);
 	item->setIcon(0, this->style()->standardIcon(QStyle::SP_MediaPlay));
 	item->setData(0, Qt::DisplayRole, QVariant(vectorEntry->name));
+	item->setData(0, Qt::ToolTipRole, QVariant(vectorEntry->name));
 	item->setData(0, Qt::UserRole, QVariant::fromValue(vectorEntry));
 
     tree[idx]->addTopLevelItem(item);
@@ -47,11 +50,13 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 	QTreeWidgetItem* maxItem = new QTreeWidgetItem(ItemType::Max2D);
 	maxItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowUp));
 	maxItem->setData(0, Qt::DisplayRole, vectorEntry->vector->max());
+	maxItem->setData(0, Qt::ToolTipRole, vectorEntry->vector->max());
 	item->addChild(maxItem);
 
 	QTreeWidgetItem* minItem = new QTreeWidgetItem(ItemType::Min2D);
 	minItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowDown));
 	minItem->setData(0, Qt::DisplayRole, vectorEntry->vector->min());
+	minItem->setData(0, Qt::ToolTipRole, vectorEntry->vector->min());
 	item->addChild(minItem);
 
 	switch (idx) {
@@ -218,11 +223,8 @@ void VectorProcessorWidget::removeAction() {
 }
 
 void VectorProcessorWidget::vectorDeletedHandler(VectorEntry* ve) {
-	qDebug() << "ve" << ve;
 	for (int idx = 0; idx < Tab::Count; idx++) {
-		qDebug() << "tree" << tree[idx];
 		for (int i = 0; i < tree[idx]->topLevelItemCount(); i++) {
-			qDebug() << "item" << tree[idx]->topLevelItem(i);
 			if (tree[idx]->topLevelItem(i)->data(0, Qt::UserRole).
 					value<VectorEntry*>() == ve) {
 				removeVectorEntryFromLists(tree[idx]->topLevelItem(i));
@@ -241,5 +243,16 @@ void VectorProcessorWidget::removeVectorEntryFromLists(QTreeWidgetItem* item) {
 			if (it != lst.end())
 				lst.erase(it);
 		}	
+	}
+}
+
+void VectorProcessorWidget::itemDoubleClikedHandler(
+		QTreeWidgetItem* item, int col) {
+	switch (item->type()) {
+		case ItemType::Vector:
+			if (item->data(0, Qt::UserRole+1).value<bool>())
+				deactivateAction();
+			else
+				makeActiveAction();
 	}
 }

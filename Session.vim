@@ -28,7 +28,7 @@ badd +21 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +1 include/statistics/densityChart.cpp
 badd +49 include/gui/mainWindow.hpp
-badd +150 include/gui/mainWindow.cpp
+badd +1 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +12 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -37,12 +37,12 @@ badd +1 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
 badd +39 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
-badd +1 include/gui/vectorContainerWidget.cpp
+badd +96 include/gui/vectorContainerWidget.cpp
 badd +40 include/gui/vectorInfoDialog.hpp
 badd +1 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
-badd +52 include/gui/vectorProcessorWidget.hpp
-badd +226 include/gui/vectorProcessorWidget.cpp
+badd +66 include/gui/vectorProcessorWidget.hpp
+badd +228 include/gui/vectorProcessorWidget.cpp
 badd +6 include/gui/guiTypes.hpp
 argglobal
 %argdel
@@ -136,7 +136,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 21) / 42)
+let s:l = 1 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -224,7 +224,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 28 - ((17 * winheight(0) + 18) / 36)
+let s:l = 28 - ((18 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -262,12 +262,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 226 - ((21 * winheight(0) + 19) / 39)
+let s:l = 228 - ((10 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 226
-normal! 013|
+keepjumps 228
+normal! 046|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorProcessorWidget.hpp", ":p")) | buffer include/gui/vectorProcessorWidget.hpp | else | edit include/gui/vectorProcessorWidget.hpp | endif
@@ -285,12 +285,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 52 - ((10 * winheight(0) + 19) / 39)
+let s:l = 66 - ((24 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 52
-normal! 0
+keepjumps 66
+normal! 09|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 95 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 96 + 96) / 192)
@@ -312,9 +312,7 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 32 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe '2resize ' . ((&lines * 32 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 argglobal
 balt include/gui/vectorContainerWidget.hpp
@@ -328,12 +326,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 150 - ((11 * winheight(0) + 16) / 32)
+let s:l = 1 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 150
-normal! 024|
+keepjumps 1
+normal! 036|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
@@ -351,16 +349,14 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 50 - ((0 * winheight(0) + 16) / 32)
+let s:l = 50 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 50
 normal! 023|
 wincmd w
-exe '1resize ' . ((&lines * 32 + 21) / 42)
 exe 'vert 1resize ' . ((&columns * 96 + 96) / 192)
-exe '2resize ' . ((&lines * 32 + 21) / 42)
 exe 'vert 2resize ' . ((&columns * 95 + 96) / 192)
 tabnext
 edit include/statistics/classSeries.cpp
@@ -444,7 +440,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 6 - ((5 * winheight(0) + 17) / 35)
+let s:l = 6 - ((5 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -483,12 +479,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 43 - ((19 * winheight(0) + 16) / 32)
+let s:l = 137 - ((8 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 43
-normal! 066|
+keepjumps 137
+normal! 020|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif

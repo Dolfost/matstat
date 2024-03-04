@@ -63,6 +63,8 @@ private slots:
 	void removeAction();
 	void removeVectorEntryFromLists(QTreeWidgetItem*);
 
+	void itemDoubleClikedHandler(QTreeWidgetItem*, int);
+
 signals:
 	void tabSelected(Tab);
 	void duplicateAdded(VectorEntry*, Tab);
