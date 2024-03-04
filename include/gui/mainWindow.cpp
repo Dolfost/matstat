@@ -146,12 +146,9 @@ void MainWindow::open() {
 	openVectorPicker();
 }
 
-void MainWindow::plot2D(VectorEntry* ve, int clscnt) {
-	ClassSeries classSeries(ve->vector);;
-	classSeries.makeSeries(clscnt);
-
-	densityChart->fill(&classSeries);
-	distributionChart->fill(&classSeries);
+void MainWindow::plot2D(VectorEntry* ve, ClassSeries* cs) {
+	densityChart->fill(cs);
+	distributionChart->fill(cs);
 }
 
 void MainWindow::openVectorPicker() {

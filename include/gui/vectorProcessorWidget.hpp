@@ -64,16 +64,26 @@ private slots:
 	void removeVectorEntryFromLists(QTreeWidgetItem*);
 
 	void itemDoubleClikedHandler(QTreeWidgetItem*, int);
+	void itemChangedHandler(QTreeWidgetItem*, int);
+
+	void emit2D(QTreeWidgetItem* item);
+	void emit3D(QTreeWidgetItem* item);
+	void emit4D(QTreeWidgetItem* item);
 
 signals:
 	void tabSelected(Tab);
 	void duplicateAdded(VectorEntry*, Tab);
 	void vectorRemoved(VectorEntry*);
 
-	void twoDVectorsSelected(VectorEntry*, int);
+	void twoDVectorsSelected(VectorEntry*, ClassSeries*);
 	void threeDVectorsSelected(VectorEntry*, VectorEntry*);
 	void fourDVectorsSelected(VectorEntry*, VectorEntry*, VectorEntry*);
+};
 
+class ClassTreeItem : public QTreeWidgetItem {
+public:
+	ClassTreeItem(int);
+	~ClassTreeItem();
 };
 
 #endif // !_VECTOR_PROCESSOR_WIDGET_HPP_

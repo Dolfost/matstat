@@ -7,18 +7,20 @@
 VectorProcessorWidget::VectorProcessorWidget(
 		QWidget* parent) : QTabWidget(parent) {
 	this->setDocumentMode(true);
-
-	for (int i = 0; i < Tab::Count; i++) {
+for (int i = 0; i < Tab::Count; i++) {
 		tree[i] = new QTreeWidget;
 		tab[i] = new QWidget;
 
 		tree[i]->setHeaderLabel("Вектор");
 		tree[i]->setContextMenuPolicy(Qt::CustomContextMenu);
 		tree[i]->setExpandsOnDoubleClick(false);
+		tree[i]->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		connect(tree[i], &QTreeWidget::customContextMenuRequested,
 				this, &VectorProcessorWidget::showContextMenu);
 		connect(tree[i], &QTreeWidget::itemDoubleClicked,
 				this, &VectorProcessorWidget::itemDoubleClikedHandler);
+		connect(tree[i], &QTreeWidget::itemChanged,
+				this, &VectorProcessorWidget::itemChangedHandler);
 
 		tab[i]->setLayout(new QVBoxLayout);
 		tab[i]->layout()->addWidget(tree[i]);
@@ -74,11 +76,12 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 
 void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
-	ClassSeries cs(vectorEntry->vector);
-	QTreeWidgetItem* classItem = new QTreeWidgetItem(ItemType::ClassCount2D);
+	ClassSeries* cs = new ClassSeries(vectorEntry->vector);
+	ClassTreeItem* classItem = new ClassTreeItem(ItemType::ClassCount2D);
 	classItem->setIcon(0, this->style()->standardIcon(QStyle::SP_BrowserReload));
 	classItem->setData(0, Qt::EditRole,
-				QVariant(int(cs.calculateClassCount())));
+				QVariant(int(cs->calculateClassCount())));
+	classItem->setData(0, Qt::UserRole, QVariant::fromValue(cs));
 	parent->addChild(classItem);
 }
 
@@ -179,36 +182,17 @@ void VectorProcessorWidget::makeActiveAction() {
 	activeItems[idx].push_back(item);
 	switch (idx) {
 		case Tab::TwoD:
-
-			emit twoDVectorsSelected(activeItems[idx].front()->
-					data(0, Qt::UserRole).value<VectorEntry*>(), 
-					item->child(2)->data(0, Qt::EditRole).value<int>());
+			emit2D(item);
 			break;
 
 		case Tab::ThreeD:
-			if (activeItems[idx].length() == 2)
-				emit threeDVectorsSelected(
-					activeItems[idx][0]->data(0, Qt::UserRole).
-					value<VectorEntry*>(), 
-					activeItems[idx][1]->data(0, Qt::UserRole).
-					value<VectorEntry*>()
-					);
-						
+			emit3D(item);
 			break;
 
 		case Tab::FourD:
-			if (activeItems[idx].length() == 3)
-				emit fourDVectorsSelected(
-					activeItems[idx][0]->data(0, Qt::UserRole).
-					value<VectorEntry*>(), 
-					activeItems[idx][1]->data(0, Qt::UserRole).
-					value<VectorEntry*>(),
-					activeItems[idx][2]->data(0, Qt::UserRole).
-					value<VectorEntry*>()
-					);
+			emit4D(item);
 			break;
-
-		default:
+default:
 			return;
 	}
 }
@@ -248,11 +232,70 @@ void VectorProcessorWidget::removeVectorEntryFromLists(QTreeWidgetItem* item) {
 
 void VectorProcessorWidget::itemDoubleClikedHandler(
 		QTreeWidgetItem* item, int col) {
+	int idx = this->currentIndex();
 	switch (item->type()) {
 		case ItemType::Vector:
 			if (item->data(0, Qt::UserRole+1).value<bool>())
 				deactivateAction();
 			else
 				makeActiveAction();
+			break;
+		case ItemType::ClassCount2D:
+			tree[idx]->editItem(item, col);
 	}
+}
+
+void VectorProcessorWidget::emit2D(QTreeWidgetItem* item) {
+	item->child(2)->data(0, Qt::UserRole).value<ClassSeries*>()->makeSeries(
+			item->child(2)->data(0, Qt::EditRole).value<int>());
+	emit twoDVectorsSelected(activeItems[Tab::TwoD].front()->
+			data(0, Qt::UserRole).value<VectorEntry*>(), 
+			item->child(2)->data(0, Qt::UserRole).value<ClassSeries*>());
+}
+
+void VectorProcessorWidget::emit3D(QTreeWidgetItem* item) {
+	if (activeItems[Tab::ThreeD].length() == 2)
+		emit threeDVectorsSelected(
+				activeItems[Tab::ThreeD][0]->data(0, Qt::UserRole).
+				value<VectorEntry*>(), 
+				activeItems[Tab::ThreeD][1]->data(0, Qt::UserRole).
+				value<VectorEntry*>()
+				);
+}
+
+void VectorProcessorWidget::emit4D(QTreeWidgetItem* item) {
+	if (activeItems[Tab::FourD].length() == 3)
+		emit fourDVectorsSelected(
+				activeItems[Tab::FourD][0]->data(0, Qt::UserRole).
+				value<VectorEntry*>(), 
+				activeItems[Tab::FourD][1]->data(0, Qt::UserRole).
+				value<VectorEntry*>(),
+				activeItems[Tab::FourD][2]->data(0, Qt::UserRole).
+				value<VectorEntry*>()
+				);
+}
+
+void VectorProcessorWidget::itemChangedHandler(QTreeWidgetItem* item, int col) {
+	switch (item->type()) {
+		case ItemType::ClassCount2D:
+			if (item->data(0, Qt::EditRole).value<int>() < 1) {
+				item->setData(0, Qt::EditRole, QVariant(
+							(int)item->data(0, Qt::UserRole).
+							value<ClassSeries*>()->
+							calculateClassCount()));
+			} else {
+				if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
+					emit2D(item->parent());
+			}
+			break;
+	}
+}
+
+// Class item 
+ClassTreeItem::ClassTreeItem(int type) : QTreeWidgetItem(type) {
+	this->setFlags(this->flags() | Qt::ItemIsEditable);
+}
+ClassTreeItem::~ClassTreeItem() {
+	delete this->data(0, Qt::UserRole).value<ClassSeries*>();
+	QTreeWidgetItem::~QTreeWidgetItem();
 }
