@@ -83,7 +83,7 @@ void TransformationFormulaEditorDialog::transform() {
 		statusTextEdit->setText(res);
 		delete newVectorEntry;
 	} else {
-		newVectorEntry->name = "TR(" + ve->name + ")";
+		newVectorEntry->name = "TR" + QString::number(++tridx) + "(" + ve->name + ")";
 		statusTextEdit->setText("Вектор перетворено вдало.\n"
 				"Новий вектор було збережено у " +
 				newVectorEntry->name + "\n\nxᵢ = " + formulaLineEdit->text() + ".");

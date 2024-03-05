@@ -33,6 +33,7 @@ private:
 	QTextEdit* statusTextEdit = nullptr;
 
 	VectorEntry* ve = nullptr;
+	int tridx = 0;
 
 public slots:
 	void transform();
