@@ -1,7 +1,6 @@
 #include "vectorContainerWidget.hpp"
 #include <QtCore/qnamespace.h>
 #include <QtCore/qpoint.h>
-#include <iterator>
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -51,13 +50,6 @@ void VectorContainerWidget::appendList(const std::list<double>* vec, QString nam
 }
 
 void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
-	QStringList info = {
-		vectorEntry->name,
-		QString::number(vectorEntry->vector->size()),
-		QString::number(vectorEntry->vector->min()),
-		QString::number(vectorEntry->vector->max()),
-	};
-
 	QList<HorizontalHeaderItem*> infoItems;
 	infoItems.append(new HorizontalHeaderItem);
 	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
@@ -154,13 +146,13 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 }
 
 void VectorContainerWidget::makeActiveAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	emit vectorSelected(ve);
 }
 
 void VectorContainerWidget::deleteAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	emit vectorDeleted(ve);
 
@@ -171,7 +163,7 @@ void VectorContainerWidget::deleteAction() {
 
 void VectorContainerWidget::deleteAllAction() {
 	for (int i = 0; i < this->rowCount(); i++) {
-	VectorEntry* ve = this->itemAt(i, InfoCell::Name)->
+	VectorEntry* ve = this->item(i, InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 		emit vectorDeleted(ve);
 		delete ve;
@@ -182,7 +174,7 @@ void VectorContainerWidget::deleteAllAction() {
 }
 
 void VectorContainerWidget::standardizeAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	DataVector newVector(ve->vector->vector());
 	newVector.standardize();
@@ -193,7 +185,7 @@ void VectorContainerWidget::standardizeAction() {
 }
 
 void VectorContainerWidget::logAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	DataVector newVector(ve->vector->vector());
 	newVector.transform("log(x)");
@@ -204,7 +196,7 @@ void VectorContainerWidget::logAction() {
 }
 
 void VectorContainerWidget::reverseAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	DataVector newVector(ve->vector->vector());
 	newVector.transform("1/x");
@@ -215,7 +207,7 @@ void VectorContainerWidget::reverseAction() {
 }
 
 void VectorContainerWidget::rightShiftAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	DataVector newVector(ve->vector->vector());
 	newVector.transform("x+abs(xmin)+1");
@@ -226,7 +218,7 @@ void VectorContainerWidget::rightShiftAction() {
 }
 
 void VectorContainerWidget::transformAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	TransformationFormulaEditorDialog* tfe = 
 		new TransformationFormulaEditorDialog(ve, this);
@@ -237,7 +229,7 @@ void VectorContainerWidget::transformAction() {
 }
 
 void VectorContainerWidget::removeOutliersAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	DataVector newVector(ve->vector->vector());
 	bool ok = newVector.removeOutliers();
@@ -253,7 +245,7 @@ void VectorContainerWidget::removeOutliersAction() {
 }
 
 void VectorContainerWidget::infoAction() {
-	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 	VectorInfoDialog* tfe = 
 		new VectorInfoDialog(ve, this);
