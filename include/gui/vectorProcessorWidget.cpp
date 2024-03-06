@@ -297,5 +297,4 @@ ClassTreeItem::ClassTreeItem(int type) : QTreeWidgetItem(type) {
 }
 ClassTreeItem::~ClassTreeItem() {
 	delete this->data(0, Qt::UserRole).value<ClassSeries*>();
-	QTreeWidgetItem::~QTreeWidgetItem();
 }
