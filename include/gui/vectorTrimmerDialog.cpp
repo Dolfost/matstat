@@ -111,11 +111,8 @@ void VectorTrimmerDialog::boundsChanged(int type, int b, double low, double high
 		high = ve->vector->min() + high*interval;
 	}
 
-	if (low >= ghigh) {
-		low = glow;
-	} if (high <= glow) {
-		high = ghigh;
-	}
+	minSpinBox->setRange(ve->vector->min(), maxSpinBox->value());
+	maxSpinBox->setRange(minSpinBox->value(), ve->vector->max());
 
 	ghigh = high;
 	glow = low;
