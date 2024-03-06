@@ -1,9 +1,10 @@
 #include "vectorContainerWidget.hpp"
+#include <QtCore/qnamespace.h>
 #include <QtCore/qpoint.h>
 #include <iterator>
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
-	this->setColumnCount(vectorInfoCells);
+	this->setColumnCount(InfoCell::Count);
 	this->setRowCount(0);
 	this->setAcceptDrops(false);
 	this->setDragEnabled(false);
@@ -16,7 +17,7 @@ VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(par
 	QStringList headers = {"Назва", "Розмір", "Мін.", "Макс.", "Файл"}; 
 	QList<int> widths =   {90,      60,        75,     75}; 
 
-	for (int i = 0; i < vectorInfoCells; i++) {
+	for (int i = 0; i < InfoCell::Count; i++) {
 		QTableWidgetItem* item = new QTableWidgetItem();
 		item->setText(headers[i]);
 		this->setColumnWidth(i, widths[i]); this->setHorizontalHeaderItem(i, item);
@@ -32,11 +33,10 @@ void VectorContainerWidget::appendVector(VectorEntry* vectorEntry) {
 	int row = this->rowCount();
 
 	this->insertRow(row);
-	vectorList.push_back(vectorEntry);
 
 	this->setColumnCount( 
-			(vectorEntry->vector->size() + vectorInfoCells > this->columnCount() ?
-			vectorEntry->vector->size() + vectorInfoCells : this->columnCount()));
+			(vectorEntry->vector->size() + InfoCell::Count > this->columnCount() ?
+			vectorEntry->vector->size() + InfoCell::Count : this->columnCount()));
 	if (vectorEntry->name.length() == 0)
 		vectorEntry->name = "V" + QString::number(++vectorCount);
 
@@ -58,16 +58,32 @@ void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 		QString::number(vectorEntry->vector->max()),
 	};
 
-	for (int i = 0; i < vectorInfoCells; i++) {
-		HorizontalHeaderItem* item = new HorizontalHeaderItem;
-		item->setText(info[i]);
-		this->setItem(row, i, item);
+	QList<HorizontalHeaderItem*> infoItems;
+	infoItems.append(new HorizontalHeaderItem);
+	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
+			QVariant(vectorEntry->name));
+	infoItems[InfoCell::Name]->setData(Qt::UserRole, QVariant::fromValue(vectorEntry));
+
+	infoItems.append(new HorizontalHeaderItem);
+	infoItems[InfoCell::Size]->setData(Qt::DisplayRole,
+			QVariant((int)vectorEntry->vector->size()));
+
+	infoItems.append(new HorizontalHeaderItem);
+	infoItems[InfoCell::Min]->setData(Qt::DisplayRole,
+			QVariant(vectorEntry->vector->min()));
+
+	infoItems.append(new HorizontalHeaderItem);
+	infoItems[InfoCell::Max]->setData(Qt::DisplayRole,
+			QVariant(vectorEntry->vector->max()));
+
+	for (int i = 0; i < InfoCell::Count; i++) {
+		this->setItem(row, i, infoItems[i]);
 	}
 
 	auto list = vectorEntry->vector->vector();
 	auto it = list.begin();
-	for (size_t col = vectorInfoCells;
-			col < vectorEntry->vector->size() + vectorInfoCells;
+	for (size_t col = InfoCell::Count;
+			col < vectorEntry->vector->size() + InfoCell::Count;
 			col++) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem();
 		tableItem->setText(QString::number(*it));
@@ -75,9 +91,9 @@ void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 		this->setItem(row, col, tableItem);
 	}
 
-	for (size_t i = vectorInfoCells; i < this->columnCount() + vectorInfoCells; i++) {
+	for (size_t i = InfoCell::Count; i < this->columnCount() + InfoCell::Count; i++) {
 		QTableWidgetItem* headerItem = new QTableWidgetItem();
-		headerItem->setText(QString::number(i - vectorInfoCells+1));
+		headerItem->setText(QString::number(i - InfoCell::Count+1));
 		this->setHorizontalHeaderItem(i, headerItem);
 	}
 }
@@ -138,48 +154,48 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 }
 
 void VectorContainerWidget::makeActiveAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	emit vectorSelected(*it);
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	emit vectorSelected(ve);
 }
 
 void VectorContainerWidget::deleteAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	emit vectorDeleted(ve);
 
-	emit vectorDeleted(*it);
-
-	delete *it;
-	vectorList.erase(it);
+	delete ve;
 
 	this->removeRow(this->currentRow());
 }
 
 void VectorContainerWidget::deleteAllAction() {
-	for (auto vectorEntry : vectorList) {
-		emit vectorDeleted(vectorEntry);
-		delete vectorEntry;
+	for (int i = 0; i < this->rowCount(); i++) {
+	VectorEntry* ve = this->itemAt(i, InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+		emit vectorDeleted(ve);
+		delete ve;
 	}
-	vectorList.clear();
+
 	this->clearContents();
 	this->setRowCount(0);
 }
 
 void VectorContainerWidget::standardizeAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector->vector());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DataVector newVector(ve->vector->vector());
 	newVector.standardize();
 
 	appendList(&newVector.vector(),
 			QString("S(%1)")
-			.arg((*it)->name));
+			.arg(ve->name));
 }
 
 void VectorContainerWidget::logAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector->vector());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DataVector newVector(ve->vector->vector());
 	newVector.transform("log(x)");
 
 	appendList(&newVector.vector(),
@@ -188,9 +204,9 @@ void VectorContainerWidget::logAction() {
 }
 
 void VectorContainerWidget::reverseAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector->vector());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DataVector newVector(ve->vector->vector());
 	newVector.transform("1/x");
 
 	appendList(&newVector.vector(),
@@ -199,9 +215,9 @@ void VectorContainerWidget::reverseAction() {
 }
 
 void VectorContainerWidget::rightShiftAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector->vector());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DataVector newVector(ve->vector->vector());
 	newVector.transform("x+abs(xmin)+1");
 
 	appendList(&newVector.vector(),
@@ -210,10 +226,10 @@ void VectorContainerWidget::rightShiftAction() {
 }
 
 void VectorContainerWidget::transformAction() {
-	auto it = vectorList.begin();
-	std::advance(it, this->currentRow());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
 	TransformationFormulaEditorDialog* tfe = 
-		new TransformationFormulaEditorDialog(*it, this);
+		new TransformationFormulaEditorDialog(ve, this);
 	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
 			this, &VectorContainerWidget::appendVector);
 	connect(this, &VectorContainerWidget::vectorDeleted,
@@ -221,9 +237,9 @@ void VectorContainerWidget::transformAction() {
 }
 
 void VectorContainerWidget::removeOutliersAction() {
-	std::list<VectorEntry*>::iterator it = vectorList.begin();
-	std::advance(it, this->currentRow());
-	DataVector newVector((*it)->vector->vector());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DataVector newVector(ve->vector->vector());
 	bool ok = newVector.removeOutliers();
 
 	emit outliersRemoved(ok);
@@ -237,10 +253,10 @@ void VectorContainerWidget::removeOutliersAction() {
 }
 
 void VectorContainerWidget::infoAction() {
-	auto it = vectorList.begin();
-	std::advance(it, this->currentRow());
+	VectorEntry* ve = this->itemAt(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
 	VectorInfoDialog* tfe = 
-		new VectorInfoDialog(*it, this);
+		new VectorInfoDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &VectorInfoDialog::vectorDeletedHandler);
 }

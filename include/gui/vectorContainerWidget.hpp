@@ -5,6 +5,7 @@
 #include <QHeaderView>
 #include <QList>
 #include <QMenu>
+#include <QtCore/qnamespace.h>
 
 #include "gui/transformationFormulaEditorDialog.hpp"
 #include "gui/vectorInfoDialog.hpp"
@@ -20,8 +21,14 @@ public:
 	VectorContainerWidget(QWidget* = nullptr);
 
 private:
-	std::list<VectorEntry*> vectorList;
-	const short vectorInfoCells = 4;
+	enum InfoCell {
+		Name,
+		Size,
+		Min,
+		Max,
+		Count,
+	};
+
 	signed int vectorCount = 0;
 
 
