@@ -423,6 +423,7 @@ void DataVector::clearStatistics() {
 	stat.centralMoment.clear();
 	stat.turncatedMean.clear();
 	stat.walshAverages.first.clear();
+	stat.walshAverages.second = false;
 
 	stat.meanDeviation.second = false;
 	stat.varianceDeviation.second = false;
@@ -682,40 +683,52 @@ bool DataVector::removeOutliers() {
 		   t1 = 2+0.2*log10(0.04*size()),
 		   t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
 
-	if (skew() < -0.2) {
-		a = mean() - t2*variance(Measure::Sample);
-		b = mean() + t1*variance(Measure::Sample);
+	if (skew(Measure::Sample) < -0.2) {
+		a = mean() - t2*standardDeviation(Measure::Sample);
+		b = mean() + t1*standardDeviation(Measure::Sample);
 	} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
-		a = mean() - t1*variance(Measure::Sample);
-		b = mean() + t1*variance(Measure::Sample);
+		a = mean() - t1*standardDeviation(Measure::Sample);
+		b = mean() + t1*standardDeviation(Measure::Sample);
 	} else {
-		a = mean() - t1*variance(Measure::Sample);
-		b = mean() + t2*variance(Measure::Sample);
+		a = mean() - t1*standardDeviation(Measure::Sample);
+		b = mean() + t2*standardDeviation(Measure::Sample);
 	}
 
-	std::list<double> newVector;
-
-	std::list<double>::iterator startIt = dataVector.begin();
-	std::list<double>::iterator endIt = dataVector.end();
-
-	while (startIt != dataVector.end()) {
-		if (*startIt > a)
-			break;
-		startIt++;
-	}
-
-	while (endIt != dataVector.begin()) {
-		if (*endIt < b)
-			break;
-		endIt--;
-	}
-
-	if (endIt == dataVector.end() and startIt == dataVector.begin())
+	if (a < dataVector.front() and b > dataVector.back()) 
 		return false;
 
-	dataVector.assign(startIt, endIt);
+	while (a > dataVector.front()) {
+		dataVector.pop_front();
+		clearStatistics();
 
-	clearStatistics();
+		if (skew(Measure::Sample) < -0.2) {
+			t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
+			a = mean() - t2*standardDeviation(Measure::Sample);
+		} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
+			t1 = 2+0.2*log10(0.04*size());
+			a = mean() - t1*standardDeviation(Measure::Sample);
+		} else {
+			t1 = 2+0.2*log10(0.04*size());
+			a = mean() - t1*standardDeviation(Measure::Sample);
+		}
+	}
+
+	while (b < dataVector.back()) {
+		dataVector.pop_back();
+		clearStatistics();
+
+		if (skew(Measure::Sample) < -0.2) {
+			t1 = 2+0.2*log10(0.04*size());
+			b = mean() + t1*standardDeviation(Measure::Sample);
+		} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
+			t1 = 2+0.2*log10(0.04*size());
+			b = mean() + t1*standardDeviation(Measure::Sample);
+		} else {
+			t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
+			b = mean() + t2*standardDeviation(Measure::Sample);
+		}
+	}
+
 	return true;
 }
 
