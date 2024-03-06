@@ -17,7 +17,8 @@ find_package(Qt6 REQUIRED COMPONENTS PrintSupport Widgets Gui Charts)
 qt_standard_project_setup()
 
 file(GLOB STATISTICS_FILES ${PROJECT_SOURCE_DIR}/include/statistics/*.cpp)
-file(GLOB GUI_FILES ${PROJECT_SOURCE_DIR}/include/gui/*.cpp)
+file(GLOB GUI_FILES ${PROJECT_SOURCE_DIR}/include/gui/*.cpp 
+					${PROJECT_SOURCE_DIR}/include/gui/*.hpp)
 
 include_directories(./include ./exprtk_cmake/include)
 

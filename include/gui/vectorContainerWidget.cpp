@@ -1,6 +1,6 @@
 #include "vectorContainerWidget.hpp"
 #include <QtCore/qnamespace.h>
-#include <QtCore/qpoint.h>
+#include "vectorTrimmerDialog.hpp"
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -108,6 +108,10 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	QAction* removeOutliersAction = menu.addAction("Видалити аномалії");
 	connect(removeOutliersAction, &QAction::triggered,
 			this, &VectorContainerWidget::removeOutliersAction);
+
+	QAction* trimAction = menu.addAction("Обрізати…");
+	connect(trimAction, &QAction::triggered,
+			this, &VectorContainerWidget::trimAction);
 
 	QMenu* transform = menu.addMenu("Трансформації…");
 	QAction* normalizeAction = transform->addAction("Нормалізувати");
@@ -226,6 +230,17 @@ void VectorContainerWidget::transformAction() {
 			this, &VectorContainerWidget::appendVector);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::trimAction() {
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	VectorTrimmerDialog* vtd = 
+		new VectorTrimmerDialog(ve, this);
+	connect(vtd, &VectorTrimmerDialog::vectorTrimmed,
+			this, &VectorContainerWidget::appendVector);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			vtd, &VectorTrimmerDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::removeOutliersAction() {

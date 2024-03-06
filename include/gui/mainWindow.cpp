@@ -139,8 +139,9 @@ void MainWindow::createActions() {
 
 void MainWindow::open() {
 	// filepath = QFileDialog::getOpenFileName(this,
-		// "Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
+	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
 	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/norm1_anomaly.txt"; 
 
 	vectorPicker->fileContents(filepath);
 	openVectorPicker();

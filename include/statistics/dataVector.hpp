@@ -124,6 +124,7 @@ public:
 	// Vector operations
 	void standardize();
 	bool removeOutliers();
+	size_t trim(double, double);
 	QString transform(QString expression);
 
 	static const QString exprtkFuncitons;
