@@ -1,6 +1,7 @@
 #include "transformationFormulaEditorDialog.hpp"
 #include "gui/Section.h"
 
+int TransformationFormulaEditorDialog::trIdx = 0;
 
 TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		VectorEntry* vectorEntry,
@@ -83,7 +84,7 @@ void TransformationFormulaEditorDialog::transform() {
 		statusTextEdit->setText(res);
 		delete newVectorEntry;
 	} else {
-		newVectorEntry->name = "TR" + QString::number(++tridx) + "(" + ve->name + ")";
+		newVectorEntry->name = "TR" + QString::number(++trIdx) + "(" + ve->name + ")";
 		statusTextEdit->setText("Вектор перетворено вдало.\n"
 				"Новий вектор було збережено у " +
 				newVectorEntry->name + "\n\nxᵢ = " + formulaLineEdit->text() + ".");

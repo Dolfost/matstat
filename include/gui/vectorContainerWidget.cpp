@@ -104,6 +104,8 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	QAction* setActiveAction = menu.addAction("Додати до процессора");
 	connect(setActiveAction, &QAction::triggered,
 			this, &VectorContainerWidget::makeActiveAction);
+	
+	menu.addSeparator();
 
 	QAction* removeOutliersAction = menu.addAction("Видалити аномалії");
 	connect(removeOutliersAction, &QAction::triggered,
