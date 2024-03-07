@@ -139,6 +139,10 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	connect(infoAction, &QAction::triggered,
 			this, &VectorContainerWidget::infoAction);
 
+	QAction* writeAction = menu.addAction("Зберегти у файл…");
+	connect(writeAction, &QAction::triggered,
+			this, &VectorContainerWidget::writeAction);
+
 	menu.addSeparator();
 
 	QAction* deleteAction = menu.addAction("Видалити");
@@ -268,6 +272,21 @@ void VectorContainerWidget::infoAction() {
 		new VectorInfoDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &VectorInfoDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::writeAction() {
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+
+	QString filename = QFileDialog::getSaveFileName(this, "Зберегти вектор",
+			QDir::homePath() + "/" + 
+			ve->name + "-" + QString::number(ve->vector->size()) + ".txt", 
+			"Текстові файли (*.txt) ;; CSV файли (*.csv)");
+
+	if (filename.length() == 0)
+		return;
+
+	ve->vector->writeToFile(filename);
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {

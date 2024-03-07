@@ -5,6 +5,7 @@
 #include <QHeaderView>
 #include <QList>
 #include <QMenu>
+#include <QFileDialog>
 #include <QtCore/qnamespace.h>
 
 #include "gui/transformationFormulaEditorDialog.hpp"
@@ -52,6 +53,7 @@ private slots:
 	void trimAction();
 	void removeOutliersAction();
 	void infoAction();
+	void writeAction();
 
 signals:
 	void vectorSelected(VectorEntry*);

@@ -1,13 +1,15 @@
 #ifndef _DATA_VECTOR_HPP_
 #define _DATA_VECTOR_HPP_
 
-#include <QtCore/qstring.h>
-#include <QtGui/qeventpoint.h>
-#include <QtPrintSupport/qprinter.h>
+#include <QString>
+#include <map>
+#include <list>
+
 #include <cstddef>
 #include <list>
 #include <map>
 #include <QDebug>
+#include <QFile>
 #include <cfloat>
 #include "exprtk.hpp"
 
@@ -125,7 +127,9 @@ public:
 	void standardize();
 	bool removeOutliers();
 	size_t trim(double, double);
-	QString transform(QString expression);
+	QString transform(QString);
+
+	bool writeToFile(QString);
 
 	static const QString exprtkFuncitons;
 
