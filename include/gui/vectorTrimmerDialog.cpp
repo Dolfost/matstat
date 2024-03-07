@@ -91,7 +91,8 @@ void VectorTrimmerDialog::trim() {
 	emit vectorTrimmed(newEntry);
 
 	statusBar->showMessage(QString(
-				"N = %1 → N = %2 (ΔN = %3)")
+				"Вектор збережено у %1. N = %2 → N = %3 (ΔN = %4)")
+			.arg(newEntry->name)
 			.arg(ve->vector->size())
 			.arg(newEntry->vector->size())
 			.arg(delta));
