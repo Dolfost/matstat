@@ -2,7 +2,9 @@
 #include <QBarSet>
 #include <QBarSeries>
 #include <QValueAxis>
-#include <QtCore/qnamespace.h>
+#include <algorithm>
+
+#include <QDebug>
 
 #include "classSeries.hpp"
 #include "densityChart.hpp"
@@ -22,6 +24,9 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	barsBrush.setStyle(Qt::SolidPattern);
 	barsBrush.setColor("#2b8eff");
 	bars->setBrush(barsBrush);
+
+	density = new QCPGraph(this->xAxis, this->yAxis);
+	density->setName("f(x) (відтв.)");
 
 	enableMean();
 	enableStandartDeviation();
@@ -43,6 +48,20 @@ void DensityChart::fill(ClassSeries* clSr) {
 	}
 
 	bars->setData(x, y, true);
+
+	x.clear(), y.clear();
+
+	if (cs->dataVector->distribution() != DataVector::Distribution::UnknownD) {
+		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
+		for (cs->dataVector->distributionData.x = cs->dataVector->min();
+				cs->dataVector->distributionData.x <= cs->dataVector->max(); 
+				cs->dataVector->distributionData.x += interval/350) {
+			x.push_back(cs->dataVector->distributionData.x);
+			y.push_back(cs->dataVector->distributionData.pdfExpression.value());
+		}
+
+		density->setData(x, y);
+	}
 
 	yRange = QCPRange(0, cs->maxIntervalProbability());
 

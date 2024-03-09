@@ -66,6 +66,9 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
 			this->yAxis2, SLOT(setRange(QCPRange)));
 
+	//  TODO:
+	//  make the yAxis2 for the density chart to be from the 0 to the distribution->cfmMax
+
 	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
 			SLOT(handleZoomX(QCPRange)));
 	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
@@ -90,6 +93,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 }
 
 void PlotBase::fill(ClassSeries* cs) {
+
 	xRange = QCPRange(cs->dataVector->min(), cs->dataVector->max());
 
 	this->xAxis->setRange(xRange);
@@ -194,7 +198,6 @@ void PlotBase::plotMed() {
 ClassSeries* PlotBase::classSeries() {
 	return cs;
 }
-
 
 
 

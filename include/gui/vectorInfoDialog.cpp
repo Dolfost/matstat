@@ -38,7 +38,7 @@ VectorInfoDialog::VectorInfoDialog(
 		QList<QStringList> contents = {
 		{"Математичне сподівання", "v₁", QString::number(ve->vector->mean(), 'f', precision), "—"},
 		{"Дисперсія", "μ₂", QString::number(ve->vector->variance(), 'f', precision),
-			QString::number(ve->vector->variance(DataVector::Measure::Population), 'f', precision), "—"},
+			QString::number(ve->vector->variance(DataVector::Measure::PopulationM), 'f', precision), "—"},
 		{"Медіана", "MED", QString::number(ve->vector->med(), 'f', precision),"—"},
 		{"Розмір", "N", QString::number(ve->vector->size()),"—"},
 		{"Найменше спостереження", "xₘᵢₙ", QString::number(ve->vector->min(), 'f', precision),"—"},
@@ -46,16 +46,16 @@ VectorInfoDialog::VectorInfoDialog(
 		{"Кількість варіант", "r", QString::number(varSeries.variantsCount()),"—"},
 		{"Медіана серідніх Уолша", "WAM", QString::number(ve->vector->walshAveragesMed(), 'f', precision),"—"},
 		{"Середньоквадратичне відхилення", "СКВ", QString::number(ve->vector->standardDeviation(), 'f', precision),
-			QString::number(ve->vector->standardDeviation(DataVector::Measure::Population), 'f', precision)},
+			QString::number(ve->vector->standardDeviation(DataVector::Measure::PopulationM), 'f', precision)},
 		{"Абсолютне відхилення медіани", "MAD", QString::number(ve->vector->mad(), 'f', precision), "—"},
 		{"Коефіцієнт асиметрії", "A", QString::number(ve->vector->skew(), 'f', precision),
-			QString::number(ve->vector->skew(DataVector::Measure::Population), 'f', precision)},
+			QString::number(ve->vector->skew(DataVector::Measure::PopulationM), 'f', precision)},
 		{"Коефіцієнт ексцесу", "E", QString::number(ve->vector->kurtosis(), 'f', precision), 
-			QString::number(ve->vector->kurtosis(DataVector::Measure::Population), 'f', precision)},
+			QString::number(ve->vector->kurtosis(DataVector::Measure::PopulationM), 'f', precision)},
 		{"Коефіцієнт контрексцесу", "𝜘", QString::number(ve->vector->counterKurtosis(), 'f', precision), 
-			QString::number(ve->vector->counterKurtosis(DataVector::Measure::Population), 'f', precision)},
+			QString::number(ve->vector->counterKurtosis(DataVector::Measure::PopulationM), 'f', precision)},
 		{"Коефіцієнт варіації Пірсона", "W", QString::number(ve->vector->variationCoef(), 'f', precision), 
-			QString::number(ve->vector->variationCoef(DataVector::Measure::Population), 'f', precision)},
+			QString::number(ve->vector->variationCoef(DataVector::Measure::PopulationM), 'f', precision)},
 		{"Непараметричнйи коефіцієнт варіації", "Wₕ", QString::number(ve->vector->nonparametricVariationCoef(), 'f', precision), 
 			"—"},
 		};
@@ -63,7 +63,7 @@ VectorInfoDialog::VectorInfoDialog(
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Центральний момент " + QString::number(x) + " порядку",
 				"μ" + QString(QChar(0x2080+x)), QString::number(ve->vector->centralMoment(x), 'f', precision),
-				QString::number(ve->vector->centralMoment(x, DataVector::Measure::Population), 'f', precision)});
+				QString::number(ve->vector->centralMoment(x, DataVector::Measure::PopulationM), 'f', precision)});
 		}
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Початковий момент " + QString::number(x) + " порядку",
@@ -149,43 +149,43 @@ VectorInfoDialog::VectorInfoDialog(
 			headers.append("INF 𝛼 = " + QString::number(probs[prob]));
 			charTable->setItem(0, col, new QTableWidgetItem(
 						QString::number(ve->vector->meanConfidence(probs[prob], 
-								DataVector::Limit::Lower), 'f', precision)));
+								DataVector::Limit::LowerL), 'f', precision)));
 			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
 							ve->vector->varianceConfidence(probs[prob],
-								DataVector::Limit::Lower), 'f', precision)));
+								DataVector::Limit::LowerL), 'f', precision)));
 			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
 							ve->vector->skewConfidence(probs[prob], 
-								DataVector::Limit::Lower), 'f', precision)));
+								DataVector::Limit::LowerL), 'f', precision)));
 			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
 							ve->vector->kurtosisConfidence(probs[prob],
-								DataVector::Limit::Lower), 'f', precision)));
+								DataVector::Limit::LowerL), 'f', precision)));
 		}
 
 		headers.append("θ не зсунута");
 		charTable->setItem(0, col, new QTableWidgetItem(
 					QString::number(ve->vector->mean(), 'f', precision)));
 		charTable->setItem(1, col, new QTableWidgetItem(
-					QString::number(ve->vector->variance(DataVector::Measure::Sample), 'f', precision)));
+					QString::number(ve->vector->variance(DataVector::Measure::SampleM), 'f', precision)));
 		charTable->setItem(2, col, new QTableWidgetItem(
-					QString::number(ve->vector->skew(DataVector::Measure::Sample), 'f', precision)));
+					QString::number(ve->vector->skew(DataVector::Measure::SampleM), 'f', precision)));
 		charTable->setItem(3, col, new QTableWidgetItem(
-					QString::number(ve->vector->kurtosis(DataVector::Measure::Sample), 'f', precision)));
+					QString::number(ve->vector->kurtosis(DataVector::Measure::SampleM), 'f', precision)));
 
 		for (int from = col; col < charTable->columnCount(); col++) {
 			int prob = probs.length() - (col - from) - 1;
 			headers.append("SUP 𝛼 = " + QString::number(probs[prob]));
 			charTable->setItem(0, col, new QTableWidgetItem(
 						QString::number(ve->vector->meanConfidence(probs[prob], 
-								DataVector::Limit::Upper), 'f', precision)));
+								DataVector::Limit::UpperL), 'f', precision)));
 			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
 							ve->vector->varianceConfidence(probs[prob],
-								DataVector::Limit::Upper), 'f', precision)));
+								DataVector::Limit::UpperL), 'f', precision)));
 			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
 							ve->vector->skewConfidence(probs[prob], 
-								DataVector::Limit::Upper), 'f', precision)));
+								DataVector::Limit::UpperL), 'f', precision)));
 			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
 							ve->vector->kurtosisConfidence(probs[prob],
-								DataVector::Limit::Upper), 'f', precision)));
+								DataVector::Limit::UpperL), 'f', precision)));
 		}
 
 		charTable->setHorizontalHeaderLabels(headers);

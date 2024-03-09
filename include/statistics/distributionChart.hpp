@@ -13,6 +13,7 @@ public:
     DistributionChart(QWidget* parent = nullptr);
 
 	QCPGraph* graph = nullptr;
+	QCPGraph* distribution = nullptr;
 
 	void fill(ClassSeries* clSr);
 };

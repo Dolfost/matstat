@@ -1,6 +1,10 @@
 #include "dataVector.hpp"
+#include <QtCore/qlogging.h>
 #include <QtCore/qnumeric.h>
 #include <cmath>
+
+#include "dataVectorExprtk.hpp"
+#include <cfloat>
 
 DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
@@ -14,12 +18,12 @@ void DataVector::setVector(const std::list<double>& input) {
 	dataVector = input;
 	dataVector.sort();
 	clearStatistics();
+	setDistribution(Distribution::ExponentialD);
 }
 
 const std::list<double>& DataVector::vector() {
 	return dataVector;
 }
-
 
 ////// Statistics ////// 
 double DataVector::min() {
@@ -52,9 +56,9 @@ double DataVector::standardDeviation(Measure m) {
 	if (!stat.standardDeviation.second)
 		computeStandardDeviation();
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.standardDeviation.first.first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.standardDeviation.first.second;
 	else
 		return qQNaN();
@@ -71,9 +75,9 @@ double DataVector::centralMoment(double degree, Measure m) {
 	if (stat.centralMoment.count(degree) != 1)
 		computeCentralMoment(degree);
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.centralMoment[degree].first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.centralMoment[degree].second;
 	else
 	 return qQNaN();
@@ -102,9 +106,9 @@ double DataVector::skew(Measure m) {
 	if (!stat.skew.second)
 		computeSkew();
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.skew.first.first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.skew.first.second;
 	else
 	 return qQNaN();
@@ -114,9 +118,9 @@ double DataVector::kurtosis(Measure m) {
 	if (!stat.kurtosis.second)
 		computeKurtosis();
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.kurtosis.first.first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.kurtosis.first.second;
 	else
 	 return qQNaN();
@@ -126,9 +130,9 @@ double DataVector::counterKurtosis(Measure m) {
 	if (!stat.counterKurtosis.second)
 		computeCounterKurtosis();
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.counterKurtosis.first.first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.counterKurtosis.first.second;
 	else
 	 return qQNaN();
@@ -152,9 +156,9 @@ double DataVector::variationCoef(Measure m) {
 	if (!stat.variationCoef.second)
 		computeVariationCoef();
 
-	if (m == Measure::Population)
+	if (m == Measure::PopulationM)
 		return stat.variationCoef.first.first;
-	if (m == Measure::Sample)
+	if (m == Measure::SampleM)
 		return stat.variationCoef.first.second;
 	else
 	 return qQNaN();
@@ -206,9 +210,9 @@ double DataVector::meanConfidence(double alpha, Limit lim) {
 	if (stat.meanConfidence.count(alpha) != 1)
 		computeMeanConfidence(alpha);
 
-	if (lim == Limit::Lower)
+	if (lim == Limit::LowerL)
 		return stat.meanConfidence[alpha].first;
-	else if (lim == Limit::Upper)
+	else if (lim == Limit::UpperL)
 		return stat.meanConfidence[alpha].second;
 	else
 		return qQNaN();
@@ -218,9 +222,9 @@ double DataVector::varianceConfidence(double alpha, Limit lim) {
 	if (stat.varianceConfidence.count(alpha) != 1)
 		computeVarianceConfidence(alpha);
 
-	if (lim == Limit::Lower)
+	if (lim == Limit::LowerL)
 		return stat.varianceConfidence[alpha].first;
-	else if (lim == Limit::Upper)
+	else if (lim == Limit::UpperL)
 		return stat.varianceConfidence[alpha].second;
 	else
 		return qQNaN();
@@ -229,9 +233,9 @@ double DataVector::skewConfidence(double alpha, Limit lim) {
 	if (stat.skewConfidence.count(alpha) != 1)
 		computeSkewConfidence(alpha);
 
-	if (lim == Limit::Lower)
+	if (lim == Limit::LowerL)
 		return stat.skewConfidence[alpha].first;
-	else if (lim == Limit::Upper)
+	else if (lim == Limit::UpperL)
 		return stat.skewConfidence[alpha].second;
 	else
 		return qQNaN();
@@ -241,40 +245,109 @@ double DataVector::kurtosisConfidence(double alpha, Limit lim) {
 	if (stat.kurtosisConfidence.count(alpha) != 1)
 		computeKurtosisConfidence(alpha);
 
-	if (lim == Limit::Lower)
+	if (lim == Limit::LowerL)
 		return stat.kurtosisConfidence[alpha].first;
-	else if (lim == Limit::Upper)
+	else if (lim == Limit::UpperL)
 		return stat.kurtosisConfidence[alpha].second;
 	else
 		return qQNaN();
 };
 
 double DataVector::normQuantile(double alpha) {
-	if (stat.normQuantile.count(alpha) != 1)
-		computeNormQuantile(alpha);
+	double quantile = 0;
 
-	return stat.normQuantile[alpha];
+	const double 
+		c0 = 2.515517,
+		c1 = 0.802853,
+		c2 = 0.010328,
+		d1 = 1.432788,
+		d2 = 0.1892659,
+		d3 = 0.001308,
+		t = sqrt(log(1/(alpha*alpha))),
+		ea = 4.5e-4;
+
+	quantile = t - (c0 + c1*t + c2*t*t) /
+		(1 + d1*t+d2*t*t + d3*t*t*t) + ea;
+	
+	return quantile;
 }
 
 double DataVector::pearQuantile(double alpha, int v) {
-	if (stat.pearQuantile.count({alpha, v}) != 1)
-		computePearQuantile(alpha, v);
+	double quantile = 0;
 
-	return stat.pearQuantile[{alpha, v}];
+	quantile = v*pow(1 - 2.0/(9*v) + normQuantile(alpha)*sqrt(2.0/(9*v)), 3);
+	
+	return quantile;
 }
 
 double DataVector::studQuantile(double alpha, int v) {
-	if (stat.studQuantile.count({alpha, v}) != 1)
-		computeStudQuantile(alpha, v);
+	double quantile = 0;
 
-	return stat.studQuantile[{alpha, v}];
+	const double
+		nq = normQuantile(alpha),
+		nq2 = nq*nq,
+		nq3 = nq2*nq,
+		nq5 = nq3*nq2,
+		nq7 = nq5*nq2,
+		nq9 = nq7*nq2,
+		g1 = (nq3+ nq)/4,
+		g2 = (5*nq5 + 16*nq3 + 3*nq)/96,
+		g3 = (3*nq7 + 19*nq5 + 17*nq3 - 15*nq)/384,
+		g4 = (79*nq9 + 779*nq7 + 1482*nq5 - 1920*nq3 - 945*nq)/92160;
+
+	quantile = nq + g1/v + g2/pow(v, 2) + g3/pow(v, 3) + g4/pow(v, 4);
+
+	return quantile;
 }
 
 double DataVector::fishQuantile(double alpha, int v1, int v2) {
-	if (stat.fishQuantile.count({alpha, v1, v2}) != 1)
-		computeFishQuantile(alpha, v1, v2);
+	double quantile = 0;
 
-	return stat.fishQuantile[{alpha, v1, v2}];
+	const double
+		sigma = 1.0/v1 + 1.0/v2,
+		delta = 1.0/v1 - 1.0/v2,
+		sigmaSqrtBy2 = sqrt(sigma/2),
+		nq = normQuantile(alpha),
+		nq2 = nq*nq,
+		nq3 = nq2*nq,
+		nq4 = nq3*nq4,
+		nq5 = nq4*nq,
+		z = nq*sigmaSqrtBy2 - delta*(nq*nq+2)/6 + 
+			sigmaSqrtBy2*((sigma*(nq2 + 3*nq)/24 + 
+			(pow(delta, 2)*(nq3 +11*nq))/(72*sigma))) -
+			(delta*sigma*(nq4+9*nq2+8))/120 +
+			(pow(delta, 3)*(3*nq4 + 7*nq2 - 16))/(3240*sigma) +
+			sigmaSqrtBy2*(pow(sigma, 2)*(nq5 + 20*nq3 +15*nq)/1920 + 
+			pow(delta, 4)*(nq5 + 44*nq3 + 183*nq)/2880 + 
+			pow(delta, 4)*(9*nq5 - 284*nq3 - 1513*nq)/(155520 * pow(sigma, 2)));
+
+	quantile = exp(2*z);
+
+	return quantile;
+}
+
+double DataVector::normalDistributionCdf(double u) {
+	double x = abs(u);
+	double 
+		p = 0.2316419,
+		b1 = 0.31938153,
+		b2 = -0.356563782,
+		b3 = 1.781477937,
+		b4 = -1.821255978,
+		b5 = 1.330274429,
+		t1 = 1/(1+p*x),
+		t2 = t1*t1,
+		t3 = t2*t1,
+		t4 = t3*t1,
+		t5 = t4*t1;
+
+	double f = 1-0.3989422804*std::exp(-(std::pow(x, 2))/2) * 
+		(b1*t1 + b2*t2 + b3*t3 + b4*t4 + b5*t5);
+
+	if (u < 0)
+		f = 1 - f;
+
+	return f;
 }
 
 // statistic computers //
@@ -314,9 +387,9 @@ void DataVector::computeCentralMoment(double degree) {
 
 void DataVector::computeStandardDeviation() {
 	stat.standardDeviation.first.first = 
-		std::sqrt(centralMoment(2, Measure::Population));
+		std::sqrt(centralMoment(2, Measure::PopulationM));
 	stat.standardDeviation.first.second = 
-		std::sqrt(centralMoment(2, Measure::Sample));
+		std::sqrt(centralMoment(2, Measure::SampleM));
 
 	stat.standardDeviation.second = true;
 }
@@ -355,8 +428,8 @@ void DataVector::computeMad() {
 void DataVector::computeSkew() {
 	double N = size();
 	stat.skew.first.first = 
-		centralMoment(3, Measure::Population) /
-		pow(standardDeviation(Measure::Population), 3);
+		centralMoment(3, Measure::PopulationM) /
+		pow(standardDeviation(Measure::PopulationM), 3);
 	stat.skew.first.second = (std::sqrt(N*(N-1))/(N-2)) * 
 		stat.skew.first.first;
 
@@ -366,8 +439,8 @@ void DataVector::computeSkew() {
 void DataVector::computeKurtosis() {
 	double N = size();
 
-	stat.kurtosis.first.first = centralMoment(4, Measure::Population) / 
-		pow(standardDeviation(Measure::Population), 4);
+	stat.kurtosis.first.first = centralMoment(4, Measure::PopulationM) / 
+		pow(standardDeviation(Measure::PopulationM), 4);
 	stat.kurtosis.first.second = ((std::pow(N, 2)-1)/((N-2)*(N-3))) * 
 		((stat.kurtosis.first.first - 3) + 6/(N+1));
 
@@ -376,9 +449,9 @@ void DataVector::computeKurtosis() {
 
 void DataVector::computeCounterKurtosis() {
 	stat.counterKurtosis.first.first = 1.0/sqrt(
-			abs(kurtosis(Measure::Sample)));
+			abs(kurtosis(Measure::SampleM)));
 	stat.counterKurtosis.first.second = 1.0/sqrt(
-			abs(kurtosis(Measure::Population)));
+			abs(kurtosis(Measure::PopulationM)));
 
 	stat.counterKurtosis.second = true;
 }
@@ -405,8 +478,8 @@ void DataVector::computeVariationCoef() {
 		stat.variationCoef.first.first = DBL_MAX;
 		stat.variationCoef.first.second = DBL_MAX;
 	} else {
-		stat.variationCoef.first.first = variance(Measure::Population)/mean();
-		stat.variationCoef.first.second = variance(Measure::Sample)/mean();
+		stat.variationCoef.first.first = variance(Measure::PopulationM)/mean();
+		stat.variationCoef.first.second = variance(Measure::SampleM)/mean();
 	}
 
 	stat.variationCoef.second = true;
@@ -434,11 +507,6 @@ void DataVector::clearStatistics() {
 	stat.varianceConfidence.clear();
 	stat.skewConfidence.clear();
 	stat.kurtosisConfidence.clear();
-
-	stat.normQuantile.clear();
-	stat.studQuantile.clear();
-	stat.pearQuantile.clear();
-	stat.fishQuantile.clear();
 
 	stat.beta.clear();
 
@@ -481,83 +549,18 @@ QString DataVector::report() {
 		.arg(variationCoef());
 }
 
-void DataVector::computeNormQuantile(double alpha) {
-	double* quantile = &stat.normQuantile[alpha];
-
-	const double 
-		c0 = 2.515517,
-		c1 = 0.802853,
-		c2 = 0.010328,
-		d1 = 1.432788,
-		d2 = 0.1892659,
-		d3 = 0.001308,
-		t = sqrt(log(1/(alpha*alpha))),
-		ea = 4.5e-4;
-
-	*quantile = t - (c0 + c1*t + c2*t*t) /
-		(1 + d1*t+d2*t*t + d3*t*t*t) + ea;
-}
-
-void DataVector::computeStudQuantile(double alpha, int v) {
-	double *quantile = &stat.studQuantile[{alpha, v}];
-
-	const double
-		nq = normQuantile(alpha),
-		nq2 = nq*nq,
-		nq3 = nq2*nq,
-		nq5 = nq3*nq2,
-		nq7 = nq5*nq2,
-		nq9 = nq7*nq2,
-		g1 = (nq3+ nq)/4,
-		g2 = (5*nq5 + 16*nq3 + 3*nq)/96,
-		g3 = (3*nq7 + 19*nq5 + 17*nq3 - 15*nq)/384,
-		g4 = (79*nq9 + 779*nq7 + 1482*nq5 - 1920*nq3 - 945*nq)/92160;
-
-	*quantile = nq + g1/v + g2/pow(v, 2) + g3/pow(v, 3) + g4/pow(v, 4);
-}
-
-void DataVector::computePearQuantile(double alpha, int v) {
-	double* quantile = &stat.pearQuantile[{alpha, v}];
-
-	*quantile = v*pow(1 - 2.0/(9*v) + normQuantile(alpha)*sqrt(2.0/(9*v)), 3);
-}
-
-void DataVector::computeFishQuantile(double alpha, int v1, int v2) {
-	double* quantile = &stat.fishQuantile[{alpha, v1, v2}];
-
-	const double
-		sigma = 1.0/v1 + 1.0/v2,
-		delta = 1.0/v1 - 1.0/v2,
-		sigmaSqrtBy2 = sqrt(sigma/2),
-		nq = normQuantile(alpha),
-		nq2 = nq*nq,
-		nq3 = nq2*nq,
-		nq4 = nq3*nq4,
-		nq5 = nq4*nq,
-		z = nq*sigmaSqrtBy2 - delta*(nq*nq+2)/6 + 
-			sigmaSqrtBy2*((sigma*(nq2 + 3*nq)/24 + 
-			(pow(delta, 2)*(nq3 +11*nq))/(72*sigma))) -
-			(delta*sigma*(nq4+9*nq2+8))/120 +
-			(pow(delta, 3)*(3*nq4 + 7*nq2 - 16))/(3240*sigma) +
-			sigmaSqrtBy2*(pow(sigma, 2)*(nq5 + 20*nq3 +15*nq)/1920 + 
-			pow(delta, 4)*(nq5 + 44*nq3 + 183*nq)/2880 + 
-			pow(delta, 4)*(9*nq5 - 284*nq3 - 1513*nq)/(155520 * pow(sigma, 2)));
-
-	*quantile = exp(2*z);
-}
-
 void DataVector::computeBeta(int k) {
 	double* betaValue = &stat.beta[k];
 
 	if (k%2) {
 		k /= 2; 
-		*betaValue = (centralMoment(3, Measure::Population) * 
-			centralMoment(2*k+3, Measure::Population)) /
-			pow(centralMoment(2, Measure::Population), k+3);
+		*betaValue = (centralMoment(3, Measure::PopulationM) * 
+			centralMoment(2*k+3, Measure::PopulationM)) /
+			pow(centralMoment(2, Measure::PopulationM), k+3);
 	} else {
 		k /= 2; 
-		*betaValue = centralMoment(2*k+2, Measure::Population) /
-			pow(centralMoment(2, Measure::Population), k+1);
+		*betaValue = centralMoment(2*k+2, Measure::PopulationM) /
+			pow(centralMoment(2, Measure::PopulationM), k+1);
 	}
 }
 
@@ -597,14 +600,16 @@ void DataVector::computeMeanConfidence(double alpha) {
 	double* upper = &stat.meanConfidence[alpha].second;
 
 	if (size() > 60) {
-		*lower = mean() - normQuantile(1-alpha/2) *
+		double quantile = normQuantile(1-alpha/2);
+		*lower = mean() - quantile *
 			meanDeviation();
-		*upper = mean() + normQuantile(1-alpha/2) *
+		*upper = mean() + quantile *
 			meanDeviation();
 	} else {
-		*lower = mean() - studQuantile(1-alpha/2, size()-1) *
+		double quantile = studQuantile(1-alpha/2, size()-1);
+		*lower = mean() - quantile *
 			meanDeviation();
-		*upper = mean() + studQuantile(1-alpha/2, size()-1) *
+		*upper = mean() + quantile *
 			meanDeviation();
 	}
 }
@@ -614,16 +619,18 @@ void DataVector::computeVarianceConfidence(double alpha) {
 	double* upper = &stat.varianceConfidence[alpha].second;
 
 	if (size() > 60) {
-		*lower = variance(Measure::Population) -
-			normQuantile(1-alpha/2)*varianceDeviation();
-		*upper = variance(Measure::Population) +
-			normQuantile(1-alpha/2)*varianceDeviation();
+		double quantile = normQuantile(1-alpha/2);
+		*lower = variance(Measure::PopulationM) -
+			quantile*varianceDeviation();
+		*upper = variance(Measure::PopulationM) +
+			quantile*varianceDeviation();
 	} else {
-		*lower = variance(Measure::Population) - 
-			studQuantile(1-alpha/2, size()-1) *
+		double quantile = studQuantile(1-alpha/2, size()-1);
+		*lower = variance(Measure::PopulationM) - 
+			quantile *
 			varianceDeviation();
-		*upper = variance(Measure::Population) +
-			studQuantile(1-alpha/2, size()-1) *
+		*upper = variance(Measure::PopulationM) +
+			quantile *
 			varianceDeviation();
 	}
 }
@@ -633,17 +640,17 @@ void DataVector::computeSkewConfidence(double alpha) {
 	double* upper = &stat.skewConfidence[alpha].second;
 
 	if (size() > 60) {
-		*lower = skew(Measure::Population) -
-			normQuantile(1-alpha/2)*skewDeviation();
-		*upper = skew(Measure::Population) +
-			normQuantile(1-alpha/2)*skewDeviation();
+		double quantile = normQuantile(1-alpha/2);
+		*lower = skew(Measure::PopulationM) -
+			quantile*skewDeviation();
+		*upper = skew(Measure::PopulationM) +
+			quantile * skewDeviation();
 	} else {
-		*lower = skew(Measure::Population) - 
-			studQuantile(1-alpha/2, size()-1) *
-			skewDeviation();
-		*upper = skew(Measure::Population) +
-			studQuantile(1-alpha/2, size()-1) *
-			skewDeviation();
+		double quantile = studQuantile(1-alpha/2, size()-1);
+		*lower = skew(Measure::PopulationM) - 
+			quantile * skewDeviation();
+		*upper = skew(Measure::PopulationM) +
+			quantile * skewDeviation();
 	}
 }
 
@@ -652,24 +659,24 @@ void DataVector::computeKurtosisConfidence(double alpha) {
 	double* upper = &stat.kurtosisConfidence[alpha].second;
 
 	if (size() > 60) {
-		*lower = kurtosis(Measure::Population) -
-			normQuantile(1-alpha/2)*meanDeviation();
-		*upper = kurtosis(Measure::Population) +
-			normQuantile(1-alpha/2)*meanDeviation();
+		double quantile = normQuantile(1-alpha/2);
+		*lower = kurtosis(Measure::PopulationM) -
+			quantile * meanDeviation();
+		*upper = kurtosis(Measure::PopulationM) +
+			quantile * meanDeviation();
 	} else {
-		*lower = kurtosis(Measure::Population) - 
-			studQuantile(1-alpha/2, size()-1) *
-			kurtosisDeviation();
-		*upper = kurtosis(Measure::Population) +
-			studQuantile(1-alpha/2, size()-1) *
-			kurtosisDeviation();
+		double quantile = studQuantile(1-alpha/2, size()-1);
+		*lower = kurtosis(Measure::PopulationM) - 
+			quantile * kurtosisDeviation();
+		*upper = kurtosis(Measure::PopulationM) +
+			quantile * kurtosisDeviation();
 	}
 }
 
 // Vector operations
 void DataVector::standardize() {
 	double meanValue = mean();
-	double standardDeviationValue = standardDeviation(Measure::Sample);
+	double standardDeviationValue = standardDeviation(Measure::SampleM);
 
 	for (auto& x : dataVector) {
 		x = (x - meanValue)/standardDeviationValue;
@@ -681,17 +688,17 @@ void DataVector::standardize() {
 bool DataVector::removeOutliers() {
 	double a, b,
 		   t1 = 2+0.2*log10(0.04*size()),
-		   t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
+		   t2 = sqrt(19*sqrt(kurtosis(Measure::SampleM)+2)+1);
 
-	if (skew(Measure::Sample) < -0.2) {
-		a = mean() - t2*standardDeviation(Measure::Sample);
-		b = mean() + t1*standardDeviation(Measure::Sample);
+	if (skew(Measure::SampleM) < -0.2) {
+		a = mean() - t2*standardDeviation(Measure::SampleM);
+		b = mean() + t1*standardDeviation(Measure::SampleM);
 	} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
-		a = mean() - t1*standardDeviation(Measure::Sample);
-		b = mean() + t1*standardDeviation(Measure::Sample);
+		a = mean() - t1*standardDeviation(Measure::SampleM);
+		b = mean() + t1*standardDeviation(Measure::SampleM);
 	} else {
-		a = mean() - t1*standardDeviation(Measure::Sample);
-		b = mean() + t2*standardDeviation(Measure::Sample);
+		a = mean() - t1*standardDeviation(Measure::SampleM);
+		b = mean() + t2*standardDeviation(Measure::SampleM);
 	}
 
 	if (a < dataVector.front() and b > dataVector.back()) 
@@ -701,15 +708,15 @@ bool DataVector::removeOutliers() {
 		dataVector.pop_front();
 		clearStatistics();
 
-		if (skew(Measure::Sample) < -0.2) {
-			t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
-			a = mean() - t2*standardDeviation(Measure::Sample);
+		if (skew(Measure::SampleM) < -0.2) {
+			t2 = sqrt(19*sqrt(kurtosis(Measure::SampleM)+2)+1);
+			a = mean() - t2*standardDeviation(Measure::SampleM);
 		} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
 			t1 = 2+0.2*log10(0.04*size());
-			a = mean() - t1*standardDeviation(Measure::Sample);
+			a = mean() - t1*standardDeviation(Measure::SampleM);
 		} else {
 			t1 = 2+0.2*log10(0.04*size());
-			a = mean() - t1*standardDeviation(Measure::Sample);
+			a = mean() - t1*standardDeviation(Measure::SampleM);
 		}
 	}
 
@@ -717,15 +724,15 @@ bool DataVector::removeOutliers() {
 		dataVector.pop_back();
 		clearStatistics();
 
-		if (skew(Measure::Sample) < -0.2) {
+		if (skew(Measure::SampleM) < -0.2) {
 			t1 = 2+0.2*log10(0.04*size());
-			b = mean() + t1*standardDeviation(Measure::Sample);
+			b = mean() + t1*standardDeviation(Measure::SampleM);
 		} else if (skew() <= 0.2) { // skew in [-0.2;0.2]
 			t1 = 2+0.2*log10(0.04*size());
-			b = mean() + t1*standardDeviation(Measure::Sample);
+			b = mean() + t1*standardDeviation(Measure::SampleM);
 		} else {
-			t2 = sqrt(19*sqrt(kurtosis(Measure::Sample)+2)+1);
-			b = mean() + t2*standardDeviation(Measure::Sample);
+			t2 = sqrt(19*sqrt(kurtosis(Measure::SampleM)+2)+1);
+			b = mean() + t2*standardDeviation(Measure::SampleM);
 		}
 	}
 
@@ -804,6 +811,103 @@ bool DataVector::writeToFile(QString filename) {
 	return true;
 }
 
+void DataVector::setDistribution(Distribution type) {
+	distributionType = type;
+
+	exprtk::parser<double> parser;
+	distributionData.paremeterName.clear();
+	distributionData.parameter.clear();
+	distributionData.parameterDeviation.clear();
+
+	switch (type) {
+		case Distribution::NormalD:
+			{
+				distributionData.parameterCount = 2;
+				distributionData.paremeterName = {
+					"m", "σ"
+				};
+				distributionData.parameter = {
+					mean(),
+					standardDeviation(),
+				};
+				distributionData.pdfMax = 1/(standardDeviation()*2.5066282746);
+				distributionData.parameterDeviation.push_back(
+						std::pow(distributionData.parameter[1], 2)/size());
+				distributionData.parameterDeviation.push_back(distributionData.parameter[0]/2);
+
+				QString pdf = QString(
+						"1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2*(%2)^2))")
+					.arg(distributionData.parameter[0])
+					.arg(distributionData.parameter[1]);
+				parser.compile(pdf.toStdString(), distributionData.pdfExpression);
+
+				QString cdf = QString(
+						"normCdf((x-(%1))/(%2))")
+					.arg(distributionData.parameter[0])
+					.arg(distributionData.parameter[1]);
+				parser.compile(cdf.toStdString(), distributionData.cdfExpression);
+
+				QString cdfDeviation = QString(
+						"(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
+					.arg(QString("-1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
+							.arg(distributionData.parameter[0])
+							.arg(distributionData.parameter[1])
+						)
+					.arg(QString("-(x-%1)/((%2)^2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
+							.arg(distributionData.parameter[0])
+							.arg(distributionData.parameter[1])
+						)
+					.arg(distributionData.parameter[0])
+					.arg(distributionData.parameter[1])
+					.arg(distributionData.parameterCv);
+				distributionData.parameterCv = 0;
+				break;
+			}
+		case Distribution::ExponentialD:
+			{
+				distributionData.parameterCount = 1;
+				distributionData.paremeterName = {
+					"λ",
+				};
+				distributionData.parameter = {
+					1/mean(),
+				};
+				distributionData.pdfMax = distributionData.parameter[0];
+				distributionData.parameterDeviation.push_back(
+						std::pow(distributionData.parameter[0], 2)/2);
+
+				QString pdf = QString(
+						"(%1)(exp(-(%1)x))")
+					.arg(distributionData.parameter[0], 0, 'f', 6);
+				parser.compile(pdf.toStdString(), distributionData.pdfExpression);
+
+				QString cdf = QString(
+						"1-exp(-(%1)x)")
+					.arg(distributionData.parameter[0]);
+				parser.compile(cdf.toStdString(), distributionData.cdfExpression);
+
+				QString cdfDeviation = QString(
+						"x^2*exp(-2(%1)x)%2")
+					.arg(distributionData.parameter[0])
+					.arg(distributionData.parameterDeviation[0]);
+				distributionData.parameterCv = 0;
+				break;
+			}
+	}
+}
+
+DataVector::Distribution DataVector::distribution() {
+	return distributionType;
+}
+
+Dist::Dist() {
+	symbolTable.add_variable("x", x);
+	auto* eNormalDistributionCdf = new exprtkNormalDistributionCdf();
+	symbolTable.add_function("normCdf", *eNormalDistributionCdf);
+	cdfExpression.register_symbol_table(symbolTable);
+	pdfExpression.register_symbol_table(symbolTable);
+	cdfDeviationExpression.register_symbol_table(symbolTable);
+}
 
 void DataVector::setTransformationSymbolTable() {
 	if (transformationSymbolTableReady)
@@ -901,6 +1005,12 @@ void DataVector::setTransformationSymbolTable() {
 	transformationSymbolTable
 	.add_function("nonparametricCv", *eNonparametricVariationCoef);
 
+	exprtkNormalDistributionCdf* eNormalDistribtuionCdf =
+		new exprtkNormalDistributionCdf();
+
+	transformationSymbolTable
+	.add_function("normCfd", *eNormalDistribtuionCdf);
+
 	transformationSymbolTableReady = true;
 }
 
@@ -929,4 +1039,5 @@ const QString DataVector::exprtkFuncitons =
 		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
 		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
 		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
+		"normCdf(u) — функція розподілу нормованого нормального розподілу\n"
 		"beta(k) — бета–коефіцієнт";
