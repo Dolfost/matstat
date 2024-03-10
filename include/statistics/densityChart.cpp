@@ -27,7 +27,6 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	density = new QCPGraph(this->xAxis, this->yAxis2);
 	density->setName("f(x) (відтв.)");
 	this->yAxis2->setLabel("f(x) (відтворена)");
-	coordinatesLabelString = "%1\n%2 %3";
 
 	enableMean();
 	enableStandartDeviation();
@@ -53,6 +52,7 @@ void DensityChart::fill(ClassSeries* clSr) {
 	x.clear(), y.clear();
 
 	if (cs->dataVector->distribution() != DataVector::Distribution::UnknownD) {
+		coordinatesLabelString = "%1\n%2 %3";
 		this->yAxis2->setTickLabels(true);
 		this->yRange2 = QCPRange(0, cs->dataVector->distributionData.pdfMax);
 		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
@@ -65,7 +65,9 @@ void DensityChart::fill(ClassSeries* clSr) {
 
 		density->setData(x, y);
 	} else {
+		coordinatesLabelString = "%1\n%2";
 		this->yAxis2->setTickLabels(false);
+		density->data()->clear();
 	};
 
 	yRange = QCPRange(0, cs->maxIntervalProbability());

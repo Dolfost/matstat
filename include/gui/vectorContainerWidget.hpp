@@ -50,6 +50,7 @@ private slots:
 	void reverseAction();
 	void rightShiftAction();
 	void transformAction();
+	void reproductionAction();
 	void trimAction();
 	void removeOutliersAction();
 	void infoAction();

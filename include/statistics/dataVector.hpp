@@ -65,9 +65,13 @@ struct Dist {
 	exprtk::expression<double> pdfExpression; // probability density function
 	exprtk::expression<double> cdfExpression; // cummulative density function
 	exprtk::expression<double> cdfDeviationExpression;
+
+	QString cdfString;
+	QString pdfString;
 	
 	size_t parameterCount = 0;
 	std::vector<QString> paremeterName;
+	std::vector<QString> paremeterDeviationName;
 	std::vector<double> parameter{0};
 	std::vector<double> parameterDeviation{0};
 	double parameterCv = 0;
@@ -149,12 +153,14 @@ public:
 	static const QString exprtkFuncitons;
 
 	// distribution recreation
+	static const QStringList distributionName;
 	enum Distribution {
 		UnknownD,
 		NormalD,
 		ExponentialD,
 		WeibullD,
 		LogNormalD,
+		CountD,
 	};
 
 	Dist distributionData;

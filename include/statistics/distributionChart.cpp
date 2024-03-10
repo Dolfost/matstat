@@ -64,6 +64,8 @@ void DistributionChart::fill(ClassSeries* clSr) {
 		}
 
 		distribution->setData(x, y, true);
+	} else {
+		distribution->data()->clear();
 	}
 
 

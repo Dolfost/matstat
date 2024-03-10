@@ -1,6 +1,7 @@
 #include "vectorContainerWidget.hpp"
 #include <QtCore/qnamespace.h>
 #include "vectorTrimmerDialog.hpp"
+#include "distributionReproductionDialog.hpp"
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -133,6 +134,10 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	connect(transformAction, &QAction::triggered,
 			this, &VectorContainerWidget::transformAction);
 
+	QAction* reproductionAction = menu.addAction("Відтворення розподілу…");
+	connect(reproductionAction, &QAction::triggered,
+			this, &VectorContainerWidget::reproductionAction);
+
 	menu.addSeparator();
 
 	QAction* infoAction = menu.addAction("Про вектор…");
@@ -236,6 +241,15 @@ void VectorContainerWidget::transformAction() {
 			this, &VectorContainerWidget::appendVector);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::reproductionAction() {
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	DistributionReproductionDialog* drd = 
+		new DistributionReproductionDialog(ve, this);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			drd, &DistributionReproductionDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::trimAction() {
