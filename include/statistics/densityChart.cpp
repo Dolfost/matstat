@@ -2,7 +2,6 @@
 #include <QBarSet>
 #include <QBarSeries>
 #include <QValueAxis>
-#include <algorithm>
 
 #include <QDebug>
 
@@ -25,15 +24,17 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	barsBrush.setColor("#2b8eff");
 	bars->setBrush(barsBrush);
 
-	density = new QCPGraph(this->xAxis, this->yAxis);
+	density = new QCPGraph(this->xAxis, this->yAxis2);
 	density->setName("f(x) (відтв.)");
+	this->yAxis2->setLabel("f(x) (відтворена)");
+	coordinatesLabelString = "%1\n%2 %3";
 
 	enableMean();
 	enableStandartDeviation();
 	enableMed();
 	enableWalshMed();
 
-	this->yAxis->setLabel("f(x)");
+	this->yAxis->setLabel("f(x) (класи)");
 }
 
 void DensityChart::fill(ClassSeries* clSr) {
@@ -52,6 +53,8 @@ void DensityChart::fill(ClassSeries* clSr) {
 	x.clear(), y.clear();
 
 	if (cs->dataVector->distribution() != DataVector::Distribution::UnknownD) {
+		this->yAxis2->setTickLabels(true);
+		this->yRange2 = QCPRange(0, cs->dataVector->distributionData.pdfMax);
 		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
 		for (cs->dataVector->distributionData.x = cs->dataVector->min();
 				cs->dataVector->distributionData.x <= cs->dataVector->max(); 
@@ -61,7 +64,9 @@ void DensityChart::fill(ClassSeries* clSr) {
 		}
 
 		density->setData(x, y);
-	}
+	} else {
+		this->yAxis2->setTickLabels(false);
+	};
 
 	yRange = QCPRange(0, cs->maxIntervalProbability());
 

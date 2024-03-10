@@ -59,12 +59,10 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->xAxis2->setVisible(true);
 	this->xAxis2->setTickLabels(false);
 	this->yAxis2->setVisible(true);
-	this->yAxis2->setTickLabels(false);
+	this->yAxis2->setTickLabels(true);
 
 	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
 			this->xAxis2, SLOT(setRange(QCPRange)));
-	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
-			this->yAxis2, SLOT(setRange(QCPRange)));
 
 	//  TODO:
 	//  make the yAxis2 for the density chart to be from the 0 to the distribution->cfmMax
@@ -73,13 +71,29 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 			SLOT(handleZoomX(QCPRange)));
 	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
 			SLOT(handleZoomY(QCPRange)));
+	connect(this->yAxis2, SIGNAL(rangeChanged(QCPRange)),
+			SLOT(handleZoomY2(QCPRange)));
 
 	this->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
+	this->axisRect()->setRangeDragAxes({
+			this->xAxis,
+			this->yAxis,
+			this->yAxis2,
+			});
+	this->axisRect()->setRangeZoomAxes({
+			this->xAxis,
+			this->yAxis,
+			this->yAxis2,
+			});
+
+
 	xRange = QCPRange(-5, 5);
 	yRange = QCPRange(0, 1);
+	yRange2 = QCPRange(0, 1);
 	this->xAxis->setRange(xRange);
 	this->yAxis->setRange(yRange);
+	this->yAxis2->setRange(yRange);
 	this->replot();
 
 	// coordinatesLabel setup
@@ -102,6 +116,7 @@ void PlotBase::fill(ClassSeries* cs) {
 	xFixedTicker->setTickCount(cs->classCount());
 
 	this->yAxis->setRange(yRange);
+	this->yAxis2->setRange(yRange2);
 
 	this->replot();
 }
@@ -203,19 +218,19 @@ ClassSeries* PlotBase::classSeries() {
 
 void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	QPoint screenPoint = event->pos();
-	QPointF chartPoint = QPointF(
-			this->xAxis->pixelToCoord(screenPoint.x()),
-			this->yAxis->pixelToCoord(screenPoint.y())
-			);
+	double x = this->xAxis->pixelToCoord(screenPoint.x());
+	double y = this->yAxis->pixelToCoord(screenPoint.y());
+	double y2 = this->yAxis2->pixelToCoord(screenPoint.y());
 
 	coordinatesLabel->show();
 
 	coordinatesLabel->move(screenPoint -
 			QPoint(coordinatesLabel->size().width()+6,
 				coordinatesLabel->size().height()+6));
-	coordinatesLabel->setText(QString("%1\n%2")
-			.arg(chartPoint.x(), 3, 'f', 3)
-			.arg(chartPoint.y(), 3, 'f', 3));
+	coordinatesLabel->setText(QString(coordinatesLabelString)
+			.arg(x, 3, 'f', 3)
+			.arg(y, 3, 'f', 3)
+			.arg(y2, 3, 'f', 3));
 	coordinatesLabel->adjustSize();
 
 	coordinatesTimer->stop();
@@ -233,6 +248,10 @@ void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 }
 
+void PlotBase::handleZoomY2(const QCPRange& newRange) {
+	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
+}
+
 void PlotBase::toggleLog(bool state) {
 	if (state == true) {
 		this->yAxis->setTicker(yLogTicker);
@@ -241,6 +260,8 @@ void PlotBase::toggleLog(bool state) {
 		this->yAxis2->setScaleType(QCPAxis::stLogarithmic);
 		this->yAxis->setNumberFormat("eb");
 		this->yAxis->setNumberPrecision(0);
+		this->yAxis2->setNumberFormat("eb");
+		this->yAxis2->setNumberPrecision(0);
 	} else {
 		this->yAxis->setTicker(yTicker);
 		this->yAxis->setScaleType(QCPAxis::stLinear);
@@ -248,6 +269,8 @@ void PlotBase::toggleLog(bool state) {
 		this->yAxis2->setScaleType(QCPAxis::stLinear);
 		this->yAxis->setNumberFormat("f");
 		this->yAxis->setNumberPrecision(3);
+		this->yAxis2->setNumberFormat("f");
+		this->yAxis2->setNumberPrecision(3);
 	}
 
 	this->replot();
@@ -256,5 +279,6 @@ void PlotBase::toggleLog(bool state) {
 void PlotBase::zoomHome() {
 	handleZoomX(xRange);
 	handleZoomY(yRange);
+	handleZoomY2(yRange2);
 	replot();
 }

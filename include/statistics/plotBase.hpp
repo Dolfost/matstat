@@ -41,6 +41,7 @@ public:
 	QSharedPointer<QCPAxisTickerLog> yLogTicker;
 	QCPRange xRange;
 	QCPRange yRange;
+	QCPRange yRange2;
 
 	QCPGraph* mean = nullptr;
 	QCPGraph* standatrDeviation = nullptr;
@@ -48,6 +49,8 @@ public:
 	QCPGraph* walshMed = nullptr;
 
 	QCPTextElement* title = nullptr;
+
+	QString coordinatesLabelString = "%1\n%2";
 private:
 	QLabel* coordinatesLabel = nullptr;
 	QTimer* coordinatesTimer = nullptr;
@@ -55,6 +58,7 @@ private:
 private slots:
 	void handleZoomX(const QCPRange & newRange);
 	void handleZoomY(const QCPRange & newRange);
+	void handleZoomY2(const QCPRange& newRange);
 
 public slots:
 	void toggleLog(bool state);

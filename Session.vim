@@ -14,21 +14,21 @@ else
   set shortmess=aoO
 endif
 badd +14 main.cpp
-badd +67 include/statistics/plotBase.cpp
-badd +15 include/statistics/plotBase.hpp
+badd +233 include/statistics/plotBase.cpp
+badd +2 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
 badd +74 include/statistics/dataVector.hpp
-badd +893 include/statistics/dataVector.cpp
+badd +844 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +21 include/statistics/classSeries.hpp
-badd +62 include/statistics/distributionChart.cpp
-badd +16 include/statistics/distributionChart.hpp
+badd +56 include/statistics/distributionChart.cpp
+badd +12 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
-badd +15 include/statistics/densityChart.hpp
-badd +61 include/statistics/densityChart.cpp
+badd +16 include/statistics/densityChart.hpp
+badd +30 include/statistics/densityChart.cpp
 badd +17 include/gui/mainWindow.hpp
-badd +145 include/gui/mainWindow.cpp
+badd +143 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +837 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -51,6 +51,7 @@ badd +6 include/gui/rangeSlider.cpp
 badd +15 include/statistics/dataVectorExprtk.hpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabrewind
@@ -104,12 +105,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 893 - ((31 * winheight(0) + 20) / 40)
+let s:l = 846 - ((13 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 893
-normal! 049|
+keepjumps 846
+normal! 037|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
@@ -127,17 +128,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 74 - ((31 * winheight(0) + 20) / 40)
+let s:l = 79 - ((31 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 74
-normal! 022|
+keepjumps 79
+normal! 07|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 123 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 89 + 106) / 213)
 tabnext
-edit include/statistics/plotBase.cpp
+edit include/statistics/densityChart.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -151,7 +152,7 @@ set winheight=1
 set winminwidth=0
 set winwidth=1
 argglobal
-balt include/statistics/densityChart.cpp
+balt include/statistics/distributionChart.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -162,12 +163,32 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 67 - ((18 * winheight(0) + 20) / 40)
+let s:l = 30 - ((29 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 67
-normal! 08|
+keepjumps 30
+normal! 041|
+tabnext
+edit include/gui/mainWindow.cpp
+argglobal
+balt include/statistics/plotBase.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 143 - ((10 * winheight(0) + 20) / 40)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 143
+normal! 083|
 tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
@@ -175,13 +196,12 @@ endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
-let &winminheight = s:save_winminheight
-let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+set hlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost

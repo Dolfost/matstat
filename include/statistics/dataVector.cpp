@@ -831,6 +831,7 @@ void DataVector::setDistribution(Distribution type) {
 					standardDeviation(),
 				};
 				distributionData.pdfMax = 1/(standardDeviation()*2.5066282746);
+				qDebug() << distributionData.pdfMax;
 				distributionData.parameterDeviation.push_back(
 						std::pow(distributionData.parameter[1], 2)/size());
 				distributionData.parameterDeviation.push_back(distributionData.parameter[0]/2);
@@ -840,6 +841,7 @@ void DataVector::setDistribution(Distribution type) {
 					.arg(distributionData.parameter[0])
 					.arg(distributionData.parameter[1]);
 				parser.compile(pdf.toStdString(), distributionData.pdfExpression);
+				qDebug() << pdf;
 
 				QString cdf = QString(
 						"normCdf((x-(%1))/(%2))")

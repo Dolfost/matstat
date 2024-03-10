@@ -19,8 +19,9 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	graphPen.setColor("#2b8eff");
 	graph->setPen(graphPen);
 
-	distribution = new QCPGraph(this->xAxis, this->yAxis);
+	distribution = new QCPGraph(this->xAxis, this->yAxis2);
 	distribution->setName("F(x) (відтв.)");
+	this->yAxis2->setTickLabels(false);
 
 	enableMed();
 	enableWalshMed();
@@ -64,6 +65,7 @@ void DistributionChart::fill(ClassSeries* clSr) {
 
 		distribution->setData(x, y, true);
 	}
+
 
 	plotMed();
 	plotWalshMed();
