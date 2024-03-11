@@ -18,26 +18,26 @@ badd +131 include/statistics/plotBase.cpp
 badd +2 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
-badd +163 include/statistics/dataVector.hpp
-badd +1139 include/statistics/dataVector.cpp
+badd +46 include/statistics/dataVector.hpp
+badd +732 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +21 include/statistics/classSeries.hpp
-badd +69 include/statistics/distributionChart.cpp
+badd +13 include/statistics/distributionChart.cpp
 badd +12 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +16 include/statistics/densityChart.hpp
-badd +56 include/statistics/densityChart.cpp
+badd +6 include/statistics/densityChart.cpp
 badd +17 include/gui/mainWindow.hpp
-badd +146 include/gui/mainWindow.cpp
+badd +143 include/gui/mainWindow.cpp
 badd +24 CMakeLists.txt
 badd +837 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
-badd +53 include/gui/vectorContainerWidget.hpp
+badd +25 include/gui/vectorContainerWidget.hpp
 badd +6 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
 badd +36 include/gui/transformationFormulaEditorDialog.hpp
 badd +1 include/gui/vectorPickerDialog.cpp
-badd +252 include/gui/vectorContainerWidget.cpp
+badd +28 include/gui/vectorContainerWidget.cpp
 badd +40 include/gui/vectorInfoDialog.hpp
 badd +29 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
@@ -48,9 +48,11 @@ badd +1 include/gui/rangeSlider.hpp
 badd +24 include/gui/vectorTrimmerDialog.hpp
 badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
-badd +15 include/statistics/dataVectorExprtk.hpp
-badd +75 include/gui/distributionReproductionDialog.cpp
-badd +44 include/gui/distributionReproductionDialog.hpp
+badd +260 include/statistics/dataVectorExprtk.hpp
+badd +44 include/statistics/distributionReproducer.hpp
+badd +197 include/statistics/distributionReproducer.cpp
+badd +83 include/gui/distributionReproducerDialog.cpp
+badd +1 include/gui/distributionReproducerDialog.hpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -58,7 +60,28 @@ tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
+tabnew +setlocal\ bufhidden=wipe
 tabrewind
+edit include/statistics/dataVectorExprtk.hpp
+argglobal
+balt include/statistics/distributionReproducer.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 15 - ((14 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 15
+normal! 0
+tabnext
 edit main.cpp
 argglobal
 setlocal fdm=manual
@@ -71,46 +94,46 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 14 - ((9 * winheight(0) + 17) / 35)
+let s:l = 2 - ((1 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 2
+normal! 011|
+tabnext
+edit include/statistics/distributionChart.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+argglobal
+balt include/statistics/densityChart.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 14 - ((13 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 14
 normal! 0
 tabnext
-edit include/statistics/densityChart.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-argglobal
-balt include/statistics/distributionChart.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 60 - ((18 * winheight(0) + 17) / 35)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 60
-normal! 049|
-tabnext
-edit include/gui/vectorContainerWidget.cpp
+edit include/statistics/distributionReproducer.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -129,7 +152,6 @@ set winminwidth=0
 set winwidth=1
 wincmd =
 argglobal
-balt include/gui/vectorContainerWidget.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -140,19 +162,18 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 253 - ((26 * winheight(0) + 17) / 35)
+let s:l = 2 - ((1 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 253
+keepjumps 2
 normal! 0
 wincmd w
 argglobal
-if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
+if bufexists(fnamemodify("include/gui/distributionReproducerDialog.hpp", ":p")) | buffer include/gui/distributionReproducerDialog.hpp | else | edit include/gui/distributionReproducerDialog.hpp | endif
 if &buftype ==# 'terminal'
-  silent file include/gui/vectorContainerWidget.hpp
+  silent file include/gui/distributionReproducerDialog.hpp
 endif
-balt include/gui/vectorContainerWidget.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -163,16 +184,17 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 11 - ((9 * winheight(0) + 17) / 35)
+let s:l = 1 - ((0 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 11
-normal! 05|
+keepjumps 1
+normal! 0
 wincmd w
+2wincmd w
 wincmd =
 tabnext
-edit include/gui/distributionReproductionDialog.cpp
+edit include/gui/distributionReproducerDialog.cpp
 let s:save_splitbelow = &splitbelow
 let s:save_splitright = &splitright
 set splitbelow splitright
@@ -191,7 +213,7 @@ set winminwidth=0
 set winwidth=1
 wincmd =
 argglobal
-balt include/gui/distributionReproductionDialog.hpp
+balt include/gui/distributionReproducerDialog.hpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -202,41 +224,19 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 75 - ((14 * winheight(0) + 17) / 35)
+let s:l = 91 - ((22 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 75
-normal! 080|
-wincmd w
-argglobal
-if bufexists(fnamemodify("include/gui/distributionReproductionDialog.hpp", ":p")) | buffer include/gui/distributionReproductionDialog.hpp | else | edit include/gui/distributionReproductionDialog.hpp | endif
-if &buftype ==# 'terminal'
-  silent file include/gui/distributionReproductionDialog.hpp
-endif
-balt include/gui/distributionReproductionDialog.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 44 - ((26 * winheight(0) + 17) / 35)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 44
+keepjumps 91
 normal! 0
 wincmd w
-wincmd =
-tabnext
-edit include/gui/mainWindow.cpp
 argglobal
-balt include/statistics/plotBase.cpp
+if bufexists(fnamemodify("include/gui/distributionReproducerDialog.hpp", ":p")) | buffer include/gui/distributionReproducerDialog.hpp | else | edit include/gui/distributionReproducerDialog.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/gui/distributionReproducerDialog.hpp
+endif
+balt include/gui/distributionReproducerDialog.cpp
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -247,12 +247,14 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 135 - ((8 * winheight(0) + 17) / 35)
+let s:l = 37 - ((22 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 135
-normal! 050|
+keepjumps 37
+normal! 035|
+wincmd w
+wincmd =
 tabnext
 edit include/statistics/dataVector.cpp
 let s:save_splitbelow = &splitbelow
@@ -284,12 +286,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1139 - ((28 * winheight(0) + 17) / 35)
+let s:l = 613 - ((19 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1139
-normal! 0
+keepjumps 613
+normal! 05|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
@@ -307,12 +309,74 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 163 - ((21 * winheight(0) + 17) / 35)
+let s:l = 11 - ((10 * winheight(0) + 20) / 40)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 163
-normal! 015|
+keepjumps 11
+normal! 011|
+wincmd w
+wincmd =
+tabnext
+edit include/statistics/distributionReproducer.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+wincmd =
+argglobal
+balt include/statistics/distributionReproducer.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 98 - ((8 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 98
+normal! 036|
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/statistics/distributionReproducer.hpp", ":p")) | buffer include/statistics/distributionReproducer.hpp | else | edit include/statistics/distributionReproducer.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/statistics/distributionReproducer.hpp
+endif
+balt include/statistics/distributionReproducer.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 35 - ((22 * winheight(0) + 21) / 43)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 35
+normal! 031|
 wincmd w
 wincmd =
 tabnext 4

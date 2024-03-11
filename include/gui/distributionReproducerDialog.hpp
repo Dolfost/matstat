@@ -1,5 +1,5 @@
-#ifndef _DISTRIBUTION_REPRODUCTION_DIALOG_
-#define _DISTRIBUTION_REPRODUCTION_DIALOG_
+#ifndef _DISTRIBUTION_REPRODUCER_DIALOG_
+#define _DISTRIBUTION_REPRODUCER_DIALOG_
 
 #include "statistics/dataVector.hpp"
 
@@ -17,10 +17,10 @@
 
 #include "guiTypes.hpp"
 
-class DistributionReproductionDialog : public QDialog {
+class DistributionReproducerDialog : public QDialog {
 	Q_OBJECT
 public:
-	DistributionReproductionDialog(
+	DistributionReproducerDialog(
 			VectorEntry*,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
@@ -32,12 +32,15 @@ private:
 	QWidget* tablesWidget = nullptr;
 	QVBoxLayout* tablesLayout = nullptr;
 	QTableWidget* parameterTable = nullptr;
-	QTableWidget* dispersionTable = nullptr;
+	QTableWidget* deviationTable = nullptr;
 	QTableWidget* functionTable = nullptr;
+	QTableWidget* functionDeviationTable = nullptr;
 
 	VectorEntry* ve = nullptr;
 
 	void refill();
+
+	int precision = 5;
 
 public slots:
 	void vectorDeletedHandler(VectorEntry*);
@@ -49,4 +52,4 @@ signals:
 	void distributionSelected(VectorEntry*);
 };
 
-#endif // !_DISTRIBUTION_REPRODUCTION_DIALOG_
+#endif // !_DISTRIBUTION_REPRODUCER_DIALOG_

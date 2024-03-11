@@ -52,15 +52,15 @@ void DistributionChart::fill(ClassSeries* clSr) {
 
 	graph->setData(x, y, true);
 
-	if (cs->dataVector->distribution() != DataVector::Distribution::UnknownD) {
+	if (cs->dataVector->reproduction.model != DistributionReproducer::Distribution::UnknownD) {
 		x.clear(), y.clear();
 
 		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
-		for (cs->dataVector->distributionData.x = cs->dataVector->min();
-				cs->dataVector->distributionData.x <= cs->dataVector->max(); 
-				cs->dataVector->distributionData.x += interval/350) {
-			x.push_back(cs->dataVector->distributionData.x);
-			y.push_back(cs->dataVector->distributionData.cdfExpression.value());
+		for (cs->dataVector->reproduction.x = cs->dataVector->min();
+				cs->dataVector->reproduction.x <= cs->dataVector->max(); 
+				cs->dataVector->reproduction.x += interval/350) {
+			x.push_back(cs->dataVector->reproduction.x);
+			y.push_back(cs->dataVector->reproduction.cdfExpression.value());
 		}
 
 		distribution->setData(x, y, true);

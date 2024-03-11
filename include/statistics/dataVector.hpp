@@ -12,6 +12,8 @@
 #include <QFile>
 #include "exprtk.hpp"
 
+#include "distributionReproducer.hpp"
+
 struct Statistics {
 	// population/sample statistics map has the format
 	// std::map<degree, std::pair<population, sample>>
@@ -57,26 +59,6 @@ struct Statistics {
 	std::pair<size_t, bool> size{0, false};
 };
 
-struct Dist {
-	Dist();
-
-	double x = 0;
-	exprtk::symbol_table<double> symbolTable;
-	exprtk::expression<double> pdfExpression; // probability density function
-	exprtk::expression<double> cdfExpression; // cummulative density function
-	exprtk::expression<double> cdfDeviationExpression;
-
-	QString cdfString;
-	QString pdfString;
-	
-	size_t parameterCount = 0;
-	std::vector<QString> paremeterName;
-	std::vector<QString> paremeterDeviationName;
-	std::vector<double> parameter{0};
-	std::vector<double> parameterDeviation{0};
-	double parameterCv = 0;
-	double pdfMax = 0;
-};
 
 class DataVector {
 public:
@@ -153,19 +135,9 @@ public:
 	static const QString exprtkFuncitons;
 
 	// distribution recreation
-	static const QStringList distributionName;
-	enum Distribution {
-		UnknownD,
-		NormalD,
-		ExponentialD,
-		WeibullD,
-		LogNormalD,
-		CountD,
-	};
 
-	Dist distributionData;
-	void setDistribution(Distribution);
-	Distribution distribution();
+	DistributionReproducer reproduction;
+	void reproduceDistribution(DistributionReproducer::Distribution);
 
 
 private:
@@ -175,8 +147,6 @@ private:
 
 	bool transformationSymbolTableReady = false;
 	void setTransformationSymbolTable();
-
-	Distribution distributionType = UnknownD;
 
 	// Statistics computers
 	void computeMinMaxSize();

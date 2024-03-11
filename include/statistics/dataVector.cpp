@@ -349,6 +349,7 @@ double DataVector::normalDistributionCdf(double u) {
 	return f;
 }
 
+
 // statistic computers //
 void DataVector::computeMinMaxSize() {
 	stat.min.first = dataVector.front();
@@ -487,6 +488,39 @@ void DataVector::computeVariationCoef() {
 void DataVector::computeNonparametricVariationCoef() {
 	stat.nonparametricVariationCoef.first = mad()/med();
 	stat.nonparametricVariationCoef.second = true;
+}
+
+void DataVector::reproduceDistribution(DistributionReproducer::Distribution type) {
+	switch (type) {
+		case DistributionReproducer::NormalD:
+			{
+				reproduction.setDistribution(type, {mean(), standardDeviation()}, size());
+				break;
+			}
+		case DistributionReproducer::ExponentialD:
+			{
+				reproduction.setDistribution(type, {1/mean()}, size());
+				break;
+			}
+		case DistributionReproducer::WeibullD:
+			{
+				reproduction.setDistribution(type, {exp(-skew(Measure::PopulationM)), 1}, size());
+				break;
+			}
+		case DistributionReproducer::LogNormalD:
+			{
+				reproduction.setDistribution(type, {
+					2*log(mean())-log(rawMoment(2))/2,
+					sqrt(log(rawMoment(2))-2*log(mean()))
+					}, size());
+				break;
+			}
+		case DistributionReproducer::UnknownD:
+			{
+				reproduction.setDistribution(type, {}, size());
+				break;
+			}
+	}
 }
 
 
@@ -699,7 +733,6 @@ bool DataVector::removeOutliers() {
 		a = mean() - t1*standardDeviation(Measure::SampleM);
 		b = mean() + t2*standardDeviation(Measure::SampleM);
 	}
-	qDebug() << a << b;
 
 	if (a < dataVector.front() and b > dataVector.back()) 
 		return false;
@@ -764,7 +797,6 @@ size_t DataVector::trim(double from, double to) {
 	return res;
 }
 
-
 QString DataVector::transform(QString expression) {
 	QString msg;
 
@@ -809,199 +841,6 @@ bool DataVector::writeToFile(QString filename) {
 	file.close();
 
 	return true;
-}
-
-void DataVector::setDistribution(Distribution type) {
-	distributionType = type;
-
-	exprtk::parser<double> parser;
-	distributionData.paremeterName.clear();
-	distributionData.parameter.clear();
-	distributionData.parameterDeviation.clear();
-
-	switch (type) {
-		case Distribution::NormalD:
-			{
-				distributionData.parameterCount = 2;
-				distributionData.paremeterName = {
-					"m", "σ"
-				};
-				distributionData.paremeterDeviationName =
-					distributionData.paremeterName;
-				distributionData.parameter = {
-					mean(),
-					standardDeviation(),
-				};
-				distributionData.pdfMax = 1/(standardDeviation()*2.5066282746);
-				distributionData.parameterDeviation.push_back(
-						std::pow(distributionData.parameter[1], 2)/size());
-				distributionData.parameterDeviation.push_back(distributionData.parameter[0]/2);
-
-				distributionData.pdfString = QString(
-						"1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2*(%2)^2))")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1]);
-				parser.compile(distributionData.pdfString.toStdString(), distributionData.pdfExpression);
-
-				distributionData.cdfString = QString(
-						"normCdf((x-(%1))/(%2))")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1]);
-				parser.compile(distributionData.cdfString.toStdString(), distributionData.cdfExpression);
-
-				QString cdfDeviation = QString(
-						"(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
-					.arg(QString("-1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
-							.arg(distributionData.parameter[0])
-							.arg(distributionData.parameter[1])
-						)
-					.arg(QString("-(x-%1)/((%2)^2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
-							.arg(distributionData.parameter[0])
-							.arg(distributionData.parameter[1])
-						)
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1])
-					.arg(distributionData.parameterCv);
-				distributionData.parameterCv = 0;
-				break;
-			}
-		case Distribution::ExponentialD:
-			{
-				distributionData.parameterCount = 1;
-				distributionData.paremeterName = {
-					"λ",
-				};
-				distributionData.paremeterDeviationName =
-					distributionData.paremeterName;
-				distributionData.parameter = {
-					1/mean(),
-				};
-				distributionData.pdfMax = distributionData.parameter[0];
-				distributionData.parameterDeviation.push_back(
-						std::pow(distributionData.parameter[0], 2)/2);
-
-				distributionData.pdfString = QString(
-						"(%1)(exp(-(%1)x))")
-					.arg(distributionData.parameter[0], 0, 'f', 6);
-				parser.compile(distributionData.pdfString.toStdString(), distributionData.pdfExpression);
-
-				distributionData.cdfString = QString(
-						"1-exp(-(%1)x)")
-					.arg(distributionData.parameter[0]);
-				parser.compile(distributionData.cdfString.toStdString(), distributionData.cdfExpression);
-
-				QString cdfDeviation = QString(
-						"x^2*exp(-2(%1)x)%2")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameterDeviation[0]);
-				distributionData.parameterCv = 0;
-				break;
-			}
-		case Distribution::WeibullD:
-			{
-				distributionData.parameterCount = 2;
-				distributionData.paremeterName = {
-					"𝛼",
-					"β"
-				};
-				distributionData.paremeterDeviationName =
-					distributionData.paremeterName;
-				distributionData.parameter = {
-					exp(-skew(Measure::PopulationM)),
-					1, // ???
-				};
-				distributionData.pdfMax = distributionData.parameter[0];
-				distributionData.parameterDeviation.push_back(
-						std::pow(distributionData.parameter[0], 2)/2);
-
-				distributionData.pdfString = QString(
-						"(%1)(exp(-(%1)x))")
-					.arg(distributionData.parameter[0], 0, 'f', 6);
-				parser.compile(distributionData.pdfString.toStdString(), distributionData.pdfExpression);
-
-				distributionData.cdfString = QString(
-						"1-exp(-(%1)x)")
-					.arg(distributionData.parameter[0]);
-				parser.compile(distributionData.cdfString.toStdString(), distributionData.cdfExpression);
-
-				QString cdfDeviation = QString(
-						"x^2*exp(-2(%1)x)%2")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameterDeviation[0]);
-				distributionData.parameterCv = 0;
-				break;
-			}
-		case Distribution::LogNormalD:
-			{
-				distributionData.parameterCount = 2;
-				distributionData.paremeterName = {
-					"m", "σ"
-				};
-				distributionData.paremeterDeviationName = {
-					"m", "σ²"
-				};
-				distributionData.parameter = {
-					2*log(mean())-log(rawMoment(2))/2,
-					sqrt(log(rawMoment(2))-2*log(mean()))
-				};
-				distributionData.pdfMax = 1/(standardDeviation()*2.5066282746);
-				distributionData.parameterDeviation.push_back(
-						(exp(4*std::pow(distributionData.parameter[1],2)) - 
-							 8*std::exp(2*std::pow(distributionData.parameter[0],2) + 
-								 16*std::exp(std::pow(distributionData.parameter[0],2)) - 1)) /
-							 (4*size()));
-				distributionData.parameterDeviation.push_back(
-						(exp(4*std::pow(distributionData.parameter[1],2)) - 
-							 4*std::exp(2*std::pow(distributionData.parameter[0],2) + 
-								 4*std::exp(std::pow(distributionData.parameter[0],2)) - 1)) /
-							 (4*size()*std::pow(distributionData.parameter[0],2)));
-
-				distributionData.pdfString = QString(
-						"1/(x(%2)*2.5066282746)*exp(-((log(x)-%1)^2)/(2*(%2)^2))")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1]);
-				parser.compile(distributionData.pdfString.toStdString(), distributionData.pdfExpression);
-
-				distributionData.cdfString = QString(
-						"normCdf((log(x)-(%1))/(%2))")
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1]);
-				parser.compile(distributionData.cdfString.toStdString(), distributionData.cdfExpression);
-
-				distributionData.parameterCv = 
-					(-exp(4*std::pow(distributionData.parameter[1],2)) + 
-					 6*std::exp(2*std::pow(distributionData.parameter[0],2) - 
-						 8*std::exp(std::pow(distributionData.parameter[0],2)) + 3)) /
-					(4*size()*std::pow(distributionData.parameter[0],2));
-				QString cdfDeviation = QString(
-						"(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
-					.arg(QString("-1/(%2*2.5066282746)*(1-exp(-((log(x)-%1)^2)/(2(%2)^2)))")
-							.arg(distributionData.parameter[0])
-							.arg(distributionData.parameter[1])
-						)
-					.arg(QString("normCdf((log(x)-%1)/(%2))(1-1/(%2))-1/((%2)*2.5066282746)*((log(x)-%1)/(%2))*exp(-((log(x)-%1)^2)/(2(%2)^2))")
-							.arg(distributionData.parameter[0])
-							.arg(distributionData.parameter[1])
-						)
-					.arg(distributionData.parameter[0])
-					.arg(distributionData.parameter[1])
-					.arg(distributionData.parameterCv);
-				break;
-			}
-	}
-}
-
-DataVector::Distribution DataVector::distribution() {
-	return distributionType;
-}
-
-Dist::Dist() {
-	symbolTable.add_variable("x", x);
-	auto* eNormalDistributionCdf = new exprtkNormalDistributionCdf();
-	symbolTable.add_function("normCdf", *eNormalDistributionCdf);
-	cdfExpression.register_symbol_table(symbolTable);
-	pdfExpression.register_symbol_table(symbolTable);
-	cdfDeviationExpression.register_symbol_table(symbolTable);
 }
 
 void DataVector::setTransformationSymbolTable() {
@@ -1136,11 +975,3 @@ const QString DataVector::exprtkFuncitons =
 		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
 		"normCdf(u) — функція розподілу нормованого нормального розподілу\n"
 		"beta(k) — бета–коефіцієнт";
-
-const QStringList DataVector::distributionName = {
-	"Не відомий",
-	"Нормальний",
-	"Екпоненціальний",
-	"Вейбула",
-	"Логнормальний"
-};

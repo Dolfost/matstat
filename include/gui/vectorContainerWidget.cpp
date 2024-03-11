@@ -1,7 +1,7 @@
 #include "vectorContainerWidget.hpp"
 #include <QtCore/qnamespace.h>
 #include "vectorTrimmerDialog.hpp"
-#include "distributionReproductionDialog.hpp"
+#include "distributionReproducerDialog.hpp"
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -246,10 +246,10 @@ void VectorContainerWidget::transformAction() {
 void VectorContainerWidget::reproductionAction() {
 	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
-	DistributionReproductionDialog* drd = 
-		new DistributionReproductionDialog(ve, this);
+	DistributionReproducerDialog* drd = 
+		new DistributionReproducerDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
-			drd, &DistributionReproductionDialog::vectorDeletedHandler);
+			drd, &DistributionReproducerDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::trimAction() {

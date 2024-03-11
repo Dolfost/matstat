@@ -51,16 +51,16 @@ void DensityChart::fill(ClassSeries* clSr) {
 
 	x.clear(), y.clear();
 
-	if (cs->dataVector->distribution() != DataVector::Distribution::UnknownD) {
+	if (cs->dataVector->reproduction.model != DistributionReproducer::Distribution::UnknownD) {
 		coordinatesLabelString = "%1\n%2 %3";
 		this->yAxis2->setTickLabels(true);
-		this->yRange2 = QCPRange(0, cs->dataVector->distributionData.pdfMax);
+		this->yRange2 = QCPRange(0, cs->dataVector->reproduction.pdfMax);
 		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
-		for (cs->dataVector->distributionData.x = cs->dataVector->min();
-				cs->dataVector->distributionData.x <= cs->dataVector->max(); 
-				cs->dataVector->distributionData.x += interval/350) {
-			x.push_back(cs->dataVector->distributionData.x);
-			y.push_back(cs->dataVector->distributionData.pdfExpression.value());
+		for (cs->dataVector->reproduction.x = cs->dataVector->min();
+				cs->dataVector->reproduction.x <= cs->dataVector->max(); 
+				cs->dataVector->reproduction.x += interval/350) {
+			x.push_back(cs->dataVector->reproduction.x);
+			y.push_back(cs->dataVector->reproduction.pdfExpression.value());
 		}
 
 		density->setData(x, y);
