@@ -63,6 +63,8 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 
 	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
 			this->xAxis2, SLOT(setRange(QCPRange)));
+	connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
+			this->xAxis, SLOT(setRange(QCPRange)));
 
 	//  TODO:
 	//  make the yAxis2 for the density chart to be from the 0 to the distribution->cfmMax
@@ -78,22 +80,23 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 
 	this->axisRect()->setRangeDragAxes({
 			this->xAxis,
+			this->xAxis2,
 			this->yAxis,
-			this->yAxis2,
-			});
+			this->yAxis2}
+			);
 	this->axisRect()->setRangeZoomAxes({
 			this->xAxis,
+			this->xAxis2,
 			this->yAxis,
-			this->yAxis2,
-			});
+			this->yAxis2}
+			);
 
 
 	xRange = QCPRange(-5, 5);
-	yRange = QCPRange(0, 1);
-	yRange2 = QCPRange(0, 1);
+	yRange = yRange2 = QCPRange(0, 1);
 	this->xAxis->setRange(xRange);
 	this->yAxis->setRange(yRange);
-	this->yAxis2->setRange(yRange);
+	this->yAxis2->setRange(yRange2);
 	this->replot();
 
 	// coordinatesLabel setup
@@ -246,10 +249,12 @@ void PlotBase::handleZoomX(const QCPRange& newRange) {
 
 void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
+	yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
 }
 
 void PlotBase::handleZoomY2(const QCPRange& newRange) {
 	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
+	yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
 }
 
 void PlotBase::toggleLog(bool state) {
