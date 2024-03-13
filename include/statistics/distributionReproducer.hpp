@@ -8,6 +8,7 @@
 class DistributionReproducer {
 	public:
 	DistributionReproducer();
+	~DistributionReproducer();
 
 	enum Distribution {
 		UnknownD,
@@ -42,6 +43,7 @@ class DistributionReproducer {
 
 private:
 	static exprtk::parser<double> parser;
+	int* eNormalDistributionCdf = nullptr;
 };
 
 #endif //!_DISTRIBUTION_REPRODUCER_HPP_

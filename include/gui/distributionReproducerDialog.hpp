@@ -1,8 +1,6 @@
 #ifndef _DISTRIBUTION_REPRODUCER_DIALOG_
 #define _DISTRIBUTION_REPRODUCER_DIALOG_
 
-#include "statistics/dataVector.hpp"
-
 #include <QDialog>
 #include <QHBoxLayout>
 #include <QVBoxLayout>

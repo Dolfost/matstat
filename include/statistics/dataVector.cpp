@@ -1,10 +1,12 @@
 #include "dataVector.hpp"
+#include <QtCore/qalgorithms.h>
 #include <QtCore/qlogging.h>
 #include <QtCore/qnumeric.h>
 #include <cmath>
 
 #include "dataVectorExprtk.hpp"
 #include <cfloat>
+#include <iterator>
 
 DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
@@ -175,6 +177,21 @@ double DataVector::beta(int k) {
 		computeBeta(k);
 
 	return stat.beta.count(k);
+}
+
+double DataVector::eCdf(double x) {
+	if (x >= max())
+		return 1.0;
+
+	int n = 0;
+	for (auto const& xl : dataVector) {
+		if (xl <= x)
+			n++;
+		else
+		 break;
+	}
+
+	return double(n)/size();
 }
 
 double DataVector::meanDeviation() {
@@ -504,7 +521,28 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 			}
 		case DistributionReproducer::WeibullD:
 			{
-				reproduction.setDistribution(type, {exp(-skew(Measure::PopulationM)), 1}, size());
+				double a11 = size()-1;
+				double a21 = 0, a22 = 0, b1 = 0, b2 = 0;
+				for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1); it++) {
+					double tmp = log(*it);
+					a21 += tmp;
+					a22 += std::pow(tmp, 2);
+					double lnValue = log(log(1/(1-eCdf(*it))));
+					b1 += lnValue;
+					b2 += log(*it)*lnValue;
+				}
+
+				double beta = (a21*b1-a11*b2)/(std::pow(a21, 2)-a11*a22);
+
+				double S = 0;
+				for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1); it++) {
+					S += pow(log(log(1/(1-eCdf(*it))) - skew(Measure::PopulationM)-beta*log(*it)), 2);
+				}
+
+				S /= size() - 3;
+
+				reproduction.setDistribution(type, {exp(-skew(Measure::PopulationM)), beta,
+						skew(Measure::PopulationM), S, a11, a21, a22}, size());
 				break;
 			}
 		case DistributionReproducer::LogNormalD:

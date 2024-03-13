@@ -111,6 +111,8 @@ public:
 	double turncatedMean(double degree);
 	double beta(int);
 
+	double eCdf(double);
+
 	static double normQuantile(double);
 	static double studQuantile(double, int);
 	static double pearQuantile(double, int);
@@ -135,7 +137,6 @@ public:
 	static const QString exprtkFuncitons;
 
 	// distribution recreation
-
 	DistributionReproducer reproduction;
 	void reproduceDistribution(DistributionReproducer::Distribution);
 

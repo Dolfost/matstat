@@ -7,9 +7,10 @@
 
 DistributionReproducer::DistributionReproducer() {
 	symbolTable.add_variable("x", x);
-	exprtkNormalDistributionCdf* eNormalDistributionCdf = new exprtkNormalDistributionCdf();
+	eNormalDistributionCdf = (int*)(
+			new exprtkNormalDistributionCdf());
 
-	symbolTable.add_function("normCdf", *eNormalDistributionCdf);
+	symbolTable.add_function("normCdf", *(exprtkNormalDistributionCdf*)(eNormalDistributionCdf));
 	cdfExpression.register_symbol_table(symbolTable);
 	pdfExpression.register_symbol_table(symbolTable);
 	cdfDeviationExpression.register_symbol_table(symbolTable);
@@ -34,6 +35,7 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 				};
 				parametersDeviationNames =
 					paremeterNames;
+				parameters = p;
 				pdfMax = 1/(p[1]*2.5066282746);
 				parametersDeviation.push_back(
 						std::pow(parameters[1], 2)/size);
@@ -62,8 +64,8 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 							.arg(parameters[0])
 							.arg(parameters[1])
 						)
-					.arg(parameters[0])
-					.arg(parameters[1])
+					.arg(parametersDeviation[0])
+					.arg(parametersDeviation[1])
 					.arg(parametersCv);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 				break;
@@ -88,7 +90,7 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 
 				cdfString = QString(
 						"1-exp(-(%1)x)")
-					.arg(parameters[0]);
+					.arg(parameters[0], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
 
 				parametersCv = 0;
@@ -108,26 +110,49 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 				};
 				parametersDeviationNames =
 					paremeterNames;
-				parameters = p;
-				pdfMax = parameters[0];
+				parameters.push_back(p[0]);
+				parameters.push_back(p[1]);
+				pdfMax = std::pow(parameters[1]/parameters[0], 1/parameters[1]) *
+					std::pow(parameters[1]-1, (parameters[1] - 1)/parameters[1]) * 
+					std::exp(-(parameters[1]-1)/parameters[1]);
 				parametersDeviation.push_back(
 						std::pow(parameters[0], 2)/2);
 
 				pdfString = QString(
-						"(%1)(exp(-(%1)x))")
-					.arg(parameters[0], 0, 'f', 6);
+						"((%2)/(%1))x^(%2-1)exp(-(x^(%2))/(%1))")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
 				cdfString = QString(
-						"1-exp(-(%1)x)")
-					.arg(parameters[0]);
+						"1-exp(-(x^(%2))/(%1))")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
 
-				parametersCv = 0;
+				if (p.size() == 2) 
+					break;
+
+				double DA = (p[6]*p[3])/(p[4]*p[6] - std::pow(p[5], 2));
+
+				parametersDeviation.push_back(std::exp(-2*p[2])*DA);
+				parametersDeviation.push_back((p[4]*p[2])/(p[4]*p[6] - std::pow(p[5], 2)));
+
+				double covAb = -(p[5]*p[3])/(p[4]*p[6] - std::pow(p[5], 2));
+				parametersCv = -std::exp(p[2])*covAb;
 				QString cdfDeviation = QString(
-						"x^2*exp(-2(%1)x)%2")
-					.arg(parameters[0])
-					.arg(parametersDeviation[0]);
+						"(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
+					.arg(QString("-((x^(%2))/((%1)^2))*exp(-(x^(%2))/(%1))")
+							.arg(parameters[0])
+							.arg(parameters[1])
+						)
+					.arg(QString("((x^(%2))/(%1))*log(x)*exp(-(x^(%2))/(%1))")
+							.arg(parameters[0])
+							.arg(parameters[1])
+						)
+					.arg(parametersDeviation[0])
+					.arg(parametersDeviation[1])
+					.arg(parametersCv);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 				break;
 			}
@@ -180,8 +205,8 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 							.arg(parameters[0])
 							.arg(parameters[1])
 						)
-					.arg(parameters[0])
-					.arg(parameters[1])
+					.arg(parametersDeviation[0])
+					.arg(parametersDeviation[1])
 					.arg(parametersCv);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 				break;
@@ -189,9 +214,9 @@ void DistributionReproducer::setDistribution(Distribution type, std::vector<doub
 	}
 }
 
-// DistributionReproducer::~DistributionReproducer() {
-// 	delete eNormalDistributionCdf;
-// }
+DistributionReproducer::~DistributionReproducer() {
+	delete (exprtkNormalDistributionCdf*)eNormalDistributionCdf;
+}
 
 const QStringList DistributionReproducer::distributionName = {
 	"Невідомий",
