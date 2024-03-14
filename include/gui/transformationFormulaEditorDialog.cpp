@@ -1,4 +1,6 @@
 #include "transformationFormulaEditorDialog.hpp"
+
+#include "statistics/statistics.hpp"
 #include "gui/Section.h"
 
 int TransformationFormulaEditorDialog::trIdx = 0;
@@ -30,7 +32,8 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		varsSection->setContentLayout(*varsSectionLay);
 
 		ui::Section* statisticsSection = new ui::Section("Функції (статистичні)", 100);
-		QLabel* statisticsLabel = new QLabel(DataVector::exprtkFuncitons);
+		QLabel* statisticsLabel = new QLabel(DataVector::exprtkFuncitons +
+				"\n" + Statistics::exprtkFuncitons);
 		QVBoxLayout* statisticsSectionLay = new QVBoxLayout();
 		statisticsSectionLay->addWidget(statisticsLabel);
 		statisticsSection->setContentLayout(*statisticsSectionLay);

@@ -574,81 +574,43 @@ void DataVector::computeKurtosisDeviation() {
 }
 
 void DataVector::computeMeanConfidence(double alpha) {
-	double* lower = &stat.meanConfidence[alpha].first;
-	double* upper = &stat.meanConfidence[alpha].second;
-
-	if (size() > 60) {
-		double quantile = Statistics::normQuantile(1-alpha/2);
-		*lower = mean() - quantile *
-			meanDeviation();
-		*upper = mean() + quantile *
-			meanDeviation();
-	} else {
-		double quantile = Statistics::studQuantile(1-alpha/2, size()-1);
-		*lower = mean() - quantile *
-			meanDeviation();
-		*upper = mean() + quantile *
-			meanDeviation();
-	}
+	stat.meanConfidence[alpha] =
+		Statistics::thetaDeviation(
+				mean(),
+				meanDeviation(),
+				alpha,
+				size()
+			);
 }
 
 void DataVector::computeVarianceConfidence(double alpha) {
-	double* lower = &stat.varianceConfidence[alpha].first;
-	double* upper = &stat.varianceConfidence[alpha].second;
-
-	if (size() > 60) {
-		double quantile = Statistics::normQuantile(1-alpha/2);
-		*lower = variance(Measure::PopulationM) -
-			quantile*varianceDeviation();
-		*upper = variance(Measure::PopulationM) +
-			quantile*varianceDeviation();
-	} else {
-		double quantile = Statistics::studQuantile(1-alpha/2, size()-1);
-		*lower = variance(Measure::PopulationM) - 
-			quantile *
-			varianceDeviation();
-		*upper = variance(Measure::PopulationM) +
-			quantile *
-			varianceDeviation();
-	}
+	stat.varianceConfidence[alpha] =
+		Statistics::thetaDeviation(
+				variance(Measure::PopulationM),
+				varianceDeviation(),
+				alpha,
+				size()
+			);
 }
 
 void DataVector::computeSkewConfidence(double alpha) {
-	double* lower = &stat.skewConfidence[alpha].first;
-	double* upper = &stat.skewConfidence[alpha].second;
-
-	if (size() > 60) {
-		double quantile = Statistics::normQuantile(1-alpha/2);
-		*lower = skew(Measure::PopulationM) -
-			quantile*skewDeviation();
-		*upper = skew(Measure::PopulationM) +
-			quantile * skewDeviation();
-	} else {
-		double quantile = Statistics::studQuantile(1-alpha/2, size()-1);
-		*lower = skew(Measure::PopulationM) - 
-			quantile * skewDeviation();
-		*upper = skew(Measure::PopulationM) +
-			quantile * skewDeviation();
-	}
+	stat.skewConfidence[alpha] = 
+		Statistics::thetaDeviation(
+				skew(Measure::PopulationM),
+				skewDeviation(),
+				alpha,
+				size()
+			);
 }
 
 void DataVector::computeKurtosisConfidence(double alpha) {
-	double* lower = &stat.kurtosisConfidence[alpha].first;
-	double* upper = &stat.kurtosisConfidence[alpha].second;
-
-	if (size() > 60) {
-		double quantile = Statistics::normQuantile(1-alpha/2);
-		*lower = kurtosis(Measure::PopulationM) -
-			quantile * meanDeviation();
-		*upper = kurtosis(Measure::PopulationM) +
-			quantile * meanDeviation();
-	} else {
-		double quantile = Statistics::studQuantile(1-alpha/2, size()-1);
-		*lower = kurtosis(Measure::PopulationM) - 
-			quantile * kurtosisDeviation();
-		*upper = kurtosis(Measure::PopulationM) +
-			quantile * kurtosisDeviation();
-	}
+	stat.kurtosisConfidence[alpha] =
+		Statistics::thetaDeviation(
+				kurtosis(Measure::PopulationM),
+				kurtosisDeviation(),
+				alpha,
+				size()
+			);
 }
 
 // Vector operations
@@ -914,9 +876,4 @@ const QString DataVector::exprtkFuncitons =
 		"turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
 		"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
 		"centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
-		"normQuantile(a) — квантиль нормального розподілу\n"
-		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
-		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
-		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
-		"normCdf(u) — функція розподілу нормованого нормального розподілу\n"
 		"beta(k) — бета–коефіцієнт";

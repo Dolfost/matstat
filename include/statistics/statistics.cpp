@@ -1,5 +1,8 @@
 #include "statistics.hpp"
+
 #include <cmath>
+
+#include <QString>
 
 double Statistics::normQuantile(double alpha) {
 	double quantile = 0;
@@ -98,4 +101,34 @@ double Statistics::normalDistributionCdf(double u) {
 	return f;
 }
 
+std::pair<double, double> Statistics::thetaDeviation(
+				double theta,
+				double deviation,
+				double alpha,
+				size_t size) {
 
+	std::pair<double, double> interval;
+
+	if (size > 60) {
+		double quantile = normQuantile(1-alpha/2);
+		interval.first = theta - quantile *
+			deviation;
+		interval.second = theta + quantile *
+			deviation;
+	} else {
+		double quantile = Statistics::studQuantile(1-alpha/2, size-1);
+		interval.first = theta - quantile *
+			deviation;
+		interval.second = theta + quantile *
+			deviation;
+	}
+
+	return interval;
+}
+
+const QString Statistics::exprtkFuncitons = 
+		"normQuantile(a) — квантиль нормального розподілу\n"
+		"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
+		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
+		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
+		"normCdf(u) — функція розподілу нормованого нормального розподілу";
