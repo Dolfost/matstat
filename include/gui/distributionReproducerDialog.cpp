@@ -159,7 +159,7 @@ void DistributionReproducerDialog::refill() {
 				);
 	for (int i = 1; i < dispersions.length()+1; i++) {
 		functionDeviationTable->setItem(0, i, new QTableWidgetItem(
-					QString::number(dispersions[i], 'f', precision + 4))
+                    QString::number(dispersions[i-1], 'f', precision + 4))
 				);
 		functionDeviationTable->setColumnWidth(i, 100);
 	}
