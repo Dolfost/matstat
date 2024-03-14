@@ -93,6 +93,7 @@ void DistributionChart::fill(ClassSeries* clSr) {
 		distributionDeviation->setData(x, yDev1, true);
 	} else {
 		distribution->data()->clear();
+		distributionDeviation->data()->clear();
 	}
 
 

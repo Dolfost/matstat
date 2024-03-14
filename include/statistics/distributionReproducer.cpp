@@ -106,14 +106,15 @@ void DistributionReproducer::setDistribution(Distribution type,
 				parametersDeviationNames = paremeterNames;
 				parameters.push_back(p[0]);
 				parameters.push_back(p[1]);
-				pdfMax = std::pow(parameters[1] / parameters[0], 1 / parameters[1]) *
-					std::pow(parameters[1] - 1, (parameters[1] - 1) / parameters[1]) *
-					std::exp(-(parameters[1] - 1) / parameters[1]);
+				// pdfMax = std::pow(parameters[1] / parameters[0], 1 / parameters[1]) *
+				// 	std::pow(parameters[1] - 1, (parameters[1] - 1) / parameters[1]) *
+				// 	std::exp(-(parameters[1] - 1) / parameters[1]);
 				parametersDeviation.push_back(std::pow(parameters[0], 2) / 2);
 
-				pdfString = QString("((%2)/(%1))x^(%2-1)exp(-(x^(%2))/(%1))")
-					.arg(parameters[0], 0, 'f', 6)
-					.arg(parameters[1], 0, 'f', 6);
+				pdfString = QString("((%2)/(%1))(x^(%2-1))exp(-(x^(%2))/(%1))")
+				// pdfString = QString("((%2)/(%1))((x/%1)^(%2-1))exp(-((x/(%1))^(%2)))")
+					.arg(parameters[0], 0, 'f', 20)
+					.arg(parameters[1], 0, 'f', 20);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
 				cdfString = QString("1-exp(-(x^(%2))/(%1))")
@@ -127,7 +128,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 				double DA = (p[6] * p[3]) / (p[4] * p[6] - std::pow(p[5], 2));
 
 				parametersDeviation.push_back(std::exp(-2 * p[2]) * DA);
-				parametersDeviation.push_back((p[4] * p[2]) /
+				parametersDeviation.push_back((p[4] * p[3]) /
 						(p[4] * p[6] - std::pow(p[5], 2)));
 
 				double covAb = -(p[5] * p[3]) / (p[4] * p[6] - std::pow(p[5], 2));
@@ -144,6 +145,10 @@ void DistributionReproducer::setDistribution(Distribution type,
 					.arg(parametersDeviation[1])
 					.arg(parametersCv);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
+
+				x = std::pow(abs(parameters[0]*(parameters[1]-1))/parameters[1],
+						1/parameters[1]);
+				pdfMax = pdfExpression.value();
 				break;
 			}
 		case Distribution::LogNormalD:
@@ -194,9 +199,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 					.arg(parametersDeviation[0])
 					.arg(parametersDeviation[1])
 					.arg(parametersCv);
-				qDebug() << cdfDeviation;
-				qDebug() << parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
-				qDebug() << parser.error();
+				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 
 				x = std::exp(parameters[0] - std::pow(parameters[1], 2));
 				pdfMax = pdfExpression.value();

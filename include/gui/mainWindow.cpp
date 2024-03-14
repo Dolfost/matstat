@@ -107,7 +107,6 @@ void MainWindow::createActions() {
     connect(openVectorPickerAct, &QAction::triggered, this, &MainWindow::openVectorPicker);
     fileMenu->addAction(openVectorPickerAct);
 
-
 	QAction* toogleDensityLogAct = 
 		new QAction("Логарифмічна сітка щільності", this);
 	toogleDensityLogAct->setCheckable(true);
@@ -138,14 +137,15 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::open() {
-	filepath = QFileDialog::getOpenFileName(this,
-		"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
+	// filepath = QFileDialog::getOpenFileName(this,
+	// 	"Відкрити вектор", QDir::homePath(), "Text files (*.txt *.csv *.DAT)");
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp.txt"; 
-	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/norm1_anomaly.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/LOGNORM.DAT"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/VEIBUL.DAT"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/ravn.txt"; 
+	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/veib.txt"; 
 
 
 	vectorPicker->fileContents(filepath);
