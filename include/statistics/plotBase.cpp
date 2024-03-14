@@ -247,14 +247,18 @@ void PlotBase::handleZoomX(const QCPRange& newRange) {
 	this->xAxis->setRange(newRange.bounded(xRange.lower, xRange.upper));
 }
 
+
+//  TODO: make something with the yAxises scaling. when 
+//  	  setScaleRatio is called it triggners other handleZoomX funciton
+//  	  and loop countinues
 void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
-	yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
+	// yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
 }
 
 void PlotBase::handleZoomY2(const QCPRange& newRange) {
 	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
-	yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
+	// yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
 }
 
 void PlotBase::toggleLog(bool state) {
