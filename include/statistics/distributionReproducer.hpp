@@ -2,6 +2,7 @@
 #define _DISTRIBUTION_REPRODUCER_HPP_
 
 #include "exprtk.hpp"
+#include "statisticsExprtk.hpp"
 #include <QString>
 #include <vector>
 
@@ -16,6 +17,7 @@ class DistributionReproducer {
 		ExponentialD,
 		WeibullD,
 		LogNormalD,
+		UniformD,
 		CountD,
 	} model = UnknownD;
 
@@ -23,6 +25,8 @@ class DistributionReproducer {
 	static const QStringList distributionName;
 
 	double x = 0;
+
+	double confidence = 0.95;
 
 	exprtk::symbol_table<double> symbolTable;
 	exprtk::expression<double> pdfExpression; // probability density function
@@ -45,7 +49,7 @@ class DistributionReproducer {
 
 private:
 	static exprtk::parser<double> parser;
-	int* eNormalDistributionCdf = nullptr;
+	exprtkNormalDistributionCdf* eNormalDistributionCdf = nullptr;
 };
 
 #endif //!_DISTRIBUTION_REPRODUCER_HPP_

@@ -50,12 +50,14 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
     tree[idx]->addTopLevelItem(item);
 
 	QTreeWidgetItem* maxItem = new QTreeWidgetItem(ItemType::Max2D);
+	maxItem->setData(0, Qt::ToolTipRole, QVariant("Максимальна реалізація випадкової величини"));
 	maxItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowUp));
 	maxItem->setData(0, Qt::DisplayRole, vectorEntry->vector->max());
 	maxItem->setData(0, Qt::ToolTipRole, vectorEntry->vector->max());
 	item->addChild(maxItem);
 
 	QTreeWidgetItem* minItem = new QTreeWidgetItem(ItemType::Min2D);
+	minItem->setData(0, Qt::ToolTipRole, QVariant("Мінімальна реалізація випадкової величини"));
 	minItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowDown));
 	minItem->setData(0, Qt::DisplayRole, vectorEntry->vector->min());
 	minItem->setData(0, Qt::ToolTipRole, vectorEntry->vector->min());
@@ -77,12 +79,19 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
 	ClassSeries* cs = new ClassSeries(vectorEntry->vector);
-	ClassTreeItem* classItem = new ClassTreeItem(ItemType::ClassCount2D);
+	ClassTreeItem2D* classItem = new ClassTreeItem2D(ItemType::ClassCount2D);
 	classItem->setIcon(0, this->style()->standardIcon(QStyle::SP_BrowserReload));
 	classItem->setData(0, Qt::EditRole,
 				QVariant(int(cs->calculateClassCount())));
 	classItem->setData(0, Qt::UserRole, QVariant::fromValue(cs));
 	parent->addChild(classItem);
+
+	ConfindenceItem2D* confidenceItem =
+		new ConfindenceItem2D(ItemType::Confidence2D);
+	confidenceItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowForward));
+	confidenceItem->setData(0, Qt::EditRole,
+				QVariant(vectorEntry->vector->reproduction.confidence));
+	parent->addChild(confidenceItem);
 }
 
 void VectorProcessorWidget::append2dVector(QTreeWidgetItem* parent,
@@ -240,6 +249,7 @@ void VectorProcessorWidget::itemDoubleClikedHandler(
 			else
 				makeActiveAction();
 			break;
+		case ItemType::Confidence2D:
 		case ItemType::ClassCount2D:
 			tree[idx]->editItem(item, col);
 	}
@@ -248,6 +258,10 @@ void VectorProcessorWidget::itemDoubleClikedHandler(
 void VectorProcessorWidget::emit2D(QTreeWidgetItem* item) {
 	item->child(2)->data(0, Qt::UserRole).value<ClassSeries*>()->makeSeries(
 			item->child(2)->data(0, Qt::EditRole).value<int>());
+	item->data(0, Qt::UserRole).value<VectorEntry*>()->
+		vector->reproduction.confidence = 
+		item->child(3)->data(0, Qt::EditRole).value<double>();
+
 	emit twoDVectorsSelected(activeItems[Tab::TwoD].front()->
 			data(0, Qt::UserRole).value<VectorEntry*>(), 
 			item->child(2)->data(0, Qt::UserRole).value<ClassSeries*>());
@@ -278,23 +292,41 @@ void VectorProcessorWidget::emit4D(QTreeWidgetItem* item) {
 void VectorProcessorWidget::itemChangedHandler(QTreeWidgetItem* item, int col) {
 	switch (item->type()) {
 		case ItemType::ClassCount2D:
-			if (item->data(0, Qt::EditRole).value<int>() < 1) {
-				item->setData(0, Qt::EditRole, QVariant(
-							(int)item->data(0, Qt::UserRole).
-							value<ClassSeries*>()->
-							calculateClassCount()));
-			} else {
-				if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
-					emit2D(item->parent());
+			{
+				if (item->data(0, Qt::EditRole).value<int>() < 1) {
+					item->setData(0, Qt::EditRole, QVariant(
+								(int)item->data(0, Qt::UserRole).
+								value<ClassSeries*>()->
+								calculateClassCount()));
+				} else {
+					if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
+						emit2D(item->parent());
+				}
+				break;
 			}
-			break;
+		case ItemType::Confidence2D:
+			{
+				double dev = item->data(0, Qt::EditRole).value<double>();
+				if (dev < 0 or dev > 1)
+					item->setData(0, Qt::EditRole, QVariant(0.5));
+				else if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
+					emit2D(item->parent());
+				break;
+			}
 	}
 }
 
-// Class item 
-ClassTreeItem::ClassTreeItem(int type) : QTreeWidgetItem(type) {
+// Items
+ClassTreeItem2D::ClassTreeItem2D(int type) : QTreeWidgetItem(type) {
 	this->setFlags(this->flags() | Qt::ItemIsEditable);
+	this->setData(0, Qt::ToolTipRole, "Кількість класів розбиття");
 }
-ClassTreeItem::~ClassTreeItem() {
+ClassTreeItem2D::~ClassTreeItem2D() {
 	delete this->data(0, Qt::UserRole).value<ClassSeries*>();
 }
+
+ConfindenceItem2D::ConfindenceItem2D(int type) : QTreeWidgetItem(type) {
+	this->setFlags(this->flags() | Qt::ItemIsEditable);
+	this->setData(0, Qt::ToolTipRole, "Довірчий інтервал відтворення F(x)");
+}
+	

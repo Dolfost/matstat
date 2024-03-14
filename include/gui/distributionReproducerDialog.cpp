@@ -30,7 +30,6 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		distributionLayout->addWidget(new QLabel("Відтворюваний розподіл: "), 0, 0);
 		distributionLayout->addWidget(distributionComboBox, 0, 1);
 
-
 		tablesWidget = new QWidget;
 		tablesLayout = new QVBoxLayout();
 		tablesLayout->setContentsMargins(0,0,0,0);
@@ -71,7 +70,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		parameterTable->setHorizontalHeaderLabels({"Назва", "Значення"});
 
 		deviationTable->setColumnCount(2);
-		deviationTable->setFixedHeight(85);
+		deviationTable->setFixedHeight(120);
 		deviationTable->verticalHeader()->setVisible(false);
 		deviationTable->setHorizontalHeaderLabels({"Назва", "Значення"});
 
@@ -112,7 +111,7 @@ void DistributionReproducerDialog::refill() {
 	parameterTable->setColumnWidth(0, 55);
 	parameterTable->setColumnWidth(1, 200);
 	deviationTable->setRowCount(ve->vector->reproduction.parametersCount);
-	deviationTable->setColumnWidth(0, 55);
+	deviationTable->setColumnWidth(0, 100);
 	deviationTable->setColumnWidth(1, 200);
 	functionTable->setRowCount(2);
 	functionTable->setColumnWidth(0, 55);
@@ -131,6 +130,17 @@ void DistributionReproducerDialog::refill() {
 				);
 		deviationTable->setItem(i, 1, new QTableWidgetItem(
 					QString::number(ve->vector->reproduction.parametersDeviation[i], 'f', precision))
+				);
+	}
+
+	if (ve->vector->reproduction.parametersCount == 2) {
+		deviationTable->insertRow(2);
+		deviationTable->setItem(2, 0, new QTableWidgetItem(
+					"cov{" + ve->vector->reproduction.paremeterNames[0] + "," +
+					ve->vector->reproduction.paremeterNames[1] + "}")
+				);
+		deviationTable->setItem(2, 1, new QTableWidgetItem(
+					QString::number(ve->vector->reproduction.parametersCv, 'f', precision))
 				);
 	}
 
@@ -161,7 +171,7 @@ void DistributionReproducerDialog::refill() {
 		functionDeviationTable->setItem(0, i, new QTableWidgetItem(
                     QString::number(dispersions[i-1], 'f', precision + 4))
 				);
-		functionDeviationTable->setColumnWidth(i, 100);
+		functionDeviationTable->setColumnWidth(i, 200);
 	}
 }
 

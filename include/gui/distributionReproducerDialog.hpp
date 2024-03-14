@@ -38,7 +38,7 @@ private:
 
 	void refill();
 
-	int precision = 5;
+	int precision = 10;
 
 public slots:
 	void vectorDeletedHandler(VectorEntry*);

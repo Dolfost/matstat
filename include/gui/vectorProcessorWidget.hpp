@@ -26,6 +26,7 @@ public:
 	};
 	enum ItemType {
 		Vector,
+		Confidence2D,
 		ClassCount2D,
 		Min2D,
 		Max2D, 
@@ -80,10 +81,15 @@ signals:
 	void fourDVectorsSelected(VectorEntry*, VectorEntry*, VectorEntry*);
 };
 
-class ClassTreeItem : public QTreeWidgetItem {
+class ClassTreeItem2D : public QTreeWidgetItem {
 public:
-	ClassTreeItem(int);
-	~ClassTreeItem();
+	ClassTreeItem2D(int);
+	~ClassTreeItem2D();
+};
+
+class ConfindenceItem2D : public QTreeWidgetItem {
+public:
+	ConfindenceItem2D(int);
 };
 
 #endif // !_VECTOR_PROCESSOR_WIDGET_HPP_

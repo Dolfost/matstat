@@ -18,7 +18,8 @@ public:
 				double theta,
 				double deviation,
 				double alpha = 0.95,
-				size_t size = 61);
+				size_t size = 61,
+				bool stdDev = true);
 };
 
 #endif // !_STATISTICS_HPP_

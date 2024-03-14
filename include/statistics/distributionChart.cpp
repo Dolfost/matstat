@@ -29,7 +29,7 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	distributionDeviation = new QCPGraph(this->xAxis, this->yAxis2);
 	distributionDeviation->setName("СКВ F(x)");
 	QPen distributionDeviationPen;
-	distributionDeviationPen.setWidthF(1.2);
+	distributionDeviationPen.setWidthF(1.1);
 	distributionDeviationPen.setColor("#fc0303");
 	distributionDeviationPen.setDashPattern({5, 3});
 	distributionDeviation->setPen(distributionDeviationPen);
@@ -76,7 +76,8 @@ void DistributionChart::fill(ClassSeries* clSr) {
 			x.push_back(cs->dataVector->reproduction.x);
 			y.push_back(cs->dataVector->reproduction.cdfExpression.value());
 			std::pair<double, double> dev =
-				cs->dataVector->reproduction.cdfDeviation(0.2);
+				cs->dataVector->reproduction.cdfDeviation(
+						cs->dataVector->reproduction.confidence);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}

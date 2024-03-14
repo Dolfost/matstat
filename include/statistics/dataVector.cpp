@@ -460,6 +460,15 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 					}, size());
 				break;
 			}
+		case DistributionReproducer::UniformD:
+			{
+				double pm = std::sqrt(3*(rawMoment(2) - std::pow(mean(), 2)));
+				reproduction.setDistribution(type, {
+						mean() - pm,
+						mean() + pm
+					}, size());
+				break;
+			}
 		case DistributionReproducer::UnknownD:
 			{
 				reproduction.setDistribution(type, {}, size());

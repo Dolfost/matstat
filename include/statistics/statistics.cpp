@@ -105,7 +105,11 @@ std::pair<double, double> Statistics::thetaDeviation(
 				double theta,
 				double deviation,
 				double alpha,
-				size_t size) {
+				size_t size,
+				bool stdDev) {
+
+	if (!stdDev)
+		deviation = std::sqrt(deviation);
 
 	std::pair<double, double> interval;
 
