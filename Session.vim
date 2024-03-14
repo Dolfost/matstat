@@ -22,13 +22,13 @@ badd +99 include/statistics/dataVector.hpp
 badd +1 include/statistics/dataVector.cpp
 badd +1 include/statistics/classSeries.cpp
 badd +21 include/statistics/classSeries.hpp
-badd +86 include/statistics/distributionChart.cpp
+badd +1 include/statistics/distributionChart.cpp
 badd +13 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +16 include/statistics/densityChart.hpp
 badd +12 include/statistics/densityChart.cpp
 badd +6 include/gui/mainWindow.hpp
-badd +148 include/gui/mainWindow.cpp
+badd +1 include/gui/mainWindow.cpp
 badd +18 CMakeLists.txt
 badd +837 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -50,11 +50,11 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +3 include/statistics/dataVectorExprtk.hpp
 badd +32 include/statistics/distributionReproducer.hpp
-badd +26 include/statistics/distributionReproducer.cpp
+badd +28 include/statistics/distributionReproducer.cpp
 badd +1 include/gui/distributionReproducerDialog.cpp
 badd +35 include/gui/distributionReproducerDialog.hpp
 badd +21 include/statistics/statistics.hpp
-badd +98 include/statistics/statistics.cpp
+badd +116 include/statistics/statistics.cpp
 badd +6 include/statistics/statisticsExprtk.hpp
 argglobal
 %argdel
@@ -305,12 +305,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 98 - ((29 * winheight(0) + 19) / 39)
+let s:l = 27 - ((10 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 98
-normal! 05|
+keepjumps 27
+normal! 019|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/statistics.hpp", ":p")) | buffer include/statistics/statistics.hpp | else | edit include/statistics/statistics.hpp | endif
@@ -369,11 +369,11 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 86 - ((18 * winheight(0) + 19) / 39)
+let s:l = 84 - ((16 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 86
+keepjumps 84
 normal! 033|
 wincmd w
 argglobal
@@ -401,7 +401,7 @@ normal! 017|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 90 + 90) / 180)
 exe 'vert 2resize ' . ((&columns * 89 + 90) / 180)
-tabnext 6
+tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
@@ -415,6 +415,8 @@ if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
 endif
 let &g:so = s:so_save | let &g:siso = s:siso_save
+set hlsearch
+nohlsearch
 let g:this_session = v:this_session
 let g:this_obsession = v:this_session
 doautoall SessionLoadPost

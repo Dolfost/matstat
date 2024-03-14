@@ -109,19 +109,17 @@ std::pair<double, double> Statistics::thetaDeviation(
 
 	std::pair<double, double> interval;
 
+	double quantile;
 	if (size > 60) {
-		double quantile = normQuantile(1-alpha/2);
-		interval.first = theta - quantile *
-			deviation;
-		interval.second = theta + quantile *
-			deviation;
+		quantile = normQuantile(1-alpha/2);
 	} else {
-		double quantile = Statistics::studQuantile(1-alpha/2, size-1);
-		interval.first = theta - quantile *
-			deviation;
-		interval.second = theta + quantile *
-			deviation;
+		quantile = studQuantile(1-alpha/2, size-1);
 	}
+
+	interval.first = theta - quantile *
+		deviation;
+	interval.second = theta + quantile *
+		deviation;
 
 	return interval;
 }
