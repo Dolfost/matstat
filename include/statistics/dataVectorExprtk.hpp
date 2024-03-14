@@ -1,4 +1,6 @@
 #ifndef _DATA_VECTOR_EXPRTK_HPP_
+#define _DATA_VECTOR_EXPRTK_HPP_
+
 #include "exprtk.hpp"
 #include "dataVector.hpp"
 
@@ -9,14 +11,6 @@ struct exprtkMean final : public exprtk::ifunction<double> {
 	DataVector* dv;
 	double operator()() {
 		return dv->mean();
-	}
-};
-
-struct exprtkNormalDistributionCdf final : public exprtk::ifunction<double> {
-	exprtkNormalDistributionCdf () : exprtk::ifunction<double>(1)  {
-	}
-	double operator()(const double& u) {
-		return DataVector::normalDistributionCdf(u);
 	}
 };
 
@@ -254,38 +248,6 @@ struct exprtkNonparametricVariationCoef final : public exprtk::ifunction<double>
 	DataVector* dv;
 	double operator()() {
 		return dv->nonparametricVariationCoef();
-	}
-};
-
-struct exprtkNormQuantile final : public exprtk::ifunction<double> {
-	exprtkNormQuantile(DataVector* vec) : exprtk::ifunction<double>(1)  {
-	}
-	double operator()(const double& alpha) {
-		return DataVector::normQuantile(alpha);
-	}
-};
-
-struct exprtkStudQuantile final : public exprtk::ifunction<double> {
-	exprtkStudQuantile(DataVector* vec) : exprtk::ifunction<double>(2)  {
-	}
-	double operator()(const double& alpha, const double& v) {
-		return DataVector::studQuantile(alpha, v);
-	}
-};
-
-struct exprtkPearQuantile final : public exprtk::ifunction<double> {
-	exprtkPearQuantile(DataVector* vec) : exprtk::ifunction<double>(2)  {
-	}
-	double operator()(const double& alpha, const double& v) {
-		return DataVector::pearQuantile(alpha, v);
-	}
-};
-
-struct exprtkFishQuantile final : public exprtk::ifunction<double> {
-	exprtkFishQuantile(DataVector* vec) : exprtk::ifunction<double>(3)  {
-	}
-	double operator()(const double& alpha, const double& v1, const double& v2) {
-		return DataVector::fishQuantile(alpha, v1, v2);
 	}
 };
 

@@ -1,8 +1,9 @@
 #include "distributionReproducer.hpp"
 
 #include "exprtk.hpp"
-#include "dataVectorExprtk.hpp"
-#include <QString>
+#include "statisticsExprtk.hpp"
+
+#include <QStringList>
 #include <vector>
 
 DistributionReproducer::DistributionReproducer() {

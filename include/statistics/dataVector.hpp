@@ -14,7 +14,7 @@
 
 #include "distributionReproducer.hpp"
 
-struct Statistics {
+struct Stats {
 	// population/sample statistics map has the format
 	// std::map<degree, std::pair<population, sample>>
 
@@ -113,13 +113,6 @@ public:
 
 	double eCdf(double);
 
-	static double normQuantile(double);
-	static double studQuantile(double, int);
-	static double pearQuantile(double, int);
-	static double fishQuantile(double, int, int);
-
-	static double normalDistributionCdf(double);
-
 	std::list<double> walshAverages();
 
 	void clearStatistics();
@@ -144,7 +137,7 @@ public:
 private:
 	exprtk::symbol_table<double> transformationSymbolTable;
 	std::list<double> dataVector;
-	Statistics stat;
+	Stats stat;
 
 	bool transformationSymbolTableReady = false;
 	void setTransformationSymbolTable();
