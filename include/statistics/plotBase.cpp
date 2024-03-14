@@ -185,7 +185,7 @@ void PlotBase::enableWalshMed() {
 	walshMed->setLineStyle(QCPGraph::lsLine);
 	QPen pen;
 	pen.setColor(Qt::darkMagenta);
-	pen.setWidthF(1.5);
+	pen.setWidthF(1.25);
 	walshMed->setPen(pen);
 }
 
@@ -202,7 +202,7 @@ void PlotBase::enableMed() {
 	med->setLineStyle(QCPGraph::lsLine);
 	QPen pen;
 	pen.setColor(Qt::green);
-	pen.setWidthF(1.5);
+	pen.setWidthF(1.25);
 	med->setPen(pen);
 }
 

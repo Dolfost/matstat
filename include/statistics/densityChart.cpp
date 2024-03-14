@@ -27,6 +27,10 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	density = new QCPGraph(this->xAxis, this->yAxis2);
 	density->setName("f(x) (відтв.)");
 	this->yAxis2->setLabel("f(x) (відтворена)");
+	QPen densityPen;
+	densityPen.setWidthF(1.3);
+	densityPen.setColor("#0313fc");
+	density->setPen(densityPen);
 
 	enableMean();
 	enableStandartDeviation();

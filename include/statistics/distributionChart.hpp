@@ -14,6 +14,7 @@ public:
 
 	QCPGraph* graph = nullptr;
 	QCPGraph* distribution = nullptr;
+	QCPGraph* distributionDeviation = nullptr;
 
 	void fill(ClassSeries* clSr);
 };

@@ -29,6 +29,8 @@ class DistributionReproducer {
 	exprtk::expression<double> cdfExpression; // cummulative density function
 	exprtk::expression<double> cdfDeviationExpression;
 
+	std::pair<double, double> cdfDeviation(double = 0.95);
+
 	QString cdfString;
 	QString pdfString;
 	

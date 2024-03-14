@@ -19,6 +19,14 @@ DistributionReproducer::DistributionReproducer() {
 
 exprtk::parser<double> DistributionReproducer::parser;
 
+std::pair<double, double> DistributionReproducer::cdfDeviation(double alpha) {
+	return Statistics::thetaDeviation(
+			cdfExpression.value(),
+			cdfDeviationExpression.value(),
+			alpha
+		);
+}
+
 void DistributionReproducer::setDistribution(Distribution type, std::vector<double> p, size_t s) {
 	model = type;
 	size = s;
