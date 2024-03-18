@@ -253,12 +253,18 @@ void PlotBase::handleZoomX(const QCPRange& newRange) {
 //  	  and loop countinues
 void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
-	// yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
+
+	yAxis2->blockSignals(true);
+	yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
+	yAxis2->blockSignals(false);
 }
 
 void PlotBase::handleZoomY2(const QCPRange& newRange) {
 	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
-	// yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
+
+	yAxis->blockSignals(true);
+	yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
+	yAxis->blockSignals(false);
 }
 
 void PlotBase::toggleLog(bool state) {
