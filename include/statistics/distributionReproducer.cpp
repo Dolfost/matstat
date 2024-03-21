@@ -286,13 +286,10 @@ std::list<double> DistributionReproducer::generateSet(Method m, size_t s, double
 			{
 				std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
-				qDebug() << this->invCdfString;
 				for (int i = 0; i < setSize; i++) {
 					x = distribution(generator);
-					qDebug() <<  x;
 					set.push_back(invCdfExpression.value());
 				}
-				qDebug() <<set;
 			}
 		case Method::PlaneM:
 			{
@@ -304,7 +301,7 @@ std::list<double> DistributionReproducer::generateSet(Method m, size_t s, double
 					double y = pdfExpression.value(),
 						y1 = distributionY(generator);
 					if (y1 <= y)
-						set.push_back(y1);
+						set.push_back(x);
 				}
 			}
 		default:

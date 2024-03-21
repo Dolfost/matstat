@@ -23,6 +23,7 @@ public:
 private:
 		QGridLayout* layout;
 		size_t size = 0;
+		int precision = 4;
 };
 
 class SetGeneratorDialog : public QDialog {
@@ -53,6 +54,8 @@ private:
 	std::vector<double> params = {};
 
 	bool enabled = true;
+
+	int precision = 4;
 
 public slots:
 	void vectorDeletedHandler(VectorEntry*);

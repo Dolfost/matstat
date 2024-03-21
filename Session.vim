@@ -19,7 +19,7 @@ badd +40 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
 badd +99 include/statistics/dataVector.hpp
-badd +478 include/statistics/dataVector.cpp
+badd +1 include/statistics/dataVector.cpp
 badd +53 include/statistics/classSeries.cpp
 badd +23 include/statistics/classSeries.hpp
 badd +68 include/statistics/distributionChart.cpp
@@ -37,7 +37,7 @@ badd +6 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
 badd +36 include/gui/transformationFormulaEditorDialog.hpp
 badd +29 include/gui/vectorPickerDialog.cpp
-badd +308 include/gui/vectorContainerWidget.cpp
+badd +1 include/gui/vectorContainerWidget.cpp
 badd +40 include/gui/vectorInfoDialog.hpp
 badd +29 include/gui/vectorInfoDialog.cpp
 badd +18 include/statistics/varSeries.hpp
@@ -50,14 +50,14 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +3 include/statistics/dataVectorExprtk.hpp
 badd +35 include/statistics/distributionReproducer.hpp
-badd +307 include/statistics/distributionReproducer.cpp
+badd +289 include/statistics/distributionReproducer.cpp
 badd +150 include/gui/distributionReproducerDialog.cpp
 badd +10 include/gui/distributionReproducerDialog.hpp
 badd +22 include/statistics/statistics.hpp
 badd +78 include/statistics/statistics.cpp
 badd +35 include/statistics/statisticsExprtk.hpp
-badd +147 include/gui/setGeneratorDialog.cpp
-badd +65 include/gui/setGeneratorDialog.hpp
+badd +119 include/gui/setGeneratorDialog.cpp
+badd +26 include/gui/setGeneratorDialog.hpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -78,7 +78,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 5 - ((4 * winheight(0) + 22) / 45)
+let s:l = 5 - ((3 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -116,7 +116,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 478 - ((23 * winheight(0) + 22) / 45)
+let s:l = 478 - ((18 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -139,7 +139,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 30 - ((0 * winheight(0) + 22) / 45)
+let s:l = 30 - ((0 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -180,12 +180,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 147 - ((19 * winheight(0) + 18) / 36)
+let s:l = 120 - ((27 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 147
-normal! 053|
+keepjumps 120
+normal! 012|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/setGeneratorDialog.hpp", ":p")) | buffer include/gui/setGeneratorDialog.hpp | else | edit include/gui/setGeneratorDialog.hpp | endif
@@ -203,12 +203,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 65 - ((29 * winheight(0) + 18) / 36)
+let s:l = 26 - ((25 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 65
-normal! 031|
+keepjumps 26
+normal! 026|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 110 + 95) / 190)
 exe 'vert 2resize ' . ((&columns * 79 + 95) / 190)
@@ -308,12 +308,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 285 - ((7 * winheight(0) + 18) / 36)
+let s:l = 289 - ((11 * winheight(0) + 18) / 36)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 285
-normal! 030|
+keepjumps 289
+normal! 049|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/distributionReproducer.hpp", ":p")) | buffer include/statistics/distributionReproducer.hpp | else | edit include/statistics/distributionReproducer.hpp | endif
@@ -360,7 +360,7 @@ keepjumps exe s:l
 normal! zt
 keepjumps 142
 normal! 070|
-tabnext 3
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

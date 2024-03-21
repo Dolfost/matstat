@@ -16,7 +16,7 @@ ParametersWidget::ParametersWidget(QStringList params, std::vector<double> val, 
 		QDoubleSpinBox* sb = new QDoubleSpinBox;
 		sb->setEnabled(en);
 		sb->setValue(val[i]);
-		sb->setDecimals(3);
+		sb->setDecimals(precision);
 		layout->addWidget(sb, i, 1);
 	}
 
@@ -88,8 +88,10 @@ SetGeneratorDialog::SetGeneratorDialog(
 		boundsBox->setLayout(boundsLayout);
 		minSpinBox = new QDoubleSpinBox();
 		minSpinBox->setMinimum(INT_MIN);
+		minSpinBox->setDecimals(precision);
 		maxSpinBox = new QDoubleSpinBox();
 		maxSpinBox->setMaximum(INT_MAX);
+		maxSpinBox->setDecimals(precision);
 		boundsLayout->addWidget(minSpinBox);
 		boundsLayout->addWidget(maxSpinBox);
 
@@ -156,6 +158,9 @@ void SetGeneratorDialog::generate() {
 	DistributionReproducer::Method m =
 		DistributionReproducer::Method(methodComboBox->currentIndex());
 	size_t count = countSpinBox->value();
+	double
+		min = minSpinBox->value(),
+		max = maxSpinBox->value();
 
 	if (ve != nullptr and ve->vector->reproduction.model != DistributionReproducer::UnknownD)
 		dv = new DataVector(ve->vector->reproduction.generateSet(m, count));
@@ -163,7 +168,7 @@ void SetGeneratorDialog::generate() {
 		DistributionReproducer dr;
 		dr.setDistribution(DistributionReproducer::Distribution(distributionComboBox->currentIndex()+1),
 				parametersWidget->parameters(), count);
-		dv = new DataVector(dr.generateSet(m, count));
+		dv = new DataVector(dr.generateSet(m, count, min, max));
 	}
 
 	emit setGenerated(new VectorEntry(dv));
@@ -185,7 +190,7 @@ void SetGeneratorDialog::minBoundChanged(double val) {
 	minSpinBox->blockSignals(true);
 	maxSpinBox->blockSignals(true);
 
-	maxSpinBox->setMinimum(val+1);
+	maxSpinBox->setMinimum(val+0.001);
 
 	minSpinBox->blockSignals(false);
 	maxSpinBox->blockSignals(false);
@@ -195,7 +200,7 @@ void SetGeneratorDialog::maxBoundChanged(double val) {
 	minSpinBox->blockSignals(true);
 	maxSpinBox->blockSignals(true);
 
-	minSpinBox->setMaximum(val-1);
+	minSpinBox->setMaximum(val-0.001);
 
 	minSpinBox->blockSignals(false);
 	maxSpinBox->blockSignals(false);
