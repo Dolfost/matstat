@@ -440,6 +440,7 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 				}
 
 				double beta = (a21*b1-a11*b2)/(std::pow(a21, 2)-a11*a22);
+				// (a11b2-b1a21)/(a11a22-a21^2)
 
 				double S = 0;
 				for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1); it++) {
@@ -474,6 +475,8 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 				reproduction.setDistribution(type, {}, size());
 				break;
 			}
+		default:
+			break;
 	}
 }
 
@@ -564,13 +567,13 @@ void DataVector::computeVarianceDeviation() {
 }
 
 void DataVector::computeSkewDeviation() {
-	qDebug() << "WHY THIS HAPPENS" << 
-		(1.0/(4*size())) *(4*beta(4) - 12*beta(3) -
-			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36);
-	stat.skewDeiviation.first = sqrt(
-			(4*beta(4) - 12*beta(3) -
-			24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36) /
-			 (4*size()));
+	// there is no way this would ever worked
+	// stat.skewDeiviation.first = sqrt(
+	// 		(4*beta(4) - 12*beta(3) -
+	// 		24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36) /
+	// 		 (4*size()));
+	
+	stat.skewDeiviation.first = std::sqrt((6*(size()-2))/((size()+1)*(size()+3)));
 	stat.skewDeiviation.second = true;
 }
 

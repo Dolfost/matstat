@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QtCore/qalgorithms.h>
 
 #include "classSeries.hpp"
 ClassSeries::ClassSeries(DataVector* vs) {
@@ -49,7 +50,6 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 		if (classSeries[i].second > maxIntProb)
 			maxIntProb = classSeries[i].second;
 	}
-
 	return true;
 }
 

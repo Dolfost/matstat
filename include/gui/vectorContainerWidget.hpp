@@ -8,10 +8,6 @@
 #include <QFileDialog>
 #include <QtCore/qnamespace.h>
 
-#include "gui/transformationFormulaEditorDialog.hpp"
-#include "gui/vectorInfoDialog.hpp"
-
-#include "./statistics/dataVector.hpp"
 
 #include "guiTypes.hpp"
 
@@ -54,6 +50,7 @@ private slots:
 	void trimAction();
 	void removeOutliersAction();
 	void infoAction();
+	void generateAction();
 	void writeAction();
 
 signals:

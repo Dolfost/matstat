@@ -9,6 +9,8 @@
 #include <QtCore/qlogging.h>
 #include <vector>
 
+#include <random>
+
 DistributionReproducer::DistributionReproducer() {
   symbolTable.add_variable("x", x);
   eNormalDistributionCdf = new exprtkNormalDistributionCdf();
@@ -17,6 +19,7 @@ DistributionReproducer::DistributionReproducer() {
       "normCdf", *eNormalDistributionCdf);
   cdfExpression.register_symbol_table(symbolTable);
   pdfExpression.register_symbol_table(symbolTable);
+  invCdfExpression.register_symbol_table(symbolTable);
   cdfDeviationExpression.register_symbol_table(symbolTable);
 }
 
@@ -91,6 +94,10 @@ void DistributionReproducer::setDistribution(Distribution type,
 
 				cdfString = QString("1-exp(-(%1)x)").arg(parameters[0], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
+				
+				invCdfString = QString("(1/%1)log(1/(1-x))")
+					.arg(parameters[0], 0, 'f', 6);
+				parser.compile(invCdfString.toStdString(), invCdfExpression);
 
 				parametersCv = 0;
 				QString cdfDeviation = QString("x^2*exp(-2(%1)x)%2")
@@ -121,6 +128,11 @@ void DistributionReproducer::setDistribution(Distribution type,
 					.arg(parameters[0], 0, 'f', 6)
 					.arg(parameters[1], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
+
+				invCdfString = QString("root(%2*log(1/(1-x)), %1)")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
+				parser.compile(invCdfString.toStdString(), invCdfExpression);
 
 				if (p.size() == 2)
 					break;
@@ -258,7 +270,48 @@ void DistributionReproducer::setDistribution(Distribution type,
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 				break;
 			}
+		default:
+			break;
 	}
+}
+
+std::list<double> DistributionReproducer::generateSet(Method m, size_t s, double from, double to) {
+	size_t setSize = s ? s : size;
+	std::list<double> set;
+
+	std::default_random_engine generator;
+	generator.seed(time(nullptr));
+	switch (m) {
+		case Method::InverseM:
+			{
+				std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+				qDebug() << this->invCdfString;
+				for (int i = 0; i < setSize; i++) {
+					x = distribution(generator);
+					qDebug() <<  x;
+					set.push_back(invCdfExpression.value());
+				}
+				qDebug() <<set;
+			}
+		case Method::PlaneM:
+			{
+				std::uniform_real_distribution<double> distributionX(from, to);
+				std::uniform_real_distribution<double> distributionY(0, pdfMax);
+
+				while (set.size() < setSize) {
+					x = distributionX(generator);
+					double y = pdfExpression.value(),
+						y1 = distributionY(generator);
+					if (y1 <= y)
+						set.push_back(y1);
+				}
+			}
+		default:
+			break;
+	}
+
+	return set;
 }
 
 DistributionReproducer::~DistributionReproducer() {
@@ -272,4 +325,18 @@ const QStringList DistributionReproducer::distributionName = {
 	"Вейбула",
 	"Логнормальний",
 	"Рівномірний",
+};
+
+const QStringList DistributionReproducer::methodName = {
+	"Звороьньої функції",
+	"Площинний"
+};
+
+const QList<QStringList> DistributionReproducer::parameterName = {
+	{},
+	{"m", "σ"},
+	{"λ"},
+	{"𝛼", "β"},
+	{"m", "σ"},
+	{"a", "b"},
 };

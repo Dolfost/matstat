@@ -7,7 +7,7 @@
 #include <vector>
 
 class DistributionReproducer {
-	public:
+public:
 	DistributionReproducer();
 	~DistributionReproducer();
 
@@ -21,9 +21,20 @@ class DistributionReproducer {
 		CountD,
 	} model = UnknownD;
 
+	enum Method {
+		InverseM,
+		PlaneM,
+		CountM,
+	};
+
 	void setDistribution(Distribution, std::vector<double>, size_t);
 	static const QStringList distributionName;
+	static const QStringList methodName;
+	static const QList<QStringList> parameterName;
 
+	std::list<double> generateSet(Method, size_t = 0, double = 0, double = 1);
+
+public:
 	double x = 0;
 
 	double confidence = 0.95;
@@ -31,12 +42,14 @@ class DistributionReproducer {
 	exprtk::symbol_table<double> symbolTable;
 	exprtk::expression<double> pdfExpression; // probability density function
 	exprtk::expression<double> cdfExpression; // cummulative density function
+	exprtk::expression<double> invCdfExpression;
 	exprtk::expression<double> cdfDeviationExpression;
 
 	std::pair<double, double> cdfDeviation(double = 0.95);
 
 	QString cdfString;
 	QString pdfString;
+	QString invCdfString;
 	
 	size_t size = 0;
 	size_t parametersCount = 0;

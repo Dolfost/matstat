@@ -1,7 +1,12 @@
+#include "./statistics/dataVector.hpp"
+
 #include "vectorContainerWidget.hpp"
-#include <QtCore/qnamespace.h>
 #include "vectorTrimmerDialog.hpp"
 #include "distributionReproducerDialog.hpp"
+#include "gui/transformationFormulaEditorDialog.hpp"
+#include "gui/vectorInfoDialog.hpp"
+#include "setGeneratorDialog.hpp"
+
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -137,6 +142,10 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 	QAction* reproductionAction = menu.addAction("Відтворення розподілу…");
 	connect(reproductionAction, &QAction::triggered,
 			this, &VectorContainerWidget::reproductionAction);
+
+	QAction* generateAction = menu.addAction("Генерація вибірки…");
+	connect(generateAction, &QAction::triggered,
+			this, &VectorContainerWidget::generateAction);
 
 	menu.addSeparator();
 
@@ -286,6 +295,17 @@ void VectorContainerWidget::infoAction() {
 		new VectorInfoDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			tfe, &VectorInfoDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::generateAction() {
+	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
+			data(Qt::UserRole).value<VectorEntry*>();
+	SetGeneratorDialog* sgd = 
+		new SetGeneratorDialog(ve, this);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			sgd, &SetGeneratorDialog::vectorDeletedHandler);
+	connect(sgd, &SetGeneratorDialog::setGenerated,
+			this, &VectorContainerWidget::appendVector);
 }
 
 void VectorContainerWidget::writeAction() {
