@@ -418,7 +418,9 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 	switch (type) {
 		case DistributionReproducer::NormalD:
 			{
-				reproduction.setDistribution(type, {mean(), standardDeviation()}, size());
+				reproduction.setDistribution(type, {mean(),
+						(size()/(size()-1.0))*std::sqrt(rawMoment(2) - std::pow(rawMoment(1), 2))},
+						size());
 				break;
 			}
 		case DistributionReproducer::ExponentialD:

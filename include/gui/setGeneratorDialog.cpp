@@ -137,7 +137,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 				params = ve->vector->reproduction.parameters;
 				countSpinBox->setValue(ve->vector->size());
 				minSpinBox->setValue(ve->vector->min());
-				minSpinBox->setValue(ve->vector->max());
+				maxSpinBox->setValue(ve->vector->max());
 			} else {
 				statusBar->showMessage("Розподіл " + ve->name +
 						" не був відтворений");
@@ -163,7 +163,7 @@ void SetGeneratorDialog::generate() {
 		max = maxSpinBox->value();
 
 	if (ve != nullptr and ve->vector->reproduction.model != DistributionReproducer::UnknownD)
-		dv = new DataVector(ve->vector->reproduction.generateSet(m, count));
+		dv = new DataVector(ve->vector->reproduction.generateSet(m, count, min, max));
 	else {
 		DistributionReproducer dr;
 		dr.setDistribution(DistributionReproducer::Distribution(distributionComboBox->currentIndex()+1),

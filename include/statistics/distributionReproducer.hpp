@@ -63,6 +63,7 @@ public:
 private:
 	static exprtk::parser<double> parser;
 	exprtkNormalDistributionCdf* eNormalDistributionCdf = nullptr;
+	exprtkNormQuantile* eNormQuantile = nullptr;
 };
 
 #endif //!_DISTRIBUTION_REPRODUCER_HPP_

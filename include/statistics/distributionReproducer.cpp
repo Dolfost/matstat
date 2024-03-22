@@ -14,9 +14,12 @@
 DistributionReproducer::DistributionReproducer() {
   symbolTable.add_variable("x", x);
   eNormalDistributionCdf = new exprtkNormalDistributionCdf();
+  eNormQuantile = new exprtkNormQuantile();
 
   symbolTable.add_function(
       "normCdf", *eNormalDistributionCdf);
+  symbolTable.add_function(
+      "normQuantile", *eNormQuantile);
   cdfExpression.register_symbol_table(symbolTable);
   pdfExpression.register_symbol_table(symbolTable);
   invCdfExpression.register_symbol_table(symbolTable);
@@ -51,7 +54,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 				parameters = p;
 				pdfMax = 1 / (p[1] * 2.5066282746);
 				parametersDeviation.push_back(std::pow(parameters[1], 2) / size);
-				parametersDeviation.push_back(parameters[0] / 2);
+				parametersDeviation.push_back(std::pow(parameters[1], 2) / (2*size));
 
 				pdfString = QString("1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2*(%2)^2))")
 					.arg(parameters[0])
@@ -62,6 +65,11 @@ void DistributionReproducer::setDistribution(Distribution type,
 					QString("normCdf((x-(%1))/(%2))").arg(parameters[0]).arg(parameters[1]);
 				parser.compile(cdfString.toStdString(), cdfExpression);
 
+				invCdfString = QString("%1 + %2*normQuantile(x)")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
+				parser.compile(invCdfString.toStdString(), invCdfExpression);
+
 				parametersCv = 0;
 				QString cdfDeviation =
 					QString("(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
@@ -69,7 +77,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 							.arg(parameters[0])
 							.arg(parameters[1]))
 					.arg(QString(
-								"-(x-%1)/((%2)^2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
+								"-(x-%1)/(((%2)^2)*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
 							.arg(parameters[0])
 							.arg(parameters[1]))
 					.arg(parametersDeviation[0])
@@ -87,12 +95,12 @@ void DistributionReproducer::setDistribution(Distribution type,
 				parametersDeviationNames = paremeterNames;
 				parameters = p;
 				pdfMax = parameters[0];
-				parametersDeviation.push_back(std::pow(parameters[0], 2) / 2);
+				parametersDeviation.push_back(std::pow(parameters[0], 2) / size);
 
-				pdfString = QString("(%1)(exp(-(%1)x))").arg(parameters[0], 0, 'f', 6);
+				pdfString = QString("if (x >= 0) (%1)(exp(-(%1)x)); else 0;").arg(parameters[0], 0, 'f', 6);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
-				cdfString = QString("1-exp(-(%1)x)").arg(parameters[0], 0, 'f', 6);
+				cdfString = QString("if (x >= 0) 1-exp(-(%1)x); else 0;").arg(parameters[0], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
 				
 				invCdfString = QString("(1/%1)log(1/(1-x))")
@@ -100,7 +108,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 				parser.compile(invCdfString.toStdString(), invCdfExpression);
 
 				parametersCv = 0;
-				QString cdfDeviation = QString("x^2*exp(-2(%1)x)%2")
+				QString cdfDeviation = QString("(x^2)*exp(-2(%1)x)(%2)")
 					.arg(parameters[0])
 					.arg(parametersDeviation[0]);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
@@ -182,15 +190,20 @@ void DistributionReproducer::setDistribution(Distribution type,
 						(4 * size * sigma));
 
 				pdfString =
-					QString("1/(x(%2)*2.5066282746)*exp(-((log(x)-%1)^2)/(2*(%2)^2))")
+					QString("if (x > 0) 1/(x(%2)*2.5066282746)*exp(-((log(x)-%1)^2)/(2*(%2)^2)); else 0;")
 					.arg(parameters[0])
 					.arg(parameters[1]);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
-				cdfString = QString("normCdf((log(x)-(%1))/(%2))")
+				cdfString = QString("if (x > 0) normCdf((log(x)-(%1))/(%2)); else 0;")
 					.arg(parameters[0])
 					.arg(parameters[1]);
 				parser.compile(cdfString.toStdString(), cdfExpression);
+
+				invCdfString = QString("if (x > 0) exp(%1 + %2*normQuantile(x)); else 0;")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
+				parser.compile(invCdfString.toStdString(), invCdfExpression);
 
 				parametersCv =
 					(-exp(4 * sigma) +
@@ -223,7 +236,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 				paremeterNames = {"a", "b"};
 				parametersDeviationNames = paremeterNames;
 				parameters = p;
-				pdfMax = 1.25 / (parameters[1]-parameters[0]);
+				pdfMax = 2 / (parameters[1]-parameters[0]);
 				double
 					h1x = 1+3*(parameters[0] + parameters[1]) /
 					(parameters[1] - parameters[0]),
@@ -250,14 +263,21 @@ void DistributionReproducer::setDistribution(Distribution type,
 
 				parametersCv = (h1x*h2x2 + h1x2*h2x)*covxx2;
 
-				pdfString = QString("1/(%2-%1)")
+				pdfString = QString("if (x >= %1 and x < %2) 1/(%2-%1); else 0;")
 					.arg(parameters[0])
 					.arg(parameters[1]);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
 				cdfString =
-					QString("(x-%1)/(%2-%1)").arg(parameters[0]).arg(parameters[1]);
+					QString("if (x >= %1 and x < %2) (x-%1)/(%2-%1); else 0;")
+					.arg(parameters[0])
+					.arg(parameters[1]);
 				parser.compile(cdfString.toStdString(), cdfExpression);
+
+				invCdfString = QString("x(%2-%1)+%1")
+					.arg(parameters[0], 0, 'f', 6)
+					.arg(parameters[1], 0, 'f', 6);
+				parser.compile(invCdfString.toStdString(), invCdfExpression);
 
 				QString cdfDeviation =
 					QString("((x-%2)^2)/((%2-%1)^4)*%3 + ((x-%1)^2)/((%2-%1)^4)*%4 "
@@ -280,7 +300,7 @@ std::list<double> DistributionReproducer::generateSet(Method m, size_t s, double
 	std::list<double> set;
 
 	std::default_random_engine generator;
-	generator.seed(time(nullptr));
+	generator.seed();
 	switch (m) {
 		case Method::InverseM:
 			{
@@ -313,6 +333,7 @@ std::list<double> DistributionReproducer::generateSet(Method m, size_t s, double
 
 DistributionReproducer::~DistributionReproducer() {
   delete eNormalDistributionCdf;
+  delete eNormQuantile;
 }
 
 const QStringList DistributionReproducer::distributionName = {
