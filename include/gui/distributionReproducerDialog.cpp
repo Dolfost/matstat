@@ -104,6 +104,8 @@ void DistributionReproducerDialog::distribute(int dist) {
 		tablesWidget->setVisible(false);
 		this->adjustSize();
 	}
+
+	emit distributionSelected(ve);
 }
 
 void DistributionReproducerDialog::refill() {

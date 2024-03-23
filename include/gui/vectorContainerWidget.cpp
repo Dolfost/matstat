@@ -259,6 +259,8 @@ void VectorContainerWidget::reproductionAction() {
 		new DistributionReproducerDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,
 			drd, &DistributionReproducerDialog::vectorDeletedHandler);
+	connect(drd, &DistributionReproducerDialog::distributionSelected,
+			[=](){ emit distributionSelected(ve); });
 }
 
 void VectorContainerWidget::trimAction() {

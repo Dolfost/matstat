@@ -438,7 +438,7 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 					a22 += std::pow(tmp, 2);
 					double lnValue = log(log(1/(1-eCdf(*it))));
 					b1 += lnValue;
-					b2 += log(*it)*lnValue;
+					b2 += tmp*lnValue;
 				}
 
 				double beta = (a21*b1-a11*b2)/(std::pow(a21, 2)-a11*a22);

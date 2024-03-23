@@ -41,11 +41,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			this, &MainWindow::outliersRemovedHandler);
 	connect(this->vectorContainer, &VectorContainerWidget::vectorDeleted,
 			this->vectorProcessor, &VectorProcessorWidget::vectorDeletedHandler);
+	connect(this->vectorContainer, &VectorContainerWidget::distributionSelected,
+			this->vectorProcessor, &VectorProcessorWidget::distributionSelectedHandler);
 
 	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
 			this, &MainWindow::vectorProcessorDuplicateHandler);
 	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
 			this, &MainWindow::plot2D);
+
 
 	open();
 }
@@ -142,8 +145,8 @@ void MainWindow::open() {
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/norm1_anomaly.txt"; 
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/LOGNORM.DAT"; 
-	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/VEIBUL.DAT"; 
+	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/LOGNORM.DAT"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/VEIBUL.DAT"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/ravn.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/veib.txt"; 
 

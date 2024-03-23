@@ -51,6 +51,7 @@ private:
 public slots:
 	void appendVector(VectorEntry*);
 	void vectorDeletedHandler(VectorEntry*);
+	void distributionSelectedHandler(VectorEntry*);
 
 private slots:
 	void append1dVector(QTreeWidgetItem* item, VectorEntry*);
@@ -70,6 +71,7 @@ private slots:
 	void emit2D(QTreeWidgetItem* item);
 	void emit3D(QTreeWidgetItem* item);
 	void emit4D(QTreeWidgetItem* item);
+
 
 signals:
 	void tabSelected(Tab);

@@ -316,6 +316,13 @@ void VectorProcessorWidget::itemChangedHandler(QTreeWidgetItem* item, int col) {
 	}
 }
 
+void VectorProcessorWidget::distributionSelectedHandler(VectorEntry* ve) {
+	for (auto const& i : activeItems[Tab::TwoD]) {
+		if (i->data(0, Qt::UserRole+1).value<bool>())
+			emit2D(i);
+	}
+};
+
 // Items
 ClassTreeItem2D::ClassTreeItem2D(int type) : QTreeWidgetItem(type) {
 	this->setFlags(this->flags() | Qt::ItemIsEditable);

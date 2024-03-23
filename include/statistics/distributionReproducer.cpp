@@ -124,23 +124,26 @@ void DistributionReproducer::setDistribution(Distribution type,
 				// pdfMax = std::pow(parameters[1] / parameters[0], 1 / parameters[1]) *
 				// 	std::pow(parameters[1] - 1, (parameters[1] - 1) / parameters[1]) *
 				// 	std::exp(-(parameters[1] - 1) / parameters[1]);
-				parametersDeviation.push_back(std::pow(parameters[0], 2) / 2);
 
-				pdfString = QString("((%2)/(%1))(x^(%2-1))exp(-(x^(%2))/(%1))")
+				pdfString = QString("if (x >= 0) ((%2)/(%1))(x^(%2-1))exp(-(x^(%2))/(%1)); else 0;")
 				// pdfString = QString("((%2)/(%1))((x/%1)^(%2-1))exp(-((x/(%1))^(%2)))")
 					.arg(parameters[0], 0, 'f', 20)
 					.arg(parameters[1], 0, 'f', 20);
 				parser.compile(pdfString.toStdString(), pdfExpression);
 
-				cdfString = QString("1-exp(-(x^(%2))/(%1))")
+				cdfString = QString("if (x >= 0) 1-exp(-(x^(%2))/(%1)); else 0;")
 					.arg(parameters[0], 0, 'f', 6)
 					.arg(parameters[1], 0, 'f', 6);
 				parser.compile(cdfString.toStdString(), cdfExpression);
 
-				invCdfString = QString("root(%2*log(1/(1-x)), %1)")
+				invCdfString = QString("(-%1*log(1-x))^(1/%2)")
 					.arg(parameters[0], 0, 'f', 6)
 					.arg(parameters[1], 0, 'f', 6);
 				parser.compile(invCdfString.toStdString(), invCdfExpression);
+
+				x = std::pow(abs(parameters[0]*(parameters[1]-1))/parameters[1],
+						1/parameters[1]);
+				pdfMax = pdfExpression.value();
 
 				if (p.size() == 2)
 					break;
@@ -166,9 +169,6 @@ void DistributionReproducer::setDistribution(Distribution type,
 					.arg(parametersCv);
 				parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
 
-				x = std::pow(abs(parameters[0]*(parameters[1]-1))/parameters[1],
-						1/parameters[1]);
-				pdfMax = pdfExpression.value();
 				break;
 			}
 		case Distribution::LogNormalD:

@@ -57,6 +57,7 @@ signals:
 	void vectorSelected(VectorEntry*);
 	void vectorDeleted(VectorEntry*);
 	void outliersRemoved(bool);
+	void distributionSelected(VectorEntry*);
 };
 
 
