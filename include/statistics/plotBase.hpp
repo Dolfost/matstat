@@ -11,16 +11,16 @@
 #include <QtWidgets/qlabel.h>
 #include <QLogValueAxis>
 
-#include "classSeries.hpp"
-
 #include "QCustomPlot/qcustomplot.h"
+#include "statistics/dataVector.hpp"
+#include "statistics/classSeries.hpp"
 
 class PlotBase : public QCustomPlot {
 	Q_OBJECT
 public:
 	PlotBase(QWidget* parent = nullptr);
 
-	ClassSeries* classSeries();
+	DataVector* dataVector();
 
 	void enableMean();
 	void plotMean();
@@ -34,7 +34,7 @@ public:
 	void enableWalshMed();
 	void plotWalshMed();
 
-	ClassSeries* cs = nullptr;
+	DataVector* dv = nullptr;
 
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
 	QSharedPointer<QCPAxisTicker> yTicker;
@@ -68,7 +68,7 @@ public slots:
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;
 
-	void fill(ClassSeries* cs);
+	void fill(DataVector*);
 };
 
 #endif // !_CHART_BASE_HPP_

@@ -12,13 +12,19 @@
 #include "statisticsExprtk.hpp"
 #include "statistics.hpp"
 
+#include "statistics/classSeries.hpp"
+#include "statistics/varSeries.hpp"
 
 DataVector::DataVector(const std::list<double>& input) {
 	setVector(input);
+	cs = new ClassSeries(this);
+	vs = new VarSeries(this);
 }
 
 DataVector::DataVector(DataVector& dv) {
 	setVector(dv.vector());
+	cs = new ClassSeries(this);
+	vs = new VarSeries(this);
 }
 
 void DataVector::setVector(const std::list<double>& input) {
@@ -144,7 +150,7 @@ double DataVector::counterKurtosis(Measure m) {
 	 return qQNaN();
 }
 
-std::list<double> DataVector::walshAverages() {
+std::list<double>& DataVector::walshAverages() {
 	if (!stat.walshAverages.second)
 		computeWalshAverages();
 
@@ -182,21 +188,6 @@ double DataVector::beta(int k) {
 		computeBeta(k);
 
 	return stat.beta.count(k);
-}
-
-double DataVector::eCdf(double x) {
-	if (x >= max())
-		return 1.0;
-
-	int n = 0;
-	for (auto const& xl : dataVector) {
-		if (xl <= x)
-			n++;
-		else
-		 break;
-	}
-
-	return double(n)/size();
 }
 
 double DataVector::meanDeviation() {
@@ -273,6 +264,21 @@ double DataVector::kurtosisConfidence(double alpha, Limit lim) {
 	else
 		return qQNaN();
 };
+
+double DataVector::cdf(double x) {
+	if (x >= max())
+		return 1.0;
+
+	int n = 0;
+	for (auto const& xl : dataVector) {
+		if (xl <= x)
+			n++;
+		else
+		 break;
+	}
+
+	return double(n)/size();
+}
 
 // statistic computers //
 void DataVector::computeMinMaxSize() {
@@ -414,18 +420,69 @@ void DataVector::computeNonparametricVariationCoef() {
 	stat.nonparametricVariationCoef.second = true;
 }
 
+double DataVector::kolmConsentCriterion() {
+	if (rep.model ==
+			DistributionReproducer::Distribution::UnknownD)
+		return qQNaN();
+
+	if (stat.kolmConsentCriterion.second == false)
+		computeKolmConsentCriterion();
+
+	return stat.kolmConsentCriterion.first;
+}
+
+double DataVector::pearConsentCriterion(size_t classCount) {
+	if (rep.model ==
+			DistributionReproducer::Distribution::UnknownD)
+		return qQNaN();
+
+	if (stat.pearConsentCriterion.second == false)
+		computePearConsentCriterion(classCount);
+
+	return stat.pearConsentCriterion.first;
+}
+
+void DataVector::makeClassSeries(unsigned short cls) {
+	if (cls == 0)
+		cls = cs->calculateClassCount();
+
+	if (csReady == false or cls != cs->classCount()) {
+		cs->makeSeries(cls);
+		csReady = true;
+	}
+}
+
+DataVector::ClassSeries* DataVector::classSeries() {
+	if (csReady)
+		return cs;
+	else 
+		return nullptr;
+}
+
+DataVector::VarSeries* DataVector::varSeries() {
+	if (vsReady == false) {
+		vs->makeSeries();
+		vsReady = true;
+	}
+
+	return vs;
+}
+
 void DataVector::reproduceDistribution(DistributionReproducer::Distribution type) {
+	stat.pearConsentCriterion.second = false;
+	stat.kolmConsentCriterion.second = false;
+
 	switch (type) {
 		case DistributionReproducer::NormalD:
 			{
-				reproduction.setDistribution(type, {mean(),
+				rep.setDistribution(type, {mean(),
 						(size()/(size()-1.0))*std::sqrt(rawMoment(2) - std::pow(rawMoment(1), 2))},
 						size());
 				break;
 			}
 		case DistributionReproducer::ExponentialD:
 			{
-				reproduction.setDistribution(type, {1/mean()}, size());
+				rep.setDistribution(type, {1/mean()}, size());
 				break;
 			}
 		case DistributionReproducer::WeibullD:
@@ -436,7 +493,7 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 					double tmp = log(*it);
 					a21 += tmp;
 					a22 += std::pow(tmp, 2);
-					double lnValue = log(log(1/(1-eCdf(*it))));
+					double lnValue = log(log(1/(1-cdf(*it))));
 					b1 += lnValue;
 					b2 += tmp*lnValue;
 				}
@@ -446,18 +503,18 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 
 				double S = 0;
 				for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1); it++) {
-					S += pow(log(log(1/(1-eCdf(*it))) - skew(Measure::PopulationM)-beta*log(*it)), 2);
+					S += pow(log(log(1/(1-cdf(*it))) - skew(Measure::PopulationM)-beta*log(*it)), 2);
 				}
 
 				S /= size() - 3;
 
-				reproduction.setDistribution(type, {exp(-skew(Measure::PopulationM)), beta,
+				rep.setDistribution(type, {exp(-skew(Measure::PopulationM)), beta,
 						skew(Measure::PopulationM), S, a11, a21, a22}, size());
 				break;
 			}
 		case DistributionReproducer::LogNormalD:
 			{
-				reproduction.setDistribution(type, {
+				rep.setDistribution(type, {
 					2*log(mean())-log(rawMoment(2))/2,
 					sqrt(log(rawMoment(2))-2*log(mean()))
 					}, size());
@@ -466,7 +523,7 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 		case DistributionReproducer::UniformD:
 			{
 				double pm = std::sqrt(3*(rawMoment(2) - std::pow(mean(), 2)));
-				reproduction.setDistribution(type, {
+				rep.setDistribution(type, {
 						mean() - pm,
 						mean() + pm
 					}, size());
@@ -474,7 +531,7 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 			}
 		case DistributionReproducer::UnknownD:
 			{
-				reproduction.setDistribution(type, {}, size());
+				rep.setDistribution(type, {}, size());
 				break;
 			}
 		default:
@@ -511,6 +568,12 @@ void DataVector::clearStatistics() {
 	stat.nonparametricVariationCoef.second = false;
 	stat.walshAverages.second = false;
 	stat.walshAveragesMed.second = false;
+
+	reproduceDistribution(DistributionReproducer::Distribution::UnknownD);
+	stat.pearConsentCriterion.second = false;
+	stat.kolmConsentCriterion.second = false;
+	vsReady = false;
+	csReady = false;
 
 	stat.min.second = false;
 	stat.max.second = false;
@@ -625,6 +688,79 @@ void DataVector::computeKurtosisConfidence(double alpha) {
 				alpha,
 				size()
 			);
+}
+
+void DataVector::computeKolmConsentCriterion() {
+	auto it1 = dataVector.begin();
+	auto it2 = dataVector.begin();
+	it2++;
+
+	rep.x = *it2;
+	double
+		cdfv = cdf(*it2),
+		Dp = std::abs(cdfv - rep.cdfExpression.value());
+	rep.x = *it1;
+	double
+		Dm = std::abs(cdfv - rep.cdfExpression.value());
+
+	it1++; it2++;
+	while (it2 != dataVector.end()) {
+		cdfv = cdf(*it2);
+
+		rep.x = *it2;
+		double DpTmp =
+			std::abs(cdfv - rep.cdfExpression.value());
+		if (DpTmp > Dp)
+			Dp = DpTmp;
+
+		rep.x = *it1;
+		double DmTmp =
+			std::abs(cdfv - rep.cdfExpression.value());
+		if (DmTmp > Dm)
+			Dm = DmTmp;
+
+		it1++; it2++;
+	}
+
+	double z = std::sqrt(size())*std::max(Dp, Dm);
+
+	double tmp = 0;
+	for (int k = 1; k <= 15; k++) {
+		double pm = (1 - (k&2 ? -1 : +1)),
+			f1 = std::pow(k, 2) - pm/2,
+			f2 = 5*std::pow(k, 2) + 22 - pm*7.5;
+
+		tmp += (k%2 ? -1 : 1)*std::exp(-2*std::pow(k, 2)*std::pow(z, 2))*
+				(1-(2*std::pow(k, 2)*z)/(3*sqrt(size())) - (1.0/(18*size())) *
+				 ((f1 - 4*(f1+3))*std::pow(k, 2)*std::pow(z, 2) +
+				  8*std::pow(k, 4)*std::pow(z, 4)) +
+				 ((std::pow(k, 2)*z)/(27*std::pow(size(), 1.5))) * 
+				 (std::pow(f2, 2)/5 - (4*(f2+45)*std::pow(k, 2)*std::pow(z, 2))/15 +
+				  8 * std::pow(k, 4)*std::pow(z, 4)));
+	}
+
+	stat.kolmConsentCriterion.first = -2*tmp;
+	stat.kolmConsentCriterion.second = true;
+}
+
+void DataVector::computePearConsentCriterion(size_t classCount) {
+	ClassSeries s(this);
+
+	s.makeSeries(classCount);
+	stat.pearConsentCriterion.first = 0;
+	for (int i = 0; i < s.classCount(); i++) {
+		rep.x = min() + (i+1)*(s.step());
+		double
+			ni  = s.series()[i].second,
+			nio = rep.cdfExpression.value();
+		rep.x = min() + i*(s.step());
+		nio -= rep.cdfExpression.value();
+		nio *= size();
+
+		stat.pearConsentCriterion.first += std::pow(ni - nio, 2)/nio;
+	}
+
+	stat.pearConsentCriterion.second = true;
 }
 
 // Vector operations
@@ -879,3 +1015,8 @@ const QString DataVector::exprtkFuncitons =
 		"rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
 		"centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
 		"beta(k) — бета–коефіцієнт";
+
+DataVector::~DataVector() {
+	delete cs;
+	delete vs;
+}

@@ -78,7 +78,7 @@ signals:
 	void duplicateAdded(VectorEntry*, Tab);
 	void vectorRemoved(VectorEntry*);
 
-	void twoDVectorsSelected(VectorEntry*, ClassSeries*);
+	void twoDVectorsSelected(VectorEntry*);
 	void threeDVectorsSelected(VectorEntry*, VectorEntry*);
 	void fourDVectorsSelected(VectorEntry*, VectorEntry*, VectorEntry*);
 };
@@ -86,7 +86,6 @@ signals:
 class ClassTreeItem2D : public QTreeWidgetItem {
 public:
 	ClassTreeItem2D(int);
-	~ClassTreeItem2D();
 };
 
 class ConfindenceItem2D : public QTreeWidgetItem {

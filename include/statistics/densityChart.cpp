@@ -5,9 +5,10 @@
 
 #include <QDebug>
 
-#include "classSeries.hpp"
 #include "densityChart.hpp"
 #include "plotBase.hpp"
+
+#include "statistics/classSeries.hpp"
 
 DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	title->setText("Щільність");
@@ -40,14 +41,15 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	this->yAxis->setLabel("f(x) (класи)");
 }
 
-void DensityChart::fill(ClassSeries* clSr) {
-	cs = clSr;
+void DensityChart::fill(DataVector* dataVector) {
+	dv = dataVector;
+	DataVector::ClassSeries* cs = dataVector->classSeries();
 
 	bars->setWidth(cs->step());
 
 	QVector<double> x, y;
 	for (size_t i = 0; i < cs->classCount(); i++) {
-		x.push_back(cs->dataVector->min() + cs->step()*(i+0.5));
+		x.push_back(dv->min() + cs->step()*(i+0.5));
 		y.push_back(cs->series()[i].second);
 	}
 
@@ -55,16 +57,16 @@ void DensityChart::fill(ClassSeries* clSr) {
 
 	x.clear(), y.clear();
 
-	if (cs->dataVector->reproduction.model != DistributionReproducer::Distribution::UnknownD) {
+	if (dataVector->rep.model != DistributionReproducer::Distribution::UnknownD) {
 		coordinatesLabelString = "%1\n%2 %3";
 		this->yAxis2->setTickLabels(true);
-		this->yRange2 = QCPRange(0, cs->dataVector->reproduction.pdfMax);
-		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
-		for (cs->dataVector->reproduction.x = cs->dataVector->min();
-				cs->dataVector->reproduction.x <= cs->dataVector->max(); 
-				cs->dataVector->reproduction.x += interval/350) {
-			x.push_back(cs->dataVector->reproduction.x);
-			y.push_back(cs->dataVector->reproduction.pdfExpression.value());
+		this->yRange2 = QCPRange(0, dataVector->rep.pdfMax);
+		double interval = abs(dataVector->max() - dataVector->min())/2;
+		for (dataVector->rep.x = dataVector->min();
+				dataVector->rep.x <= dataVector->max(); 
+				dataVector->rep.x += interval/350) {
+			x.push_back(dataVector->rep.x);
+			y.push_back(dataVector->rep.pdfExpression.value());
 		}
 
 		density->setData(x, y);
@@ -81,6 +83,6 @@ void DensityChart::fill(ClassSeries* clSr) {
 	plotMed();
 	plotWalshMed();
 
-	PlotBase::fill(cs);
+	PlotBase::fill(dv);
 }
 

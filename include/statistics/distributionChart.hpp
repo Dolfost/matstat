@@ -4,7 +4,6 @@
 #include <QChart>
 #include <QtCharts/qbarseries.h>
 
-#include "classSeries.hpp"
 #include "plotBase.hpp"
 
 class DistributionChart : public PlotBase {
@@ -16,7 +15,7 @@ public:
 	QCPGraph* distribution = nullptr;
 	QCPGraph* distributionDeviation = nullptr;
 
-	void fill(ClassSeries* clSr);
+	void fill(DataVector*);
 };
 
 #endif // !_DISTRIBUTION_CHART_HPP_

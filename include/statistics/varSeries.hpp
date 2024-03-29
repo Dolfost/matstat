@@ -5,7 +5,7 @@
 
 #include "dataVector.hpp"
 
-class VarSeries {
+class DataVector::VarSeries {
 public:
 	VarSeries(DataVector*);
 

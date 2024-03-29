@@ -43,14 +43,15 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	this->yAxis->setLabel("F(x)");
 }
 
-void DistributionChart::fill(ClassSeries* clSr) {
-	cs = clSr;
+void DistributionChart::fill(DataVector* dataVector) {
+	dv = dataVector;
+	DataVector::ClassSeries* cs = dataVector->classSeries();
 
 	QVector<double> x, y;
 	double cumSum = 0;
 	for (size_t i = 0; i < cs->classCount(); i++) {
-		x.push_back(cs->dataVector->min() + cs->step()*i);
-		x.push_back(cs->dataVector->min() + cs->step()*(i+1));
+		x.push_back(dataVector->min() + cs->step()*i);
+		x.push_back(dataVector->min() + cs->step()*(i+1));
 
 		cumSum += cs->series()[i].second;
 
@@ -65,19 +66,19 @@ void DistributionChart::fill(ClassSeries* clSr) {
 
 	graph->setData(x, y, true);
 
-	if (cs->dataVector->reproduction.model != DistributionReproducer::Distribution::UnknownD) {
+	if (dataVector->rep.model != DistributionReproducer::Distribution::UnknownD) {
 		x.clear(), y.clear();
 		QList<double> yDev1, yDev2;
 
-		double interval = abs(cs->dataVector->max() - cs->dataVector->min())/2;
-		for (cs->dataVector->reproduction.x = cs->dataVector->min();
-				cs->dataVector->reproduction.x <= cs->dataVector->max(); 
-				cs->dataVector->reproduction.x += interval/350) {
-			x.push_back(cs->dataVector->reproduction.x);
-			y.push_back(cs->dataVector->reproduction.cdfExpression.value());
+		double interval = abs(dataVector->max() - dataVector->min())/2;
+		for (dataVector->rep.x = dataVector->min();
+				dataVector->rep.x <= dataVector->max(); 
+				dataVector->rep.x += interval/350) {
+			x.push_back(dataVector->rep.x);
+			y.push_back(dataVector->rep.cdfExpression.value());
 			std::pair<double, double> dev =
-				cs->dataVector->reproduction.cdfDeviation(
-						cs->dataVector->reproduction.confidence);
+				dataVector->rep.cdfDeviation(
+						dataVector->rep.confidence);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}
@@ -102,6 +103,6 @@ void DistributionChart::fill(ClassSeries* clSr) {
 
 	this->yAxis->setRange(yRange);
 
-	PlotBase::fill(cs);
+	PlotBase::fill(dv);
 }
 

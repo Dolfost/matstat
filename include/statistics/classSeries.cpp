@@ -2,18 +2,18 @@
 #include <QtCore/qalgorithms.h>
 
 #include "classSeries.hpp"
-ClassSeries::ClassSeries(DataVector* vs) {
+DataVector::ClassSeries::ClassSeries(DataVector* vs) {
 	dataVector = vs;
 }
 
-bool ClassSeries::makeSeries(unsigned short cc) {
+bool DataVector::ClassSeries::makeSeries(unsigned short cc) {
 	if (dataVector->size() == 0) {
 		classSeries = {};
 		return false;
 	}
 
 	if (cc == 0) {
-		calculateClassCount();
+		clsCnt = calculateClassCount();
 	} else {
 		clsCnt = cc;
 	}
@@ -28,6 +28,7 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 	h = (dataVector->max()-dataVector->min())/double(clsCnt);
 
 	classSeries.resize(clsCnt);
+	cumulativeSeries.resize(clsCnt);
 
 	int idx;
 	for (auto const& i : dataVector->vector()) {
@@ -41,43 +42,78 @@ bool ClassSeries::makeSeries(unsigned short cc) {
 		i.second = i.first/double(entryCount);
 	}
 
-
 	maxIntCnt = classSeries[0].first;
 	maxIntProb = classSeries[0].second;
-	for (int i = 1; i < classSeries.size(); i++) {
+	for (int i = 1; i < clsCnt; i++) {
 		if (classSeries[i].first > maxIntCnt)
 			maxIntCnt = classSeries[i].first;
 		if (classSeries[i].second > maxIntProb)
 			maxIntProb = classSeries[i].second;
+
+		cumulativeSeries[i].first += cumulativeSeries[i-1].first;
+		cumulativeSeries[i].second += cumulativeSeries[i-1].second;
 	}
+
 	return true;
 }
 
-size_t ClassSeries::calculateClassCount() {
-	clsCnt = dataVector->size() >= 100 ?
+size_t DataVector::ClassSeries::calculateClassCount() {
+	size_t cls = dataVector->size() >= 100 ?
 			cbrt(dataVector->size()) : sqrt(dataVector->size());
-	if (clsCnt % 2 == 0)
-		clsCnt--;
+	if (cls % 2 == 0)
+		cls--;
 
-	return clsCnt;
+	return cls;
 }
 
-const std::vector<std::pair<int, double>>& ClassSeries::series() {
+double DataVector::ClassSeries::eCdf(double x) {
+	if (x < dataVector->min())
+		return 0;
+	if (x > dataVector->max())
+		return 1;
+
+	size_t idx = (x - dataVector->min())/h;
+	if (idx >= clsCnt)
+		idx--;
+
+	return cumulativeSeries[idx].second;
+}
+
+double DataVector::ClassSeries::ePdf(double x) {
+	if (x < dataVector->min())
+		return 0;
+	if (x > dataVector->max())
+		return 1;
+
+	size_t idx = (x - dataVector->min())/h;
+	if (idx >= clsCnt)
+		idx--;
+
+	return classSeries[idx].second;
+}
+
+const std::vector<std::pair<int, double>>& 
+DataVector::ClassSeries::series() {
 	return classSeries;
 }
 
-double ClassSeries::step() {
+const std::vector<std::pair<int, double>>& 
+DataVector::ClassSeries::cumSeries() {
+	return cumulativeSeries;
+}
+
+double DataVector::ClassSeries::step() {
 	return h;
 }
 
-size_t ClassSeries::maxIntervalCount() {
+size_t DataVector::ClassSeries::maxIntervalCount() {
 	return maxIntCnt;
 }
 
-double ClassSeries::maxIntervalProbability() {
+double DataVector::ClassSeries::maxIntervalProbability() {
 	return maxIntProb;
 }
 
-size_t ClassSeries::classCount() {
+size_t DataVector::ClassSeries::classCount() {
 	return clsCnt;
 }

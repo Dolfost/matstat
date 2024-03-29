@@ -4,6 +4,8 @@
 #include <QtWidgets/qtablewidget.h>
 #include <random>
 
+#include "statistics/classSeries.hpp"
+
 DistributionReproducerDialog::DistributionReproducerDialog(
 		VectorEntry* vectorEntry,
 		QWidget *parent, Qt::WindowFlags f) 
@@ -21,7 +23,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 			distributionComboBox->insertItem(i, DistributionReproducer::distributionName[i]);
 		}
 
-		distributionComboBox->setCurrentIndex(ve->vector->reproduction.model);
+		distributionComboBox->setCurrentIndex(ve->vector->rep.model);
 
 		connect(this->distributionComboBox, &QComboBox::currentIndexChanged,
 				this, &DistributionReproducerDialog::distribute);
@@ -83,6 +85,10 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		functionDeviationTable->setRowCount(1);
 		functionDeviationTable->setFixedHeight(80);
 		functionDeviationTable->verticalHeader()->setVisible(false);
+
+		consentLabel = new QLabel();
+
+		tablesLayout->addWidget(consentLabel);
 		mainLayout->addLayout(distributionLayout);
 		mainLayout->addWidget(tablesWidget);
 
@@ -109,10 +115,10 @@ void DistributionReproducerDialog::distribute(int dist) {
 }
 
 void DistributionReproducerDialog::refill() {
-	parameterTable->setRowCount(ve->vector->reproduction.parametersCount);
+	parameterTable->setRowCount(ve->vector->rep.parametersCount);
 	parameterTable->setColumnWidth(0, 55);
 	parameterTable->setColumnWidth(1, 200);
-	deviationTable->setRowCount(ve->vector->reproduction.parametersCount);
+	deviationTable->setRowCount(ve->vector->rep.parametersCount);
 	deviationTable->setColumnWidth(0, 100);
 	deviationTable->setColumnWidth(1, 200);
 	functionTable->setRowCount(2);
@@ -120,50 +126,50 @@ void DistributionReproducerDialog::refill() {
 	functionTable->setColumnWidth(1, 600);
 	functionDeviationTable->setColumnWidth(0, 55);
 
-	for (int i = 0; i < ve->vector->reproduction.parametersCount; i++) {
+	for (int i = 0; i < ve->vector->rep.parametersCount; i++) {
 		parameterTable->setItem(i, 0, new QTableWidgetItem(
-					ve->vector->reproduction.paremeterNames[i])
+					ve->vector->rep.paremeterNames[i])
 				);
 		parameterTable->setItem(i, 1, new QTableWidgetItem(
-					QString::number(ve->vector->reproduction.parameters[i], 'f', precision))
+					QString::number(ve->vector->rep.parameters[i], 'f', precision))
 				);
 		deviationTable->setItem(i, 0, new QTableWidgetItem(
-					"D{" + ve->vector->reproduction.parametersDeviationNames[i] + "}")
+					"D{" + ve->vector->rep.parametersDeviationNames[i] + "}")
 				);
 		deviationTable->setItem(i, 1, new QTableWidgetItem(
-					QString::number(ve->vector->reproduction.parametersDeviation[i], 'f', precision))
+					QString::number(ve->vector->rep.parametersDeviation[i], 'f', precision))
 				);
 	}
 
-	if (ve->vector->reproduction.parametersCount == 2) {
+	if (ve->vector->rep.parametersCount == 2) {
 		deviationTable->insertRow(2);
 		deviationTable->setItem(2, 0, new QTableWidgetItem(
-					"cov{" + ve->vector->reproduction.paremeterNames[0] + "," +
-					ve->vector->reproduction.paremeterNames[1] + "}")
+					"cov{" + ve->vector->rep.paremeterNames[0] + "," +
+					ve->vector->rep.paremeterNames[1] + "}")
 				);
 		deviationTable->setItem(2, 1, new QTableWidgetItem(
-					QString::number(ve->vector->reproduction.parametersCv, 'f', precision))
+					QString::number(ve->vector->rep.parametersCv, 'f', precision))
 				);
 	}
 
 	functionTable->setItem(0, 0, new QTableWidgetItem(
 				"f(x)"));
 	functionTable->setItem(0, 1, new QTableWidgetItem(
-				ve->vector->reproduction.pdfString));
+				ve->vector->rep.pdfString));
 	functionTable->setItem(1, 0, new QTableWidgetItem(
 				"F(x)"));
 	functionTable->setItem(1, 1, new QTableWidgetItem(
-				ve->vector->reproduction.cdfString));
+				ve->vector->rep.cdfString));
 
 	QStringList headers = {" "};
 	QList<double> dispersions;
 
 	double step = abs(ve->vector->max() - ve->vector->min())/500;
-	for (ve->vector->reproduction.x = ve->vector->min();
-			ve->vector->reproduction.x <= ve->vector->max();
-			ve->vector->reproduction.x += step) {
-		dispersions.append(ve->vector->reproduction.cdfDeviationExpression.value());
-		headers.append("x = " + QString::number(ve->vector->reproduction.x, 'f', precision));
+	for (ve->vector->rep.x = ve->vector->min();
+			ve->vector->rep.x <= ve->vector->max();
+			ve->vector->rep.x += step) {
+		dispersions.append(ve->vector->rep.cdfDeviationExpression.value());
+		headers.append("x = " + QString::number(ve->vector->rep.x, 'f', precision));
 	}
 	functionDeviationTable->setHorizontalHeaderLabels(headers);
 		functionDeviationTable->setItem(0, 0, new QTableWidgetItem(
@@ -171,10 +177,27 @@ void DistributionReproducerDialog::refill() {
 				);
 	for (int i = 1; i < dispersions.length()+1; i++) {
 		functionDeviationTable->setItem(0, i, new QTableWidgetItem(
-                    QString::number(dispersions[i-1], 'f', precision + 4))
+                    QString::number(dispersions[i-1], 'f', precision + 1))
 				);
 		functionDeviationTable->setColumnWidth(i, 200);
 	}
+
+	QString consents = QString(
+				"Уточнений критерій згоди колмогорова: %1\n"
+				"Критерій згоди Пірсона: ")
+			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision);
+
+	if (ve->vector->classSeries() != nullptr)
+			consents.append(QString("%1 ≤ pearQuantile(1-0.05, %2) = %3").arg(ve->vector->
+						pearConsentCriterion(ve->vector->classSeries()->
+							classCount()))
+					.arg(ve->vector->classSeries()->classCount()-1)
+					.arg(Statistics::pearQuantile(0.95, ve->vector->classSeries()->classCount()-1), 3, 'f', precision)
+					);
+	else 
+		consents.append("вектор не був розбитий на класи");
+	
+	consentLabel->setText(consents);
 }
 
 void DistributionReproducerDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {

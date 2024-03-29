@@ -33,12 +33,13 @@ private:
 	QTableWidget* deviationTable = nullptr;
 	QTableWidget* functionTable = nullptr;
 	QTableWidget* functionDeviationTable = nullptr;
+	QLabel* consentLabel = nullptr;
 
 	VectorEntry* ve = nullptr;
 
 	void refill();
 
-	int precision = 10;
+	int precision = 4;
 
 public slots:
 	void vectorDeletedHandler(VectorEntry*);

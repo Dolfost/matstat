@@ -109,13 +109,14 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	connect(coordinatesTimer, &QTimer::timeout, this, [this]{coordinatesLabel->hide();});
 }
 
-void PlotBase::fill(ClassSeries* cs) {
+void PlotBase::fill(DataVector* dataVector) {
+	DataVector::ClassSeries* cs = dataVector->classSeries();
 
-	xRange = QCPRange(cs->dataVector->min(), cs->dataVector->max());
+	xRange = QCPRange(dataVector->min(), dataVector->max());
 
 	this->xAxis->setRange(xRange);
 	xFixedTicker->setTickStep(cs->step());
-	xFixedTicker->setTickOrigin(cs->dataVector->min()+cs->step()/2);
+	xFixedTicker->setTickOrigin(dataVector->min()+cs->step()/2);
 	xFixedTicker->setTickCount(cs->classCount());
 
 	this->yAxis->setRange(yRange);
@@ -153,7 +154,7 @@ void PlotBase::enableMean() {
 }
 
 void PlotBase::plotMean() {
-	QVector<double> x{cs->dataVector->mean(), cs->dataVector->mean()}, y{yRange.lower, yRange.upper};
+	QVector<double> x{dv->mean(), dv->mean()}, y{yRange.lower, yRange.upper};
 	mean->setData(x, y);
 }
 
@@ -168,8 +169,8 @@ void PlotBase::enableStandartDeviation() {
 }
 
 void PlotBase::plotStandartDeviation() {
-	double meanValue = cs->dataVector->mean();
-	double standatrDeviationValue = cs->dataVector->standardDeviation();
+	double meanValue = dv->mean();
+	double standatrDeviationValue = dv->standardDeviation();
 	QVector<double>
 		x{meanValue - standatrDeviationValue, meanValue - standatrDeviationValue,
 			qQNaN(),
@@ -190,7 +191,7 @@ void PlotBase::enableWalshMed() {
 }
 
 void PlotBase::plotWalshMed() {
-	QVector<double> x{cs->dataVector->walshAveragesMed(), cs->dataVector->walshAveragesMed()},
+	QVector<double> x{dv->walshAveragesMed(), dv->walshAveragesMed()},
 		y{yRange.lower, yRange.upper};
 
 	walshMed->setData(x, y);
@@ -207,14 +208,14 @@ void PlotBase::enableMed() {
 }
 
 void PlotBase::plotMed() {
-	QVector<double> x{cs->dataVector->med(), cs->dataVector->med()},
+	QVector<double> x{dv->med(), dv->med()},
 		y{yRange.lower, yRange.upper};
 
 	med->setData(x, y);
 }
 
-ClassSeries* PlotBase::classSeries() {
-	return cs;
+DataVector* PlotBase::dataVector() {
+	return dv;
 }
 
 

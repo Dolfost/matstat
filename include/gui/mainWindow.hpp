@@ -46,7 +46,7 @@ private slots:
 	void open();
 	void openVectorPicker();
 
-	void plot2D(VectorEntry*, ClassSeries*);
+	void plot2D(VectorEntry*);
 
 	// handlers
 	void outliersRemovedHandler(bool);

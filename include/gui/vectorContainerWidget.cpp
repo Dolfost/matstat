@@ -1,5 +1,8 @@
 #include "./statistics/dataVector.hpp"
 
+#include <QGuiApplication>
+#include <QStyleHints>
+
 #include "vectorContainerWidget.hpp"
 #include "vectorTrimmerDialog.hpp"
 #include "distributionReproducerDialog.hpp"
@@ -326,6 +329,12 @@ void VectorContainerWidget::writeAction() {
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem() {
-	QBrush background("#414141");
-	this->setBackground(background);
+	QColor col;
+
+	if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark)
+		col.setRgb(65, 65, 65);
+	else 
+		col.setRgb(219, 219, 219);
+
+	this->setBackground(col);
 }

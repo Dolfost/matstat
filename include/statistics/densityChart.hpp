@@ -4,7 +4,6 @@
 #include <QChart>
 #include <QtCharts/qbarseries.h>
 
-#include "classSeries.hpp"
 #include "plotBase.hpp"
 
 class DensityChart : public PlotBase {
@@ -14,7 +13,7 @@ public:
 	QCPBars* bars = nullptr;
 	QCPGraph* density = nullptr;
 
-	void fill(ClassSeries* clSr);
+	void fill(DataVector*);
 };
 
 #endif // !_DENSITY_CHART_HPP_

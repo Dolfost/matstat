@@ -126,15 +126,15 @@ SetGeneratorDialog::SetGeneratorDialog(
 
 		QString title = QString("Генератор вибірок");
 		if (ve != nullptr) {
-			if (ve->vector->reproduction.model != DistributionReproducer::UnknownD) {
+			if (ve->vector->rep.model != DistributionReproducer::UnknownD) {
 				enabled = false;
 				title.append(QString(" (вектор %1 — %2 розподіл)")
 						.arg(ve->name)
 						.arg(DistributionReproducer::distributionName
-							[ve->vector->reproduction.model]));
-				distributionComboBox->setCurrentIndex(ve->vector->reproduction.model-1);
+							[ve->vector->rep.model]));
+				distributionComboBox->setCurrentIndex(ve->vector->rep.model-1);
 				distributionComboBox->setEnabled(enabled);
-				params = ve->vector->reproduction.parameters;
+				params = ve->vector->rep.parameters;
 				countSpinBox->setValue(ve->vector->size());
 				minSpinBox->setValue(ve->vector->min());
 				maxSpinBox->setValue(ve->vector->max());
@@ -162,8 +162,8 @@ void SetGeneratorDialog::generate() {
 		min = minSpinBox->value(),
 		max = maxSpinBox->value();
 
-	if (ve != nullptr and ve->vector->reproduction.model != DistributionReproducer::UnknownD)
-		dv = new DataVector(ve->vector->reproduction.generateSet(m, count, min, max));
+	if (ve != nullptr and ve->vector->rep.model != DistributionReproducer::UnknownD)
+		dv = new DataVector(ve->vector->rep.generateSet(m, count, min, max));
 	else {
 		DistributionReproducer dr;
 		dr.setDistribution(DistributionReproducer::Distribution(distributionComboBox->currentIndex()+1),

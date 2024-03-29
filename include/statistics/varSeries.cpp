@@ -1,13 +1,10 @@
 #include "varSeries.hpp"
 
-#include <cstddef>
-#include <utility>
-
-VarSeries::VarSeries(DataVector* ds) {
+DataVector::VarSeries::VarSeries(DataVector* ds) {
 	dataVector = ds;
 };
 
-bool VarSeries::makeSeries() {
+bool DataVector::VarSeries::makeSeries() {
 	std::list<double> vector = dataVector->vector();
 
 	seriesSize = dataVector->size();
@@ -27,10 +24,11 @@ bool VarSeries::makeSeries() {
 	return true;
 }
 
-size_t VarSeries::variantsCount() {
+size_t DataVector::VarSeries::variantsCount() {
 	return seriesVariants;
 }
 
-std::map<double, std::pair<int, double>>& VarSeries::series() {
+std::map<double, std::pair<int, double>>&
+DataVector::VarSeries::series() {
 	return varSeries;
 }

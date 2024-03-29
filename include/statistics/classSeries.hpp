@@ -3,16 +3,18 @@
 
 #include "dataVector.hpp"
 
-class ClassSeries {
+class DataVector::ClassSeries {
 public:
 	ClassSeries (DataVector*);
-
 	bool makeSeries(unsigned short = 0);
+
 	const std::vector<std::pair<int, double>>& series();
+	const std::vector<std::pair<int, double>>& cumSeries();
 
-	DataVector* dataVector = nullptr;
+	double eCdf(double);
+	double ePdf(double);
 
-	// properties
+public: // properties
 	double step(); // h
 	double maxIntervalProbability(); // max P_i
 	size_t maxIntervalCount(); // max N_i
@@ -23,6 +25,9 @@ private:
 	// iterates as x = (h+0.5)i; i is the vector index
 	// has size of M for O(n) access speed
 	std::vector<std::pair<int, double>> classSeries; 
+	std::vector<std::pair<int, double>> cumulativeSeries; 
+
+	DataVector* dataVector = nullptr;
 
 	size_t clsCnt; // M
 	double maxIntProb; // max P_i
