@@ -695,27 +695,23 @@ void DataVector::computeKolmConsentCriterion() {
 	auto it2 = dataVector.begin();
 	it2++;
 
-	rep.x = *it2;
 	double
 		cdfv = cdf(*it2),
-		Dp = std::abs(cdfv - rep.cdfExpression.value());
-	rep.x = *it1;
+		Dp = std::abs(cdfv - rep.cdf(*it2));
 	double
-		Dm = std::abs(cdfv - rep.cdfExpression.value());
+		Dm = std::abs(cdfv - rep.cdf(*it1));
 
 	it1++; it2++;
 	while (it2 != dataVector.end()) {
 		cdfv = cdf(*it2);
 
-		rep.x = *it2;
 		double DpTmp =
-			std::abs(cdfv - rep.cdfExpression.value());
+			std::abs(cdfv - rep.cdf(*it2));
 		if (DpTmp > Dp)
 			Dp = DpTmp;
 
-		rep.x = *it1;
 		double DmTmp =
-			std::abs(cdfv - rep.cdfExpression.value());
+			std::abs(cdfv - rep.cdf(*it1));
 		if (DmTmp > Dm)
 			Dm = DmTmp;
 
@@ -749,12 +745,11 @@ void DataVector::computePearConsentCriterion(size_t classCount) {
 	s.makeSeries(classCount);
 	stat.pearConsentCriterion.first = 0;
 	for (int i = 0; i < s.classCount(); i++) {
-		rep.x = min() + (i+1)*(s.step());
+		;
 		double
 			ni  = s.series()[i].second,
-			nio = rep.cdfExpression.value();
-		rep.x = min() + i*(s.step());
-		nio -= rep.cdfExpression.value();
+			nio = rep.cdf(min() + (i+1)*(s.step()));
+		nio -= rep.cdf(min() + i*(s.step()));
 		nio *= size();
 
 		stat.pearConsentCriterion.first += std::pow(ni - nio, 2)/nio;

@@ -165,11 +165,11 @@ void DistributionReproducerDialog::refill() {
 	QList<double> dispersions;
 
 	double step = abs(ve->vector->max() - ve->vector->min())/500;
-	for (ve->vector->rep.x = ve->vector->min();
-			ve->vector->rep.x <= ve->vector->max();
-			ve->vector->rep.x += step) {
-		dispersions.append(ve->vector->rep.cdfDeviationExpression.value());
-		headers.append("x = " + QString::number(ve->vector->rep.x, 'f', precision));
+	for (double x = ve->vector->min();
+			x <= ve->vector->max();
+			x += step) {
+		dispersions.append(ve->vector->rep.cdfDev(x));
+		headers.append("x = " + QString::number(x, 'f', precision));
 	}
 	functionDeviationTable->setHorizontalHeaderLabels(headers);
 		functionDeviationTable->setItem(0, 0, new QTableWidgetItem(

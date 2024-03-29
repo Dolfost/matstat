@@ -62,11 +62,9 @@ void DensityChart::fill(DataVector* dataVector) {
 		this->yAxis2->setTickLabels(true);
 		this->yRange2 = QCPRange(0, dataVector->rep.pdfMax);
 		double interval = abs(dataVector->max() - dataVector->min())/2;
-		for (dataVector->rep.x = dataVector->min();
-				dataVector->rep.x <= dataVector->max(); 
-				dataVector->rep.x += interval/350) {
-			x.push_back(dataVector->rep.x);
-			y.push_back(dataVector->rep.pdfExpression.value());
+		for (double arg = dataVector->min(); arg <= dataVector->max(); arg += interval/350) {
+			x.push_back(arg);
+			y.push_back(dataVector->rep.pdf(arg));
 		}
 
 		density->setData(x, y);

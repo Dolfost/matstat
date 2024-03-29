@@ -76,6 +76,7 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 
 void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
+	vectorEntry->vector->makeClassSeries();
 	ClassTreeItem2D* classItem = new ClassTreeItem2D(ItemType::ClassCount2D);
 	classItem->setIcon(0, this->style()->standardIcon(QStyle::SP_BrowserReload));
 	classItem->setData(0, Qt::EditRole,

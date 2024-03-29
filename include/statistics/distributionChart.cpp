@@ -48,15 +48,12 @@ void DistributionChart::fill(DataVector* dataVector) {
 	DataVector::ClassSeries* cs = dataVector->classSeries();
 
 	QVector<double> x, y;
-	double cumSum = 0;
 	for (size_t i = 0; i < cs->classCount(); i++) {
 		x.push_back(dataVector->min() + cs->step()*i);
 		x.push_back(dataVector->min() + cs->step()*(i+1));
 
-		cumSum += cs->series()[i].second;
-
-		y.push_back(cumSum);
-		y.push_back(cumSum);
+		y.push_back(cs->cumSeries()[i].second);
+		y.push_back(cs->cumSeries()[i].second);
 
 		x.push_back(qQNaN());
 		x.push_back(qQNaN());
@@ -71,14 +68,11 @@ void DistributionChart::fill(DataVector* dataVector) {
 		QList<double> yDev1, yDev2;
 
 		double interval = abs(dataVector->max() - dataVector->min())/2;
-		for (dataVector->rep.x = dataVector->min();
-				dataVector->rep.x <= dataVector->max(); 
-				dataVector->rep.x += interval/350) {
-			x.push_back(dataVector->rep.x);
-			y.push_back(dataVector->rep.cdfExpression.value());
+		for (double arg = dataVector->min(); arg <= dataVector->max(); arg += interval/350) {
+			x.push_back(arg);
+			y.push_back(dataVector->rep.cdf(arg));
 			std::pair<double, double> dev =
-				dataVector->rep.cdfDeviation(
-						dataVector->rep.confidence);
+				dataVector->rep.cdfDeviation(dataVector->rep.confidence);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}
