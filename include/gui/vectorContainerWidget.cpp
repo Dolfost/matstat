@@ -258,6 +258,12 @@ void VectorContainerWidget::transformAction() {
 void VectorContainerWidget::reproductionAction() {
 	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
+
+	if (ve->vector->classSeries() == nullptr) {
+		emit message("Вектор не був розбитий на класи. Відтворення розподілу не є можливим.");
+		return;
+	}
+
 	DistributionReproducerDialog* drd = 
 		new DistributionReproducerDialog(ve, this);
 	connect(this, &VectorContainerWidget::vectorDeleted,

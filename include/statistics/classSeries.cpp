@@ -44,14 +44,17 @@ bool DataVector::ClassSeries::makeSeries(unsigned short cc) {
 
 	maxIntCnt = classSeries[0].first;
 	maxIntProb = classSeries[0].second;
+	cumulativeSeries[0] = classSeries[0];
 	for (int i = 1; i < clsCnt; i++) {
 		if (classSeries[i].first > maxIntCnt)
 			maxIntCnt = classSeries[i].first;
 		if (classSeries[i].second > maxIntProb)
 			maxIntProb = classSeries[i].second;
 
-		cumulativeSeries[i].first += cumulativeSeries[i-1].first;
-		cumulativeSeries[i].second += cumulativeSeries[i-1].second;
+		cumulativeSeries[i].first += cumulativeSeries[i-1].first +
+			classSeries[i].first;
+		cumulativeSeries[i].second += cumulativeSeries[i-1].second +
+			classSeries[i].second;
 	}
 
 	return true;

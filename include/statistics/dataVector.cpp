@@ -468,7 +468,10 @@ DataVector::VarSeries* DataVector::varSeries() {
 	return vs;
 }
 
-void DataVector::reproduceDistribution(DistributionReproducer::Distribution type) {
+bool DataVector::reproduceDistribution(DistributionReproducer::Distribution type) {
+	if (csReady == false)
+		return false;
+
 	stat.pearConsentCriterion.second = false;
 	stat.kolmConsentCriterion.second = false;
 
@@ -537,6 +540,8 @@ void DataVector::reproduceDistribution(DistributionReproducer::Distribution type
 		default:
 			break;
 	}
+
+	return true;
 }
 
 
@@ -696,14 +701,14 @@ void DataVector::computeKolmConsentCriterion() {
 	it2++;
 
 	double
-		cdfv = cdf(*it2),
+		cdfv = cs->eCdf(*it2),
 		Dp = std::abs(cdfv - rep.cdf(*it2));
 	double
 		Dm = std::abs(cdfv - rep.cdf(*it1));
 
 	it1++; it2++;
 	while (it2 != dataVector.end()) {
-		cdfv = cdf(*it2);
+		cdfv = cs->eCdf(*it2);
 
 		double DpTmp =
 			std::abs(cdfv - rep.cdf(*it2));
@@ -740,16 +745,13 @@ void DataVector::computeKolmConsentCriterion() {
 }
 
 void DataVector::computePearConsentCriterion(size_t classCount) {
-	ClassSeries s(this);
-
-	s.makeSeries(classCount);
 	stat.pearConsentCriterion.first = 0;
-	for (int i = 0; i < s.classCount(); i++) {
+	for (int i = 0; i < cs->classCount(); i++) {
 		;
 		double
-			ni  = s.series()[i].second,
-			nio = rep.cdf(min() + (i+1)*(s.step()));
-		nio -= rep.cdf(min() + i*(s.step()));
+			ni  = cs->series()[i].second,
+			nio = rep.cdf(min() + (i+1)*(cs->step()));
+		nio -= rep.cdf(min() + i*(cs->step()));
 		nio *= size();
 
 		stat.pearConsentCriterion.first += std::pow(ni - nio, 2)/nio;

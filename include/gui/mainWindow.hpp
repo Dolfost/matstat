@@ -52,6 +52,8 @@ private slots:
 	void outliersRemovedHandler(bool);
 	void vectorProcessorDuplicateHandler(VectorEntry*,
 			VectorProcessorWidget::Tab);
+
+	void message(QString, int = 0);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

@@ -58,6 +58,8 @@ signals:
 	void vectorDeleted(VectorEntry*);
 	void outliersRemoved(bool);
 	void distributionSelected(VectorEntry*);
+
+	void message(QString);
 };
 
 

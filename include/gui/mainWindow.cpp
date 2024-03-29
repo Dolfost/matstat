@@ -43,11 +43,14 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			this->vectorProcessor, &VectorProcessorWidget::vectorDeletedHandler);
 	connect(this->vectorContainer, &VectorContainerWidget::distributionSelected,
 			this->vectorProcessor, &VectorProcessorWidget::distributionSelectedHandler);
+	connect(this->vectorContainer, SIGNAL(message(QString)),
+			this, SLOT(message(QString)));
 
 	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
 			this, &MainWindow::vectorProcessorDuplicateHandler);
 	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
 			this, &MainWindow::plot2D);
+
 
 
 	open();
@@ -143,10 +146,10 @@ void MainWindow::open() {
 	// filepath = QFileDialog::getOpenFileName(this,
 	// 	"Відкрити вектор", QDir::homePath(), "Data files (*.txt *.csv *.DAT)");
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/exp.txt"; 
-	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
+	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/norm3n.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/norm1_anomaly.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/LOGNORM.DAT"; 
-	filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/VEIBUL.DAT"; 
+	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/200/VEIBUL.DAT"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/ravn.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/veib.txt"; 
 
@@ -174,12 +177,18 @@ void MainWindow::outliersRemovedHandler(bool ok) {
 	else
 		msg = "В результаті вилучення аномалій, вектор не змінився.";
 
-	this->statusBar()->showMessage(msg, messageTime);
+	this->message(msg);
 }
 
 void MainWindow::vectorProcessorDuplicateHandler(VectorEntry* vectorEntry,
 		VectorProcessorWidget::Tab t) {
-	this->statusBar()->showMessage("Вектор '" + vectorEntry->name + 
-			"' вже доданий до вкладки " + vectorProcessor->tabName[t],
-			messageTime);
+	this->message("Вектор '" + vectorEntry->name + 
+			"' вже доданий до вкладки " + vectorProcessor->tabName[t]);
+}
+
+void MainWindow::message(QString msg, int dur) {
+	if (dur == 0)
+		dur = messageTime;
+
+	this->statusBar()->showMessage(msg);
 }

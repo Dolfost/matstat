@@ -131,7 +131,7 @@ public: // distribution recreation
 	double cdf(double);
 
 	DistributionReproducer rep;
-	void reproduceDistribution(DistributionReproducer::Distribution);
+	bool reproduceDistribution(DistributionReproducer::Distribution);
 	double kolmConsentCriterion();
 	double pearConsentCriterion(size_t = 0);
 
