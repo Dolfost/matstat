@@ -5,7 +5,6 @@
 #include <QtWidgets/qboxlayout.h>
 
 #include "statistics/dataSeries.hpp"
-#include "statistics/dataVector.hpp"
 #include "statistics/classSeries.hpp"
 
 #include "statistics/densityChart.hpp"
@@ -14,6 +13,7 @@
 #include "vectorContainerWidget.hpp"
 #include "vectorProcessorWidget.hpp"
 #include "vectorPickerDialog.hpp"
+#include "setGeneratorDialog.hpp"
 
 #include "guiTypes.hpp"
 
@@ -35,6 +35,7 @@ private:
 	VectorContainerWidget* vectorContainer = nullptr;
 	VectorProcessorWidget* vectorProcessor = nullptr;
 	VectorPickerDialog* vectorPicker = nullptr;
+	SetGeneratorDialog* setGenerator = nullptr;
 
 	void createCharts();
 	void createVectorContainers();
@@ -45,6 +46,7 @@ private:
 private slots:
 	void open();
 	void openVectorPicker();
+	void openSetGenerator();
 
 	void plot2D(VectorEntry*);
 

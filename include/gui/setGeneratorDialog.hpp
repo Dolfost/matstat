@@ -32,6 +32,7 @@ public:
 	SetGeneratorDialog(
 			VectorEntry* = nullptr,
 			QWidget* = nullptr,
+			bool show = true,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 

@@ -37,7 +37,7 @@ std::vector<double> ParametersWidget::parameters() {
 
 SetGeneratorDialog::SetGeneratorDialog(
 		VectorEntry* vectorEntry,
-		QWidget *parent, Qt::WindowFlags f) 
+		QWidget *parent, bool show, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
 		ve = vectorEntry;
 
@@ -150,7 +150,8 @@ SetGeneratorDialog::SetGeneratorDialog(
 
 		this->adjustSize();
 		this->resize(500, this->height());
-		this->show();
+		if (show)
+			this->show();
 }
 
 void SetGeneratorDialog::generate() {

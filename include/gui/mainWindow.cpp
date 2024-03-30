@@ -1,5 +1,6 @@
 #include "mainWindow.hpp"
 
+#include "gui/setGeneratorDialog.hpp"
 #include "gui/vectorContainerWidget.hpp"
 #include "statistics/dataVector.hpp"
 #include "statistics/classSeries.hpp"
@@ -98,11 +99,15 @@ void MainWindow::createVectorContainers() {
 	containersWidget->layout()->addWidget(objectsBox);
 
 	mainSplitter->addWidget(containersWidget);
+
+	setGenerator = new SetGeneratorDialog(nullptr, this, false);
+	setGenerator->setAttribute(Qt::WA_DeleteOnClose, false);
+	connect(setGenerator, &SetGeneratorDialog::setGenerated,
+			vectorContainer, &VectorContainerWidget::appendVector);
 }
 
 void MainWindow::createActions() {
 	QMenu *fileMenu = menuBar()->addMenu("Файл");
-	QMenu *viewMenu = menuBar()->addMenu("Вигляд");
 
     QAction* openAct = new QAction("Відкрити…", this);
     openAct->setShortcuts(QKeySequence::Open);
@@ -112,6 +117,8 @@ void MainWindow::createActions() {
     QAction* openVectorPickerAct = new QAction("Менеджер векторів…", this);
     connect(openVectorPickerAct, &QAction::triggered, this, &MainWindow::openVectorPicker);
     fileMenu->addAction(openVectorPickerAct);
+
+	QMenu *viewMenu = menuBar()->addMenu("Вигляд");
 
 	QAction* toogleDensityLogAct = 
 		new QAction("Логарифмічна сітка щільності", this);
@@ -140,6 +147,12 @@ void MainWindow::createActions() {
 	connect(clearPlotsAction, &QAction::triggered,
 			distributionChart, &DistributionChart::clear);
 	viewMenu->addAction(clearPlotsAction);
+
+	QMenu *toolsMenu = menuBar()->addMenu("Інструменти");
+	QAction* generateSetAction = new QAction("Генератор вибірок…", this);
+	connect(generateSetAction, &QAction::triggered,
+			this, &MainWindow::openSetGenerator);
+	toolsMenu->addAction(generateSetAction);
 }
 
 void MainWindow::open() {
@@ -165,9 +178,14 @@ void MainWindow::plot2D(VectorEntry* ve) {
 
 void MainWindow::openVectorPicker() {
 	vectorPicker->show();
-	this->setFocus();
-	vectorPicker->setFocus();
-	vectorPicker->activateWindow();
+	//  NOTE: keep an eye on this comments
+	// this->setFocus();
+	// vectorPicker->setFocus();
+	// vectorPicker->activateWindow();
+}
+
+void MainWindow::openSetGenerator() {
+	setGenerator->show();
 }
 
 void MainWindow::outliersRemovedHandler(bool ok) {

@@ -27,8 +27,8 @@ badd +13 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +73 include/statistics/densityChart.cpp
-badd +56 include/gui/mainWindow.hpp
-badd +149 include/gui/mainWindow.cpp
+badd +17 include/gui/mainWindow.hpp
+badd +181 include/gui/mainWindow.cpp
 badd +6 CMakeLists.txt
 badd +344 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -37,7 +37,7 @@ badd +6 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
 badd +43 include/gui/transformationFormulaEditorDialog.hpp
 badd +29 include/gui/vectorPickerDialog.cpp
-badd +262 include/gui/vectorContainerWidget.cpp
+badd +314 include/gui/vectorContainerWidget.cpp
 badd +40 include/gui/vectorInfoDialog.hpp
 badd +230 include/gui/vectorInfoDialog.cpp
 badd +10 include/statistics/varSeries.hpp
@@ -50,17 +50,18 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +3 include/statistics/dataVectorExprtk.hpp
 badd +7 include/statistics/distributionReproducer.hpp
-badd +300 include/statistics/distributionReproducer.cpp
-badd +175 include/gui/distributionReproducerDialog.cpp
-badd +54 include/gui/distributionReproducerDialog.hpp
+badd +24 include/statistics/distributionReproducer.cpp
+badd +27 include/gui/distributionReproducerDialog.cpp
+badd +22 include/gui/distributionReproducerDialog.hpp
 badd +1 include/statistics/statistics.hpp
 badd +102 include/statistics/statistics.cpp
 badd +35 include/statistics/statisticsExprtk.hpp
-badd +166 include/gui/setGeneratorDialog.cpp
-badd +26 include/gui/setGeneratorDialog.hpp
+badd +40 include/gui/setGeneratorDialog.cpp
+badd +35 include/gui/setGeneratorDialog.hpp
 badd +4 include/statistics/varSeries.cpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -80,7 +81,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 20) / 40)
+let s:l = 10 - ((9 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -118,7 +119,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 78 - ((13 * winheight(0) + 20) / 40)
+let s:l = 78 - ((11 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -141,7 +142,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 56 - ((24 * winheight(0) + 20) / 40)
+let s:l = 56 - ((21 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -182,12 +183,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 263 - ((23 * winheight(0) + 20) / 40)
+let s:l = 314 - ((19 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 263
-normal! 047|
+keepjumps 314
+normal! 029|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
@@ -205,12 +206,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 62 - ((31 * winheight(0) + 20) / 40)
+let s:l = 64 - ((26 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 62
-normal! 019|
+keepjumps 64
+normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
@@ -246,7 +247,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 544 - ((26 * winheight(0) + 20) / 40)
+let s:l = 544 - ((22 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -269,7 +270,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 122 - ((19 * winheight(0) + 20) / 40)
+let s:l = 122 - ((16 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -310,12 +311,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 149 - ((20 * winheight(0) + 20) / 40)
+let s:l = 181 - ((18 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 149
-normal! 039|
+keepjumps 181
+normal! 042|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -333,12 +334,76 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 56 - ((36 * winheight(0) + 20) / 40)
+let s:l = 8 - ((7 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 56
-normal! 033|
+keepjumps 8
+normal! 028|
+wincmd w
+exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
+tabnext
+edit include/gui/setGeneratorDialog.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
+exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
+argglobal
+balt include/gui/setGeneratorDialog.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 40 - ((12 * winheight(0) + 17) / 34)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 40
+normal! 035|
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/gui/setGeneratorDialog.hpp", ":p")) | buffer include/gui/setGeneratorDialog.hpp | else | edit include/gui/setGeneratorDialog.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/gui/setGeneratorDialog.hpp
+endif
+balt include/gui/setGeneratorDialog.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 35 - ((24 * winheight(0) + 17) / 34)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 35
+normal! 029|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 213)
 exe 'vert 2resize ' . ((&columns * 106 + 106) / 213)
@@ -356,7 +421,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 56 - ((24 * winheight(0) + 20) / 40)
+let s:l = 56 - ((20 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -376,13 +441,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 27 - ((8 * winheight(0) + 20) / 40)
+let s:l = 27 - ((8 * winheight(0) + 17) / 34)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 27
 normal! 0
-tabnext 6
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
