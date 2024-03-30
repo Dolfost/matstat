@@ -317,6 +317,8 @@ void VectorContainerWidget::generateAction() {
 			sgd, &SetGeneratorDialog::vectorDeletedHandler);
 	connect(sgd, &SetGeneratorDialog::setGenerated,
 			this, &VectorContainerWidget::appendVector);
+	connect(sgd, &SetGeneratorDialog::message,
+			[=](QString msg){emit message(msg);});
 }
 
 void VectorContainerWidget::writeAction() {

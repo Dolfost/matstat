@@ -65,6 +65,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 		countLayout->addWidget(new QLabel("Розмір вибірки"), 0, 0);
 		countSpinBox = new QSpinBox;
 		countSpinBox->setRange(2, INT_MAX);
+		countSpinBox->setValue(500);
 		countLayout->addWidget(countSpinBox, 0, 1);
 
 		parametersLayout = new QVBoxLayout;
@@ -95,7 +96,6 @@ SetGeneratorDialog::SetGeneratorDialog(
 		boundsLayout->addWidget(minSpinBox);
 		boundsLayout->addWidget(maxSpinBox);
 
-
 		generateButton = new QPushButton("Генерувати");
 		connect(generateButton, &QPushButton::clicked,
 				this, &SetGeneratorDialog::generate);
@@ -125,24 +125,33 @@ SetGeneratorDialog::SetGeneratorDialog(
 				this, &SetGeneratorDialog::maxBoundChanged);
 
 		QString title = QString("Генератор вибірок");
+
 		if (ve != nullptr) {
+			title.append(QString(" згідно розподілу вектора %1 — ")
+						.arg(ve->name));
+			enabled = false;
 			if (ve->vector->rep.model != DistributionReproducer::UnknownD) {
-				enabled = false;
-				title.append(QString(" (вектор %1 — %2 розподіл)")
-						.arg(ve->name)
-						.arg(DistributionReproducer::distributionName
-							[ve->vector->rep.model]));
+				title.append(DistributionReproducer::distributionName[ve->vector->rep.model]);
 				distributionComboBox->setCurrentIndex(ve->vector->rep.model-1);
-				distributionComboBox->setEnabled(enabled);
 				params = ve->vector->rep.parameters;
 				countSpinBox->setValue(ve->vector->size());
 				minSpinBox->setValue(ve->vector->min());
 				maxSpinBox->setValue(ve->vector->max());
 			} else {
+				title.append(DistributionReproducer::distributionName
+						[DistributionReproducer::UnknownD]);
 				statusBar->showMessage("Розподіл " + ve->name +
 						" не був відтворений");
+				minSpinBox->setEnabled(enabled);
+				maxSpinBox->setEnabled(enabled);
+				countSpinBox->setEnabled(enabled);
+				methodComboBox->setEnabled(enabled);
+				generateButton->setEnabled(enabled);
 			}
+
+			distributionComboBox->setEnabled(enabled);
 		}
+
 		this->setWindowTitle(title);
 
 		distributionSelected(distributionComboBox->currentIndex());

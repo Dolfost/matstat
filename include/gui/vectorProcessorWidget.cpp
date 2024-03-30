@@ -288,15 +288,18 @@ void VectorProcessorWidget::itemChangedHandler(QTreeWidgetItem* item, int col) {
 	switch (item->type()) {
 		case ItemType::ClassCount2D:
 			{
+				VectorEntry* ve = item->parent()->data(0, Qt::UserRole).
+							value<VectorEntry*>();
 				if (item->data(0, Qt::EditRole).value<int>() < 1) {
+					ve->vector->makeClassSeries();
 					item->setData(0, Qt::EditRole, QVariant(
-								(int)item->parent()->data(0, Qt::UserRole).
-								value<VectorEntry*>()->vector->classSeries()->
-								calculateClassCount()));
+								(int)ve->vector->classSeries()->classCount()));
 				} else {
-					if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
-						emit2D(item->parent());
+					ve->vector->makeClassSeries(item->data(0, Qt::EditRole).value<int>());
 				}
+
+				if (item->parent()->data(0, Qt::UserRole+1).value<bool>())
+					emit2D(item->parent());
 				break;
 			}
 		case ItemType::Confidence2D:

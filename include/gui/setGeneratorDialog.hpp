@@ -70,6 +70,7 @@ private slots:
 
 signals:
 	void setGenerated(VectorEntry*);
+	void message(QString);
 };
 
 #endif // !_SET_GENERATOR_DIALOG_

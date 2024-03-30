@@ -4,9 +4,6 @@
 #include <QMainWindow>
 #include <QtWidgets/qboxlayout.h>
 
-#include "statistics/dataSeries.hpp"
-#include "statistics/classSeries.hpp"
-
 #include "statistics/densityChart.hpp"
 #include "statistics/distributionChart.hpp"
 
@@ -55,7 +52,7 @@ private slots:
 	void vectorProcessorDuplicateHandler(VectorEntry*,
 			VectorProcessorWidget::Tab);
 
-	void message(QString, int = 0);
+	void showMessage(QString, int = 0);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

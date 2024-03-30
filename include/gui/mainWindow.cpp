@@ -2,15 +2,12 @@
 
 #include "gui/setGeneratorDialog.hpp"
 #include "gui/vectorContainerWidget.hpp"
-#include "statistics/dataVector.hpp"
-#include "statistics/classSeries.hpp"
 
 #include "statistics/densityChart.hpp"
 #include "statistics/distributionChart.hpp"
 
 #include <QWidget>
-#include <QtCore/qnamespace.h>
-#include <QtWidgets/qgroupbox.h>
+#include <QGroupBox>
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainWidget = new QWidget();
@@ -45,14 +42,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorContainer, &VectorContainerWidget::distributionSelected,
 			this->vectorProcessor, &VectorProcessorWidget::distributionSelectedHandler);
 	connect(this->vectorContainer, SIGNAL(message(QString)),
-			this, SLOT(message(QString)));
+			this, SLOT(showMessage(QString)));
 
 	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
 			this, &MainWindow::vectorProcessorDuplicateHandler);
 	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
 			this, &MainWindow::plot2D);
-
-
 
 	open();
 }
@@ -195,16 +190,16 @@ void MainWindow::outliersRemovedHandler(bool ok) {
 	else
 		msg = "В результаті вилучення аномалій, вектор не змінився.";
 
-	this->message(msg);
+	this->showMessage(msg);
 }
 
 void MainWindow::vectorProcessorDuplicateHandler(VectorEntry* vectorEntry,
 		VectorProcessorWidget::Tab t) {
-	this->message("Вектор '" + vectorEntry->name + 
+	this->showMessage("Вектор '" + vectorEntry->name + 
 			"' вже доданий до вкладки " + vectorProcessor->tabName[t]);
 }
 
-void MainWindow::message(QString msg, int dur) {
+void MainWindow::showMessage(QString msg, int dur) {
 	if (dur == 0)
 		dur = messageTime;
 

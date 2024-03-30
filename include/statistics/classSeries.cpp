@@ -24,6 +24,7 @@ bool DataVector::ClassSeries::makeSeries(unsigned short cc) {
 
 
 	classSeries.clear();
+	cumulativeSeries.clear();
 
 	h = (dataVector->max()-dataVector->min())/double(clsCnt);
 
