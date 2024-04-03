@@ -219,7 +219,6 @@ DataVector* PlotBase::dataVector() {
 }
 
 
-
 void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	QPoint screenPoint = event->pos();
 	double x = this->xAxis->pixelToCoord(screenPoint.x());
@@ -231,10 +230,12 @@ void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	coordinatesLabel->move(screenPoint -
 			QPoint(coordinatesLabel->size().width()+6,
 				coordinatesLabel->size().height()+6));
-	coordinatesLabel->setText(QString(coordinatesLabelString)
-			.arg(x, 3, 'f', 3)
-			.arg(y, 3, 'f', 3)
-			.arg(y2, 3, 'f', 3));
+
+	QString coordsLabel = coordinatesLabelString;
+	coordsLabel.replace("${X}", QString::number(x, 'f', 3));
+	coordsLabel.replace("${Y}", QString::number(y, 'f', 3));
+	coordsLabel.replace("${Y2}", QString::number(y2, 'f', 3));
+	coordinatesLabel->setText(coordsLabel);
 	coordinatesLabel->adjustSize();
 
 	coordinatesTimer->stop();
@@ -248,10 +249,6 @@ void PlotBase::handleZoomX(const QCPRange& newRange) {
 	this->xAxis->setRange(newRange.bounded(xRange.lower, xRange.upper));
 }
 
-
-//  TODO: make something with the yAxises scaling. when 
-//  	  setScaleRatio is called it triggners other handleZoomX funciton
-//  	  and loop countinues
 void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 

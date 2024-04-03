@@ -329,6 +329,6 @@ ClassTreeItem2D::ClassTreeItem2D(int type) : QTreeWidgetItem(type) {
 
 ConfindenceItem2D::ConfindenceItem2D(int type) : QTreeWidgetItem(type) {
 	this->setFlags(this->flags() | Qt::ItemIsEditable);
-	this->setData(0, Qt::ToolTipRole, "Довірчий інтервал відтворення F(x)");
+	this->setData(0, Qt::ToolTipRole, "Імовірність промаху F(x) від теоретичної");
 }
 	

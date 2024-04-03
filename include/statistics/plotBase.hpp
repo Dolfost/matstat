@@ -50,7 +50,7 @@ public:
 
 	QCPTextElement* title = nullptr;
 
-	QString coordinatesLabelString = "%1\n%2";
+	QString coordinatesLabelString = "${X}\n${Y}";
 private:
 	QLabel* coordinatesLabel = nullptr;
 	QTimer* coordinatesTimer = nullptr;

@@ -58,7 +58,7 @@ void DensityChart::fill(DataVector* dataVector) {
 	x.clear(), y.clear();
 
 	if (dataVector->rep.model != DistributionReproducer::Distribution::UnknownD) {
-		coordinatesLabelString = "%1\n%2 %3";
+		coordinatesLabelString = "${X}\n${Y} ${Y2}";
 		this->yAxis2->setTickLabels(true);
 		this->yRange2 = QCPRange(0, dataVector->rep.pdfMax);
 		double interval = abs(dataVector->max() - dataVector->min())/2;
@@ -69,7 +69,7 @@ void DensityChart::fill(DataVector* dataVector) {
 
 		density->setData(x, y);
 	} else {
-		coordinatesLabelString = "%1\n%2";
+		coordinatesLabelString = "${X}\n${Y}";
 		this->yAxis2->setTickLabels(false);
 		density->data()->clear();
 	};
