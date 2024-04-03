@@ -421,12 +421,12 @@ double DataVector::kolmConsentCriterion() {
   return stat.kolmConsentCriterion.first;
 }
 
-double DataVector::pearConsentCriterion(size_t classCount) {
+double DataVector::pearConsentCriterion() {
   if (rep.model == DistributionReproducer::Distribution::UnknownD)
     return qQNaN();
 
   if (stat.pearConsentCriterion.second == false)
-    computePearConsentCriterion(classCount);
+    computePearConsentCriterion();
 
   return stat.pearConsentCriterion.first;
 }
@@ -664,34 +664,37 @@ void DataVector::computeKurtosisConfidence(double alpha) {
 }
 
 void DataVector::computeKolmConsentCriterion() {
-  auto it1 = dataVector.begin();
-  auto it2 = dataVector.begin();
-  it2++;
+	double x1 = min(),
+		   x2 = min() + cs->step();
 
-  double cdfv = cs->eCdf(*it2), Dp = std::abs(cdfv - rep.cdf(*it2));
-  double Dm = std::abs(cdfv - rep.cdf(*it1));
+  double cdfv = cs->eCdf(x1), 
+		 Dp = std::abs(cdfv - rep.cdf(x2)),
+		 Dm = std::abs(cdfv - rep.cdf(x1));
 
-  it1++;
-  it2++;
-  while (it2 != dataVector.end()) {
-    cdfv = cs->eCdf(*it2);
+  x1 += cs->step();
+  x2 += cs->step();
 
-    double DpTmp = std::abs(cdfv - rep.cdf(*it2));
+  while (x2 <= max()) {
+    cdfv = cs->eCdf(x2);
+
+    double DpTmp = std::abs(cdfv - rep.cdf(x2));
     if (DpTmp > Dp)
       Dp = DpTmp;
 
-    double DmTmp = std::abs(cdfv - rep.cdf(*it1));
+    double DmTmp = std::abs(cdfv - rep.cdf(x1));
     if (DmTmp > Dm)
       Dm = DmTmp;
 
-    it1++;
-    it2++;
+	  x1 += cs->step();
+	  x2 += cs->step();
   }
+
+  qDebug() << Dm << Dp;
 
   double z = std::sqrt(size()) * std::max(Dp, Dm);
 
   double tmp = 0;
-  for (int k = 1; k <= 15; k++) {
+  for (int k = 1; k <= 4; k++) {
     double pm = (1 - (k & 2 ? -1 : +1)), f1 = std::pow(k, 2) - pm / 2,
            f2 = 5 * std::pow(k, 2) + 22 - pm * 7.5;
 
@@ -710,10 +713,9 @@ void DataVector::computeKolmConsentCriterion() {
   stat.kolmConsentCriterion.second = true;
 }
 
-void DataVector::computePearConsentCriterion(size_t classCount) {
+void DataVector::computePearConsentCriterion() {
   stat.pearConsentCriterion.first = 0;
   for (int i = 0; i < cs->classCount(); i++) {
-    ;
     double ni = cs->series()[i].second,
            nio = rep.cdf(min() + (i + 1) * (cs->step()));
     nio -= rep.cdf(min() + i * (cs->step()));

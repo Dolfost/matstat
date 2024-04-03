@@ -133,7 +133,7 @@ public: // distribution recreation
 	DistributionReproducer rep;
 	bool reproduceDistribution(DistributionReproducer::Distribution);
 	double kolmConsentCriterion();
-	double pearConsentCriterion(size_t = 0);
+	double pearConsentCriterion();
 
 	void makeClassSeries(unsigned short = 0);
 	ClassSeries* classSeries();
@@ -185,7 +185,7 @@ private:
 	void computeKurtosisConfidence(double);
 
 	void computeKolmConsentCriterion();
-	void computePearConsentCriterion(size_t);
+	void computePearConsentCriterion();
 };
 
 #endif // !_DATA_VECTOR_HPP_

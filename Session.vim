@@ -18,17 +18,17 @@ badd +238 include/statistics/plotBase.cpp
 badd +53 include/statistics/plotBase.hpp
 badd +1 include/statistics/dataSeries.cpp
 badd +16 include/statistics/dataSeries.hpp
-badd +134 include/statistics/dataVector.hpp
-badd +1 include/statistics/dataVector.cpp
+badd +136 include/statistics/dataVector.hpp
+badd +721 include/statistics/dataVector.cpp
 badd +44 include/statistics/classSeries.cpp
-badd +4 include/statistics/classSeries.hpp
+badd +1 include/statistics/classSeries.hpp
 badd +58 include/statistics/distributionChart.cpp
 badd +13 include/statistics/distributionChart.hpp
 badd +21 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +72 include/statistics/densityChart.cpp
 badd +55 include/gui/mainWindow.hpp
-badd +1 include/gui/mainWindow.cpp
+badd +156 include/gui/mainWindow.cpp
 badd +6 CMakeLists.txt
 badd +344 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
@@ -50,8 +50,8 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +3 include/statistics/dataVectorExprtk.hpp
 badd +7 include/statistics/distributionReproducer.hpp
-badd +24 include/statistics/distributionReproducer.cpp
-badd +27 include/gui/distributionReproducerDialog.cpp
+badd +1 include/statistics/distributionReproducer.cpp
+badd +193 include/gui/distributionReproducerDialog.cpp
 badd +22 include/gui/distributionReproducerDialog.hpp
 badd +1 include/statistics/statistics.hpp
 badd +102 include/statistics/statistics.cpp
@@ -61,6 +61,7 @@ badd +38 include/gui/setGeneratorDialog.hpp
 badd +4 include/statistics/varSeries.cpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -165,8 +166,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe 'vert 1resize ' . ((&columns * 110 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 79 + 95) / 190)
+exe 'vert 1resize ' . ((&columns * 93 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 96 + 95) / 190)
 argglobal
 balt include/statistics/dataVector.hpp
 setlocal fdm=manual
@@ -179,12 +180,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 438 - ((12 * winheight(0) + 22) / 44)
+let s:l = 721 - ((19 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 438
-normal! 041|
+keepjumps 721
+normal! 040|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/statistics/dataVector.hpp", ":p")) | buffer include/statistics/dataVector.hpp | else | edit include/statistics/dataVector.hpp | endif
@@ -202,15 +203,35 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 122 - ((21 * winheight(0) + 22) / 44)
+let s:l = 136 - ((15 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 122
-normal! 08|
+keepjumps 136
+normal! 033|
 wincmd w
-exe 'vert 1resize ' . ((&columns * 110 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 79 + 95) / 190)
+exe 'vert 1resize ' . ((&columns * 93 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 96 + 95) / 190)
+tabnext
+edit include/gui/distributionReproducerDialog.cpp
+argglobal
+balt include/statistics/dataVector.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 193 - ((18 * winheight(0) + 16) / 32)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 193
+normal! 067|
 tabnext
 edit include/gui/mainWindow.cpp
 let s:save_splitbelow = &splitbelow
@@ -243,12 +264,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 45 - ((32 * winheight(0) + 22) / 44)
+let s:l = 156 - ((16 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 45
-normal! 043|
+keepjumps 156
+normal! 039|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/mainWindow.hpp", ":p")) | buffer include/gui/mainWindow.hpp | else | edit include/gui/mainWindow.hpp | endif
@@ -266,7 +287,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 55 - ((39 * winheight(0) + 22) / 44)
+let s:l = 55 - ((0 * winheight(0) + 16) / 32)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -275,7 +296,7 @@ normal! 014|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
 exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
-tabnext 4
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif

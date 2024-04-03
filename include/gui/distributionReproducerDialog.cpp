@@ -189,8 +189,7 @@ void DistributionReproducerDialog::refill() {
 
 	if (ve->vector->classSeries() != nullptr)
 			consents.append(QString("%1 ≤ pearQuantile(1-0.05, %2) = %3").arg(ve->vector->
-						pearConsentCriterion(ve->vector->classSeries()->
-							classCount()))
+						pearConsentCriterion())
 					.arg(ve->vector->classSeries()->classCount()-1)
 					.arg(Statistics::pearQuantile(0.95, ve->vector->classSeries()->classCount()-1), 3, 'f', precision)
 					);
