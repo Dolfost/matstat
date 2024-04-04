@@ -68,7 +68,7 @@ badd +18 include/statistics/dataVector/src/exptrk.cpp
 badd +12 include/statistics/dataVector/src/kolmConsentCriterion.cpp
 badd +8 include/statistics/dataVector/src/pearConsentCriterion.cpp
 badd +2 include/statistics/dataVector/src/varSeries.cpp
-badd +0 include/statistics/dataVector/src/variationCoef.cpp
+badd +20 include/statistics/dataVector/src/variationCoef.cpp
 argglobal
 %argdel
 tabnew +setlocal\ bufhidden=wipe
@@ -112,7 +112,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 39 + 23) / 46)
 exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
+exe '2resize ' . ((&lines * 39 + 23) / 46)
 exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
 argglobal
 balt include/gui/vectorContainerWidget.hpp
@@ -156,7 +158,9 @@ normal! zt
 keepjumps 62
 normal! 019|
 wincmd w
+exe '1resize ' . ((&lines * 39 + 23) / 46)
 exe 'vert 1resize ' . ((&columns * 94 + 95) / 190)
+exe '2resize ' . ((&lines * 39 + 23) / 46)
 exe 'vert 2resize ' . ((&columns * 95 + 95) / 190)
 tabnext
 edit include/gui/distributionReproducerDialog.cpp
@@ -196,7 +200,9 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
+exe '1resize ' . ((&lines * 23 + 23) / 46)
 exe 'vert 1resize ' . ((&columns * 102 + 95) / 190)
+exe '2resize ' . ((&lines * 23 + 23) / 46)
 exe 'vert 2resize ' . ((&columns * 87 + 95) / 190)
 argglobal
 balt include/gui/mainWindow.hpp
@@ -240,7 +246,9 @@ normal! zt
 keepjumps 13
 normal! 014|
 wincmd w
+exe '1resize ' . ((&lines * 23 + 23) / 46)
 exe 'vert 1resize ' . ((&columns * 102 + 95) / 190)
+exe '2resize ' . ((&lines * 23 + 23) / 46)
 exe 'vert 2resize ' . ((&columns * 87 + 95) / 190)
 tabnext
 edit include/statistics/dataVector/src/variationCoef.cpp
@@ -256,12 +264,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 11) / 23)
+let s:l = 20 - ((19 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 1
-normal! 0
+keepjumps 20
+normal! 047|
 tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
