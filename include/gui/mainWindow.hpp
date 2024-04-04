@@ -4,8 +4,8 @@
 #include <QMainWindow>
 #include <QtWidgets/qboxlayout.h>
 
-#include "statistics/densityChart.hpp"
-#include "statistics/distributionChart.hpp"
+#include "densityChart.hpp"
+#include "distributionChart.hpp"
 
 #include "vectorContainerWidget.hpp"
 #include "vectorProcessorWidget.hpp"

@@ -1,7 +1,7 @@
 #ifndef _TRANSFORMATION_FORMULA_EDITOR_DIALOG_
 #define _TRANSFORMATION_FORMULA_EDITOR_DIALOG_
 
-#include "statistics/dataVector.hpp"
+#include "dataVector.hpp"
 
 #include <QDialog>
 #include <QHBoxLayout>

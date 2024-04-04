@@ -1,7 +1,7 @@
 #ifndef _VECTOR_TRIMMER_DIALOG_HPP_
 #define _VECTOR_TRIMMER_DIALOG_HPP_
 
-#include "statistics/dataVector.hpp"
+#include "dataVector.hpp"
 
 #include <QDialog>
 #include <QHBoxLayout>

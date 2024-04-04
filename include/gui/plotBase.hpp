@@ -12,8 +12,8 @@
 #include <QLogValueAxis>
 
 #include "QCustomPlot/qcustomplot.h"
-#include "statistics/dataVector.hpp"
-#include "statistics/classSeries.hpp"
+#include "dataVector.hpp"
+#include "classSeries.hpp"
 
 class PlotBase : public QCustomPlot {
 	Q_OBJECT

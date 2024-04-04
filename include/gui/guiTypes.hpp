@@ -2,7 +2,7 @@
 #define _GUI_TYPES_HPP_
 
 #include <QString>
-#include "statistics/dataVector.hpp"
+#include "dataVector.hpp"
 
 struct VectorEntry {
 	DataVector* vector = nullptr;

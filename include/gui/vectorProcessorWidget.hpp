@@ -8,8 +8,8 @@
 #include <QAction>
 #include <QtCore/qcoreevent.h>
 
-#include "./statistics/dataVector.hpp"
-#include "./statistics/classSeries.hpp"
+#include "dataVector.hpp"
+#include "classSeries.hpp"
 #include "guiTypes.hpp"
 
 class VectorProcessorWidget : public QTabWidget {

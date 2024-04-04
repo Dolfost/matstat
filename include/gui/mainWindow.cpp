@@ -1,10 +1,10 @@
 #include "mainWindow.hpp"
 
-#include "gui/setGeneratorDialog.hpp"
-#include "gui/vectorContainerWidget.hpp"
+#include "setGeneratorDialog.hpp"
+#include "vectorContainerWidget.hpp"
 
-#include "statistics/densityChart.hpp"
-#include "statistics/distributionChart.hpp"
+#include "densityChart.hpp"
+#include "distributionChart.hpp"
 
 #include <QWidget>
 #include <QGroupBox>

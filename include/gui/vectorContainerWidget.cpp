@@ -1,4 +1,4 @@
-#include "./statistics/dataVector.hpp"
+#include "dataVector.hpp"
 
 #include <QGuiApplication>
 #include <QStyleHints>
