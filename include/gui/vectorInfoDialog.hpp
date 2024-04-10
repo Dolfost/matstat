@@ -30,7 +30,7 @@ public:
 
 private:
   VectorEntry *ve = nullptr;
-  int precision = 6;
+  int precision = 4;
 
 public slots:
   void vectorDeletedHandler(VectorEntry *);

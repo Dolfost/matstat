@@ -47,6 +47,8 @@ public:
 	double cdf(double);
 	double cdfDev(double);
 	double invCdf(double);
+
+	std::pair<double, double> domain = {1, 1};	
 	
 	size_t size = 0;
 	size_t parametersCount = 0;

@@ -20,14 +20,15 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	graphPen.setColor("#2b8eff");
 	graph->setPen(graphPen);
 
-	distribution = new QCPGraph(this->xAxis, this->yAxis2);
+	distribution = new QCPGraph(this->xAxis2, this->yAxis2);
 	distribution->setName("F(x) (відтв.)");
+	this->xAxis2->setLabel("x (відтворена)");
 	QPen distributionPen;
 	distributionPen.setWidthF(1.3);
 	distributionPen.setColor("#0313fc");
 	distribution->setPen(distributionPen);
 
-	distributionDeviation = new QCPGraph(this->xAxis, this->yAxis2);
+	distributionDeviation = new QCPGraph(this->xAxis2, this->yAxis2);
 	distributionDeviation->setName("СКВ F(x)");
 	QPen distributionDeviationPen;
 	distributionDeviationPen.setWidthF(1.1);
@@ -65,11 +66,26 @@ void DistributionChart::fill(DataVector* dataVector) {
 	graph->setData(x, y, true);
 
 	if (dataVector->rep.model != DistributionReproducer::Distribution::UnknownD) {
+		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
+			coordinatesLabelString = "${X}\n${Y}";
+		else
+			coordinatesLabelString = "${X} ${X2}\n${Y}";
 		x.clear(), y.clear();
 		QList<double> yDev1, yDev2;
 
-		double interval = abs(dataVector->max() - dataVector->min())/2;
-		for (double arg = dataVector->min(); arg <= dataVector->max(); arg += interval/350) {
+		double a, b;
+		if (dataVector->rep.domain.first != dataVector->rep.domain.second) {
+			a = dataVector->rep.domain.first;
+			b = dataVector->rep.domain.second;
+		} else {
+			a = dataVector->min();
+			b = dataVector->max();
+		}
+
+		double interval = abs(a - b)/2;
+		for (double arg = a;
+				arg <= b;
+				arg += interval/350) {
 			x.push_back(arg);
 			y.push_back(dataVector->rep.cdf(arg));
 			std::pair<double, double> dev =
@@ -88,6 +104,7 @@ void DistributionChart::fill(DataVector* dataVector) {
 
 		distributionDeviation->setData(x, yDev1, true);
 	} else {
+		coordinatesLabelString = "${X}\n${Y}";
 		distribution->data()->clear();
 		distributionDeviation->data()->clear();
 	}

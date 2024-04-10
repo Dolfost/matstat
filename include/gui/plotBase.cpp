@@ -33,8 +33,13 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->xAxis->setNumberFormat("f");
 	this->xAxis->setNumberPrecision(3);
 	this->xAxis->setScaleType(QCPAxis::stLinear);
-	this->xAxis->setLabel("x");
-	this->xAxis2->setTicker(xFixedTicker);
+	this->xAxis->setLabel("x (класи)");
+	xTicker = QSharedPointer<QCPAxisTicker>(new QCPAxisTicker);
+	xTicker->setTickCount(7);
+	this->xAxis2->setTicker(xTicker);
+	this->xAxis2->setNumberFormat("f");
+	this->xAxis2->setNumberPrecision(2);
+	this->xAxis2->setScaleType(QCPAxis::stLinear);
 
 	yTicker = QSharedPointer<QCPAxisTicker>(new QCPAxisTicker);
 	yTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
@@ -61,16 +66,15 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis2->setVisible(true);
 	this->yAxis2->setTickLabels(true);
 
-	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
-			this->xAxis2, SLOT(setRange(QCPRange)));
-	connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
-			this->xAxis, SLOT(setRange(QCPRange)));
-
-	//  TODO:
-	//  make the yAxis2 for the density chart to be from the 0 to the distribution->cfmMax
+	// connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
+	// 		this->xAxis2, SLOT(setRange(QCPRange)));
+	// connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
+	// 		this->xAxis, SLOT(setRange(QCPRange)));
 
 	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
 			SLOT(handleZoomX(QCPRange)));
+	connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
+			SLOT(handleZoomX2(QCPRange)));
 	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
 			SLOT(handleZoomY(QCPRange)));
 	connect(this->yAxis2, SIGNAL(rangeChanged(QCPRange)),
@@ -113,6 +117,18 @@ void PlotBase::fill(DataVector* dataVector) {
 	DataVector::ClassSeries* cs = dataVector->classSeries();
 
 	xRange = QCPRange(dataVector->min(), dataVector->max());
+	if (dataVector->rep.model != DistributionReproducer::UnknownD) {
+		xRange2 = QCPRange(dataVector->rep.domain.first,
+				dataVector->rep.domain.second);
+		this->xAxis2->setTickLabels(true);
+	}
+
+	if (dataVector->rep.domain.first == dataVector->rep.domain.second) {
+		this->xAxis2->setTickLabels(false);
+		xRange2 = xRange;
+	} 
+
+	this->xAxis2->setRange(xRange2);
 
 	this->xAxis->setRange(xRange);
 	xFixedTicker->setTickStep(cs->step());
@@ -222,6 +238,7 @@ DataVector* PlotBase::dataVector() {
 void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	QPoint screenPoint = event->pos();
 	double x = this->xAxis->pixelToCoord(screenPoint.x());
+	double x2 = this->xAxis2->pixelToCoord(screenPoint.x());
 	double y = this->yAxis->pixelToCoord(screenPoint.y());
 	double y2 = this->yAxis2->pixelToCoord(screenPoint.y());
 
@@ -233,6 +250,7 @@ void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 
 	QString coordsLabel = coordinatesLabelString;
 	coordsLabel.replace("${X}", QString::number(x, 'f', 3));
+	coordsLabel.replace("${X2}", QString::number(x2, 'f', 3));
 	coordsLabel.replace("${Y}", QString::number(y, 'f', 3));
 	coordsLabel.replace("${Y2}", QString::number(y2, 'f', 3));
 	coordinatesLabel->setText(coordsLabel);
@@ -247,6 +265,18 @@ void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 
 void PlotBase::handleZoomX(const QCPRange& newRange) {
 	this->xAxis->setRange(newRange.bounded(xRange.lower, xRange.upper));
+
+	xAxis2->blockSignals(true);
+	xAxis2->setScaleRatio(xAxis, xRange2.size()/xRange.size());
+	xAxis2->blockSignals(false);
+}
+
+void PlotBase::handleZoomX2(const QCPRange& newRange) {
+	this->xAxis2->setRange(newRange.bounded(xRange2.lower, xRange2.upper));
+
+	xAxis->blockSignals(true);
+	xAxis->setScaleRatio(xAxis2, xRange.size()/xRange2.size());
+	xAxis->blockSignals(false);
 }
 
 void PlotBase::handleZoomY(const QCPRange& newRange) {
@@ -291,6 +321,7 @@ void PlotBase::toggleLog(bool state) {
 
 void PlotBase::zoomHome() {
 	handleZoomX(xRange);
+	handleZoomX2(xRange);
 	handleZoomY(yRange);
 	handleZoomY2(yRange2);
 	replot();

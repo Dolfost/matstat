@@ -37,9 +37,11 @@ public:
 	DataVector* dv = nullptr;
 
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
+	QSharedPointer<QCPAxisTicker> xTicker;
 	QSharedPointer<QCPAxisTicker> yTicker;
 	QSharedPointer<QCPAxisTickerLog> yLogTicker;
 	QCPRange xRange;
+	QCPRange xRange2;
 	QCPRange yRange;
 	QCPRange yRange2;
 
@@ -57,6 +59,7 @@ private:
 
 private slots:
 	void handleZoomX(const QCPRange & newRange);
+	void handleZoomX2(const QCPRange & newRange);
 	void handleZoomY(const QCPRange & newRange);
 	void handleZoomY2(const QCPRange& newRange);
 

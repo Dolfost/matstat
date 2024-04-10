@@ -52,7 +52,7 @@ private slots:
 	void vectorProcessorDuplicateHandler(VectorEntry*,
 			VectorProcessorWidget::Tab);
 
-	void showMessage(QString, int = 0);
+	void showMessage(QString, int = 4000);
 };
 
 #endif // !_MAIN_WINDOW_HPP_

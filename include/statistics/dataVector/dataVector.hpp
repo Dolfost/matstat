@@ -67,12 +67,12 @@ public:
 	class ClassSeries;
 	class VarSeries;
 
-	enum Measure { // Statistics measure
+	enum Measure { // statistics measure
 		UnknownM,
-		PopulationM,
-		SampleM
+		PopulationM, // зсунута оцінка
+		SampleM // не зсунута оцінка
 	};
-	enum Limit { // Limits declaration
+	enum Limit { // limits declaration
 		UnknownL,
 		LowerL,
 		UpperL 

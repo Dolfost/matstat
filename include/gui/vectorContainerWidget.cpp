@@ -9,6 +9,7 @@
 #include "gui/transformationFormulaEditorDialog.hpp"
 #include "gui/vectorInfoDialog.hpp"
 #include "setGeneratorDialog.hpp"
+#include "classSeries.hpp"
 
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
@@ -87,7 +88,7 @@ void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 			col < vectorEntry->vector->size() + InfoCell::Count;
 			col++) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem();
-		tableItem->setText(QString::number(*it));
+		tableItem->setText(QString::number(*it, 'f', precision));
 		it++;
 		this->setItem(row, col, tableItem);
 	}
@@ -260,8 +261,9 @@ void VectorContainerWidget::reproductionAction() {
 			data(Qt::UserRole).value<VectorEntry*>();
 
 	if (ve->vector->classSeries() == nullptr) {
-		emit message("Вектор не був розбитий на класи. Відтворення розподілу не є можливим.");
-		return;
+		ve->vector->makeClassSeries();
+		emit message("Вектор " + ve->name + " було розбито на " +
+				QString::number(ve->vector->classSeries()->classCount()) + " класів");
 	}
 
 	DistributionReproducerDialog* drd = 

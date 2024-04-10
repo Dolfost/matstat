@@ -25,9 +25,10 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	barsBrush.setColor("#2b8eff");
 	bars->setBrush(barsBrush);
 
-	density = new QCPGraph(this->xAxis, this->yAxis2);
+	density = new QCPGraph(this->xAxis2, this->yAxis2);
 	density->setName("f(x) (відтв.)");
 	this->yAxis2->setLabel("f(x) (відтворена)");
+	this->xAxis2->setLabel("x (відтворена)");
 	QPen densityPen;
 	densityPen.setWidthF(1.3);
 	densityPen.setColor("#0313fc");
@@ -58,11 +59,26 @@ void DensityChart::fill(DataVector* dataVector) {
 	x.clear(), y.clear();
 
 	if (dataVector->rep.model != DistributionReproducer::Distribution::UnknownD) {
-		coordinatesLabelString = "${X}\n${Y} ${Y2}";
+		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
+			coordinatesLabelString = "${X}\n${Y} ${Y2}";
+		else
+			coordinatesLabelString = "${X} ${X2}\n${Y} ${Y2}";
+
 		this->yAxis2->setTickLabels(true);
 		this->yRange2 = QCPRange(0, dataVector->rep.pdfMax);
-		double interval = abs(dataVector->max() - dataVector->min())/2;
-		for (double arg = dataVector->min(); arg <= dataVector->max(); arg += interval/350) {
+		double a, b;
+		if (dataVector->rep.domain.first != dataVector->rep.domain.second) {
+			a = dataVector->rep.domain.first;
+			b = dataVector->rep.domain.second;
+		} else {
+			a = dataVector->min();
+			b = dataVector->max();
+		}
+
+		double interval = abs(a - b)/2;
+		for (double arg = a;
+				arg <= b;
+				arg += interval/350) {
 			x.push_back(arg);
 			y.push_back(dataVector->rep.pdf(arg));
 		}

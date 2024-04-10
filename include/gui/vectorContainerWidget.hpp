@@ -28,6 +28,8 @@ private:
 
 	signed int vectorCount = 0;
 
+	int precision = 4;
+
 
 public slots:
 	void appendList(const std::list<double>*, QString = "");

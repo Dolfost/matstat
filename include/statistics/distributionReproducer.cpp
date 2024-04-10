@@ -35,6 +35,7 @@ void DistributionReproducer::setDistribution(Distribution type,
                                              std::vector<double> p, size_t s) {
   model = type;
   size = s;
+  domain = {1,1};
 
   paremeterNames.clear();
   parameters.clear();
@@ -101,6 +102,7 @@ void DistributionReproducer::setDistribution(Distribution type,
     invCdfString = QString("(1/%1)log(1/(1-x))").arg(parameters[0], 0, 'f', 6);
     parser.compile(invCdfString.toStdString(), invCdfExpression);
 
+	domain.first = 0;
     parametersCv = 0;
     QString cdfDeviation = QString("(x^2)*exp(-2(%1)x)(%2)")
                                .arg(parameters[0])
@@ -139,6 +141,7 @@ void DistributionReproducer::setDistribution(Distribution type,
     x = std::pow(abs(parameters[0] * (parameters[1] - 1)) / parameters[1],
                  1 / parameters[1]);
     pdfMax = pdfExpression.value();
+	domain.first = 0;
 
     if (p.size() == 2)
       break;
@@ -278,6 +281,15 @@ void DistributionReproducer::setDistribution(Distribution type,
   default:
     break;
   }
+
+  if (domain.first != domain.second) {
+	  double x = domain.first, f = 0;
+	  while (std::abs(f - 1) > 0.01) {
+		  x += 0.01;
+		  f = cdf(x);
+	  }
+	  domain.second = x;
+  } 
 }
 
 double DistributionReproducer::pdf(double x1) {

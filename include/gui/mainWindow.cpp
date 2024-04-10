@@ -203,5 +203,5 @@ void MainWindow::showMessage(QString msg, int dur) {
 	if (dur == 0)
 		dur = messageTime;
 
-	this->statusBar()->showMessage(msg);
+	this->statusBar()->showMessage(msg, dur);
 }

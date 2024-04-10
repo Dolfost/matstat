@@ -31,7 +31,7 @@ VectorInfoDialog::VectorInfoDialog(
 		mainLayout->addWidget(gropupBox);
 
 		QStringList headers = {
-			"Назва", "Позначення", "Значення", "Зсунуте значення"
+			"Назва", "Позначення", "Не зсунуте значення", "Зсунуте значення"
 		};
 
 		QList<QStringList> contents = {
@@ -160,15 +160,15 @@ VectorInfoDialog::VectorInfoDialog(
 								DataVector::Limit::LowerL), 'f', precision)));
 		}
 
-		headers.append("θ не зсунута");
+		headers.append("θ зсунута");
 		charTable->setItem(0, col, new QTableWidgetItem(
 					QString::number(ve->vector->mean(), 'f', precision)));
 		charTable->setItem(1, col, new QTableWidgetItem(
-					QString::number(ve->vector->variance(DataVector::Measure::SampleM), 'f', precision)));
+					QString::number(ve->vector->variance(DataVector::Measure::PopulationM), 'f', precision)));
 		charTable->setItem(2, col, new QTableWidgetItem(
-					QString::number(ve->vector->skew(DataVector::Measure::SampleM), 'f', precision)));
+					QString::number(ve->vector->skew(DataVector::Measure::PopulationM), 'f', precision)));
 		charTable->setItem(3, col, new QTableWidgetItem(
-					QString::number(ve->vector->kurtosis(DataVector::Measure::SampleM), 'f', precision)));
+					QString::number(ve->vector->kurtosis(DataVector::Measure::PopulationM), 'f', precision)));
 
 		for (int from = col; col < charTable->columnCount(); col++) {
 			int prob = probs.length() - (col - from) - 1;
