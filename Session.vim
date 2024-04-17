@@ -50,7 +50,7 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +1 include/statistics/dataVectorExprtk.hpp
 badd +40 include/statistics/distributionReproducer.hpp
-badd +157 include/statistics/distributionReproducer.cpp
+badd +261 include/statistics/distributionReproducer.cpp
 badd +179 include/gui/distributionReproducerDialog.cpp
 badd +22 include/gui/distributionReproducerDialog.hpp
 badd +1 include/statistics/statistics.hpp
@@ -69,17 +69,15 @@ badd +51 include/statistics/dataVector/src/kolmConsentCriterion.cpp
 badd +9 include/statistics/dataVector/src/pearConsentCriterion.cpp
 badd +2 include/statistics/dataVector/src/varSeries.cpp
 badd +20 include/statistics/dataVector/src/variationCoef.cpp
-badd +14 include/statistics/dataVector/src/reproduceDistribution.cpp
+badd +65 include/statistics/dataVector/src/reproduceDistribution.cpp
 badd +12 include/statistics/dataVector/src/transform.cpp
-badd +193 include/gui/plotBase.cpp
+badd +129 include/gui/plotBase.cpp
 badd +1 include/gui/densityChart.hpp
 badd +32 include/gui/densityChart.cpp
 badd +65 include/gui/distributionChart.cpp
 badd +9 include/statistics/dataVector/src/cdf.cpp
 argglobal
 %argdel
-tabnew +setlocal\ bufhidden=wipe
-tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -124,174 +122,6 @@ normal! zt
 keepjumps 122
 normal! 024|
 tabnext
-edit include/statistics/distributionReproducer.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
-argglobal
-balt include/statistics/distributionReproducer.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 261 - ((25 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 261
-normal! 040|
-wincmd w
-argglobal
-if bufexists(fnamemodify("include/statistics/distributionReproducer.hpp", ":p")) | buffer include/statistics/distributionReproducer.hpp | else | edit include/statistics/distributionReproducer.hpp | endif
-if &buftype ==# 'terminal'
-  silent file include/statistics/distributionReproducer.hpp
-endif
-balt include/statistics/distributionReproducer.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 40 - ((21 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 40
-normal! 043|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
-tabnext
-edit include/gui/plotBase.cpp
-let s:save_splitbelow = &splitbelow
-let s:save_splitright = &splitright
-set splitbelow splitright
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
-let &splitbelow = s:save_splitbelow
-let &splitright = s:save_splitright
-wincmd t
-let s:save_winminheight = &winminheight
-let s:save_winminwidth = &winminwidth
-set winminheight=0
-set winheight=1
-set winminwidth=0
-set winwidth=1
-exe 'vert 1resize ' . ((&columns * 135 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 54 + 95) / 190)
-argglobal
-balt include/gui/plotBase.hpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 193 - ((25 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 193
-normal! 045|
-wincmd w
-argglobal
-if bufexists(fnamemodify("include/gui/plotBase.hpp", ":p")) | buffer include/gui/plotBase.hpp | else | edit include/gui/plotBase.hpp | endif
-if &buftype ==# 'terminal'
-  silent file include/gui/plotBase.hpp
-endif
-balt include/gui/plotBase.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 49 - ((25 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 49
-normal! 020|
-wincmd w
-exe 'vert 1resize ' . ((&columns * 135 + 95) / 190)
-exe 'vert 2resize ' . ((&columns * 54 + 95) / 190)
-tabnext
-edit include/statistics/distributionReproducer.cpp
-argglobal
-balt include/gui/plotBase.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 157 - ((17 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 157
-normal! 0
-tabnext
-edit include/statistics/dataVector/src/reproduceDistribution.cpp
-argglobal
-balt include/statistics/distributionReproducer.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 65 - ((26 * winheight(0) + 19) / 39)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 65
-normal! 030|
-tabnext
 edit include/gui/mainWindow.cpp
 argglobal
 balt include/statistics/dataVector/src/reproduceDistribution.cpp
@@ -305,13 +135,53 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 12 - ((11 * winheight(0) + 19) / 39)
+let s:l = 12 - ((9 * winheight(0) + 16) / 33)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 12
 normal! 013|
-tabnext 4
+tabnext
+edit include/statistics/dataVector/src/kolmConsentCriterion.cpp
+argglobal
+balt include/gui/mainWindow.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 51 - ((21 * winheight(0) + 16) / 33)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 51
+normal! 035|
+tabnext
+edit include/statistics/dataVector/src/pearConsentCriterion.cpp
+argglobal
+balt include/statistics/dataVector/src/kolmConsentCriterion.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 9 - ((8 * winheight(0) + 16) / 33)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 9
+normal! 034|
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
