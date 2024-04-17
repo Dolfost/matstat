@@ -101,8 +101,13 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->xAxis->setRange(xRange);
 	this->yAxis->setRange(yRange);
 	this->yAxis2->setRange(yRange2);
-	this->replot();
 
+	
+	scatterPen.setWidthF(1.8);
+	scatterStyle.setSize(18);
+	scatterStyle.setShape(QCPScatterStyle::ssTriangle);
+
+	this->replot();
 	// coordinatesLabel setup
 	coordinatesLabel = new QLabel("", this);
 	coordinatesLabel->setAlignment(Qt::AlignCenter);
@@ -161,37 +166,33 @@ void PlotBase::clear() {
 void PlotBase::enableMean() {
 	mean = new QCPGraph(this->xAxis, this->yAxis);
 	mean->setName("Мат. спод.");
-	mean->setLineStyle(QCPGraph::lsLine);
-	QPen pen;
-	pen.setColor(Qt::red);
-	pen.setDashPattern({5, 10});
-	pen.setWidthF(1.2);
-	mean->setPen(pen);
+	scatterPen.setColor("#FF0000");
+	scatterStyle.setPen(scatterPen);
+	mean->setScatterStyle(scatterStyle);
+	mean->setLineStyle(QCPGraph::lsNone);
 }
 
 void PlotBase::plotMean() {
-	QVector<double> x{dv->mean(), dv->mean()}, y{yRange.lower, yRange.upper};
+	QVector<double> x{dv->mean()}, y{yRange.lower};
 	mean->setData(x, y);
 }
 
 void PlotBase::enableStandartDeviation() {
 	standatrDeviation = new QCPGraph(this->xAxis, this->yAxis);
 	standatrDeviation->setName("Ск. відх.");
-	standatrDeviation->setLineStyle(QCPGraph::lsLine);
-	QPen pen;
-	pen.setColor(Qt::magenta);
-	pen.setWidthF(1.2);
-	standatrDeviation->setPen(pen);
+	standatrDeviation->setLineStyle(QCPGraph::lsNone);
+	scatterPen.setColor(Qt::magenta);
+	scatterStyle.setPen(scatterPen);
+	standatrDeviation->setScatterStyle(scatterStyle);
 }
 
 void PlotBase::plotStandartDeviation() {
 	double meanValue = dv->mean();
 	double standatrDeviationValue = dv->standardDeviation();
 	QVector<double>
-		x{meanValue - standatrDeviationValue, meanValue - standatrDeviationValue,
-			qQNaN(),
-			meanValue + standatrDeviationValue, meanValue + standatrDeviationValue},
-		y{yRange.lower, yRange.upper, qQNaN(), yRange.upper, yRange.lower};
+		x{meanValue - standatrDeviationValue,
+			meanValue + standatrDeviationValue},
+		y{yRange.lower, yRange.lower};
 
 	standatrDeviation->setData(x, y);
 }
@@ -199,16 +200,15 @@ void PlotBase::plotStandartDeviation() {
 void PlotBase::enableWalshMed() {
 	walshMed = new QCPGraph(this->xAxis, this->yAxis);
 	walshMed->setName("Мед. сер. Уолша");
-	walshMed->setLineStyle(QCPGraph::lsLine);
-	QPen pen;
-	pen.setColor(Qt::darkMagenta);
-	pen.setWidthF(1.25);
-	walshMed->setPen(pen);
+	walshMed->setLineStyle(QCPGraph::lsNone);
+	scatterPen.setColor(Qt::darkMagenta);
+	scatterStyle.setPen(scatterPen);
+	walshMed->setScatterStyle(scatterStyle);
 }
 
 void PlotBase::plotWalshMed() {
-	QVector<double> x{dv->walshAveragesMed(), dv->walshAveragesMed()},
-		y{yRange.lower, yRange.upper};
+	QVector<double> x{dv->walshAveragesMed()},
+		y{yRange.lower};
 
 	walshMed->setData(x, y);
 }
@@ -216,16 +216,15 @@ void PlotBase::plotWalshMed() {
 void PlotBase::enableMed() {
 	med = new QCPGraph(this->xAxis, this->yAxis);
 	med->setName("Мед.");
-	med->setLineStyle(QCPGraph::lsLine);
-	QPen pen;
-	pen.setColor(Qt::green);
-	pen.setWidthF(1.25);
-	med->setPen(pen);
+	med->setLineStyle(QCPGraph::lsNone);
+	scatterPen.setColor(Qt::green);
+	scatterStyle.setPen(scatterPen);
+	med->setScatterStyle(scatterStyle);
 }
 
 void PlotBase::plotMed() {
-	QVector<double> x{dv->med(), dv->med()},
-		y{yRange.lower, yRange.upper};
+	QVector<double> x{dv->med()},
+		y{yRange.lower};
 
 	med->setData(x, y);
 }

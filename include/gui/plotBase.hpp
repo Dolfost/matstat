@@ -45,6 +45,8 @@ public:
 	QCPRange yRange;
 	QCPRange yRange2;
 
+	QCPScatterStyle scatterStyle;
+	QPen scatterPen;
 	QCPGraph* mean = nullptr;
 	QCPGraph* standatrDeviation = nullptr;
 	QCPGraph* med = nullptr;
