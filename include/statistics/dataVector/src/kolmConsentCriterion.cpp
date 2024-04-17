@@ -37,7 +37,7 @@ void DataVector::computeKolmConsentCriterion() {
 	  x2 += cs->step();
   }
 
-  qDebug() << Dm << Dp;
+  // qDebug() << Dm << Dp;
 
   double z = std::sqrt(size()) * std::max(Dp, Dm);
 

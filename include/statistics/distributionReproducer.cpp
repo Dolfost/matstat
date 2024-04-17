@@ -38,6 +38,7 @@ void DistributionReproducer::setDistribution(Distribution type,
   domain = {1,1};
 
   paremeterNames.clear();
+  parametersDeviationNames.clear();
   parameters.clear();
   parametersDeviation.clear();
 
@@ -151,6 +152,10 @@ void DistributionReproducer::setDistribution(Distribution type,
     parametersDeviation.push_back(std::exp(-2 * p[2]) * DA);
     parametersDeviation.push_back((p[4] * p[3]) /
                                   (p[4] * p[6] - std::pow(p[5], 2)));
+
+	qDebug() << "args:" << p;
+	qDebug() << "DA:" << DA;
+	qDebug() << "par dev" << parametersDeviation;
 
     double covAb = -(p[5] * p[3]) / (p[4] * p[6] - std::pow(p[5], 2));
     parametersCv = -std::exp(p[2]) * covAb;

@@ -40,15 +40,15 @@ bool DataVector::reproduceDistribution(
     double S = 0;
     for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1);
          it++) {
-      S += pow(log(log(1 / (1 - cdf(*it))) - skew(Measure::PopulationM) -
-                   beta * log(*it)),
+      S += pow(log(log(1 / (1 - cdf(*it)))) - skew(Measure::PopulationM) -
+                   beta * log(*it),
                2);
     }
 
-    S /= size() - 3;
+    S /= (size() - 3);
 
     rep.setDistribution(type,
-                        {exp(-skew(Measure::PopulationM)), beta,
+                        {std::exp(-skew(Measure::PopulationM)), beta,
                          skew(Measure::PopulationM), S, a11, a21, a22},
                         size());
     break;
