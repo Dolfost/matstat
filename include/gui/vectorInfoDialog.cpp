@@ -1,7 +1,6 @@
 #include "vectorInfoDialog.hpp"
 #include "gui/Section.h"
 #include <QtCore/qcontainerfwd.h>
-#include <locale>
 #include <numeric>
 
 VectorInfoDialog::VectorInfoDialog(
@@ -31,12 +30,12 @@ VectorInfoDialog::VectorInfoDialog(
 		mainLayout->addWidget(gropupBox);
 
 		QStringList headers = {
-			"Назва", "Позначення", "Не зсунуте значення", "Зсунуте значення"
+			"Назва", "Позначення", "Незсунуте значення", "Зсунуте значення"
 		};
 
 		QList<QStringList> contents = {
-		{"Математичне сподівання", "v₁", QString::number(ve->vector->mean(), 'f', precision), "—"},
-		{"Дисперсія", "μ₂", QString::number(ve->vector->variance(), 'f', precision),
+		{"Стат. початковий момент першого порядку", "v₁", QString::number(ve->vector->mean(), 'f', precision), "—"},
+		{"Стат. центральний момент другого порядку", "μ₂", QString::number(ve->vector->variance(), 'f', precision),
 			QString::number(ve->vector->variance(DataVector::Measure::PopulationM), 'f', precision), "—"},
 		{"Медіана", "MED", QString::number(ve->vector->med(), 'f', precision),"—"},
 		{"Розмір", "N", QString::number(ve->vector->size()),"—"},
@@ -74,7 +73,7 @@ VectorInfoDialog::VectorInfoDialog(
 		}
 
 		QList<int> columnWidths = {
-			255, 80, 200, 200
+			300, 80, 200, 200
 		};
 
 		charTable->setMinimumWidth(std::accumulate(columnWidths.begin(), columnWidths.end(), 20));

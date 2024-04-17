@@ -24,12 +24,12 @@ badd +44 include/statistics/classSeries.cpp
 badd +13 include/statistics/classSeries.hpp
 badd +58 include/statistics/distributionChart.cpp
 badd +13 include/statistics/distributionChart.hpp
-badd +20 include/types.hpp
+badd +22 include/types.hpp
 badd +19 include/statistics/densityChart.hpp
 badd +72 include/statistics/densityChart.cpp
 badd +41 include/gui/mainWindow.hpp
 badd +206 include/gui/mainWindow.cpp
-badd +29 CMakeLists.txt
+badd +13 CMakeLists.txt
 badd +344 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
 badd +64 include/gui/vectorContainerWidget.hpp
@@ -39,7 +39,7 @@ badd +46 include/gui/transformationFormulaEditorDialog.hpp
 badd +29 include/gui/vectorPickerDialog.cpp
 badd +65 include/gui/vectorContainerWidget.cpp
 badd +33 include/gui/vectorInfoDialog.hpp
-badd +59 include/gui/vectorInfoDialog.cpp
+badd +179 include/gui/vectorInfoDialog.cpp
 badd +12 include/statistics/varSeries.hpp
 badd +33 include/gui/vectorProcessorWidget.hpp
 badd +2 include/gui/vectorProcessorWidget.cpp
@@ -61,22 +61,23 @@ badd +38 include/gui/setGeneratorDialog.hpp
 badd +2 include/statistics/varSeries.cpp
 badd +40 include/gui/plotBase.hpp
 badd +1 include/statistics/dataVector/src/dataVector.cpp
-badd +70 include/statistics/dataVector/dataVector.hpp
+badd +55 include/statistics/dataVector/dataVector.hpp
 badd +1 include/statistics/dataVector/src/centralMoment.cpp
 badd +19 include/statistics/dataVector/src/classSeries.cpp
-badd +9 include/statistics/dataVector/src/exptrk.cpp
+badd +54 include/statistics/dataVector/src/exptrk.cpp
 badd +12 include/statistics/dataVector/src/kolmConsentCriterion.cpp
 badd +8 include/statistics/dataVector/src/pearConsentCriterion.cpp
 badd +2 include/statistics/dataVector/src/varSeries.cpp
 badd +20 include/statistics/dataVector/src/variationCoef.cpp
-badd +69 include/statistics/dataVector/src/reproduceDistribution.cpp
-badd +31 include/statistics/dataVector/src/transform.cpp
-badd +253 include/gui/plotBase.cpp
+badd +54 include/statistics/dataVector/src/reproduceDistribution.cpp
+badd +26 include/statistics/dataVector/src/transform.cpp
+badd +83 include/gui/plotBase.cpp
 badd +1 include/gui/densityChart.hpp
-badd +64 include/gui/densityChart.cpp
-badd +70 include/gui/distributionChart.cpp
+badd +32 include/gui/densityChart.cpp
+badd +57 include/gui/distributionChart.cpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -98,7 +99,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 22) / 44)
+let s:l = 10 - ((9 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -122,9 +123,7 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 27 + 24) / 48)
 exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
-exe '2resize ' . ((&lines * 27 + 24) / 48)
 exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
 argglobal
 balt include/statistics/distributionReproducer.hpp
@@ -138,7 +137,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 245 - ((14 * winheight(0) + 13) / 27)
+let s:l = 245 - ((20 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -161,16 +160,14 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 49 - ((8 * winheight(0) + 13) / 27)
+let s:l = 49 - ((12 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
 keepjumps 49
 normal! 026|
 wincmd w
-exe '1resize ' . ((&lines * 27 + 24) / 48)
 exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
-exe '2resize ' . ((&lines * 27 + 24) / 48)
 exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
 tabnext
 edit include/statistics/dataVector/src/reproduceDistribution.cpp
@@ -186,7 +183,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 54 - ((15 * winheight(0) + 22) / 45)
+let s:l = 54 - ((13 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -206,12 +203,32 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 70 - ((11 * winheight(0) + 22) / 45)
+let s:l = 55 - ((8 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 70
+keepjumps 55
 normal! 024|
+tabnext
+edit include/gui/vectorInfoDialog.cpp
+argglobal
+balt include/statistics/dataVector/dataVector.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 3 - ((2 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 3
+normal! 033|
 tabnext
 edit include/statistics/varSeries.hpp
 argglobal
@@ -226,7 +243,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 10 - ((9 * winheight(0) + 22) / 45)
+let s:l = 10 - ((9 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -264,12 +281,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 253 - ((25 * winheight(0) + 22) / 45)
+let s:l = 89 - ((30 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 253
-normal! 051|
+keepjumps 89
+normal! 025|
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/plotBase.hpp", ":p")) | buffer include/gui/plotBase.hpp | else | edit include/gui/plotBase.hpp | endif
@@ -287,7 +304,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 62 - ((30 * winheight(0) + 22) / 45)
+let s:l = 62 - ((26 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -328,12 +345,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 73 - ((29 * winheight(0) + 22) / 45)
+let s:l = 32 - ((26 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 73
-normal! 016|
+keepjumps 32
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/densityChart.hpp", ":p")) | buffer include/gui/densityChart.hpp | else | edit include/gui/densityChart.hpp | endif
@@ -351,7 +368,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 1 - ((0 * winheight(0) + 22) / 45)
+let s:l = 1 - ((0 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -360,6 +377,26 @@ normal! 0
 wincmd w
 exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
 exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
+tabnext
+edit include/statistics/dataVector/src/transform.cpp
+argglobal
+balt include/statistics/dataVector/src/exptrk.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 12 - ((11 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 12
+normal! 041|
 tabnext
 edit include/gui/distributionChart.cpp
 argglobal
@@ -374,33 +411,13 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 72 - ((21 * winheight(0) + 22) / 45)
+let s:l = 70 - ((28 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 72
-normal! 048|
-tabnext
-edit include/types.hpp
-argglobal
-balt include/gui/transformationFormulaEditorDialog.cpp
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-silent! normal! zE
-let &fdl = &fdl
-let s:l = 14 - ((13 * winheight(0) + 22) / 44)
-if s:l < 1 | let s:l = 1 | endif
-keepjumps exe s:l
-normal! zt
-keepjumps 14
-normal! 0
-tabnext 8
+keepjumps 70
+normal! 033|
+tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
