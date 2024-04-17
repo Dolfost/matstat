@@ -188,10 +188,10 @@ void DistributionReproducerDialog::refill() {
 			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision);
 
 	if (ve->vector->classSeries() != nullptr)
-			consents.append(QString("%1 ≤ pearQuantile(1-0.05, %2) = %3").arg(ve->vector->
+			consents.append(QString("%1 ≤ pearQuantile(1-0.1, %2) = %3").arg(ve->vector->
 						pearConsentCriterion())
 					.arg(ve->vector->classSeries()->classCount()-1)
-					.arg(Statistics::pearQuantile(0.95, ve->vector->classSeries()->classCount()-1), 3, 'f', precision)
+					.arg(Statistics::pearQuantile(0.9, ve->vector->classSeries()->classCount()-1), 3, 'f', precision)
 					);
 	else 
 		consents.append("вектор не був розбитий на класи");

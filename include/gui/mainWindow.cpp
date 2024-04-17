@@ -9,6 +9,8 @@
 #include <QWidget>
 #include <QGroupBox>
 
+#include <dataSeries.hpp>
+
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	mainWidget = new QWidget();
 	mainLayout = new QVBoxLayout();
@@ -50,6 +52,12 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			this, &MainWindow::plot2D);
 
 	// open();
+	DataSeries s;
+	s.readData("../../../data/500/veib.txt");
+	qDebug() << s.message();
+	VectorEntry* ve = new VectorEntry;
+	ve->vector = new DataVector(s.filewiseSeries());
+	vectorContainer->appendVector(ve);
 }
 
 void MainWindow::createCharts() {

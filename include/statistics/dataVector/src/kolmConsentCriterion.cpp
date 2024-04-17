@@ -15,7 +15,7 @@ void DataVector::computeKolmConsentCriterion() {
   double x1 = min(),
 		   x2 = min() + cs->step();
 
-  double cdfv = cs->eCdf(x1), 
+  double cdfv = cs->eCdf(x2), 
 		 Dp = std::abs(cdfv - rep.cdf(x2)),
 		 Dm = std::abs(cdfv - rep.cdf(x1));
 
@@ -23,15 +23,15 @@ void DataVector::computeKolmConsentCriterion() {
   x2 += cs->step();
 
   while (x2 <= max()) {
-    cdfv = cs->eCdf(x2);
+	  cdfv = cs->eCdf(x2);
 
-    double DpTmp = std::abs(cdfv - rep.cdf(x2));
-    if (DpTmp > Dp)
-      Dp = DpTmp;
+	  double DpTmp = std::abs(cdfv - rep.cdf(x2));
+	  if (DpTmp > Dp)
+		  Dp = DpTmp;
 
-    double DmTmp = std::abs(cdfv - rep.cdf(x1));
-    if (DmTmp > Dm)
-      Dm = DmTmp;
+	  double DmTmp = std::abs(cdfv - rep.cdf(x1));
+	  if (DmTmp > Dm)
+		  Dm = DmTmp;
 
 	  x1 += cs->step();
 	  x2 += cs->step();
@@ -57,6 +57,6 @@ void DataVector::computeKolmConsentCriterion() {
                  8 * std::pow(k, 4) * std::pow(z, 4)));
   }
 
-  stat.kolmConsentCriterion.first = -2 * tmp;
+  stat.kolmConsentCriterion.first = 1 + 2 * tmp;
   stat.kolmConsentCriterion.second = true;
 }

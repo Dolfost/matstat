@@ -37,7 +37,7 @@ public:
 public:
 	double confidence = 0.95;
 
-	std::pair<double, double> cdfDeviation(double = 0.95);
+	std::pair<double, double> cdfConfidence(double x1, double = 0.95);
 
 	QString cdfString;
 	QString pdfString;

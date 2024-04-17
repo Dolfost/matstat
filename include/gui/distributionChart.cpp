@@ -89,7 +89,7 @@ void DistributionChart::fill(DataVector* dataVector) {
 			x.push_back(arg);
 			y.push_back(dataVector->rep.cdf(arg));
 			std::pair<double, double> dev =
-				dataVector->rep.cdfDeviation(dataVector->rep.confidence);
+				dataVector->rep.cdfConfidence(arg, dataVector->rep.confidence);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}

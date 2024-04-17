@@ -26,9 +26,10 @@ DistributionReproducer::DistributionReproducer() {
 
 exprtk::parser<double> DistributionReproducer::parser;
 
-std::pair<double, double> DistributionReproducer::cdfDeviation(double alpha) {
-  return Statistics::thetaDeviation(
-      cdfExpression.value(), cdfDeviationExpression.value(), alpha, 61, true);
+std::pair<double, double> DistributionReproducer::cdfConfidence(double x1, double alpha) {
+	x = x1;
+	return Statistics::thetaDeviation(
+			cdfExpression.value(), cdfDeviationExpression.value(), alpha, 61, true);
 }
 
 void DistributionReproducer::setDistribution(Distribution type,
@@ -153,10 +154,6 @@ void DistributionReproducer::setDistribution(Distribution type,
     parametersDeviation.push_back((p[4] * p[3]) /
                                   (p[4] * p[6] - std::pow(p[5], 2)));
 
-	qDebug() << "args:" << p;
-	qDebug() << "DA:" << DA;
-	qDebug() << "par dev" << parametersDeviation;
-
     double covAb = -(p[5] * p[3]) / (p[4] * p[6] - std::pow(p[5], 2));
     parametersCv = -std::exp(p[2]) * covAb;
     QString cdfDeviation =
@@ -255,7 +252,9 @@ void DistributionReproducer::setDistribution(Distribution type,
                                   std::pow(h2x2, 2) * dx2 +
                                   2 * h2x * h2x2 * covxx2);
 
-    parametersCv = (h1x * h2x2 + h1x2 * h2x) * covxx2;
+    // parametersCv = (h1x * h2x2 + h1x2 * h2x) * covxx2;
+    parametersCv = h1x * h2x * dx + h1x2 * h2x2 * dx2 +
+		(h1x*h2x2 + h1x2*h2x)*covxx2;
 
     pdfString = QString("if (x >= %1 and x < %2) 1/(%2-%1); else 0;")
                     .arg(parameters[0])

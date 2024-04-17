@@ -14,7 +14,7 @@ double DataVector::pearConsentCriterion() {
 void DataVector::computePearConsentCriterion() {
   stat.pearConsentCriterion.first = 0;
   for (int i = 0; i < cs->classCount(); i++) {
-    double ni = cs->series()[i].second,
+    double ni = cs->series()[i].first,
            nio = rep.cdf(min() + (i + 1) * (cs->step()));
     nio -= rep.cdf(min() + i * (cs->step()));
     nio *= size();
