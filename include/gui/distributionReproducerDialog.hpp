@@ -12,6 +12,7 @@
 #include <QComboBox>
 #include <QTableWidget>
 #include <QHeaderView>
+#include <QDoubleSpinBox>
 
 #include "guiTypes.hpp"
 
@@ -33,7 +34,9 @@ private:
 	QTableWidget* deviationTable = nullptr;
 	QTableWidget* functionTable = nullptr;
 	QTableWidget* functionDeviationTable = nullptr;
-	QLabel* consentLabel = nullptr;
+	QTextEdit* consentTextEdit = nullptr;
+
+	QDoubleSpinBox* consentsProbabilitySpinBox = nullptr;
 
 	VectorEntry* ve = nullptr;
 
@@ -46,6 +49,7 @@ public slots:
 
 private slots:
 	void distribute(int);
+	void makeConsents();
 
 signals:
 	void distributionSelected(VectorEntry*);

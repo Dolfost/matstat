@@ -14,8 +14,13 @@ double DataVector::pearConsentCriterion() {
 
 void DataVector::computePearConsentCriterion() {
 	stat.pearConsentCriterion.first = 0;
-	const double k =  std::abs(rep.domain.first - rep.domain.second) /
-		std::abs(min() - max());
+
+	double k;
+	if (rep.domain.first != rep.domain.second)
+		k =  std::abs(rep.domain.first - rep.domain.second) /
+			std::abs(min() - max());
+	else
+		k = 1;
 
 	for (int i = 0; i < cs->classCount(); i++) {
 		double ni = cs->series()[i].first,

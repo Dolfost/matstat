@@ -293,7 +293,7 @@ void DistributionReproducer::setDistribution(Distribution type,
 		  f = cdf(x);
 	  }
 	  domain.second = x;
-  } 
+  }
 }
 
 double DistributionReproducer::pdf(double x1) {

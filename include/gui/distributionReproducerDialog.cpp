@@ -86,11 +86,32 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		functionDeviationTable->setFixedHeight(80);
 		functionDeviationTable->verticalHeader()->setVisible(false);
 
-		consentLabel = new QLabel();
-
-		tablesLayout->addWidget(consentLabel);
 		mainLayout->addLayout(distributionLayout);
 		mainLayout->addWidget(tablesWidget);
+
+		groupBox = new QGroupBox("Оцінки згоди відтворення");
+		boxLay = new QVBoxLayout();
+		boxLay->setContentsMargins(0,0,0,0);
+		groupBox->setLayout(boxLay);
+
+		QGridLayout* probLayout = new QGridLayout;
+		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
+
+		consentsProbabilitySpinBox = new QDoubleSpinBox();
+		consentsProbabilitySpinBox->setRange(0, 1);
+		consentsProbabilitySpinBox->setValue(0.95);
+
+		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
+		probLayout->addWidget(consentsProbabilitySpinBox, 0, 1);
+		consentTextEdit = new QTextEdit;
+
+		tablesLayout->addWidget(groupBox);
+
+		boxLay->addLayout(probLayout);
+		boxLay->addWidget(consentTextEdit);
+
+		connect(consentsProbabilitySpinBox, &QDoubleSpinBox::valueChanged,
+				this, &DistributionReproducerDialog::makeConsents);
 
 		distribute(DistributionReproducer::Distribution(distributionComboBox->currentIndex()));
 
@@ -164,9 +185,19 @@ void DistributionReproducerDialog::refill() {
 	QStringList headers = {" "};
 	QList<double> dispersions;
 
-	double step = abs(ve->vector->rep.domain.first - ve->vector->rep.domain.second)/500;
-	for (double x = ve->vector->rep.domain.first + 0.01;
-			x <= ve->vector->rep.domain.second;
+	double step, a, b;
+	if (ve->vector->rep.domain.first == ve->vector->rep.domain.second) {
+		a = ve->vector->min();
+		b = ve->vector->max();
+		step = abs(a-b)/500;
+	} else {
+		a = ve->vector->rep.domain.first;
+		b = ve->vector->rep.domain.second;
+		step = abs(a-b)/500;
+	}
+
+	for (double x = a + 0.01;
+			x <= b;
 			x += step) {
 		dispersions.append(ve->vector->rep.cdfDev(x));
 		headers.append("x = " + QString::number(x, 'f', precision));
@@ -182,21 +213,35 @@ void DistributionReproducerDialog::refill() {
 		functionDeviationTable->setColumnWidth(i, 200);
 	}
 
-	QString consents = QString(
-				"Уточнений критерій згоди колмогорова: %1\n"
-				"Критерій згоди Пірсона: ")
+	makeConsents();
+}
+
+void DistributionReproducerDialog::makeConsents() {
+	QString kolm = QString(
+				"Уточнений критерій згоди колмогорова: %1")
 			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision);
 
-	if (ve->vector->classSeries() != nullptr)
-			consents.append(QString("%1 ≤ pearQuantile(1-0.1, %2) = %3").arg(ve->vector->
-						pearConsentCriterion())
+	QString pear = QString("Критерій згоди Пірсона: ");
+	if (ve->vector->classSeries() != nullptr) {
+			double prob = consentsProbabilitySpinBox->value();
+			double quantile = Statistics::pearQuantile(prob,
+							ve->vector->classSeries()->classCount()-1);
+			double crit = ve->vector->pearConsentCriterion();
+			pear.append(QString("%1 ≤ pearQuantile(%2, %3) = %4\n")
+					.arg(crit)
+					.arg(prob)
 					.arg(ve->vector->classSeries()->classCount()-1)
-					.arg(Statistics::pearQuantile(0.9, ve->vector->classSeries()->classCount()-1), 3, 'f', precision)
+					.arg(quantile,
+						3, 'f', precision)
 					);
-	else 
-		consents.append("вектор не був розбитий на класи");
+			if (crit <= quantile)
+				pear.append("Головна гіпотеза виконується (функції збігаються)");
+			else
+				pear.append("Головна гіпотеза не виконується (функції не збігаються)");
+	} else 
+		pear.append("вектор не був розбитий на класи");
 	
-	consentLabel->setText(consents);
+	consentTextEdit->setText(kolm + "\n\n" + pear);
 }
 
 void DistributionReproducerDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
