@@ -2,6 +2,7 @@
 #include <QtCore/qlogging.h>
 #include <QtCore/qnamespace.h>
 #include <QtWidgets/qboxlayout.h>
+#include <QtWidgets/qspinbox.h>
 #include <QtWidgets/qtreewidget.h>
 
 VectorProcessorWidget::VectorProcessorWidget(
@@ -89,6 +90,13 @@ void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 	confidenceItem->setData(0, Qt::EditRole,
 				QVariant(vectorEntry->vector->rep.confidence));
 	parent->addChild(confidenceItem);
+
+	// QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(parent->treeWidget()->itemWidget(confidenceItem, 0));
+	// qDebug() << "A";
+	// if (spinBox) {
+	// 	qDebug() << "B";
+	// 	spinBox->setDecimals(4);
+	// }
 }
 
 void VectorProcessorWidget::append2dVector(QTreeWidgetItem* parent,

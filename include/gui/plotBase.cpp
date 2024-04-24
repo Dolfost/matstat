@@ -45,7 +45,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	yTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
 	yTicker->setTickCount(11);
 
-	yLogTicker = QSharedPointer<QCPAxisTickerLog>(new QCPAxisTickerLog);
+	yLogTicker = QSharedPointer<AxisTickerExp>(new AxisTickerExp);
 	yLogTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
 	yLogTicker->setTickCount(6);
 	yLogTicker->setLogBase(10);

@@ -164,9 +164,9 @@ void DistributionReproducerDialog::refill() {
 	QStringList headers = {" "};
 	QList<double> dispersions;
 
-	double step = abs(ve->vector->max() - ve->vector->min())/500;
-	for (double x = ve->vector->min();
-			x <= ve->vector->max();
+	double step = abs(ve->vector->rep.domain.first - ve->vector->rep.domain.second)/500;
+	for (double x = ve->vector->rep.domain.first + 0.01;
+			x <= ve->vector->rep.domain.second;
 			x += step) {
 		dispersions.append(ve->vector->rep.cdfDev(x));
 		headers.append("x = " + QString::number(x, 'f', precision));

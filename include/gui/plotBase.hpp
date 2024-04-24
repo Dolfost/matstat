@@ -15,6 +15,8 @@
 #include "dataVector.hpp"
 #include "classSeries.hpp"
 
+#include "axisTickerExp.hpp"
+
 class PlotBase : public QCustomPlot {
 	Q_OBJECT
 public:
@@ -39,7 +41,7 @@ public:
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;
 	QSharedPointer<QCPAxisTicker> xTicker;
 	QSharedPointer<QCPAxisTicker> yTicker;
-	QSharedPointer<QCPAxisTickerLog> yLogTicker;
+	QSharedPointer<AxisTickerExp> yLogTicker;
 	QCPRange xRange;
 	QCPRange xRange2;
 	QCPRange yRange;
