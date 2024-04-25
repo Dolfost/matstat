@@ -98,7 +98,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
 
 		consentsProbabilitySpinBox = new QDoubleSpinBox();
-		consentsProbabilitySpinBox->setRange(0, 1);
+		consentsProbabilitySpinBox->setRange(0.01, 1);
 		consentsProbabilitySpinBox->setValue(0.95);
 
 		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
