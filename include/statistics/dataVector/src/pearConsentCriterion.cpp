@@ -15,17 +15,20 @@ double DataVector::pearConsentCriterion() {
 void DataVector::computePearConsentCriterion() {
 	stat.pearConsentCriterion.first = 0;
 
-	double k;
-	if (rep.domain.first != rep.domain.second)
+	double k, s;
+	if (rep.domain.first != rep.domain.second) {
 		k =  std::abs(rep.domain.first - rep.domain.second) /
 			std::abs(min() - max());
-	else
+		s = rep.domain.first;
+	} else {
 		k = 1;
+		s = min();
+	}
 
 	for (int i = 0; i < cs->classCount(); i++) {
 		double ni = cs->series()[i].first,
-			   nio = rep.cdf(rep.domain.first + (i + 1) * (cs->step()*k));
-		nio -= rep.cdf(rep.domain.first + i * (cs->step()*k));
+			   nio = rep.cdf(s + (i + 1) * (cs->step()*k));
+		nio -= rep.cdf(s + i * (cs->step()*k));
 		nio *= size();
 
 		stat.pearConsentCriterion.first += std::pow(ni - nio, 2) / nio;
