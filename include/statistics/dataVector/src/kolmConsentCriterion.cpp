@@ -1,5 +1,6 @@
 #include "../dataVector.hpp"
 #include "classSeries.hpp"
+#include <QtCore/qlogging.h>
 
 double DataVector::kolmConsentCriterion() {
   if (rep.model == DistributionReproducer::Distribution::UnknownD)
@@ -12,32 +13,40 @@ double DataVector::kolmConsentCriterion() {
 }
 
 void DataVector::computeKolmConsentCriterion() {
-  double x1 = min(),
-		   x2 = min() + cs->step();
+  auto x1 = dataVector.begin(), x2 = ++dataVector.begin();
 
-  double cdfv = cs->eCdf(x2), 
-		 Dp = std::abs(cdfv - rep.cdf(x2)),
-		 Dm = std::abs(cdfv - rep.cdf(x1));
+  double k;
+  if (rep.domain.first != rep.domain.second)
+	  k =  std::abs(rep.domain.first - rep.domain.second) /
+		  std::abs(min() - max());
+  else 
+	  k = 1;
 
-  x1 += cs->step();
-  x2 += cs->step();
+  double cdfv = cs->eCdf(*x2), 
+		 Dp = std::abs(cdfv - rep.cdf(*x2*k)),
+		 Dm = std::abs(cdfv - rep.cdf(*x1*k));
 
-  while (x2 <= max()) {
-	  cdfv = cs->eCdf(x2);
+  x1++;
+  x2++;
 
-	  double DpTmp = std::abs(cdfv - rep.cdf(x2));
+  while (x2 != dataVector.end()) {
+	  cdfv = cs->eCdf(*x2);
+
+	  double DpTmp = std::abs(cdfv - rep.cdf(*x2*k));
 	  if (DpTmp > Dp)
 		  Dp = DpTmp;
 
-	  double DmTmp = std::abs(cdfv - rep.cdf(x1));
+	  double DmTmp = std::abs(cdfv - rep.cdf(*x1*k));
 	  if (DmTmp > Dm)
 		  Dm = DmTmp;
 
-	  x1 += cs->step();
-	  x2 += cs->step();
-  }
+	  qDebug() << cdfv;
+	  qDebug() << *x1*k << *x2*k;
+	  qDebug() << "";
 
-  // qDebug() << Dm << Dp;
+	  x1++;
+	  x2++;
+  }
 
   double z = std::sqrt(size()) * std::max(Dp, Dm);
 
