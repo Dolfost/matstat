@@ -95,15 +95,17 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		groupBox->setLayout(boxLay);
 
 		QGridLayout* probLayout = new QGridLayout;
-		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
 
 		consentsProbabilitySpinBox = new QDoubleSpinBox();
-		consentsProbabilitySpinBox->setRange(0.01, 1);
+		consentsProbabilitySpinBox->setDecimals(3);
+		consentsProbabilitySpinBox->setRange(0.001, 1);
 		consentsProbabilitySpinBox->setValue(0.95);
+		consentsProbabilitySpinBox->setSingleStep(0.05);
 
-		probLayout->addWidget(new QLabel("Імовірність збігу розподілів"), 0, 0);
+		probLayout->addWidget(new QLabel("Критичний рівень значущості"), 0, 0);
 		probLayout->addWidget(consentsProbabilitySpinBox, 0, 1);
 		consentTextEdit = new QTextEdit;
+		consentTextEdit->setMaximumHeight(100);
 
 		tablesLayout->addWidget(groupBox);
 
@@ -217,17 +219,22 @@ void DistributionReproducerDialog::refill() {
 }
 
 void DistributionReproducerDialog::makeConsents() {
+	double prob = consentsProbabilitySpinBox->value();
 	QString kolm = QString(
-				"Уточнений критерій згоди колмогорова: %1")
-			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision);
+				"Уточнений критерій згоди колмогорова: 1 - %1 ≤ %2\n")
+			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision)
+			.arg(prob);
+	if (1 - ve->vector->kolmConsentCriterion() <= prob)
+		kolm.append("Головна гіпотеза виконується (функції збігаються)");
+	else
+		kolm.append("Головна гіпотеза не виконується (функції не збігаються)");
 
 	QString pear = QString("Критерій згоди Пірсона: ");
 	if (ve->vector->classSeries() != nullptr) {
-			double prob = consentsProbabilitySpinBox->value();
-			double quantile = Statistics::pearQuantile(prob,
+			double quantile = Statistics::pearQuantile(1-prob,
 							ve->vector->classSeries()->classCount()-1);
 			double crit = ve->vector->pearConsentCriterion();
-			pear.append(QString("%1 ≤ pearQuantile(%2, %3) = %4\n")
+			pear.append(QString("%1 ≤ pearQuantile(1-%2, %3) = %4\n")
 					.arg(crit)
 					.arg(prob)
 					.arg(ve->vector->classSeries()->classCount()-1)
