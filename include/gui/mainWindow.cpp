@@ -51,13 +51,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
 			this, &MainWindow::plot2D);
 
-	// open();
-	DataSeries s;
-	s.readData("../../../data/500/veib.txt");
-	qDebug() << s.message();
-	VectorEntry* ve = new VectorEntry;
-	ve->vector = new DataVector(s.filewiseSeries());
-	vectorContainer->appendVector(ve);
+
+	_addFile("../../../data/500/norm.txt");
+	_addFile("../../../data/500/exp.txt");
+	_addFile("../../../data/25/exp.txt");
+	_addFile("../../../data/25/norm.txt");
 }
 
 void MainWindow::createCharts() {
@@ -213,3 +211,14 @@ void MainWindow::showMessage(QString msg, int dur) {
 
 	this->statusBar()->showMessage(msg, dur);
 }
+
+void MainWindow::_addFile(QString file) {
+	DataSeries s;
+	s.readData(file);
+	VectorEntry* ve = new VectorEntry;
+	ve->vector = new DataVector(s.filewiseSeries());
+	vectorContainer->appendVector(ve);
+
+	qDebug() << QString(__func__) + ":" << s.message();
+}
+

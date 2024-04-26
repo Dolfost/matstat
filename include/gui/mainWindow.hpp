@@ -40,6 +40,8 @@ private:
 
 	int messageTime = 4000;
 
+	void _addFile(QString);
+
 private slots:
 	void open();
 	void openVectorPicker();
