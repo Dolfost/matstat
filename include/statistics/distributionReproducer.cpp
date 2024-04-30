@@ -69,17 +69,16 @@ void DistributionReproducer::setDistribution(Distribution type,
 
     parametersCv = 0;
     QString cdfDeviation =
-        QString("(%1)^2*(%3)+(%2)^2*(%4) + 2*(%1)(%2)(%5)")
-            .arg(QString("-1/(%2*2.5066282746)*exp(-((x-%1)^2)/(2(%2)^2))")
+        QString("((%1)^2)*(%3)+((%2)^2)*(%4)") // + 0 
+            .arg(QString("(-1/(%2*2.5066282746))*exp(-((x-%1)^2)/(2(%2)^2))")
                      .arg(parameters[0])
                      .arg(parameters[1]))
-            .arg(QString("-(x-%1)/(((%2)^2)*2.5066282746)*exp(-((x-%1)^2)/"
+            .arg(QString("(-(x-%1)/(((%2)^2)*2.5066282746))*exp(-((x-%1)^2)/"
                          "(2(%2)^2))")
                      .arg(parameters[0])
                      .arg(parameters[1]))
             .arg(parametersDeviation[0])
-            .arg(parametersDeviation[1])
-            .arg(parametersCv);
+            .arg(parametersDeviation[1]);
     parser.compile(cdfDeviation.toStdString(), cdfDeviationExpression);
     break;
   }

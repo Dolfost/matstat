@@ -30,51 +30,98 @@ VectorInfoDialog::VectorInfoDialog(
 		mainLayout->addWidget(gropupBox);
 
 		QStringList headers = {
-			"Назва", "Позначення", "Незсунуте значення", "Зсунуте значення"
+			"Назва", "Позначення", "Нижн. дов. знач. (0.95)", "Незсунуте значення",
+			"Зсунуте значення", "Верх. дов. знач. (0.95)", "σ{θ}"
 		};
+		QList<int> columnWidths = {
+			300, 80, 150, 130, 120, 150, 60
+		};
+		double prob = 0.95;
 
 		QList<QStringList> contents = {
-		{"Стат. початковий момент першого порядку", "v₁", QString::number(ve->vector->mean(), 'f', precision), "—"},
-		{"Стат. центральний момент другого порядку", "μ₂", QString::number(ve->vector->variance(), 'f', precision),
-			QString::number(ve->vector->variance(DataVector::Measure::PopulationM), 'f', precision), "—"},
-		{"Медіана", "MED", QString::number(ve->vector->med(), 'f', precision),"—"},
+		{"Стат. початковий момент першого порядку", "v₁",
+			QString::number(ve->vector->meanConfidence(prob,
+						DataVector::UpperL), 'f', precision),
+			QString::number(ve->vector->mean(), 'f', precision), "—",
+			QString::number(ve->vector->meanConfidence(prob,
+						DataVector::LowerL), 'f', precision),
+			QString::number(ve->vector->meanDeviation(), 'f', precision)},
+		{"Стат. центральний момент другого порядку", "μ₂",
+			QString::number(ve->vector->varianceConfidence(prob,
+						DataVector::LowerL), 'f', precision),
+			QString::number(ve->vector->variance(), 'f', precision),
+			QString::number(ve->vector->variance(DataVector::Measure::PopulationM), 'f', precision),
+			QString::number(ve->vector->meanConfidence(prob,
+						DataVector::UpperL), 'f', precision),
+			QString::number(ve->vector->varianceDeviation(), 'f', precision)},
+		{"Коефіцієнт асиметрії", "A",
+			QString::number(ve->vector->skewConfidence(prob,
+						DataVector::LowerL), 'f', precision),
+			QString::number(ve->vector->skew(), 'f',
+				precision),
+			QString::number(ve->vector->skew(DataVector::Measure::PopulationM), 'f', precision),
+			QString::number(ve->vector->skewConfidence(prob,
+						DataVector::UpperL), 'f', precision),
+			QString::number(ve->vector->skewDeviation(), 'f', precision)},
+		{"Коефіцієнт ексцесу", "E",
+			QString::number(ve->vector->kurtosisConfidence(prob,
+						DataVector::LowerL), 'f', precision),
+			QString::number(ve->vector->kurtosis(),
+				'f', precision), 
+			QString::number(ve->vector->kurtosis(DataVector::Measure::PopulationM), 'f', precision),
+			QString::number(ve->vector->kurtosisConfidence(prob,
+						DataVector::UpperL), 'f', precision),
+			QString::number(ve->vector->kurtosisDeviation(), 'f', precision)},
+		{"Медіана серідніх Уолша", "WAM",
+			"—",
+			QString::number(ve->vector->walshAveragesMed(), 'f',
+					precision),
+			"—", "—", "—"},
+		{"Середньоквадратичне відхилення", "СКВ",
+			"—",
+			QString::number(ve->vector->standardDeviation(), 'f', precision),
+			QString::number(ve->vector->standardDeviation(DataVector::Measure::PopulationM), 'f', precision),
+			"—", "—"},
+		{"Абсолютне відхилення медіани", "MAD",
+			"—",
+			QString::number(ve->vector->mad(), 'f', precision), "—",
+			"—", "—", "—"},
+		{"Коефіцієнт контрексцесу", "𝜘",
+			"—",
+			QString::number(ve->vector->counterKurtosis(), 'f', precision), 
+			QString::number(ve->vector->counterKurtosis(DataVector::Measure::PopulationM), 'f', precision),
+			"—", "—"},
+		{"Коефіцієнт варіації Пірсона", "W",
+			"—",
+			QString::number(ve->vector->variationCoef(), 'f', precision), 
+			QString::number(ve->vector->variationCoef(DataVector::Measure::PopulationM), 'f', precision),
+			"—", "—"},
+		{"Непараметричнйи коефіцієнт варіації", "Wₕ",
+			"—",
+			QString::number(ve->vector->nonparametricVariationCoef(), 'f',
+					precision), 
+			"—", "—", "—"},
+		{"Медіана", "MED", "—", QString::number(ve->vector->med(), 'f', precision), "—", "—", "—"},
 		{"Розмір", "N", QString::number(ve->vector->size()),"—"},
-		{"Найменше спостереження", "xₘᵢₙ", QString::number(ve->vector->min(), 'f', precision),"—"},
-		{"Найбільше спостереження", "xₘₐₓ", QString::number(ve->vector->max(), 'f', precision),"—"},
-		{"Кількість варіант", "r", QString::number(varSeries->variantsCount()),"—"},
-		{"Медіана серідніх Уолша", "WAM", QString::number(ve->vector->walshAveragesMed(), 'f', precision),"—"},
-		{"Середньоквадратичне відхилення", "СКВ", QString::number(ve->vector->standardDeviation(), 'f', precision),
-			QString::number(ve->vector->standardDeviation(DataVector::Measure::PopulationM), 'f', precision)},
-		{"Абсолютне відхилення медіани", "MAD", QString::number(ve->vector->mad(), 'f', precision), "—"},
-		{"Коефіцієнт асиметрії", "A", QString::number(ve->vector->skew(), 'f', precision),
-			QString::number(ve->vector->skew(DataVector::Measure::PopulationM), 'f', precision)},
-		{"Коефіцієнт ексцесу", "E", QString::number(ve->vector->kurtosis(), 'f', precision), 
-			QString::number(ve->vector->kurtosis(DataVector::Measure::PopulationM), 'f', precision)},
-		{"Коефіцієнт контрексцесу", "𝜘", QString::number(ve->vector->counterKurtosis(), 'f', precision), 
-			QString::number(ve->vector->counterKurtosis(DataVector::Measure::PopulationM), 'f', precision)},
-		{"Коефіцієнт варіації Пірсона", "W", QString::number(ve->vector->variationCoef(), 'f', precision), 
-			QString::number(ve->vector->variationCoef(DataVector::Measure::PopulationM), 'f', precision)},
-		{"Непараметричнйи коефіцієнт варіації", "Wₕ", QString::number(ve->vector->nonparametricVariationCoef(), 'f', precision), 
-			"—"},
+		{"Найменше спостереження", "xₘᵢₙ", "—", QString::number(ve->vector->min(), 'f', precision), "—", "—", "—"},
+		{"Найбільше спостереження", "xₘₐₓ", "—", QString::number(ve->vector->max(), 'f', precision), "—", "—", "—"},
+		{"Кількість варіант", "r", "—", QString::number(varSeries->variantsCount()), "—", "—","—"},
 		};
 
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Центральний момент " + QString::number(x) + " порядку",
-				"μ" + QString(QChar(0x2080+x)), QString::number(ve->vector->centralMoment(x), 'f', precision),
-				QString::number(ve->vector->centralMoment(x, DataVector::Measure::PopulationM), 'f', precision)});
+				"μ" + QString(QChar(0x2080+x)), "—", QString::number(ve->vector->centralMoment(x), 'f', precision),
+				QString::number(ve->vector->centralMoment(x, DataVector::Measure::PopulationM), 'f', precision), "—", "—"});
 		}
 		for (int x = 1; x <= 8; x++) {
 		contents.append({"Початковий момент " + QString::number(x) + " порядку",
-				"v" + QString(QChar(0x2080+x)), QString::number(ve->vector->rawMoment(x), 'f', precision), "—"});
+				"v" + QString(QChar(0x2080+x)), "—", QString::number(ve->vector->rawMoment(x), 'f', precision), "—", "—", "—"});
 		}
 		for (double x = 0.0; x <= 0.5 ; x+=0.05) {
 		contents.append({"Усічене середнє (α=" + QString::number(x) + ")", 
-				"X*", QString::number(ve->vector->turncatedMean(x), 'f', precision), "—"});
+				"X*", "—", QString::number(ve->vector->turncatedMean(x), 'f', precision), "—", "—", "—"});
 		}
 
-		QList<int> columnWidths = {
-			300, 80, 200, 200
-		};
 
 		charTable->setMinimumWidth(std::accumulate(columnWidths.begin(), columnWidths.end(), 20));
 		charTable->setRowCount(contents.length());

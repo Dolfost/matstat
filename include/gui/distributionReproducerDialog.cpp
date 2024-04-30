@@ -1,8 +1,6 @@
 #include "distributionReproducerDialog.hpp"
-#include "gui/Section.h"
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qtablewidget.h>
-#include <random>
 
 #include "statistics/classSeries.hpp"
 
