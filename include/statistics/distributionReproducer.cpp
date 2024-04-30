@@ -287,6 +287,12 @@ void DistributionReproducer::setDistribution(Distribution type,
 
   if (domain.first != domain.second) {
 	  double x = domain.first, f = 0;
+	  while (std::abs(f) < 0.01) {
+		  x += 0.01;
+		  f = cdf(x);
+	  }
+	  domain.first = x;
+
 	  while (std::abs(f - 1) > 0.01) {
 		  x += 0.01;
 		  f = cdf(x);
