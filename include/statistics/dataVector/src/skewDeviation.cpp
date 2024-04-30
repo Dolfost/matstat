@@ -14,7 +14,8 @@ void DataVector::computeSkewDeviation() {
   // 		24*beta(2)+9*beta(2)*beta(1) + 35*beta(1) - 36) /
   // 		 (4*size()));
 
+  double s = size();
   stat.skewDeiviation.first =
-      std::sqrt((6 * (size() - 2)) / ((size() + 1) * (size() + 3)));
+      std::sqrt((6 * (s - 2)) / ((s + 1) * (s + 3)));
   stat.skewDeiviation.second = true;
 }
