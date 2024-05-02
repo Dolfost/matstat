@@ -52,10 +52,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			this, &MainWindow::plot2D);
 
 
-	// _addFile("../../../data/500/norm.txt");
-	// _addFile("../../../data/500/exp.txt");
-	// _addFile("../../../data/25/exp.txt");
-	// _addFile("../../../data/25/norm.txt");
+	_addFile("../../../data/500/norm3n.txt");
+	_addFile("../../../data/500/norm.txt");
+	_addFile("../../../data/500/exp.txt");
+	_addFile("../../../data/500/veib.txt");
+	_addFile("../../../data/500/exp1.txt");
+	_addFile("../../../data/500/ravn1.txt");
+	_addFile("../../../data/25/exp.txt");
+	_addFile("../../../data/25/norm.txt");
+	_addFile("../../../data/25/veib.txt");
 }
 
 void MainWindow::createCharts() {
