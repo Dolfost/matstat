@@ -25,11 +25,16 @@ private:
 		Max,
 		Count,
 	};
+	enum DataCell {
+		Data = 69,
+	};
 
 	signed int vectorCount = 0;
 
 	int precision = 4;
 
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> selectedVectors();
+	std::pair<VectorEntry*, QTableWidgetItem*> selectedVector();
 
 public slots:
 	void appendList(const std::list<double>*, QString = "");
@@ -67,7 +72,7 @@ signals:
 
 class HorizontalHeaderItem : public QTableWidgetItem {
 public:
-	HorizontalHeaderItem();
+	HorizontalHeaderItem(int type = 0);
 };
 
 #endif // !_VECTOR_CONTAINER_WIDGET_HPP_

@@ -2,6 +2,7 @@
 
 #include <QGuiApplication>
 #include <QStyleHints>
+#include <QtCore/qlogging.h>
 
 #include "vectorContainerWidget.hpp"
 #include "vectorTrimmerDialog.hpp"
@@ -11,6 +12,22 @@
 #include "setGeneratorDialog.hpp"
 #include "classSeries.hpp"
 
+QList<std::pair<VectorEntry*, QTableWidgetItem*>> VectorContainerWidget::selectedVectors() {
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors;
+	QList<QTableWidgetItem*> items = this->selectedItems();
+	for (auto const& item : items) {
+		if (item->type() == VectorContainerWidget::InfoCell::Name) {
+			vectors.push_back({item->data(Qt::UserRole).value<VectorEntry*>(), item});
+		}
+	}
+	return vectors;
+}
+
+std::pair<VectorEntry*, QTableWidgetItem*> VectorContainerWidget::selectedVector() {
+	QTableWidgetItem* item = this->item(this->currentRow(), InfoCell::Name);
+	return {item->data(Qt::UserRole).value<VectorEntry*>(), item};
+}
+
 
 VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(parent) {
 	this->setColumnCount(InfoCell::Count);
@@ -18,7 +35,7 @@ VectorContainerWidget::VectorContainerWidget(QWidget* parent) : QTableWidget(par
 	this->setAcceptDrops(false);
 	this->setDragEnabled(false);
 	this->setSelectionBehavior(QAbstractItemView::SelectRows);
-	this->setSelectionMode(QAbstractItemView::SingleSelection);
+	this->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	this->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	this->verticalHeader()->hide();
 	this->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -61,20 +78,20 @@ void VectorContainerWidget::appendList(const std::list<double>* vec, QString nam
 
 void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 	QList<HorizontalHeaderItem*> infoItems;
-	infoItems.append(new HorizontalHeaderItem);
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Name));
 	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
 			QVariant(vectorEntry->name));
 	infoItems[InfoCell::Name]->setData(Qt::UserRole, QVariant::fromValue(vectorEntry));
 
-	infoItems.append(new HorizontalHeaderItem);
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Size));
 	infoItems[InfoCell::Size]->setData(Qt::DisplayRole,
 			QVariant((int)vectorEntry->vector->size()));
 
-	infoItems.append(new HorizontalHeaderItem);
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Min));
 	infoItems[InfoCell::Min]->setData(Qt::DisplayRole,
 			QVariant(vectorEntry->vector->min()));
 
-	infoItems.append(new HorizontalHeaderItem);
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Max));
 	infoItems[InfoCell::Max]->setData(Qt::DisplayRole,
 			QVariant(vectorEntry->vector->max()));
 
@@ -87,7 +104,7 @@ void VectorContainerWidget::fillRow(int row, VectorEntry* vectorEntry) {
 	for (size_t col = InfoCell::Count;
 			col < vectorEntry->vector->size() + InfoCell::Count;
 			col++) {
-		QTableWidgetItem* tableItem = new QTableWidgetItem();
+		QTableWidgetItem* tableItem = new QTableWidgetItem(DataCell::Data);
 		tableItem->setText(QString::number(*it, 'f', precision));
 		it++;
 		this->setItem(row, col, tableItem);
@@ -153,6 +170,9 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 
 	menu.addSeparator();
 
+	QMenu* hypotesis = menu.addMenu("Перевірка гіпотез…");
+
+	menu.addSeparator();
 	QAction* infoAction = menu.addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered,
 			this, &VectorContainerWidget::infoAction);
@@ -174,24 +194,25 @@ void VectorContainerWidget::showContextMenu(const QPoint& pos) {
 }
 
 void VectorContainerWidget::makeActiveAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	emit vectorSelected(ve);
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	for (auto const& vec : vectors) {
+		emit vectorSelected(vec.first);
+	}
 }
 
 void VectorContainerWidget::deleteAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	emit vectorDeleted(ve);
-
-	delete ve;
-
-	this->removeRow(this->currentRow());
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	int i = 0; // deletion shift
+	for (auto const& vec : vectors) {
+		emit vectorDeleted(vec.first);
+		delete vec.first;
+		this->removeRow(this->indexFromItem(vec.second).row());
+	}
 }
 
 void VectorContainerWidget::deleteAllAction() {
 	for (int i = 0; i < this->rowCount(); i++) {
-	VectorEntry* ve = this->item(i, InfoCell::Name)->
+		VectorEntry* ve = this->item(i, InfoCell::Name)->
 			data(Qt::UserRole).value<VectorEntry*>();
 		emit vectorDeleted(ve);
 		delete ve;
@@ -202,143 +223,155 @@ void VectorContainerWidget::deleteAllAction() {
 }
 
 void VectorContainerWidget::standardizeAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	DataVector newVector(ve->vector->vector());
-	newVector.standardize();
-
-	appendList(&newVector.vector(),
-			QString("S(%1)")
-			.arg(ve->name));
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	for (auto const& vec : vectors) {
+		DataVector newVector(vec.first->vector->vector());
+		newVector.standardize();
+		appendList(&newVector.vector(),
+				QString("S(%1)")
+				.arg(vec.first->name));
+	}
 }
 
 void VectorContainerWidget::logAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	DataVector newVector(ve->vector->vector());
-	newVector.transform("log(x)");
-
-	appendList(&newVector.vector(),
-			QString("LN(%1)")
-			.arg(this->item(this->currentRow(), 0)->text()));
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	for (auto const& vec : vectors) {
+		DataVector newVector(vec.first->vector->vector());
+		newVector.transform("log(x)");
+		appendList(&newVector.vector(),
+				QString("LN(%1)")
+				.arg(vec.first->name));
+	}
 }
 
 void VectorContainerWidget::reverseAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	DataVector newVector(ve->vector->vector());
-	newVector.transform("1/x");
-
-	appendList(&newVector.vector(),
-			QString("R(%1)")
-			.arg(this->item(this->currentRow(), 0)->text()));
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	for (auto const& vec : vectors) {
+		DataVector newVector(vec.first->vector->vector());
+		newVector.transform("1/x");
+		appendList(&newVector.vector(),
+				QString("R(%1)")
+				.arg(vec.first->name));
+	}
 }
 
 void VectorContainerWidget::rightShiftAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	DataVector newVector(ve->vector->vector());
-	newVector.transform("x+abs(xmin)+1");
-
-	appendList(&newVector.vector(),
-			QString("RS(%1)")
-			.arg(this->item(this->currentRow(), 0)->text()));
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	for (auto const& vec : vectors) {
+		DataVector newVector(vec.first->vector->vector());
+		newVector.transform("x+abs(xmin)+1");
+		appendList(&newVector.vector(),
+				QString("RS(%1)")
+				.arg(vec.first->name));
+	}
 }
 
 void VectorContainerWidget::transformAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	TransformationFormulaEditorDialog* tfe = 
-		new TransformationFormulaEditorDialog(ve, this);
-	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
-			this, &VectorContainerWidget::appendVector);
-	connect(this, &VectorContainerWidget::vectorDeleted,
-			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+
+	for (auto const& vec : vectors) {
+		TransformationFormulaEditorDialog* tfe = 
+			new TransformationFormulaEditorDialog(vec.first, this);
+		connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
+				this, &VectorContainerWidget::appendVector);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+				tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
+	}
 }
 
 void VectorContainerWidget::reproductionAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
 
-	if (ve->vector->classSeries() == nullptr) {
-		ve->vector->makeClassSeries();
-		emit message("Вектор " + ve->name + " було розбито на " +
-				QString::number(ve->vector->classSeries()->classCount()) + " класів");
+	for (auto const& vec : vectors) {
+		if (vec.first->vector->classSeries() == nullptr) {
+			vec.first->vector->makeClassSeries();
+			emit message("Вектор " + vec.first->name + " було розбито на " +
+					QString::number(vec.first->vector->classSeries()->classCount()) + " класів");
+		}
+
+		DistributionReproducerDialog* drd = 
+			new DistributionReproducerDialog(vec.first, this);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+				drd, &DistributionReproducerDialog::vectorDeletedHandler);
+		connect(drd, &DistributionReproducerDialog::distributionSelected,
+				[=](){ emit distributionSelected(vec.first); });
 	}
-
-	DistributionReproducerDialog* drd = 
-		new DistributionReproducerDialog(ve, this);
-	connect(this, &VectorContainerWidget::vectorDeleted,
-			drd, &DistributionReproducerDialog::vectorDeletedHandler);
-	connect(drd, &DistributionReproducerDialog::distributionSelected,
-			[=](){ emit distributionSelected(ve); });
 }
 
 void VectorContainerWidget::trimAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	VectorTrimmerDialog* vtd = 
-		new VectorTrimmerDialog(ve, this);
-	connect(vtd, &VectorTrimmerDialog::vectorTrimmed,
-			this, &VectorContainerWidget::appendVector);
-	connect(this, &VectorContainerWidget::vectorDeleted,
-			vtd, &VectorTrimmerDialog::vectorDeletedHandler);
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+
+	for (auto const& vec : vectors) {
+		VectorTrimmerDialog* vtd = 
+			new VectorTrimmerDialog(vec.first, this);
+		connect(vtd, &VectorTrimmerDialog::vectorTrimmed,
+				this, &VectorContainerWidget::appendVector);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+				vtd, &VectorTrimmerDialog::vectorDeletedHandler);
+	}
 }
 
 void VectorContainerWidget::removeOutliersAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	DataVector newVector(ve->vector->vector());
-	bool ok = newVector.removeOutliers();
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
 
-	emit outliersRemoved(ok);
+	for (auto const& vec : vectors) {
+		DataVector newVector(vec.first->vector->vector());
+		bool ok = newVector.removeOutliers();
 
-	if (!ok) // no entries removed
-		return;
+		emit outliersRemoved(ok);
 
-	appendList(&newVector.vector(),
-			QString("RMOUT(%1)")
-			.arg(this->item(this->currentRow(), 0)->text()));
+		if (!ok) // no entries removed
+			return;
+
+		appendList(&newVector.vector(),
+				QString("RMOUT(%1)")
+				.arg(vec.first->name));
+	}
 }
 
 void VectorContainerWidget::infoAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	VectorInfoDialog* tfe = 
-		new VectorInfoDialog(ve, this);
-	connect(this, &VectorContainerWidget::vectorDeleted,
-			tfe, &VectorInfoDialog::vectorDeletedHandler);
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+
+	for (auto const& vec : vectors) {
+		VectorInfoDialog* tfe = 
+			new VectorInfoDialog(vec.first, this);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+				tfe, &VectorInfoDialog::vectorDeletedHandler);
+	}
 }
 
 void VectorContainerWidget::generateAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
-	SetGeneratorDialog* sgd = 
-		new SetGeneratorDialog(ve, this);
-	connect(this, &VectorContainerWidget::vectorDeleted,
-			sgd, &SetGeneratorDialog::vectorDeletedHandler);
-	connect(sgd, &SetGeneratorDialog::setGenerated,
-			this, &VectorContainerWidget::appendVector);
-	connect(sgd, &SetGeneratorDialog::message,
-			[=](QString msg){emit message(msg);});
+	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+
+	for (auto const& vec : vectors) {
+		SetGeneratorDialog* sgd = 
+			new SetGeneratorDialog(vec.first, this);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+				sgd, &SetGeneratorDialog::vectorDeletedHandler);
+		connect(sgd, &SetGeneratorDialog::setGenerated,
+				this, &VectorContainerWidget::appendVector);
+		connect(sgd, &SetGeneratorDialog::message,
+				[=](QString msg){emit message(msg);});
+	}
 }
 
 void VectorContainerWidget::writeAction() {
-	VectorEntry* ve = this->item(this->currentRow(), InfoCell::Name)->
-			data(Qt::UserRole).value<VectorEntry*>();
+	std::pair<VectorEntry*, QTableWidgetItem*> ve = selectedVector();
 
 	QString filename = QFileDialog::getSaveFileName(this, "Зберегти вектор",
 			QDir::homePath() + "/" + 
-			ve->name + "-" + QString::number(ve->vector->size()) + ".txt", 
+			ve.first->name + "-" + QString::number(ve.first->vector->size()) + ".txt", 
 			"Текстові файли (*.txt) ;; CSV файли (*.csv)");
 
 	if (filename.length() == 0)
 		return;
 
-	ve->vector->writeToFile(filename);
+	ve.first->vector->writeToFile(filename);
 }
 
-HorizontalHeaderItem::HorizontalHeaderItem() {
+
+
+HorizontalHeaderItem::HorizontalHeaderItem(int type) : QTableWidgetItem(type) {
 	QColor col;
 
 	if (QGuiApplication::styleHints()->colorScheme() == Qt::ColorScheme::Dark)
