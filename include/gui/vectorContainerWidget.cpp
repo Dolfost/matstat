@@ -202,7 +202,6 @@ void VectorContainerWidget::makeActiveAction() {
 
 void VectorContainerWidget::deleteAction() {
 	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
-	int i = 0; // deletion shift
 	for (auto const& vec : vectors) {
 		emit vectorDeleted(vec.first);
 		delete vec.first;
@@ -268,15 +267,18 @@ void VectorContainerWidget::rightShiftAction() {
 
 void VectorContainerWidget::transformAction() {
 	QList<std::pair<VectorEntry*, QTableWidgetItem*>> vectors = selectedVectors();
+	QList<VectorEntry*> vec;
 
-	for (auto const& vec : vectors) {
-		TransformationFormulaEditorDialog* tfe = 
-			new TransformationFormulaEditorDialog(vec.first, this);
-		connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
-				this, &VectorContainerWidget::appendVector);
-		connect(this, &VectorContainerWidget::vectorDeleted,
-				tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
+	for (auto const& v : vectors) {
+		vec.push_back(v.first);
 	}
+
+	TransformationFormulaEditorDialog* tfe = 
+		new TransformationFormulaEditorDialog(vec, this);
+	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed,
+			this, &VectorContainerWidget::appendVector);
+	connect(this, &VectorContainerWidget::vectorDeleted,
+			tfe, &TransformationFormulaEditorDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::reproductionAction() {

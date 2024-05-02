@@ -6,12 +6,12 @@
 int TransformationFormulaEditorDialog::trIdx = 0;
 
 TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
-		VectorEntry* vectorEntry,
+		QList<VectorEntry*> vectors,
 		QWidget *parent, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
-		ve = vectorEntry;
+		vecs = vectors;
 
-		this->setWindowTitle("Менеджер трансформацій " + ve->name);
+		this->setWindowTitle("Менеджер трансформацій");
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
 		this->setLayout(mainLayout);
@@ -22,8 +22,16 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		sublayout->setContentsMargins(8,8,8,8);
 		sublayout->setSpacing(8);
 
+		QGroupBox* activeGroup = new QGroupBox("Вектори, які будуть перетворені");
+		activeGroup->setLayout(new QVBoxLayout);
+		vectorNames = new QLineEdit;
+		vectorNames->setReadOnly(true);
+		activeGroup->layout()->addWidget(vectorNames);
+		activeGroup->layout()->setContentsMargins(2,2,2,2);
+
 		QGroupBox* tipsGroup = new QGroupBox("Підказки");
 		tipsGroup->setLayout(new QVBoxLayout);
+		tipsGroup->layout()->setContentsMargins(2,2,2,2);
 
 		ui::Section* varsSection = new ui::Section("Змінні", 50);
 		QLabel* varsLabel = new QLabel("x — довільний елемент векторa");
@@ -49,7 +57,7 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		formulaLineEdit = new QLineEdit();
 		formulaLineEdit->setPlaceholderText("Введіть формулу для xᵢ відносно x...");
 
-		transformButton = new QPushButton("Трансформувати вектор " + ve->name);
+		transformButton = new QPushButton("Трансформувати вектор(и)");
 
 		statusTextEdit = new QTextEdit();
 		statusTextEdit->setReadOnly(true);
@@ -65,12 +73,15 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		inputGridLayout->addWidget(inputLabel, 0, 0);
 		inputGridLayout->addWidget(formulaLineEdit, 0, 1);
 
+		sublayout->addWidget(activeGroup);
 		sublayout->addWidget(tipsGroup);
 		sublayout->addLayout(inputGridLayout);
 		sublayout->addWidget(transformButton);
 
 		mainLayout->addLayout(sublayout);
 		mainLayout->addWidget(statusTextEdit);
+
+		makeVectorNames();
 
 		connect(transformButton, &QPushButton::clicked,
 				this, &TransformationFormulaEditorDialog::transform);
@@ -80,23 +91,40 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 }
 
 void TransformationFormulaEditorDialog::transform() {
-	VectorEntry* newVectorEntry = new VectorEntry;
-	newVectorEntry->vector = new DataVector(ve->vector->vector());
-	QString res = newVectorEntry->vector->transform(formulaLineEdit->text());
-	if (res.length() != 0) {
-		statusTextEdit->setText(res);
-		delete newVectorEntry;
-	} else {
-		newVectorEntry->name = "TR" + QString::number(++trIdx) + "(" + ve->name + ")";
-		statusTextEdit->setText("Вектор перетворено вдало.\n"
-				"Новий вектор було збережено у " +
-				newVectorEntry->name + "\n\nxᵢ = " + formulaLineEdit->text() + ".");
-		emit vectorTransformed(newVectorEntry);
+	statusTextEdit->clear();
+	for (auto const& v : vecs) {
+		VectorEntry* newVectorEntry = new VectorEntry;
+		newVectorEntry->vector = new DataVector(v->vector->vector());
+		QString res = newVectorEntry->vector->transform(formulaLineEdit->text());
+		if (res.length() != 0) {
+			statusTextEdit->append("Трансформування " + v->name + "\n" + res + "\n");
+			delete newVectorEntry;
+		} else {
+			newVectorEntry->name = "TR" + QString::number(++trIdx) + "(" + v->name + ")";
+			statusTextEdit->append("Вектор " + v->name + " перетворено вдало.\n" +
+					"xᵢ = " + formulaLineEdit->text() + ".\n"
+					"Новий вектор було збережено у " +
+					newVectorEntry->name + "\n");
+			emit vectorTransformed(newVectorEntry);
+		}
 	}
 }
 
+void TransformationFormulaEditorDialog::makeVectorNames() {
+		QString vectors;
+		for (auto const& v : vecs) {
+			vectors.append(v->name + ", ");
+		}
+		vectors.chop(2);
+
+		vectorNames->setText(vectors);
+}
+
 void TransformationFormulaEditorDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
-	if (ve == vectorEntry)
+	if (vecs.removeAll(vectorEntry))
+		makeVectorNames();
+
+	if (vecs.isEmpty())
 		this->close();
 }
 

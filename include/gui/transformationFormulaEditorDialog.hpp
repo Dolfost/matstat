@@ -22,22 +22,26 @@ class TransformationFormulaEditorDialog : public QDialog {
 	Q_OBJECT
 public:
 	TransformationFormulaEditorDialog(
-			VectorEntry*,
+			QList<VectorEntry*>,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 
 private:
 	QLineEdit* formulaLineEdit = nullptr;
+	QLineEdit* vectorNames = nullptr;
 	QPushButton* transformButton = nullptr;
 	QTextEdit* statusTextEdit = nullptr;
 
-	VectorEntry* ve = nullptr;
+	QList<VectorEntry*> vecs;
 	static int trIdx;
 
 public slots:
 	void transform();
 	void vectorDeletedHandler(VectorEntry*);
+
+private slots:
+	void makeVectorNames();
 
 signals:
 	void vectorTransformed(VectorEntry*);
