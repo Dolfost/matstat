@@ -40,9 +40,9 @@ void DataVector::computeKolmConsentCriterion() {
 	  if (DmTmp > Dm)
 		  Dm = DmTmp;
 
-	  qDebug() << cdfv;
-	  qDebug() << *x1*k << *x2*k;
-	  qDebug() << "";
+	  // qDebug() << cdfv;
+	  // qDebug() << *x1*k << *x2*k;
+	  // qDebug() << "";
 
 	  x1++;
 	  x2++;
