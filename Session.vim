@@ -33,11 +33,11 @@ badd +13 CMakeLists.txt
 badd +344 exprtk_cmake/readme.txt
 badd +7 include/gui/Section.cpp
 badd +37 include/gui/vectorContainerWidget.hpp
-badd +42 include/gui/transformationFormulaEditorDialog.cpp
+badd +75 include/gui/transformationFormulaEditorDialog.cpp
 badd +51 include/gui/vectorPickerDialog.hpp
-badd +46 include/gui/transformationFormulaEditorDialog.hpp
+badd +32 include/gui/transformationFormulaEditorDialog.hpp
 badd +29 include/gui/vectorPickerDialog.cpp
-badd +28 include/gui/vectorContainerWidget.cpp
+badd +283 include/gui/vectorContainerWidget.cpp
 badd +1 include/gui/vectorInfoDialog.hpp
 badd +38 include/gui/vectorInfoDialog.cpp
 badd +10 include/statistics/varSeries.hpp
@@ -158,7 +158,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 29 - ((28 * winheight(0) + 18) / 37)
+let s:l = 29 - ((23 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -181,7 +181,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 33 - ((29 * winheight(0) + 18) / 37)
+let s:l = 33 - ((24 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -222,12 +222,12 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 27 - ((26 * winheight(0) + 18) / 37)
+let s:l = 283 - ((21 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 27
-normal! 034|
+keepjumps 283
+normal! 0
 wincmd w
 argglobal
 if bufexists(fnamemodify("include/gui/vectorContainerWidget.hpp", ":p")) | buffer include/gui/vectorContainerWidget.hpp | else | edit include/gui/vectorContainerWidget.hpp | endif
@@ -245,7 +245,7 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 37 - ((20 * winheight(0) + 18) / 37)
+let s:l = 37 - ((17 * winheight(0) + 15) / 31)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
@@ -254,7 +254,7 @@ normal! 045|
 wincmd w
 exe 'vert 1resize ' . ((&columns * 101 + 96) / 192)
 exe 'vert 2resize ' . ((&columns * 90 + 96) / 192)
-tabnext 4
+tabnext 3
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
