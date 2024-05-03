@@ -2,10 +2,19 @@
 #define _DATA_VECTOR_SET_
 
 #include "dataVector.hpp"
+#include <QStringList>
 
 class DataVectorSet : public std::vector<DataVector*> {
 public:
-	DataVectorSet();
+	// DataVectorSet();
+
+	enum Procedure {
+		tTestDependentP,
+		tTestIndependentP,
+		Count
+	};
+
+	static QStringList procedureName;
 
 	double tTestDependent();
 	double tTestIndependent();

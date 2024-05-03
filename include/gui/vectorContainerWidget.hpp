@@ -60,6 +60,9 @@ private slots:
 	void generateAction();
 	void writeAction();
 
+	void tTestDependentAction();
+	void tTestIndependentAction();
+
 signals:
 	void vectorSelected(VectorEntry*);
 	void vectorDeleted(VectorEntry*);

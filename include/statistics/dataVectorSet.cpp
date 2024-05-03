@@ -2,6 +2,11 @@
 #include <cmath>
 #include <list>
 
+QStringList DataVectorSet::procedureName = {
+	"Т—тест (залежні віибірки)",
+	"Т—тест (незалежні вибірки)"
+};
+
 double DataVectorSet::tTestDependent() {
 	if (size() != 2)
 		throw "Кількість вибірок не рівна 2";
