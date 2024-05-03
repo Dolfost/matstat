@@ -17,13 +17,6 @@ class VectorProcessorWidget : public QTabWidget {
 public:
 	VectorProcessorWidget(QWidget* = nullptr);
 
-	enum Tab {
-		TwoD,
-		ThreeD,
-		FourD,
-		Count,
-		Current
-	};
 	enum ItemType {
 		Vector,
 		Confidence2D,
@@ -71,6 +64,8 @@ private slots:
 	void emit2D(QTreeWidgetItem* item);
 	void emit3D(QTreeWidgetItem* item);
 	void emit4D(QTreeWidgetItem* item);
+
+	void emitTabSelected(int);
 
 
 signals:

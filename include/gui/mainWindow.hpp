@@ -2,15 +2,16 @@
 #define _MAIN_WINDOW_HPP_
 
 #include <QMainWindow>
+#include <QtCore/qlist.h>
 #include <QtWidgets/qboxlayout.h>
+#include <QSplitter>
 
-#include "densityChart.hpp"
-#include "distributionChart.hpp"
 
 #include "vectorContainerWidget.hpp"
 #include "vectorProcessorWidget.hpp"
 #include "vectorPickerDialog.hpp"
 #include "setGeneratorDialog.hpp"
+#include "charts.hpp"
 
 #include "guiTypes.hpp"
 
@@ -26,13 +27,11 @@ private:
 
 	QString filepath;
 
-	DensityChart* densityChart = nullptr;
-	DistributionChart* distributionChart = nullptr;
-
 	VectorContainerWidget* vectorContainer = nullptr;
 	VectorProcessorWidget* vectorProcessor = nullptr;
 	VectorPickerDialog* vectorPicker = nullptr;
 	SetGeneratorDialog* setGenerator = nullptr;
+	Charts* charts = nullptr;
 
 	void createCharts();
 	void createVectorContainers();
@@ -47,12 +46,11 @@ private slots:
 	void openVectorPicker();
 	void openSetGenerator();
 
-	void plot2D(VectorEntry*);
 
 	// handlers
 	void outliersRemovedHandler(bool);
 	void vectorProcessorDuplicateHandler(VectorEntry*,
-			VectorProcessorWidget::Tab);
+			Tab);
 
 	void showMessage(QString, int = 4000);
 };

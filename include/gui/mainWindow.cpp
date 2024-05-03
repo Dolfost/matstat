@@ -49,7 +49,9 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	connect(this->vectorProcessor, &VectorProcessorWidget::duplicateAdded,
 			this, &MainWindow::vectorProcessorDuplicateHandler);
 	connect(this->vectorProcessor, &VectorProcessorWidget::twoDVectorsSelected,
-			this, &MainWindow::plot2D);
+			this->charts, &Charts::plot2D);
+	connect(this->vectorProcessor, &VectorProcessorWidget::tabSelected,
+			this->charts, &Charts::setCurrentIndex);
 
 
 	_addFile("../../../data/500/norm3n.txt");
@@ -64,19 +66,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 }
 
 void MainWindow::createCharts() {
-	QWidget* chartWidget = new QWidget();
-	QHBoxLayout* chartsLayout = new QHBoxLayout();
-	chartsLayout->setSpacing(0);
-	chartsLayout->setContentsMargins(0,0,0,0);
-	chartWidget->setLayout(chartsLayout);
-
-	densityChart = new DensityChart(this);
-	distributionChart = new DistributionChart(this);
-
-	chartsLayout->addWidget(densityChart);
-	chartsLayout->addWidget(distributionChart);
-
-	mainSplitter->addWidget(chartWidget);
+	charts = new Charts;
+	mainSplitter->addWidget(charts);
 	mainSplitter->setSizes({600, 300});
 }
 
@@ -124,35 +115,6 @@ void MainWindow::createActions() {
     connect(openVectorPickerAct, &QAction::triggered, this, &MainWindow::openVectorPicker);
     fileMenu->addAction(openVectorPickerAct);
 
-	QMenu *viewMenu = menuBar()->addMenu("Вигляд");
-
-	QAction* toogleDensityLogAct = 
-		new QAction("Логарифмічна сітка щільності", this);
-	toogleDensityLogAct->setCheckable(true);
-	connect(toogleDensityLogAct, &QAction::toggled,
-			densityChart, &DensityChart::toggleLog);
-	viewMenu->addAction(toogleDensityLogAct);
-
-	QAction* toogleDistributionLogAct =
-		new QAction("Логарифмічна сітка розподілу", this);
-	toogleDistributionLogAct->setCheckable(true);
-	connect(toogleDistributionLogAct, &QAction::toggled,
-			distributionChart, &DistributionChart::toggleLog);
-	viewMenu->addAction(toogleDistributionLogAct);
-
-	QAction* zoomHomeAction = new QAction("Відмаштабувати графіки", this);
-	connect(zoomHomeAction, &QAction::triggered,
-			densityChart, &DensityChart::zoomHome);
-	connect(zoomHomeAction, &QAction::triggered,
-			distributionChart, &DistributionChart::zoomHome);
-	viewMenu->addAction(zoomHomeAction);
-
-	QAction* clearPlotsAction = new QAction("Очистити графіки", this);
-	connect(clearPlotsAction, &QAction::triggered,
-			densityChart, &DensityChart::clear);
-	connect(clearPlotsAction, &QAction::triggered,
-			distributionChart, &DistributionChart::clear);
-	viewMenu->addAction(clearPlotsAction);
 
 	QMenu *toolsMenu = menuBar()->addMenu("Інструменти");
 	QAction* generateSetAction = new QAction("Генератор вибірок…", this);
@@ -177,10 +139,6 @@ void MainWindow::open() {
 	openVectorPicker();
 }
 
-void MainWindow::plot2D(VectorEntry* ve) {
-	densityChart->fill(ve->vector);
-	distributionChart->fill(ve->vector);
-}
 
 void MainWindow::openVectorPicker() {
 	vectorPicker->show();
@@ -205,7 +163,7 @@ void MainWindow::outliersRemovedHandler(bool ok) {
 }
 
 void MainWindow::vectorProcessorDuplicateHandler(VectorEntry* vectorEntry,
-		VectorProcessorWidget::Tab t) {
+		Tab t) {
 	this->showMessage("Вектор '" + vectorEntry->name + 
 			"' вже доданий до вкладки " + vectorProcessor->tabName[t]);
 }

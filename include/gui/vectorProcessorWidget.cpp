@@ -8,7 +8,7 @@
 VectorProcessorWidget::VectorProcessorWidget(
 		QWidget* parent) : QTabWidget(parent) {
 	this->setDocumentMode(true);
-for (int i = 0; i < Tab::Count; i++) {
+	for (int i = 0; i < Tab::Count; i++) {
 		tree[i] = new QTreeWidget;
 		tab[i] = new QWidget;
 
@@ -29,6 +29,9 @@ for (int i = 0; i < Tab::Count; i++) {
 
 		this->addTab(tab[i], tabName[i]);
 	}
+
+	connect(this, &QTabWidget::currentChanged,
+			this, &VectorProcessorWidget::emitTabSelected);
 }
 
 void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
@@ -257,6 +260,10 @@ void VectorProcessorWidget::itemDoubleClikedHandler(
 		case ItemType::ClassCount2D:
 			tree[idx]->editItem(item, col);
 	}
+}
+
+void VectorProcessorWidget::emitTabSelected(int tab) {
+	emit tabSelected((Tab)tab);
 }
 
 void VectorProcessorWidget::emit2D(QTreeWidgetItem* item) {

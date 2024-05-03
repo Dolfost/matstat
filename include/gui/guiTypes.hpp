@@ -17,4 +17,12 @@ struct VectorEntry {
 	}
 };
 
+enum Tab {
+	TwoD,
+	ThreeD,
+	FourD,
+	Count,
+	Current
+};
+
 #endif // !_GUI_TYPES_HPP_
