@@ -40,6 +40,7 @@ QMenuBar* Charts::createMenuBar1() {
 	QMenuBar* menuBar = new QMenuBar(this);
 	menuBar->setNativeMenuBar(false);
 
+
 	QMenu *viewMenu = menuBar->addMenu("Вигляд");
 
 	QAction* toogleDensityLogAct = 
@@ -66,6 +67,30 @@ QMenuBar* Charts::createMenuBar1() {
 	connect(clearPlotsAction, &QAction::triggered,
 			distributionChart, &DistributionChart::clear);
 
+
+	QMenu* saveMenu = menuBar->addMenu("Зберегти");
+	QMenu* saveDensityMenu = saveMenu->addMenu("Графік функції щільності…");
+	QAction* saveDensityToPngAction = saveDensityMenu->addAction("Зберегти як .png");
+	connect(saveDensityToPngAction, &QAction::triggered,
+			this, &Charts::saveDensityToPng);
+	QAction* saveDensityToJpgAction = saveDensityMenu->addAction("Зберегти як .jpg");
+	connect(saveDensityToJpgAction, &QAction::triggered,
+			this, &Charts::saveDensityToJpg);
+	QAction* saveDensityToPdfAction = saveDensityMenu->addAction("Зберегти як .pdf");
+	connect(saveDensityToPdfAction, &QAction::triggered,
+			this, &Charts::saveDensityToPdf);
+
+	QMenu* saveDistributionMenu = saveMenu->addMenu("Графік функції розподілу…");
+	QAction* saveDistributionToPngAction = saveDistributionMenu->addAction("Зберегти як .png");
+	connect(saveDistributionToPngAction, &QAction::triggered,
+			this, &Charts::saveDistributionToPng);
+	QAction* saveDistributionToJpgAction = saveDistributionMenu->addAction("Зберегти як .jpg");
+	connect(saveDistributionToJpgAction, &QAction::triggered,
+			this, &Charts::saveDistributionToJpg);
+	QAction* saveDistributionToPdfAction = saveDistributionMenu->addAction("Зберегти як .pdf");
+	connect(saveDistributionToPdfAction, &QAction::triggered,
+			this, &Charts::saveDistributionToPdf);
+
 	return menuBar;
 }
 
@@ -80,4 +105,64 @@ QMenuBar* Charts::createMenuBar3() {
 void Charts::plot2D(VectorEntry* ve) {
 	densityChart->fill(ve->vector);
 	distributionChart->fill(ve->vector);
+}
+
+void Charts::saveDensityToPng() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції щільності",
+      QDir::homePath() + "/density.png",
+      "Файли фото (*.png)");
+
+  if (filename.length())
+	  densityChart->savePng(filename, 0, 0, 1, 100);
+}
+
+void Charts::saveDensityToJpg() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції щільності",
+      QDir::homePath() + "/density.jpg",
+      "Файли фото (*.jpg)");
+
+  if (filename.length())
+	  densityChart->saveJpg(filename, 0, 0, 1, 100);
+}
+
+void Charts::saveDensityToPdf() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції щільності",
+      QDir::homePath() + "/density.pdf",
+      "Файли документів (*.pdf)");
+
+  if (filename.length())
+	  densityChart->savePdf(filename);
+}
+
+void Charts::saveDistributionToPng() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції розподілу",
+      QDir::homePath() + "/distribution.png",
+      "Файли фото (*.png)");
+
+  if (filename.length())
+	  distributionChart->savePng(filename, 0, 0, 1, 100);
+}
+
+void Charts::saveDistributionToJpg() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції розподілу",
+      QDir::homePath() + "/distribution.jpg",
+      "Файли фото (*.jpg)");
+
+  if (filename.length())
+	  distributionChart->saveJpg(filename, 0, 0, 1, 100);
+}
+
+void Charts::saveDistributionToPdf() {
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік функції розподілу",
+      QDir::homePath() + "/distribution.pdf",
+      "Файли документів (*.pdf)");
+
+  if (filename.length())
+	  distributionChart->savePdf(filename);
 }

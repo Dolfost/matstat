@@ -25,6 +25,15 @@ private:
 
 public slots:
 	void plot2D(VectorEntry*);
+
+private slots:
+	void saveDensityToPng();
+	void saveDensityToJpg();
+	void saveDensityToPdf();
+
+	void saveDistributionToPng();
+	void saveDistributionToJpg();
+	void saveDistributionToPdf();
 };
 
 #endif // !_CHARTS_HPP_
