@@ -14,13 +14,12 @@ double Statistics::normQuantile(double alpha) {
 		d1 = 1.432788,
 		d2 = 0.1892659,
 		d3 = 0.001308,
-		t = sqrt(log(1/(alpha*alpha))),
-		ea = 4.5e-5;
+		t = sqrt(log(1/(alpha*alpha)));
 
 	quantile = t - (c0 + c1*t + c2*t*t) /
-		(1 + d1*t+d2*t*t + d3*t*t*t) + ea;
+		(1 + d1*t+d2*t*t + d3*t*t*t);
 	
-	return quantile;
+	return -quantile;
 }
 
 double Statistics::pearQuantile(double alpha, int v) {
