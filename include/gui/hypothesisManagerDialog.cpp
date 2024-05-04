@@ -40,7 +40,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	makeVectorList();
 
 	levelSpinBox = new QDoubleSpinBox;
-	levelSpinBox->setRange(0, 1);
+	levelSpinBox->setRange(0.001, 1);
 	levelSpinBox->setDecimals(3);
 	levelSpinBox->setSingleStep(0.05);
 	levelSpinBox->setValue(0.95);
@@ -70,6 +70,7 @@ void HypothesisManagerDialog::compute() {
 	double critLevel = levelSpinBox->value();
 	double criteria;
 	double quantile;
+
 	try {
 		switch (procedureComboBox->currentIndex()) {
 			case DataVectorSet::Procedure::tTestDependentP:
@@ -81,7 +82,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size()-2)
 						.arg(quantile, 3, 'f');
-					isTrue = std::abs(criteria) > quantile;
+					isTrue = std::abs(criteria) < quantile;
 					implies = isTrue ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
@@ -95,7 +96,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size() + vectorSet[1]->size() - 2)
 						.arg(quantile, 3, 'f');
-					isTrue = std::abs(criteria) > quantile;
+					isTrue = std::abs(criteria) < quantile;
 					implies = isTrue ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
