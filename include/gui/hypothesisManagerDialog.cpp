@@ -59,6 +59,8 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 
 	connect(levelSpinBox, &QDoubleSpinBox::valueChanged,
 			this, &HypothesisManagerDialog::compute);
+	connect(procedureComboBox, &QComboBox::currentTextChanged,
+			this, &HypothesisManagerDialog::compute);
 
 	this->compute();
 	this->show();
@@ -66,7 +68,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 
 void HypothesisManagerDialog::compute() {
 	QString res, cond, implies;
-	bool isTrue = false;
+	bool accepted = false;
 	double critLevel = levelSpinBox->value();
 	double criteria;
 	double quantile;
@@ -82,8 +84,8 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size()-2)
 						.arg(quantile, 3, 'f');
-					isTrue = std::abs(criteria) < quantile;
-					implies = isTrue ? "середні збігаються" : "середні не збігаються";
+					accepted = std::abs(criteria) < quantile;
+					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
 			case DataVectorSet::Procedure::tTestIndependentP:
@@ -96,8 +98,8 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size() + vectorSet[1]->size() - 2)
 						.arg(quantile, 3, 'f');
-					isTrue = std::abs(criteria) < quantile;
-					implies = isTrue ? "середні збігаються" : "середні не збігаються";
+					accepted = std::abs(criteria) < quantile;
+					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
 		}
@@ -109,7 +111,7 @@ void HypothesisManagerDialog::compute() {
 	res = QString("Умова: %1\n")
 		.arg(cond);
 
-	if (isTrue)
+	if (accepted)
 		res.append(QString("Головна гіпотеза прийнята — %1")
 			.arg(implies));
 	else
