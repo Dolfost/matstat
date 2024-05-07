@@ -356,8 +356,8 @@ std::list<double> DistributionReproducer::generateSet(Method m, size_t s,
 }
 
 DistributionReproducer::~DistributionReproducer() {
-  delete eNormalDistributionCdf;
-  delete eNormQuantile;
+	delete eNormalDistributionCdf;
+	delete eNormQuantile;
 }
 
 const QStringList DistributionReproducer::distributionName = {
@@ -365,8 +365,10 @@ const QStringList DistributionReproducer::distributionName = {
     "Вейбула",   "Логнормальний", "Рівномірний",
 };
 
-const QStringList DistributionReproducer::methodName = {"Звороьньої функції",
-                                                        "Площинний"};
+const QStringList DistributionReproducer::methodName = {
+	"Звороьньої функції",
+	"Площинний"
+};
 
 const QList<QStringList> DistributionReproducer::parameterName = {
     {}, {"m", "σ"}, {"λ"}, {"𝛼", "β"}, {"m", "σ"}, {"a", "b"},

@@ -1,4 +1,5 @@
 #include "dataVectorSet.hpp"
+#include <QtCore/qlogging.h>
 #include <cmath>
 #include <list>
 
@@ -25,8 +26,7 @@ double DataVectorSet::tTestDependent() {
 	}
 
 	DataVector zv(z);
-
-	return (zv.mean()*std::sqrt(zv.size()))/zv.centralMoment(2, DataVector::SampleM);
+	return (zv.mean()*std::sqrt(zv.size()))/zv.standardDeviation(DataVector::SampleM);
 }
 
 double DataVectorSet::tTestIndependent() {
