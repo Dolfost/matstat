@@ -108,26 +108,35 @@ void Charts::plot2D(VectorEntry* ve) {
 }
 
 void Charts::saveDensityToPng() {
+  auto al = densityChart->antialiasedElements();
+  densityChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції щільності",
       QDir::homePath() + "/density.png",
       "Файли фото (*.png)");
 
   if (filename.length())
-	  densityChart->savePng(filename, 0, 0, 1, 100);
+	  densityChart->savePng(filename, 0, 0, 4, 100);
+
+  densityChart->setAntialiasedElements(al);
 }
 
 void Charts::saveDensityToJpg() {
+  auto al = densityChart->antialiasedElements();
+  densityChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції щільності",
       QDir::homePath() + "/density.jpg",
       "Файли фото (*.jpg)");
 
   if (filename.length())
-	  densityChart->saveJpg(filename, 0, 0, 1, 100);
+	  densityChart->saveJpg(filename, 0, 0, 4, 100);
+  densityChart->setAntialiasedElements(al);
 }
 
 void Charts::saveDensityToPdf() {
+  auto al = densityChart->antialiasedElements();
+  densityChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції щільності",
       QDir::homePath() + "/density.pdf",
@@ -135,29 +144,38 @@ void Charts::saveDensityToPdf() {
 
   if (filename.length())
 	  densityChart->savePdf(filename);
+  densityChart->setAntialiasedElements(al);
 }
 
 void Charts::saveDistributionToPng() {
+  auto al = distributionChart->antialiasedElements();
+  distributionChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції розподілу",
       QDir::homePath() + "/distribution.png",
       "Файли фото (*.png)");
 
   if (filename.length())
-	  distributionChart->savePng(filename, 0, 0, 1, 100);
+	  distributionChart->savePng(filename, 0, 0, 4, 100);
+  distributionChart->setAntialiasedElements(al);
 }
 
 void Charts::saveDistributionToJpg() {
+  auto al = distributionChart->antialiasedElements();
+  distributionChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції розподілу",
       QDir::homePath() + "/distribution.jpg",
       "Файли фото (*.jpg)");
 
   if (filename.length())
-	  distributionChart->saveJpg(filename, 0, 0, 1, 100);
+	  distributionChart->saveJpg(filename, 0, 0, 4, 100);
+  distributionChart->setAntialiasedElements(al);
 }
 
 void Charts::saveDistributionToPdf() {
+  auto al = distributionChart->antialiasedElements();
+  distributionChart->setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти графік функції розподілу",
       QDir::homePath() + "/distribution.pdf",
@@ -165,4 +183,5 @@ void Charts::saveDistributionToPdf() {
 
   if (filename.length())
 	  distributionChart->savePdf(filename);
+  distributionChart->setAntialiasedElements(al);
 }
