@@ -2,6 +2,7 @@
 #include <QtWidgets/qgridlayout.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qpushbutton.h>
+#include <list>
 
 ParametersWidget::ParametersWidget(QStringList params, std::vector<double> val, bool en) : QWidget() {
 	size = params.length();
@@ -172,19 +173,26 @@ void SetGeneratorDialog::generate() {
 		min = minSpinBox->value(),
 		max = maxSpinBox->value();
 
-	if (ve != nullptr and ve->vector->rep.model != DistributionReproducer::UnknownD)
+	DistributionReproducer::Distribution dist;
+	std::vector<double> parameters;
+
+	if (ve != nullptr and ve->vector->rep.model != DistributionReproducer::UnknownD) {
 		dv = new DataVector(ve->vector->rep.generateSet(m, count, min, max));
-	else {
+		dist = ve->vector->rep.model;
+		parameters = ve->vector->rep.parameters;
+	} else {
 		DistributionReproducer dr;
 		dr.setDistribution(DistributionReproducer::Distribution(distributionComboBox->currentIndex()+1),
 				parametersWidget->parameters(), count);
 		dv = new DataVector(dr.generateSet(m, count, min, max));
+		dist = dr.model;
+		parameters = dr.parameters;
 	}
 
-	VectorEntry* ve = new VectorEntry(dv);
-	ve->setModel(dv->rep.model, dv->rep.parameters, m);
+	VectorEntry* newve = new VectorEntry(dv);
+	newve->setModel(dist, parameters, m);
 	
-	emit setGenerated(ve);
+	emit setGenerated(newve);
 }
 
 void SetGeneratorDialog::distributionSelected(int model) {
