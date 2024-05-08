@@ -47,7 +47,6 @@ private slots:
 
 	void makeActiveAction();
 	void deleteAction();
-	void deleteAllAction();
 	void standardizeAction();
 	void logAction();
 	void reverseAction();
@@ -62,6 +61,7 @@ private slots:
 
 	void tTestDependentAction();
 	void tTestIndependentAction();
+	void tTestDistributionReproductionAction();
 
 signals:
 	void vectorSelected(VectorEntry*);

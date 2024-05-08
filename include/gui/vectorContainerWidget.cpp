@@ -188,6 +188,11 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(tTestIndependentAction, &QAction::triggered, this,
           &VectorContainerWidget::tTestIndependentAction);
 
+  QAction *tTestDistribtuionReproduction = tTestMenu->addAction(
+		  "Перевірити параметри моделі розподілу…");
+  connect(tTestIndependentAction, &QAction::triggered, this,
+          &VectorContainerWidget::tTestDistributionReproductionAction);
+
   menu.addSeparator();
   QAction *infoAction = menu.addAction("Про вектор…");
   connect(infoAction, &QAction::triggered, this,
@@ -202,9 +207,6 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   QAction *deleteAction = menu.addAction("Видалити");
   connect(deleteAction, &QAction::triggered, this,
           &VectorContainerWidget::deleteAction);
-  QAction *deleteAllAction = menu.addAction("Видалити всі");
-  connect(deleteAllAction, &QAction::triggered, this,
-          &VectorContainerWidget::deleteAllAction);
 
   menu.exec(mapToGlobal(pos));
 }
@@ -225,19 +227,6 @@ void VectorContainerWidget::deleteAction() {
     delete vec.first;
     this->removeRow(this->indexFromItem(vec.second).row());
   }
-}
-
-void VectorContainerWidget::deleteAllAction() {
-  for (int i = 0; i < this->rowCount(); i++) {
-    VectorEntry *ve = this->item(i, InfoCell::Name)
-                          ->data(Qt::UserRole)
-                          .value<VectorEntry *>();
-    emit vectorDeleted(ve);
-    delete ve;
-  }
-
-  this->clearContents();
-  this->setRowCount(0);
 }
 
 void VectorContainerWidget::standardizeAction() {
@@ -405,6 +394,20 @@ void VectorContainerWidget::tTestDependentAction() {
 }
 
 void VectorContainerWidget::tTestIndependentAction() {
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+
+  QList<VectorEntry *> vec;
+  for (auto const &v : vectors)
+    vec.push_back(v.first);
+
+  HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
+      vec, DataVectorSet::Procedure::tTestIndependentP, this);
+  connect(this, &VectorContainerWidget::vectorDeleted, hmd,
+          &HypothesisManagerDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::tTestDistributionReproductionAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
 
