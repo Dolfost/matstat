@@ -181,7 +181,10 @@ void SetGeneratorDialog::generate() {
 		dv = new DataVector(dr.generateSet(m, count, min, max));
 	}
 
-	emit setGenerated(new VectorEntry(dv));
+	VectorEntry* ve = new VectorEntry(dv);
+	ve->setModel(dv->rep.model, dv->rep.parameters, m);
+	
+	emit setGenerated(ve);
 }
 
 void SetGeneratorDialog::distributionSelected(int model) {
