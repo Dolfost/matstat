@@ -3,9 +3,6 @@
 #include "setGeneratorDialog.hpp"
 #include "vectorContainerWidget.hpp"
 
-#include "densityChart.hpp"
-#include "distributionChart.hpp"
-
 #include <QWidget>
 #include <QGroupBox>
 
