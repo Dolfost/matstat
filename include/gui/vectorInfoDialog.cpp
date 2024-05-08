@@ -266,6 +266,35 @@ VectorInfoDialog::VectorInfoDialog(
 		}
 		section->setContentLayout(*lay);
 
+		section = new ui::Section("Додаткова інформація про вектор", 100);
+		lay = new QHBoxLayout;
+		lay->setContentsMargins(0,0,0,0);
+		mainLayout->addWidget(section);
+
+		QTextEdit* additionalInfoTextEdit = new QTextEdit;
+		additionalInfoTextEdit->setMaximumHeight(100);
+		additionalInfoTextEdit->setReadOnly(true);
+		lay->addWidget(additionalInfoTextEdit);
+
+		if (ve->isModeled) {
+			QString addInfo = QString(
+					"Вектор %1 змодельвано у програмі.\n"
+					"  Метод: %2\n"
+					"  Розподіл: %3\n"
+					"  Параметри: "
+					)
+				.arg(ve->name)
+				.arg(DistributionReproducer::methodName[ve->modelMethod])
+				.arg(DistributionReproducer::distributionName[ve->modelDistribution]);
+			for (auto const& p : ve->modelParameters) {
+				addInfo.append(QString::number(p, 'f', 3) + " ");
+			}
+			additionalInfoTextEdit->append(addInfo);
+		}
+
+		section->setContentLayout(*lay);
+		
+
 		this->resize(800, 300);
 		this->show();
 }
