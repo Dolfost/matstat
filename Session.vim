@@ -50,13 +50,13 @@ badd +1 include/gui/vectorTrimmerDialog.cpp
 badd +6 include/gui/rangeSlider.cpp
 badd +1 include/statistics/dataVectorExprtk.hpp
 badd +52 include/statistics/distributionReproducer.hpp
-badd +37 include/statistics/distributionReproducer.cpp
-badd +302 include/gui/distributionReproducerDialog.cpp
+badd +41 include/statistics/distributionReproducer.cpp
+badd +288 include/gui/distributionReproducerDialog.cpp
 badd +54 include/gui/distributionReproducerDialog.hpp
 badd +1 include/statistics/statistics.hpp
 badd +19 include/statistics/statistics.cpp
 badd +35 include/statistics/statisticsExprtk.hpp
-badd +182 include/gui/setGeneratorDialog.cpp
+badd +109 include/gui/setGeneratorDialog.cpp
 badd +45 include/gui/setGeneratorDialog.hpp
 badd +2 include/statistics/varSeries.cpp
 badd +31 include/gui/plotBase.hpp
@@ -90,6 +90,7 @@ badd +34 include/gui/hypothesisManagerDialog.cpp
 badd +28 include/gui/hypothesisManagerDialog.hpp
 argglobal
 %argdel
+tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
 tabnew +setlocal\ bufhidden=wipe
@@ -166,19 +167,86 @@ setlocal fdn=20
 setlocal fen
 silent! normal! zE
 let &fdl = &fdl
-let s:l = 37 - ((30 * winheight(0) + 19) / 39)
+let s:l = 41 - ((30 * winheight(0) + 19) / 39)
 if s:l < 1 | let s:l = 1 | endif
 keepjumps exe s:l
 normal! zt
-keepjumps 37
-normal! 015|
-tabnext 4
+keepjumps 41
+normal! 025|
+tabnext
+edit include/gui/setGeneratorDialog.cpp
+let s:save_splitbelow = &splitbelow
+let s:save_splitright = &splitright
+set splitbelow splitright
+wincmd _ | wincmd |
+vsplit
+1wincmd h
+wincmd w
+let &splitbelow = s:save_splitbelow
+let &splitright = s:save_splitright
+wincmd t
+let s:save_winminheight = &winminheight
+let s:save_winminwidth = &winminwidth
+set winminheight=0
+set winheight=1
+set winminwidth=0
+set winwidth=1
+exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
+argglobal
+balt include/gui/setGeneratorDialog.hpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 111 - ((10 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 111
+normal! 037|
+wincmd w
+argglobal
+if bufexists(fnamemodify("include/gui/setGeneratorDialog.hpp", ":p")) | buffer include/gui/setGeneratorDialog.hpp | else | edit include/gui/setGeneratorDialog.hpp | endif
+if &buftype ==# 'terminal'
+  silent file include/gui/setGeneratorDialog.hpp
+endif
+balt include/gui/setGeneratorDialog.cpp
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 45 - ((19 * winheight(0) + 19) / 39)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 45
+normal! 016|
+wincmd w
+2wincmd w
+exe 'vert 1resize ' . ((&columns * 95 + 95) / 190)
+exe 'vert 2resize ' . ((&columns * 94 + 95) / 190)
+tabnext 5
 if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
 unlet! s:wipebuf
 set winheight=1 winwidth=20
 let &shortmess = s:shortmess_save
+let &winminheight = s:save_winminheight
+let &winminwidth = s:save_winminwidth
 let s:sx = expand("<sfile>:p:r")."x.vim"
 if filereadable(s:sx)
   exe "source " . fnameescape(s:sx)
