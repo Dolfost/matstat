@@ -1,6 +1,7 @@
 #include "distributionReproducerDialog.hpp"
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qtablewidget.h>
+#include <vector>
 
 #include "statistics/classSeries.hpp"
 
@@ -110,6 +111,34 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		boxLay->addLayout(probLayout);
 		boxLay->addWidget(consentTextEdit);
 
+		groupBox = new QGroupBox("Перевірка рівності параматрів і оцінок");
+		boxLay = new QVBoxLayout();
+		QVBoxLayout* tableLay = new QVBoxLayout();
+		tableLay->setContentsMargins(0,0,0,0);
+		boxLay->setContentsMargins(0,0,0,0);
+		groupBox->setLayout(boxLay);
+
+		ttestTable = new QTableWidget();
+		ttestTable->setMaximumHeight(120);
+		tableLay->addWidget(ttestTable);
+
+		ttestWidget = new QStackedWidget();
+		ttestWidget->addWidget(new QWidget);
+		ttestWidget->addWidget(new QWidget);
+		ttestWidget->addWidget(new QWidget);
+		ttestWidget->widget(0)->setLayout(tableLay);
+		ttestWidget->widget(1)->setLayout(new QVBoxLayout);
+		ttestWidget->widget(1)->layout()->addWidget(
+			new QLabel("Вибірка не була змодельована в програмі")
+		);
+		ttestWidget->widget(2)->setLayout(new QVBoxLayout);
+		ttestWidget->widget(2)->layout()->addWidget(
+			new QLabel("Розподіл за яким генерували вибірку і відтворюваний розподіл не зходяться")
+		);
+		boxLay->addWidget(ttestWidget);
+
+		tablesLayout->addWidget(groupBox);
+
 		connect(consentsProbabilitySpinBox, &QDoubleSpinBox::valueChanged,
 				this, &DistributionReproducerDialog::makeConsents);
 
@@ -124,6 +153,7 @@ void DistributionReproducerDialog::distribute(int dist) {
 
 	if (dist != DistributionReproducer::Distribution::UnknownD) {
 		refill();
+		makeTtest();
 		tablesWidget->setVisible(true);
 		this->adjustSize();
 		this->resize(750, this->height());
@@ -247,6 +277,57 @@ void DistributionReproducerDialog::makeConsents() {
 		pear.append("вектор не був розбитий на класи");
 	
 	consentTextEdit->setText(kolm + "\n\n" + pear);
+}
+
+void DistributionReproducerDialog::makeTtest() {
+	if (ve->isModeled) {
+		ttestWidget->setCurrentIndex(0);
+		DistributionReproducer* rep = &(ve->vector->rep);
+
+		if (ve->modelDistribution != rep->model) {
+			qDebug() << "FUCK";
+			ttestWidget->setCurrentIndex(2);
+			return;
+		}
+
+		std::vector<double> probs = {
+			0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5,
+			0.6, 0.7, 0.8, 0.9, 0.95, 0.96, 0.97, 0.98, 0.99};
+		std::vector<double> t;
+
+		ttestTable->setRowCount(rep->parameters.size());
+		ttestTable->setColumnCount(1 + probs.size());
+
+		QStringList vHeader, hHeader;
+		for (int i = 0; i < rep->parameters.size(); i++) {
+			vHeader.push_back(rep->paremeterNames[i]);
+			t.push_back((ve->modelParameters[i]-rep->parameters[i]) / 
+				std::sqrt(rep->parametersDeviation[i]));
+			ttestTable->setItem(i, 0, new QTableWidgetItem(
+						QString::number(t[i], 'f', 3)));
+			for (int j = 1; j < probs.size()+1; j++) {
+			ttestTable->setItem(i, j, new QTableWidgetItem(
+				std::abs(t[i]) <= 
+				Statistics::studQuantile(1-probs[j-1]/2, ve->vector->size()) 
+				? "+" : "-"));
+			}
+		}
+		hHeader.append("t");
+
+		for (int i = 0; i < probs.size(); i++) {
+			hHeader.append(QString::number(probs[i]));
+		}
+
+		ttestTable->setHorizontalHeaderLabels(hHeader);
+		ttestTable->setVerticalHeaderLabels(vHeader);
+
+		ttestTable->setColumnWidth(0, 60);
+		for (int i = 0; i < probs.size(); i++) {
+			ttestTable->setColumnWidth(i+1, 35);
+		}
+	} else {
+		ttestWidget->setCurrentIndex(1);
+	}
 }
 
 void DistributionReproducerDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {

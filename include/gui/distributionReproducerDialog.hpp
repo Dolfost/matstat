@@ -13,6 +13,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QDoubleSpinBox>
+#include <QStackedWidget>
 
 #include "guiTypes.hpp"
 
@@ -34,6 +35,8 @@ private:
 	QTableWidget* deviationTable = nullptr;
 	QTableWidget* functionTable = nullptr;
 	QTableWidget* functionDeviationTable = nullptr;
+	QTableWidget* ttestTable = nullptr;
+	QStackedWidget* ttestWidget = nullptr;
 	QTextEdit* consentTextEdit = nullptr;
 
 	QDoubleSpinBox* consentsProbabilitySpinBox = nullptr;
@@ -50,6 +53,7 @@ public slots:
 private slots:
 	void distribute(int);
 	void makeConsents();
+	void makeTtest();
 
 signals:
 	void distributionSelected(VectorEntry*);
