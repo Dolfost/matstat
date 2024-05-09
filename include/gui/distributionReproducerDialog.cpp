@@ -285,7 +285,6 @@ void DistributionReproducerDialog::makeTtest() {
 		DistributionReproducer* rep = &(ve->vector->rep);
 
 		if (ve->modelDistribution != rep->model) {
-			qDebug() << "FUCK";
 			ttestWidget->setCurrentIndex(2);
 			return;
 		}
