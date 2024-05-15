@@ -19,6 +19,10 @@ bool DataVector::removeOutliers() {
     }
 
     if (a > dataVector.front()) {
+	  auto it = std::find(timeSeries.begin(), timeSeries.end(), dataVector.front());
+	  if(it != timeSeries.end())
+		  timeSeries.erase(it);
+
       dataVector.pop_front();
       clearStatistics();
       popCount++;
@@ -26,6 +30,10 @@ bool DataVector::removeOutliers() {
     }
 
     if (b < dataVector.back()) {
+	  auto it = std::find(timeSeries.begin(), timeSeries.end(), dataVector.back());
+	  if(it != timeSeries.end())
+		  timeSeries.erase(it);
+	  
       dataVector.pop_back();
       clearStatistics();
       popCount++;

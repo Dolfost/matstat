@@ -17,6 +17,12 @@ size_t DataVector::trim(double from, double to) {
       break;
   }
 
+  auto x = timeSeries.begin();
+  while (x != timeSeries.end()) {
+	  if (*x <= to or *x >= from)
+		  x = timeSeries.erase(x);
+  }
+
   size_t res = dataVector.size() - newVector.size();
   dataVector = newVector;
 

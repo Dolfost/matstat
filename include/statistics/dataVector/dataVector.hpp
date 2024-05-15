@@ -83,6 +83,7 @@ public:
 	DataVector(DataVector&);
 	void setVector(const std::list<double>&);
 	const std::list<double>& vector();
+	const std::list<double>& timeVector();
 	~DataVector();
 
 public: // statistics
@@ -146,6 +147,7 @@ public: // general
 
 private: // data
 	std::list<double> dataVector;
+	std::list<double> timeSeries;
 	Stats stat;
 	ClassSeries* cs;
 	VarSeries* vs;

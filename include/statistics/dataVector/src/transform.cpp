@@ -25,6 +25,11 @@ QString DataVector::transform(QString expression) {
     vectorValue = expr.value();
   }
 
+  for (auto &timeSeriesValue : timeSeries) {
+    x = timeSeriesValue;
+	timeSeriesValue = expr.value();
+  }
+
   clearStatistics();
 
   return msg;

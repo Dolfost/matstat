@@ -18,10 +18,12 @@ DataVector::DataVector(DataVector &dv) {
 void DataVector::setVector(const std::list<double> &input) {
   dataVector = input;
   dataVector.sort();
+  timeSeries = input;
   clearStatistics();
 }
 
 const std::list<double> &DataVector::vector() { return dataVector; }
+const std::list<double> &DataVector::timeVector() { return timeSeries; }
 
 void DataVector::clearStatistics() {
   stat.rawMoment.clear();

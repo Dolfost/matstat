@@ -8,5 +8,9 @@ void DataVector::standardize() {
     x = (x - meanValue) / standardDeviationValue;
   }
 
+  for (auto &x : timeSeries) {
+    x = (x - meanValue) / standardDeviationValue;
+  }
+
   clearStatistics();
 }
