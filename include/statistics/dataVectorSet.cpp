@@ -5,7 +5,9 @@
 
 QStringList DataVectorSet::procedureName = {
 	"Т—тест (залежні віибірки)",
-	"Т—тест (незалежні вибірки)"
+	"Т—тест (незалежні вибірки)",
+	"F—тест (2 вибірки)",
+	"F—тест (Бартлетта)",
 };
 
 double DataVectorSet::tTestDependent() {
@@ -18,10 +20,10 @@ double DataVectorSet::tTestDependent() {
 	if (v1->size() != v2->size())
 		throw "Вибірки різного розміру";
 
-	auto y = v2->vector().begin();
+	auto y = v2->timeVector().begin();
 	std::list<double> z;
-	for (auto x = v1->vector().begin();
-			x != v1->vector().end(); x++, y++) {
+	for (auto x = v1->timeVector().begin();
+			x != v1->timeVector().end(); x++, y++) {
 		z.push_back(*x - *y);
 	}
 
@@ -51,4 +53,19 @@ double DataVectorSet::tTestIndependent() {
 	}
 
 	return t;
+}
+
+double DataVectorSet::fTest() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	double sx2 = v1->variance(),
+		   sy2 = v2->variance();
+
+	double f = (sx2 >= sy2 ? sx2/sy2 : sy2/sx2);
+
+	return f;
 }

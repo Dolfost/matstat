@@ -61,7 +61,7 @@ private slots:
 
 	void tTestDependentAction();
 	void tTestIndependentAction();
-	void tTestDistributionReproductionAction();
+	void fTestAction();
 
 signals:
 	void vectorSelected(VectorEntry*);

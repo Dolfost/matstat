@@ -188,12 +188,13 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(tTestIndependentAction, &QAction::triggered, this,
           &VectorContainerWidget::tTestIndependentAction);
 
-  QAction *tTestDistribtuionReproduction = tTestMenu->addAction(
-		  "Перевірити параметри моделі розподілу…");
-  connect(tTestIndependentAction, &QAction::triggered, this,
-          &VectorContainerWidget::tTestDistributionReproductionAction);
+  QMenu *fTestMenu = hypotesisMenu->addMenu("F—тести…");
+  QAction* fTestAction = fTestMenu->addAction("F—тест");
+  connect(fTestAction, &QAction::triggered, this,
+		  &VectorContainerWidget::fTestAction);
 
   menu.addSeparator();
+
   QAction *infoAction = menu.addAction("Про вектор…");
   connect(infoAction, &QAction::triggered, this,
           &VectorContainerWidget::infoAction);
@@ -407,7 +408,7 @@ void VectorContainerWidget::tTestIndependentAction() {
           &HypothesisManagerDialog::vectorDeletedHandler);
 }
 
-void VectorContainerWidget::tTestDistributionReproductionAction() {
+void VectorContainerWidget::fTestAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
 
@@ -416,7 +417,7 @@ void VectorContainerWidget::tTestDistributionReproductionAction() {
     vec.push_back(v.first);
 
   HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
-      vec, DataVectorSet::Procedure::tTestIndependentP, this);
+      vec, DataVectorSet::Procedure::fTestP, this);
   connect(this, &VectorContainerWidget::vectorDeleted, hmd,
           &HypothesisManagerDialog::vectorDeletedHandler);
 }

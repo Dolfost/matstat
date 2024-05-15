@@ -5,7 +5,7 @@
 
 HypothesisManagerDialog::HypothesisManagerDialog(
 		QList<VectorEntry*> v,
-		DataVectorSet::Procedure,
+		DataVectorSet::Procedure proc,
 		QWidget* parent,
 		Qt::WindowFlags flags
 		) : QDialog(parent, flags) {
@@ -62,6 +62,8 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	connect(procedureComboBox, &QComboBox::currentTextChanged,
 			this, &HypothesisManagerDialog::compute);
 
+	procedureComboBox->setCurrentIndex(proc);
+
 	this->compute();
 	this->show();
 }
@@ -100,6 +102,21 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = std::abs(criteria) < quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
+					break;
+				}
+			case DataVectorSet::Procedure::fTestP:
+				{
+					criteria = vectorSet.fTest();
+					quantile = Statistics::fishQuantile(1-critLevel,
+							vectorSet[0]->size()-1, vectorSet[1]->size() - 1);
+					cond = QString("|%1| < f(%2,%3,%4) = %5")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(vectorSet[0]->size() - 1)
+						.arg(vectorSet[1]->size() - 1)
+						.arg(quantile, 3, 'f');
+					accepted = std::abs(criteria) < quantile;
+					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
 					break;
 				}
 		}

@@ -11,6 +11,8 @@ public:
 	enum Procedure {
 		tTestDependentP,
 		tTestIndependentP,
+		fTestP,
+		fTestBartlettP,
 		Count
 	};
 
@@ -18,6 +20,7 @@ public:
 
 	double tTestDependent();
 	double tTestIndependent();
+	double fTest();
 private:
 };
 
