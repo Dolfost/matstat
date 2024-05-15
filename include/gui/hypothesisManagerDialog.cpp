@@ -40,7 +40,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	makeVectorList();
 
 	levelSpinBox = new QDoubleSpinBox;
-	levelSpinBox->setRange(0.001, 1);
+	levelSpinBox->setRange(0.001, 0.999);
 	levelSpinBox->setDecimals(3);
 	levelSpinBox->setSingleStep(0.05);
 	levelSpinBox->setValue(0.95);
@@ -95,12 +95,12 @@ void HypothesisManagerDialog::compute() {
 					criteria = vectorSet.tTestIndependent();
 					quantile = Statistics::studQuantile(1-critLevel/2,
 							vectorSet[0]->size() + vectorSet[1]->size() - 2);
-					cond = QString("|%1| < t(%2,%3) = %4")
+					cond = QString("%1 < t(%2,%3) = %4")
 						.arg(criteria, 3, 'f')
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size() + vectorSet[1]->size() - 2)
 						.arg(quantile, 3, 'f');
-					accepted = std::abs(criteria) < quantile;
+					accepted = criteria < quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
@@ -116,6 +116,20 @@ void HypothesisManagerDialog::compute() {
 						.arg(vectorSet[1]->size() - 1)
 						.arg(quantile, 3, 'f');
 					accepted = std::abs(criteria) < quantile;
+					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
+					break;
+				}
+			case DataVectorSet::Procedure::fTestBartlettP:
+				{
+					criteria = vectorSet.fTestBartlett();
+					quantile = Statistics::pearQuantile(1-critLevel,
+							vectorSet.size()-1);
+					cond = QString("%1 < 𝜒(%2,%3) = %4")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(vectorSet.size() - 1)
+						.arg(quantile, 3, 'f');
+					accepted = criteria < quantile;
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
 					break;
 				}
@@ -149,8 +163,10 @@ void HypothesisManagerDialog::makeVectorList() {
 };
 
 void HypothesisManagerDialog::vectorDeletedHandler(VectorEntry* vec) {
-	if (vectors.removeAll(vec))
+	if (vectors.removeAll(vec)) {
 		makeVectorList();
+		compute();
+	}
 
 	vectorSet.erase(std::remove_if(vectorSet.begin(), 
                               vectorSet.end(),

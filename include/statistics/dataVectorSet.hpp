@@ -21,6 +21,7 @@ public:
 	double tTestDependent();
 	double tTestIndependent();
 	double fTest();
+	double fTestBartlett();
 private:
 };
 

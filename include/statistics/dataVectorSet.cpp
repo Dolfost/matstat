@@ -69,3 +69,26 @@ double DataVectorSet::fTest() {
 
 	return f;
 }
+
+double DataVectorSet::fTestBartlett() {
+	double num = 0, den = 0, m = 0;
+
+	for (auto* v : *this) {
+		num += (v->size() - 1)*v->variance();
+		den += v->size() - 1;
+		m += 1.0/(v->size() - 1);
+	}
+
+	double S2 = num/den;
+
+	double b = 0, c = 0;
+
+	for (auto* v : *this) {
+		b += (v->size() - 1)*log(v->variance()/S2);
+	}
+
+	b = -b;
+	c = 1 + (1.0/(3*(size() - 1))) * (m - 1.0/den);
+
+	return b/c;
+}

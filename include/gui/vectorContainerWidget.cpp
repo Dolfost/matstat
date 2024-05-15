@@ -192,6 +192,9 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   QAction* fTestAction = fTestMenu->addAction("F—тест");
   connect(fTestAction, &QAction::triggered, this,
 		  &VectorContainerWidget::fTestAction);
+  QAction* fTestBartlettAction = fTestMenu->addAction("F—тест Бартлетта");
+  connect(fTestBartlettAction, &QAction::triggered, this,
+		  &VectorContainerWidget::fTestBartlettAction);
 
   menu.addSeparator();
 
@@ -418,6 +421,20 @@ void VectorContainerWidget::fTestAction() {
 
   HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
       vec, DataVectorSet::Procedure::fTestP, this);
+  connect(this, &VectorContainerWidget::vectorDeleted, hmd,
+          &HypothesisManagerDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::fTestBartlettAction() {
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+
+  QList<VectorEntry *> vec;
+  for (auto const &v : vectors)
+    vec.push_back(v.first);
+
+  HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
+      vec, DataVectorSet::Procedure::fTestBartlettP, this);
   connect(this, &VectorContainerWidget::vectorDeleted, hmd,
           &HypothesisManagerDialog::vectorDeletedHandler);
 }

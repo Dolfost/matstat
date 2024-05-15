@@ -62,6 +62,7 @@ private slots:
 	void tTestDependentAction();
 	void tTestIndependentAction();
 	void fTestAction();
+	void fTestBartlettAction();
 
 signals:
 	void vectorSelected(VectorEntry*);
