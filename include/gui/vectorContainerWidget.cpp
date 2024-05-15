@@ -183,18 +183,22 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   QMenu *tTestMenu = hypotesisMenu->addMenu("Т—тести…");
   QAction *tTestDependentAction = tTestMenu->addAction("Залежні вибірки…");
   connect(tTestDependentAction, &QAction::triggered, this,
-          &VectorContainerWidget::tTestDependentAction);
+	[this](){ this->makeHypothesisAction(DataVectorSet::tTestDependentP); });
   QAction *tTestIndependentAction = tTestMenu->addAction("Незалежні вибірки…");
   connect(tTestIndependentAction, &QAction::triggered, this,
-          &VectorContainerWidget::tTestIndependentAction);
+	[this](){ this->makeHypothesisAction(DataVectorSet::tTestIndependentP); });
 
   QMenu *fTestMenu = hypotesisMenu->addMenu("F—тести…");
   QAction* fTestAction = fTestMenu->addAction("F—тест");
   connect(fTestAction, &QAction::triggered, this,
-		  &VectorContainerWidget::fTestAction);
+	[this](){ this->makeHypothesisAction(DataVectorSet::fTestP); });
   QAction* fTestBartlettAction = fTestMenu->addAction("F—тест Бартлетта");
   connect(fTestBartlettAction, &QAction::triggered, this,
-		  &VectorContainerWidget::fTestBartlettAction);
+	[this](){ this->makeHypothesisAction(DataVectorSet::fTestBartlettP); });
+
+  QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
+  connect(oneWayANOVAAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });
 
   menu.addSeparator();
 
@@ -383,7 +387,7 @@ void VectorContainerWidget::writeAction() {
   ve.first->vector->writeToFile(filename);
 }
 
-void VectorContainerWidget::tTestDependentAction() {
+void VectorContainerWidget::makeHypothesisAction(DataVectorSet::Procedure p) {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
 
@@ -392,49 +396,7 @@ void VectorContainerWidget::tTestDependentAction() {
     vec.push_back(v.first);
 
   HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
-      vec, DataVectorSet::Procedure::tTestDependentP, this);
-  connect(this, &VectorContainerWidget::vectorDeleted, hmd,
-          &HypothesisManagerDialog::vectorDeletedHandler);
-}
-
-void VectorContainerWidget::tTestIndependentAction() {
-  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
-      selectedVectors();
-
-  QList<VectorEntry *> vec;
-  for (auto const &v : vectors)
-    vec.push_back(v.first);
-
-  HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
-      vec, DataVectorSet::Procedure::tTestIndependentP, this);
-  connect(this, &VectorContainerWidget::vectorDeleted, hmd,
-          &HypothesisManagerDialog::vectorDeletedHandler);
-}
-
-void VectorContainerWidget::fTestAction() {
-  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
-      selectedVectors();
-
-  QList<VectorEntry *> vec;
-  for (auto const &v : vectors)
-    vec.push_back(v.first);
-
-  HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
-      vec, DataVectorSet::Procedure::fTestP, this);
-  connect(this, &VectorContainerWidget::vectorDeleted, hmd,
-          &HypothesisManagerDialog::vectorDeletedHandler);
-}
-
-void VectorContainerWidget::fTestBartlettAction() {
-  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
-      selectedVectors();
-
-  QList<VectorEntry *> vec;
-  for (auto const &v : vectors)
-    vec.push_back(v.first);
-
-  HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
-      vec, DataVectorSet::Procedure::fTestBartlettP, this);
+      vec, p, this);
   connect(this, &VectorContainerWidget::vectorDeleted, hmd,
           &HypothesisManagerDialog::vectorDeletedHandler);
 }

@@ -13,6 +13,7 @@ public:
 		tTestIndependentP,
 		fTestP,
 		fTestBartlettP,
+		oneWayANOVAP,
 		Count
 	};
 
@@ -22,6 +23,14 @@ public:
 	double tTestIndependent();
 	double fTest();
 	double fTestBartlett();
+	double oneWayANOVA();
+
+public: // statistics
+	size_t totalSize();
+	double overallMean();
+	double intergroupVariation(); // міжгрупова
+	double intragroupVariation(); // в кожній вибірці
+
 private:
 };
 

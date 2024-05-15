@@ -133,6 +133,23 @@ void HypothesisManagerDialog::compute() {
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
 					break;
 				}
+			case DataVectorSet::Procedure::oneWayANOVAP:
+				{
+					criteria = vectorSet.oneWayANOVA();
+					double v1 = vectorSet.size() - 1,
+						   v2 = vectorSet.totalSize() - vectorSet.size();
+					quantile = Statistics::fishQuantile(1-critLevel,
+							v1, v2);
+					cond = QString("%1 < f(%2,%3,%4) = %5")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(v1)
+						.arg(v2)
+						.arg(quantile, 3, 'f');
+					accepted = criteria < quantile;
+					implies = accepted ? "середні збігаються" : "середні не збігаються";
+					break;
+				}
 		}
 	} catch (const char* msg) {
 		resTextEdit->setText("Помилка: " + QString(msg));

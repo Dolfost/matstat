@@ -10,6 +10,7 @@
 
 
 #include "guiTypes.hpp"
+#include "dataVectorSet.hpp"
 
 
 class VectorContainerWidget : public QTableWidget {
@@ -59,10 +60,7 @@ private slots:
 	void generateAction();
 	void writeAction();
 
-	void tTestDependentAction();
-	void tTestIndependentAction();
-	void fTestAction();
-	void fTestBartlettAction();
+	void makeHypothesisAction(DataVectorSet::Procedure);
 
 signals:
 	void vectorSelected(VectorEntry*);

@@ -8,7 +8,49 @@ QStringList DataVectorSet::procedureName = {
 	"Т—тест (незалежні вибірки)",
 	"F—тест (2 вибірки)",
 	"F—тест (Бартлетта)",
+	"Однофакторний дисперсійний аналіз",
 };
+
+size_t DataVectorSet::totalSize() {
+	size_t s = 0;
+
+	for (auto const& v : *this) {
+		s += v->size();
+	}
+
+	return s;
+}
+
+double DataVectorSet::overallMean() {
+	double mean = 0;
+
+	for (auto const& v : *this) {
+		mean += v->size()*v->mean();
+	}
+
+	return mean / totalSize();
+}
+
+double DataVectorSet::intergroupVariation() {
+	double s2m = 0,
+		   mean = overallMean();
+
+	for (auto const& v : *this) {
+		s2m += v->size()*std::pow(v->mean() - mean, 2);
+	}
+
+	return s2m/(size() - 1);
+}
+
+double DataVectorSet::intragroupVariation() {
+	double s2b = 0;
+
+	for (auto const& v : *this) {
+		s2b += (v->size() - 1)*v->variance();
+	}
+
+	return s2b/(totalSize() - size());
+}
 
 double DataVectorSet::tTestDependent() {
 	if (size() != 2)
@@ -91,4 +133,9 @@ double DataVectorSet::fTestBartlett() {
 	c = 1 + (1.0/(3*(size() - 1))) * (m - 1.0/den);
 
 	return b/c;
+}
+
+double DataVectorSet::oneWayANOVA() {
+	qDebug() << intergroupVariation() << intragroupVariation();
+	return intergroupVariation()/intragroupVariation();
 }
