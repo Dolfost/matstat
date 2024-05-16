@@ -4,6 +4,7 @@
 #include <QtCore/qlogging.h>
 #include <algorithm>
 #include <cmath>
+#include <iterator>
 #include <list>
 
 QStringList DataVectorSet::procedureName = {
@@ -13,9 +14,10 @@ QStringList DataVectorSet::procedureName = {
 	"F—тест (Бартлетта)",
 	"Однофакторний дисперсійний аналіз",
 	"Тест на однорідність Смірнова-Колмогорова",
+	"Критерій суми рангів Вілкоксона",
 };
 
-size_t DataVectorSet::totalSize() {
+size_t DataVectorSet::overallSize() {
 	size_t s = 0;
 
 	for (auto const& v : *this) {
@@ -32,7 +34,7 @@ double DataVectorSet::overallMean() {
 		mean += v->size()*v->mean();
 	}
 
-	return mean / totalSize();
+	return mean / overallSize();
 }
 
 double DataVectorSet::intergroupVariation() {
@@ -53,7 +55,33 @@ double DataVectorSet::intragroupVariation() {
 		s2b += (v->size() - 1)*v->variance();
 	}
 
-	return s2b/(totalSize() - size());
+	return s2b/(overallSize() - size());
+}
+
+std::map<double, double> DataVectorSet::overallRank() {
+	std::map<double, double> ranks;
+
+	std::list<double> globalVector;
+
+	for (auto const& v : *this) {
+		globalVector.splice(globalVector.end(), std::list<double>(v->vector()));
+	}
+
+	globalVector.sort();
+
+	size_t r = 1;
+	for (auto x = globalVector.begin(); x != globalVector.end(); x++) {
+		size_t times = 1;
+		while (std::next(x) != globalVector.end() and *std::next(x) == *x) {
+			times++;
+			x++;
+		}
+
+		ranks[*x] = r + 1.0/times;
+		r++;
+	}
+
+	return ranks;
 }
 
 double DataVectorSet::tTestDependent() {
@@ -155,7 +183,7 @@ double DataVectorSet::testKS() {
 
 	double from = std::min(v1->min(), v2->min()),
 	       to = std::max(v1->max(), v2->max()),
-		   step = std::abs(to - from)/totalSize();
+		   step = std::abs(to - from)/overallSize();
 
 	double z = std::abs(v1->classSeries()->eCdf(from)-v2->classSeries()->eCdf(from));
 	for (double x = from + step; x <= to + step; x += step) {
@@ -170,4 +198,24 @@ double DataVectorSet::testKS() {
 	return 1 - std::exp(-2*z2) * (1 - (2*z)/(3*std::sqrt(z)) + 
 			((2*z2)/(3*N))*(1 - (2*z2)/3) + 
 			((4*z)/(9*std::pow(N, 1.5)))*(0.2 - (19*z2)/15 + (2*z4)/3));
+}
+
+double DataVectorSet::testWilcoxon() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	std::map<double, double> ranks = overallRank();
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	double W = 0;
+	for (auto const& x : v1->vector()) 
+		W += ranks[x];
+
+	double N = overallSize(),
+		   E = v1->size()*(N+1)/2,
+		   D = (v1->size()*v2->size()*(N+1))/12;
+
+	return (W - E)/std::sqrt(D);
 }

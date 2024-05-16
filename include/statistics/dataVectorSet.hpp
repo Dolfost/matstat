@@ -15,6 +15,7 @@ public:
 		fTestBartlettP,
 		oneWayANOVAP,
 		testKSP,
+		testWilcoxonP,
 		Count
 	};
 
@@ -26,12 +27,14 @@ public:
 	double fTestBartlett();
 	double oneWayANOVA();
 	double testKS();
+	double testWilcoxon();
 
 public: // statistics
-	size_t totalSize();
+	size_t overallSize();
 	double overallMean();
 	double intergroupVariation(); // міжгрупова
 	double intragroupVariation(); // в кожній вибірці
+	std::map<double, double> overallRank(); 
 
 private:
 };

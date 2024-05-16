@@ -204,6 +204,10 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(testKSAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::testKSP); });
 
+  QAction* testWilcoxonAction = hypotesisMenu->addAction("Критерій суми рангів Вілкоксона");
+  connect(testWilcoxonAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::testWilcoxonP); });
+
   menu.addSeparator();
 
   QAction *infoAction = menu.addAction("Про вектор…");

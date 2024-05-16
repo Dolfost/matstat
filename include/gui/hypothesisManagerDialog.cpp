@@ -137,7 +137,7 @@ void HypothesisManagerDialog::compute() {
 				{
 					criteria = vectorSet.oneWayANOVA();
 					double v1 = vectorSet.size() - 1,
-						   v2 = vectorSet.totalSize() - vectorSet.size();
+						   v2 = vectorSet.overallSize() - vectorSet.size();
 					quantile = Statistics::fishQuantile(1-critLevel,
 							v1, v2);
 					cond = QString("%1 < f(%2,%3,%4) = %5")
@@ -158,6 +158,18 @@ void HypothesisManagerDialog::compute() {
 						.arg(criteria, 3, 'f')
 						.arg(critLevel, 3, 'f');
 					accepted = criteria > quantile;
+					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					break;
+				}
+			case DataVectorSet::Procedure::testWilcoxonP:
+				{
+					criteria = vectorSet.testWilcoxon();
+					quantile = Statistics::normQuantile(1-critLevel/2);
+					cond = QString("%1 < u(%2) = %3")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel/2, 3, 'f')
+						.arg(quantile, 3, 'f');
+					accepted = criteria < quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
