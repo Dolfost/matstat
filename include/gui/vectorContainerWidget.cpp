@@ -200,6 +200,10 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(oneWayANOVAAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });
 
+  QAction* testKSAction = hypotesisMenu->addAction("Тест Колмогорова-Смірнова");
+  connect(testKSAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::testKSP); });
+
   menu.addSeparator();
 
   QAction *infoAction = menu.addAction("Про вектор…");

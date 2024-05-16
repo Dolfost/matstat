@@ -150,6 +150,17 @@ void HypothesisManagerDialog::compute() {
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
+			case DataVectorSet::Procedure::testKSP:
+				{
+					criteria = 1 - vectorSet.testKS();
+					quantile = critLevel;
+					cond = QString("%1 < %2")
+						.arg(criteria, 3, 'f')
+						.arg(critLevel, 3, 'f');
+					accepted = criteria > quantile;
+					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					break;
+				}
 		}
 	} catch (const char* msg) {
 		resTextEdit->setText("Помилка: " + QString(msg));

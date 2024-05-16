@@ -1,5 +1,8 @@
 #include "dataVectorSet.hpp"
+#include "classSeries.hpp"
+#include <QDebug>
 #include <QtCore/qlogging.h>
+#include <algorithm>
 #include <cmath>
 #include <list>
 
@@ -9,6 +12,7 @@ QStringList DataVectorSet::procedureName = {
 	"F—тест (2 вибірки)",
 	"F—тест (Бартлетта)",
 	"Однофакторний дисперсійний аналіз",
+	"Тест на однорідність Смірнова-Колмогорова",
 };
 
 size_t DataVectorSet::totalSize() {
@@ -136,6 +140,34 @@ double DataVectorSet::fTestBartlett() {
 }
 
 double DataVectorSet::oneWayANOVA() {
-	qDebug() << intergroupVariation() << intragroupVariation();
 	return intergroupVariation()/intragroupVariation();
+}
+
+double DataVectorSet::testKS() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	if (!v1->classSeries() or !v2->classSeries())
+		throw "Не всі вибірки були розбиті на класи";
+
+	double from = std::min(v1->min(), v2->min()),
+	       to = std::max(v1->max(), v2->max()),
+		   step = std::abs(to - from)/totalSize();
+
+	double z = std::abs(v1->classSeries()->eCdf(from)-v2->classSeries()->eCdf(from));
+	for (double x = from + step; x <= to + step; x += step) {
+		double tmp = std::abs(v1->classSeries()->eCdf(x)-v2->classSeries()->eCdf(x)); if (tmp > z) 
+			z = tmp;
+	}
+
+	size_t N = std::min(v1->size(), v2->size());
+	double z2 = std::pow(z, 2);
+	double z4 = std::pow(z2, 2);
+
+	return 1 - std::exp(-2*z2) * (1 - (2*z)/(3*std::sqrt(z)) + 
+			((2*z2)/(3*N))*(1 - (2*z2)/3) + 
+			((4*z)/(9*std::pow(N, 1.5)))*(0.2 - (19*z2)/15 + (2*z4)/3));
 }

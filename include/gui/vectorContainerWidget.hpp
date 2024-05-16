@@ -59,7 +59,6 @@ private slots:
 	void infoAction();
 	void generateAction();
 	void writeAction();
-
 	void makeHypothesisAction(DataVectorSet::Procedure);
 
 signals:

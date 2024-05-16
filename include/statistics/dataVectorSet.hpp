@@ -14,6 +14,7 @@ public:
 		fTestP,
 		fTestBartlettP,
 		oneWayANOVAP,
+		testKSP,
 		Count
 	};
 
@@ -24,6 +25,7 @@ public:
 	double fTest();
 	double fTestBartlett();
 	double oneWayANOVA();
+	double testKS();
 
 public: // statistics
 	size_t totalSize();
