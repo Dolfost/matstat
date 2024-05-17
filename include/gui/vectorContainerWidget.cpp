@@ -208,6 +208,10 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(testWilcoxonAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::testWilcoxonP); });
 
+  QAction* criteriaUAction = hypotesisMenu->addAction("U-критерій");
+  connect(criteriaUAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::criteriaUP); });
+
   menu.addSeparator();
 
   QAction *infoAction = menu.addAction("Про вектор…");

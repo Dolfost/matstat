@@ -15,6 +15,7 @@ QStringList DataVectorSet::procedureName = {
 	"Однофакторний дисперсійний аналіз",
 	"Тест на однорідність Смірнова-Колмогорова",
 	"Критерій суми рангів Вілкоксона",
+	"U-критерій Манна-Уїтні",
 };
 
 size_t DataVectorSet::overallSize() {
@@ -58,9 +59,7 @@ double DataVectorSet::intragroupVariation() {
 	return s2b/(overallSize() - size());
 }
 
-std::map<double, double> DataVectorSet::overallRank() {
-	std::map<double, double> ranks;
-
+std::list<double> DataVectorSet::overallVector() {
 	std::list<double> globalVector;
 
 	for (auto const& v : *this) {
@@ -69,10 +68,18 @@ std::map<double, double> DataVectorSet::overallRank() {
 
 	globalVector.sort();
 
+	return globalVector;
+}
+
+std::map<double, double> DataVectorSet::overallRank() {
+	std::map<double, double> ranks;
+
+	std::list<double> vector = overallVector();
+
 	size_t r = 1;
-	for (auto x = globalVector.begin(); x != globalVector.end(); x++) {
+	for (auto x = vector.begin(); x != vector.end(); x++) {
 		size_t times = 1;
-		while (std::next(x) != globalVector.end() and *std::next(x) == *x) {
+		while (std::next(x) != vector.end() and *std::next(x) == *x) {
 			times++;
 			x++;
 		}
@@ -213,9 +220,33 @@ double DataVectorSet::testWilcoxon() {
 	for (auto const& x : v1->vector()) 
 		W += ranks[x];
 
-	double N = overallSize(),
-		   E = v1->size()*(N+1)/2,
-		   D = (v1->size()*v2->size()*(N+1))/12;
+	size_t N = overallSize();
+
+	double E = v1->size()*(N+1)/2.0,
+		   D = (v1->size()*v2->size()*(N+1))/12.0;
 
 	return (W - E)/std::sqrt(D);
+}
+
+double DataVectorSet::criteriaU() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	size_t u = 0;
+
+	for (auto const& x : v1->vector()) {
+		for (auto const& y : v2->vector()) {
+			if (x > y)
+				u++;
+		}
+	}
+
+	size_t N = overallSize();
+	double E = (v1->size()*v2->size())/2.0,
+		   D = (v1->size()*v2->size()*(N*1))/12.0;
+
+	return (u - E)/std::sqrt(D);
 }

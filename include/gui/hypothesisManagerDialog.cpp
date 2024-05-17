@@ -173,6 +173,18 @@ void HypothesisManagerDialog::compute() {
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
+			case DataVectorSet::Procedure::criteriaUP:
+				{
+					criteria = vectorSet.criteriaU();
+					quantile = Statistics::normQuantile(1-critLevel/2);
+					cond = QString("%1 < u(%2) = %3")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel/2, 3, 'f')
+						.arg(quantile, 3, 'f');
+					accepted = criteria < quantile;
+					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					break;
+				}
 		}
 	} catch (const char* msg) {
 		resTextEdit->setText("Помилка: " + QString(msg));

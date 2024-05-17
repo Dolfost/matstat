@@ -16,11 +16,13 @@ public:
 		oneWayANOVAP,
 		testKSP,
 		testWilcoxonP,
+		criteriaUP,
 		Count
 	};
 
 	static QStringList procedureName;
 
+public: // tests
 	double tTestDependent();
 	double tTestIndependent();
 	double fTest();
@@ -28,12 +30,14 @@ public:
 	double oneWayANOVA();
 	double testKS();
 	double testWilcoxon();
+	double criteriaU();
 
 public: // statistics
 	size_t overallSize();
 	double overallMean();
 	double intergroupVariation(); // міжгрупова
 	double intragroupVariation(); // в кожній вибірці
+	std::list<double> overallVector();
 	std::map<double, double> overallRank(); 
 
 private:
