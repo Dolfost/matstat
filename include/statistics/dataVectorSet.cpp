@@ -6,6 +6,7 @@
 #include <cmath>
 #include <iterator>
 #include <list>
+#include <vector>
 
 QStringList DataVectorSet::procedureName = {
 	"Т—тест (залежні віибірки)",
@@ -17,6 +18,7 @@ QStringList DataVectorSet::procedureName = {
 	"Критерій суми рангів Вілкоксона",
 	"U-критерій Манна-Уїтні",
 	"Критерій різниці середніх рангів вибірок",
+	"H-критерій Крускала-Уоліса",
 };
 
 size_t DataVectorSet::overallSize() {
@@ -276,4 +278,24 @@ double DataVectorSet::rankAveragesDifference() {
 	size_t N = overallSize();
 
 	return (rx - ry)/(N*std::sqrt((N+1.0)/(12.0*v1->size()*v2->size())));
+}
+
+double DataVectorSet::hTest() {
+	std::map<double, double> ranks = overallRank();
+	std::vector<double> w;
+
+	for (auto const& v : *this) {
+		double wi = 0;
+		for (auto const& x : v->vector())
+			wi += ranks[x];
+		w.push_back(wi/v->size());
+	}
+
+	double N = overallSize();
+	double H = 0;
+	for (size_t i = 0; i < size(); i++)
+		H += (std::pow(w[i]-(N+1)/2, 2)*(1 - at(i)->size()/N)) /
+			((N+1)*(N-at(i)->size())/(12.0*at(i)->size()));
+
+	return H;
 }

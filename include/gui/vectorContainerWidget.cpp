@@ -214,6 +214,10 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(rankAveragesDifferenceAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::rankAveragesDifferenceP); });
 
+  QAction* hTestAction = indentityMenu->addAction("H-критерій");
+  connect(hTestAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::hTestP); });
+
   QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
   connect(oneWayANOVAAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });

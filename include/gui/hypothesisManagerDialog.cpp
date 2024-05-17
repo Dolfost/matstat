@@ -86,7 +86,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size()-2)
 						.arg(quantile, 3, 'f');
-					accepted = std::abs(criteria) < quantile;
+					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
@@ -100,7 +100,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(vectorSet[0]->size() + vectorSet[1]->size() - 2)
 						.arg(quantile, 3, 'f');
-					accepted = criteria < quantile;
+					accepted = criteria <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
@@ -115,7 +115,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(vectorSet[0]->size() - 1)
 						.arg(vectorSet[1]->size() - 1)
 						.arg(quantile, 3, 'f');
-					accepted = std::abs(criteria) < quantile;
+					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
 					break;
 				}
@@ -129,7 +129,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(1-critLevel, 3, 'f')
 						.arg(vectorSet.size() - 1)
 						.arg(quantile, 3, 'f');
-					accepted = criteria < quantile;
+					accepted = criteria <= quantile;
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
 					break;
 				}
@@ -146,7 +146,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(v1)
 						.arg(v2)
 						.arg(quantile, 3, 'f');
-					accepted = criteria < quantile;
+					accepted = criteria <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
 					break;
 				}
@@ -157,7 +157,7 @@ void HypothesisManagerDialog::compute() {
 					cond = QString("%1 < %2")
 						.arg(criteria, 3, 'f')
 						.arg(critLevel, 3, 'f');
-					accepted = criteria > quantile;
+					accepted = criteria >= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
@@ -169,7 +169,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(criteria, 3, 'f')
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(quantile, 3, 'f');
-					accepted = criteria < quantile;
+					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
@@ -181,7 +181,7 @@ void HypothesisManagerDialog::compute() {
 						.arg(criteria, 3, 'f')
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(quantile, 3, 'f');
-					accepted = criteria < quantile;
+					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
@@ -193,7 +193,20 @@ void HypothesisManagerDialog::compute() {
 						.arg(criteria, 3, 'f')
 						.arg(1-critLevel/2, 3, 'f')
 						.arg(quantile, 3, 'f');
-					accepted = std::abs(criteria) < quantile;
+					accepted = std::abs(criteria) <= quantile;
+					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					break;
+				}
+			case DataVectorSet::Procedure::hTestP:
+				{
+					criteria = vectorSet.hTest();
+					quantile = Statistics::pearQuantile(1-critLevel, vectorSet.size()-1);
+					cond = QString("|%1| < 𝜒(%2,%3) = %4")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(vectorSet.size()-1)
+						.arg(quantile, 3, 'f');
+					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}

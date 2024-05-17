@@ -18,6 +18,7 @@ public:
 		testWilcoxonP,
 		criteriaUP,
 		rankAveragesDifferenceP,
+		hTestP,
 		Count
 	};
 
@@ -33,6 +34,7 @@ public: // tests
 	double testWilcoxon();
 	double criteriaU();
 	double rankAveragesDifference();
+	double hTest();
 
 public: // statistics
 	size_t overallSize();
