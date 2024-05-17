@@ -196,21 +196,27 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(fTestBartlettAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::fTestBartlettP); });
 
-  QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
-  connect(oneWayANOVAAction, &QAction::triggered, this,
-	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });
+  QMenu *indentityMenu = hypotesisMenu->addMenu("Тести однорідності…");
 
-  QAction* testKSAction = hypotesisMenu->addAction("Тест Колмогорова-Смірнова");
+  QAction* testKSAction = indentityMenu->addAction("Тест Колмогорова-Смірнова");
   connect(testKSAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::testKSP); });
 
-  QAction* testWilcoxonAction = hypotesisMenu->addAction("Критерій суми рангів Вілкоксона");
+  QAction* testWilcoxonAction = indentityMenu->addAction("Критерій суми рангів Вілкоксона");
   connect(testWilcoxonAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::testWilcoxonP); });
 
-  QAction* criteriaUAction = hypotesisMenu->addAction("U-критерій");
+  QAction* criteriaUAction = indentityMenu->addAction("U-критерій");
   connect(criteriaUAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::criteriaUP); });
+
+  QAction* rankAveragesDifferenceAction = indentityMenu->addAction("Крит. різн. сер. ранг. виб.");
+  connect(rankAveragesDifferenceAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::rankAveragesDifferenceP); });
+
+  QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
+  connect(oneWayANOVAAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });
 
   menu.addSeparator();
 

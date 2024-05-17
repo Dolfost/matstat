@@ -16,6 +16,7 @@ QStringList DataVectorSet::procedureName = {
 	"Тест на однорідність Смірнова-Колмогорова",
 	"Критерій суми рангів Вілкоксона",
 	"U-критерій Манна-Уїтні",
+	"Критерій різниці середніх рангів вибірок",
 };
 
 size_t DataVectorSet::overallSize() {
@@ -249,4 +250,30 @@ double DataVectorSet::criteriaU() {
 		   D = (v1->size()*v2->size()*(N*1))/12.0;
 
 	return (u - E)/std::sqrt(D);
+}
+
+double DataVectorSet::rankAveragesDifference() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	std::map<double, double> ranks = overallRank();
+
+	double rx = 0, ry = 0;
+
+	for (auto const& x : v1->vector()) {
+		rx += ranks[x];
+	}
+	rx /= v1->size();
+
+	for (auto const& y : v2->vector()) {
+		ry += ranks[y];
+	}
+	ry /= v2->size();
+
+	size_t N = overallSize();
+
+	return (rx - ry)/(N*std::sqrt((N+1.0)/(12.0*v1->size()*v2->size())));
 }

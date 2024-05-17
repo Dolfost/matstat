@@ -17,6 +17,7 @@ public:
 		testKSP,
 		testWilcoxonP,
 		criteriaUP,
+		rankAveragesDifferenceP,
 		Count
 	};
 
@@ -31,6 +32,7 @@ public: // tests
 	double testKS();
 	double testWilcoxon();
 	double criteriaU();
+	double rankAveragesDifference();
 
 public: // statistics
 	size_t overallSize();
