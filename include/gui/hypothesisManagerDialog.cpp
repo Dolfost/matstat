@@ -2,6 +2,7 @@
 #include <QGroupBox>
 #include <QtCore/qstring.h>
 #include <cstdlib>
+#include <functional>
 
 HypothesisManagerDialog::HypothesisManagerDialog(
 		QList<VectorEntry*> v,
@@ -50,12 +51,17 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 
 	resTextEdit = new QTextEdit;
 	resTextEdit->setReadOnly(true);
+	resTextEdit->setMaximumHeight(90);
+
+	pmTable = new QTableWidget;
+	pmTable->setMaximumHeight(80);
 
 	secondaryLayout->addWidget(procedureGroupBox);
 	secondaryLayout->addWidget(vectorsGroupBox);
 	secondaryLayout->addLayout(spinBoxLayout);
 	mainLayout->addLayout(secondaryLayout);
 	mainLayout->addWidget(resTextEdit);
+	mainLayout->addWidget(pmTable);
 
 	connect(levelSpinBox, &QDoubleSpinBox::valueChanged,
 			this, &HypothesisManagerDialog::compute);
@@ -65,6 +71,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	procedureComboBox->setCurrentIndex(proc);
 
 	this->compute();
+	this->resize(645, this->height());
 	this->show();
 }
 
@@ -74,6 +81,7 @@ void HypothesisManagerDialog::compute() {
 	double critLevel = levelSpinBox->value();
 	double criteria;
 	double quantile;
+	std::function<bool(double)> qf;
 
 	try {
 		switch (procedureComboBox->currentIndex()) {
@@ -88,6 +96,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
+					qf = [=](double a) { 
+						return std::abs(criteria) <= Statistics::studQuantile(1-a/2, vectorSet[0]->size()-2); 
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::tTestIndependentP:
@@ -102,6 +113,10 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
+					qf = [=](double a) { 
+						return criteria <= Statistics::studQuantile(1-a/2,
+							vectorSet[0]->size() + vectorSet[1]->size() - 2);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::fTestP:
@@ -117,6 +132,10 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
+					qf = [=](double a) { 
+						return std::abs(criteria) <= Statistics::fishQuantile(1-a,
+							vectorSet[0]->size()-1, vectorSet[1]->size() - 1);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::fTestBartlettP:
@@ -131,6 +150,10 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "дисперсії збігаються" : "дисперсії не збігаються";
+					qf = [=](double a) { 
+						return criteria <= Statistics::pearQuantile(1-a,
+							vectorSet.size()-1);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::oneWayANOVAP:
@@ -148,6 +171,10 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "середні збігаються" : "середні не збігаються";
+					qf = [=](double a) { 
+						return criteria <= Statistics::fishQuantile(1-a,
+							v1, v2);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::testKSP:
@@ -159,6 +186,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(critLevel, 3, 'f');
 					accepted = criteria >= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					qf = [=](double a) { 
+						return criteria >= a;
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::testWilcoxonP:
@@ -171,6 +201,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					qf = [=](double a) { 
+						return criteria <= Statistics::normQuantile(1-a/2);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::criteriaUP:
@@ -183,6 +216,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					qf = [=](double a) { 
+						return criteria <= Statistics::normQuantile(1-a/2);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::rankAveragesDifferenceP:
@@ -195,6 +231,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					qf = [=](double a) { 
+						return criteria <= Statistics::normQuantile(1-a/2);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::hTestP:
@@ -208,6 +247,9 @@ void HypothesisManagerDialog::compute() {
 						.arg(quantile, 3, 'f');
 					accepted = criteria <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
+					qf = [=](double a) { 
+						return criteria <= Statistics::pearQuantile(1-a, vectorSet.size()-1);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::signTestP:
@@ -221,6 +263,9 @@ void HypothesisManagerDialog::compute() {
 					accepted = criteria < quantile;
 					implies = accepted ? "вибірки однорідні" : 
 						"вибірки не однорідні (F(x) < G(y))";
+					qf = [=](double a) { 
+						return criteria < Statistics::normQuantile(1-a);
+					};
 					break;
 				}
 			case DataVectorSet::Procedure::qTestP:
@@ -235,6 +280,9 @@ void HypothesisManagerDialog::compute() {
 					accepted = criteria <= quantile;
 					implies = accepted ? "всі способи мають однакову імовірність" : 
 						"всі способи мають різну імовірність" ;
+					qf = [=](double a) { 
+						return criteria <= Statistics::pearQuantile(1-a, vectorSet.size() - 1);
+					};
 					break;
 				}
 			default:
@@ -256,6 +304,33 @@ void HypothesisManagerDialog::compute() {
 			.arg(implies));
 
 	resTextEdit->setText(res);
+
+	pmTable->clear();
+	QList<double> probs = 
+		{0.01, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.85,
+			0.9, 0.95, 0.97, 0.99};
+	pmTable->setRowCount(1);
+	pmTable->setColumnCount(probs.size());
+
+	QStringList vHeader, hHeader;
+	for (int j = 0; j < probs.size(); j++) {
+		pmTable->setItem(0, j, new QTableWidgetItem(
+			qf(probs[j]) ? "+" : "-"));
+	}
+
+	for (int i = 0; i < probs.size(); i++) {
+		hHeader.append(QString::number(probs[i]));
+	}
+
+	vHeader.append("H");
+
+	pmTable->setHorizontalHeaderLabels(hHeader);
+	pmTable->setVerticalHeaderLabels(vHeader);
+
+	for (int i = 0; i < probs.size(); i++) {
+		pmTable->setColumnWidth(i, 35);
+	}
+
 }
 
 void HypothesisManagerDialog::makeVectorList() {

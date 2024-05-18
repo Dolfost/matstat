@@ -9,6 +9,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QDoubleSpinBox>
+#include <QTableWidget>
 
 #include "guiTypes.hpp"
 
@@ -34,6 +35,7 @@ private:
 	QLineEdit* vectorsLineEdit = nullptr;
 	QTextEdit* resTextEdit = nullptr;
 	QDoubleSpinBox* levelSpinBox = nullptr;
+	QTableWidget* pmTable = nullptr;
 
 private slots:
 	void makeVectorList();
