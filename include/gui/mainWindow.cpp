@@ -60,6 +60,11 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 	_addFile("../../../data/25/exp.txt");
 	_addFile("../../../data/25/norm.txt");
 	_addFile("../../../data/25/veib.txt");
+	// _addFile("../../../data/qtest/TR1(V10)-120.txt");
+	// _addFile("../../../data/qtest/TR2(V11)-120.txt");
+	// _addFile("../../../data/qtest/TR3(V12)-120.txt");
+	// _addFile("../../../data/qtest/TR4(V13)-120.txt");
+	// _addFile("../../../data/qtest/TR5(V14)-120.txt");
 }
 
 void MainWindow::createCharts() {

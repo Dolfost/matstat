@@ -19,6 +19,9 @@ QStringList DataVectorSet::procedureName = {
 	"U-критерій Манна-Уїтні",
 	"Критерій різниці середніх рангів вибірок",
 	"H-критерій Крускала-Уоліса",
+	"Критерій знаків",
+	"Q-критерій Кохрена",
+	"Критерій Аббе",
 };
 
 size_t DataVectorSet::overallSize() {
@@ -298,4 +301,102 @@ double DataVectorSet::hTest() {
 			((N+1)*(N-at(i)->size())/(12.0*at(i)->size()));
 
 	return H;
+}
+
+double DataVectorSet::signTest() {
+	if (size() != 2)
+		throw "Кількість вибірок не рівна 2";
+
+	DataVector* v1 = this->at(0);
+	DataVector* v2 = this->at(1);
+
+	if (v1->size() != v2->size())
+		throw "Вибірки різного розміру";
+
+	auto iv1 = v1->vector().begin();
+	auto iv2 = v2->vector().begin();
+
+	size_t S = 0;
+	while (iv1 != v1->vector().end() and iv2 != v2->vector().end()) {
+		if (*iv1 - *iv2 > 0)
+			S++;
+		iv1++, iv2++;
+	}
+
+	size_t N = overallSize();
+
+	return (2*S - 1 - N)/std::sqrt(N);
+}
+
+double DataVectorSet::qTest() {
+	size_t n = at(0)->size();
+
+	for (size_t i = 1; i < size(); i++)
+		if (at(i)->size() != n)
+			throw "Вибірки не однакового розміру";
+
+	std::vector<size_t> u(n), T(size());
+
+	size_t i = 0, j;
+	for (auto const& v : *this) {
+		j = 0;
+		for (auto const& x : v->timeVector()) {
+			if (x == 1) {
+				T[i]++;
+				u[j]++;
+			}
+			j++;
+		}
+		i++;
+	}
+
+	DataVector tVector(std::list<double>(T.begin(), T.end()));
+
+	double uSum = 0, uSum2 = 0;
+	for (auto const& ui : u) {
+		uSum += ui;
+		uSum2 += std::pow(ui, 2);
+	}
+
+	return (std::pow(size(), 2)*(size() - 1) * tVector.centralMoment(2)) /
+		(size()*uSum - uSum2);
+}
+
+double DataVectorSet::testAbbe() {
+	return 0.5;
+}
+
+void DataVectorSet::writeToFile(QString filename) {
+  size_t n = at(0)->size();
+
+  for (size_t i = 1; i < size(); i++) {
+	  if (at(i)->size() != n)
+		  throw "Вектори не однакового розміру!";
+  }
+
+  QFile file(filename);
+
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+	  throw "Не вдалося відкрити файл " + filename + ".";
+
+  QTextStream stream(&file);
+
+  std::vector<std::list<double>::const_iterator> its;
+
+
+  for (auto const& v : *this) {
+	  its.push_back(v->timeVector().begin());
+  }
+
+  for (size_t i = 0; i < n; i++) {
+	  QString line;
+	  for (auto& xi : its) {
+		  line.append(QString::number(*xi, 'f', 5) + ", ");
+		  ++xi;
+	  }
+	  line.chop(2);
+	  stream << line << "\n";
+  }
+
+  file.close();
 }

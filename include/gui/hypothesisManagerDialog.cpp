@@ -201,7 +201,7 @@ void HypothesisManagerDialog::compute() {
 				{
 					criteria = vectorSet.hTest();
 					quantile = Statistics::pearQuantile(1-critLevel, vectorSet.size()-1);
-					cond = QString("|%1| < 𝜒(%2,%3) = %4")
+					cond = QString("%1 < 𝜒(%2,%3) = %4")
 						.arg(criteria, 3, 'f')
 						.arg(1-critLevel, 3, 'f')
 						.arg(vectorSet.size()-1)
@@ -210,8 +210,35 @@ void HypothesisManagerDialog::compute() {
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					break;
 				}
+			case DataVectorSet::Procedure::signTestP:
+				{
+					criteria = vectorSet.signTest();
+					quantile = Statistics::normQuantile(1-critLevel);
+					cond = QString("%1 < u(%2) = %3")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(quantile, 3, 'f');
+					accepted = criteria < quantile;
+					implies = accepted ? "вибірки однорідні" : 
+						"вибірки не однорідні (F(x) < G(y))";
+					break;
+				}
+			case DataVectorSet::Procedure::qTestP:
+				{
+					criteria = vectorSet.qTest();
+					quantile = Statistics::pearQuantile(1-critLevel, vectorSet.size() - 1);
+					cond = QString("%1 ≤ 𝜒(%2, %3) = %4")
+						.arg(criteria, 3, 'f')
+						.arg(1-critLevel, 3, 'f')
+						.arg(vectorSet.size() - 1)
+						.arg(quantile, 3, 'f');
+					accepted = criteria <= quantile;
+					implies = accepted ? "всі способи мають однакову імовірність" : 
+						"всі способи мають різну імовірність" ;
+					break;
+				}
 			default:
-				throw "How we got there?";
+				throw "How we got there...?";
 		}
 	} catch (const char* msg) {
 		resTextEdit->setText("Помилка: " + QString(msg));

@@ -19,6 +19,9 @@ public:
 		criteriaUP,
 		rankAveragesDifferenceP,
 		hTestP,
+		signTestP,
+		qTestP,
+		testAbbeP,
 		Count
 	};
 
@@ -35,6 +38,9 @@ public: // tests
 	double criteriaU();
 	double rankAveragesDifference();
 	double hTest();
+	double signTest();
+	double qTest();
+	double testAbbe();
 
 public: // statistics
 	size_t overallSize();
@@ -43,6 +49,9 @@ public: // statistics
 	double intragroupVariation(); // в кожній вибірці
 	std::list<double> overallVector();
 	std::map<double, double> overallRank(); 
+
+public: // misc
+	void writeToFile(QString);
 
 private:
 };

@@ -218,9 +218,21 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(hTestAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::hTestP); });
 
+  QAction* signTestAction = indentityMenu->addAction("Критерій знаків");
+  connect(signTestAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::signTestP); });
+
   QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
   connect(oneWayANOVAAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(DataVectorSet::oneWayANOVAP); });
+
+  QAction* qTest = hypotesisMenu->addAction("Q-критерій Кохрена");
+  connect(qTest, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::qTestP); });
+
+  QAction* testAbbeAction = hypotesisMenu->addAction("Критерій Аббе");
+  connect(testAbbeAction, &QAction::triggered, this,
+	[this](){ this->makeHypothesisAction(DataVectorSet::testAbbeP); });
 
   menu.addSeparator();
 
@@ -395,18 +407,34 @@ void VectorContainerWidget::generateAction() {
 }
 
 void VectorContainerWidget::writeAction() {
-  std::pair<VectorEntry *, QTableWidgetItem *> ve = selectedVector();
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+
+  QString names;
+  for (auto const& v : vectors) {
+	  names.append(QString("%1(%2),")
+			  .arg(v.first->name)
+			  .arg(v.first->vector->size()));
+  }
+  names.chop(1);
 
   QString filename = QFileDialog::getSaveFileName(
       this, "Зберегти вектор",
-      QDir::homePath() + "/" + ve.first->name + "-" +
-          QString::number(ve.first->vector->size()) + ".txt",
+      QDir::homePath() + "/" + names + ".txt",
       "Текстові файли (*.txt) ;; CSV файли (*.csv)");
 
   if (filename.length() == 0)
     return;
 
-  ve.first->vector->writeToFile(filename);
+  DataVectorSet set;
+  for (auto const &v : vectors)
+    set.push_back(v.first->vector);
+
+  try {
+	  set.writeToFile(filename);
+  } catch (const char* msg) {
+	  message(msg);
+  }
 }
 
 void VectorContainerWidget::makeHypothesisAction(DataVectorSet::Procedure p) {
