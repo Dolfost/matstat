@@ -232,7 +232,7 @@ void HypothesisManagerDialog::compute() {
 					accepted = std::abs(criteria) <= quantile;
 					implies = accepted ? "вибірки однорідні" : "вибірки не однорідні";
 					qf = [=](double a) { 
-						return criteria <= Statistics::normQuantile(1-a/2);
+						return std::abs(criteria) <= Statistics::normQuantile(1-a/2);
 					};
 					break;
 				}
