@@ -315,17 +315,20 @@ double DataVectorSet::signTest() {
 
 	auto iv1 = v1->vector().begin();
 	auto iv2 = v2->vector().begin();
+	size_t n = v1->size();
 
 	size_t S = 0;
 	while (iv1 != v1->vector().end() and iv2 != v2->vector().end()) {
-		if (*iv1 - *iv2 > 0)
+		double diff = *iv1 - *iv2;
+		if (diff > 0)
 			S++;
+		else if (diff == 0)
+			n--;
+
 		iv1++, iv2++;
 	}
 
-	size_t N = overallSize();
-
-	return (2*S - 1 - N)/std::sqrt(N);
+	return (2*S - 1 - n)/std::sqrt(n);
 }
 
 double DataVectorSet::qTest() {
