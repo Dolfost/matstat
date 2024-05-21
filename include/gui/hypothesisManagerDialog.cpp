@@ -285,6 +285,22 @@ void HypothesisManagerDialog::compute() {
 					};
 					break;
 				}
+			case DataVectorSet::Procedure::testAbbeP:
+				{
+					criteria = vectorSet.testAbbe();
+					quantile = Statistics::normQuantile(critLevel);
+					cond = QString("%1 ≤ n(%2) = %3")
+						.arg(criteria, 3, 'f')
+						.arg(critLevel, 3, 'f')
+						.arg(quantile, 3, 'f');
+					accepted = criteria > quantile;
+					implies = accepted ? "спостереження незалежні" : 
+						"спостереження залежні" ;
+					qf = [=](double a) { 
+						return criteria > Statistics::normQuantile(a);
+					};
+					break;
+				}
 			default:
 				throw "How we got there...?";
 		}

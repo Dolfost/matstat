@@ -51,15 +51,15 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 			this->charts, &Charts::setCurrentIndex);
 
 
-	_addFile("../../../data/500/norm3n.txt");
-	_addFile("../../../data/500/norm.txt");
-	_addFile("../../../data/500/exp.txt");
-	_addFile("../../../data/500/veib.txt");
-	_addFile("../../../data/500/exp1.txt");
-	_addFile("../../../data/500/ravn1.txt");
-	_addFile("../../../data/25/exp.txt");
-	_addFile("../../../data/25/norm.txt");
-	_addFile("../../../data/25/veib.txt");
+	// _addFile("../../../data/500/norm3n.txt");
+	// _addFile("../../../data/500/norm.txt");
+	// _addFile("../../../data/500/exp.txt");
+	// _addFile("../../../data/500/veib.txt");
+	// _addFile("../../../data/500/exp1.txt");
+	// _addFile("../../../data/500/ravn1.txt");
+	// _addFile("../../../data/25/exp.txt");
+	// _addFile("../../../data/25/norm.txt");
+	// _addFile("../../../data/25/veib.txt");
 	// _addFile("../../../data/qtest/TR1(V10)-120.txt");
 	// _addFile("../../../data/qtest/TR2(V11)-120.txt");
 	// _addFile("../../../data/qtest/TR3(V12)-120.txt");

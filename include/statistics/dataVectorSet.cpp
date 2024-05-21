@@ -366,7 +366,25 @@ double DataVectorSet::qTest() {
 }
 
 double DataVectorSet::testAbbe() {
-	return 0.5;
+	if (size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	DataVector* v = at(0);
+
+	double d2 = 0;
+	auto i1 = v->timeVector().begin(),
+		 i2 = std::next(i1);
+
+	while (i2 != v->timeVector().end()) {
+		d2 += std::pow(*i2 - *i1, 2);
+		i1++, i2++;
+	}
+	d2 /= (v->size() - 1);
+
+	double q = d2/(2*v->variance());
+	double u = (q - 1)*std::sqrt((std::pow(v->size(), 2) - 1)/(v->size() - 2));
+
+	return u;
 }
 
 void DataVectorSet::writeToFile(QString filename) {
