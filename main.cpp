@@ -9,5 +9,5 @@ int main(int argc, char *argv[]) {
 	MainWindow mainWindow = MainWindow();
 	mainWindow.show();
 
-    return app.exec();
+	return app.exec();
 }
