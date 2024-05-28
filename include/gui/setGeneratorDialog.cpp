@@ -2,7 +2,6 @@
 #include <QtWidgets/qgridlayout.h>
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qpushbutton.h>
-#include <list>
 
 ParametersWidget::ParametersWidget(QStringList params, std::vector<double> val, bool en) : QWidget() {
 	size = params.length();
