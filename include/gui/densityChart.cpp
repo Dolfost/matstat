@@ -1,8 +1,3 @@
-#include <QChart>
-#include <QBarSet>
-#include <QBarSeries>
-#include <QValueAxis>
-
 #include <QDebug>
 
 #include "densityChart.hpp"

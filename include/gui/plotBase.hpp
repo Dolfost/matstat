@@ -4,14 +4,10 @@
 #include <QtCharts/qbarseries.h>
 #include <QtCharts/qbarset.h>
 #include <QtCharts/qchart.h>
-#include <QChartView>
-#include <QAreaSeries>
-#include <QSplineSeries>
 #include <QtCharts/qvalueaxis.h>
 #include <QtWidgets/qlabel.h>
-#include <QLogValueAxis>
 
-#include "QCustomPlot/qcustomplot.h"
+#include "qcustomplot.h"
 #include "dataVector.hpp"
 #include "classSeries.hpp"
 

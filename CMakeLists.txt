@@ -11,28 +11,26 @@ set(CMAKE_PREFIX_PATH "~/Qt/6.6.2/macos/lib/cmake")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-add_subdirectory(${PROJECT_SOURCE_DIR}/exprtk_cmake)
-
-find_package(Qt6 REQUIRED COMPONENTS PrintSupport Widgets Gui Charts)
-qt_standard_project_setup()
-
-file(GLOB STATISTICS_FILES ${PROJECT_SOURCE_DIR}/include/statistics/*.cpp
-	${PROJECT_SOURCE_DIR}/include/statistics/dataVector/src/*.cpp)
-file(GLOB GUI_FILES ${PROJECT_SOURCE_DIR}/include/gui/*.cpp)
-
 include_directories(./include
 	./exprtk_cmake/include
 	./include/statistics/dataVector
+	./include/QCustomPlot
 	./include/statistics)
+
+add_subdirectory(${PROJECT_SOURCE_DIR}/exprtk_cmake)
+add_subdirectory(${PROJECT_SOURCE_DIR}/include/QCustomPlot)
+add_subdirectory(${PROJECT_SOURCE_DIR}/include/gui)
+add_subdirectory(${PROJECT_SOURCE_DIR}/include/statistics)
+
+find_package(Qt6 REQUIRED COMPONENTS PrintSupport Widgets Gui)
+qt_standard_project_setup()
+
 
 qt_add_executable(lab1
     main.cpp
-	${STATISTICS_FILES}
-	${GUI_FILES}
-	${PROJECT_SOURCE_DIR}/include/QCustomPlot/qcustomplot.cpp
 )
 
-target_link_libraries(lab1 PRIVATE exprtk Qt6::Widgets Qt6::PrintSupport Qt6::Gui Qt6::Charts)
+target_link_libraries(lab1 PRIVATE gui qcustomplot exprtk statistics Qt6::Widgets Qt6::PrintSupport Qt6::Gui)
 
 set_target_properties(lab1 PROPERTIES
     MACOSX_BUNDLE ON

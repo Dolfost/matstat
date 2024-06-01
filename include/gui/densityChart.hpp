@@ -1,7 +1,6 @@
 #ifndef _DENSITY_CHART_HPP_
 #define _DENSITY_CHART_HPP_
 
-#include <QChart>
 #include <QtCharts/qbarseries.h>
 
 #include "plotBase.hpp"

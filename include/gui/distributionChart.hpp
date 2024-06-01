@@ -1,9 +1,6 @@
 #ifndef _DISTRIBUTION_CHART_HPP_
 #define _DISTRIBUTION_CHART_HPP_
 
-#include <QChart>
-#include <QtCharts/qbarseries.h>
-
 #include "plotBase.hpp"
 
 class DistributionChart : public PlotBase {

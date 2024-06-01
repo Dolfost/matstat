@@ -1,7 +1,7 @@
 #ifndef _AXIS_TICKER_EXP_HPP_
 #define _AXIS_TICKER_EXP_HPP_
 
-#include <QCustomPlot/qcustomplot.h>
+#include "qcustomplot.h"
 
 class AxisTickerExp : public QCPAxisTicker
 {

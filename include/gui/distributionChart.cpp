@@ -1,7 +1,3 @@
-#include <QChart>
-#include <QBarSet>
-#include <QBarSeries>
-#include <QValueAxis>
 #include <QtCore/qlogging.h>
 #include <QtCore/qnamespace.h>
 #include <QtCore/qnumeric.h>
