@@ -11,7 +11,7 @@ set(CMAKE_PREFIX_PATH "~/Qt/6.6.2/macos/lib/cmake")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
-add_subdirectory(./exprtk_cmake)
+add_subdirectory(${PROJECT_SOURCE_DIR}/exprtk_cmake)
 
 find_package(Qt6 REQUIRED COMPONENTS PrintSupport Widgets Gui Charts)
 qt_standard_project_setup()
@@ -32,9 +32,8 @@ qt_add_executable(lab1
 	${PROJECT_SOURCE_DIR}/include/QCustomPlot/qcustomplot.cpp
 )
 
-target_link_libraries(lab1 PRIVATE exprtk_cmake_lib Qt6::Widgets Qt6::PrintSupport Qt6::Gui Qt6::Charts)
+target_link_libraries(lab1 PRIVATE exprtk Qt6::Widgets Qt6::PrintSupport Qt6::Gui Qt6::Charts)
 
 set_target_properties(lab1 PROPERTIES
     MACOSX_BUNDLE ON
 )
-

@@ -77,4 +77,10 @@ else()
 
 endif()
 
-add_subdirectory(src)
+add_library(exprtk INTERFACE)
+
+# Set library output directory
+set_target_properties(exprtk PROPERTIES ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
+
+# Export include directories
+target_include_directories(exprtk INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
