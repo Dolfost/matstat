@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
+enable_testing()
 
 project(lab VERSION 1.0.0 LANGUAGES CXX)
 
@@ -38,4 +39,9 @@ target_link_libraries(lab PRIVATE exprtk Qt6::Widgets Qt6::PrintSupport Qt6::Gui
 
 set_target_properties(lab PROPERTIES
 	MACOSX_BUNDLE OFF
+)
+
+add_test(
+	NAME test 
+	COMMAND lab
 )
