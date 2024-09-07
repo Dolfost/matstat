@@ -130,10 +130,10 @@ SetGeneratorDialog::SetGeneratorDialog(
 			title.append(QString(" згідно розподілу вектора %1 — ")
 						.arg(ve->name));
 			enabled = false;
-			if (ve->vector->rep.model != ss::Vector::Distribution::Model::Unknown) {
-				title.append(ss::Vector::Distribution::distributionName[(int)ve->vector->rep.model]);
-				distributionComboBox->setCurrentIndex((int)ve->vector->rep.model-1);
-				params = ve->vector->rep.parameters;
+			if (ve->vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+				title.append(ss::Vector::Distribution::distributionName[(int)ve->vector->dist.model]);
+				distributionComboBox->setCurrentIndex((int)ve->vector->dist.model-1);
+				params = ve->vector->dist.parameters;
 				countSpinBox->setValue(ve->vector->size());
 				minSpinBox->setValue(ve->vector->min());
 				maxSpinBox->setValue(ve->vector->max());
@@ -175,10 +175,10 @@ void SetGeneratorDialog::generate() {
 	ss::Vector::Distribution::Model dist;
 	std::vector<double> parameters;
 
-	if (ve != nullptr and ve->vector->rep.model != ss::Vector::Distribution::Model::Unknown) {
-		dv = new ss::Vector(ve->vector->rep.generateSet(m, count, min, max));
-		dist = ve->vector->rep.model;
-		parameters = ve->vector->rep.parameters;
+	if (ve != nullptr and ve->vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		dv = new ss::Vector(ve->vector->dist.generateSet(m, count, min, max));
+		dist = ve->vector->dist.model;
+		parameters = ve->vector->dist.parameters;
 	} else {
 		ss::Vector::Distribution dr;
 		dr.setDistribution(ss::Vector::Distribution::Model(distributionComboBox->currentIndex()+1),

@@ -384,10 +384,8 @@ public: // vector operations
 public: // distribution recreation
 	double cdf(double);
 
-	Distribution rep;
+	Distribution dist;
 	bool reproduceDistribution(Distribution::Model);
-
-	void makeClassSeries(unsigned short = 0);
 
 public: // general
 	QString report();

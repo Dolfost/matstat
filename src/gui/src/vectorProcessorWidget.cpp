@@ -91,7 +91,7 @@ void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		new ConfindenceItem2D(ItemType::Confidence2D);
 	confidenceItem->setIcon(0, this->style()->standardIcon(QStyle::SP_ArrowForward));
 	confidenceItem->setData(0, Qt::EditRole,
-				QVariant(vectorEntry->vector->rep.confidence));
+				QVariant(vectorEntry->vector->dist.confidence));
 	parent->addChild(confidenceItem);
 
 	// QDoubleSpinBox* spinBox = qobject_cast<QDoubleSpinBox*>(parent->treeWidget()->itemWidget(confidenceItem, 0));
@@ -270,7 +270,7 @@ void VectorProcessorWidget::emit2D(QTreeWidgetItem* item) {
 	item->data(0, Qt::UserRole).value<VectorEntry*>()->vector->classSeries.setCount(
 			item->child(2)->data(0, Qt::EditRole).value<int>());
 	item->data(0, Qt::UserRole).value<VectorEntry*>()->
-		vector->rep.confidence = 
+		vector->dist.confidence = 
 		item->child(3)->data(0, Qt::EditRole).value<double>();
 
 	emit twoDVectorsSelected(activeItems[Tab::TwoD].front()->

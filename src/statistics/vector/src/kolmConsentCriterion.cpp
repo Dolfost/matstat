@@ -7,15 +7,15 @@ void KolmConsentCriterion::adapt() {
   auto x1 = s_vector.cbegin(), x2 = ++s_vector.cbegin();
 
   double k;
-  if (s_vector.rep.domain.first != s_vector.rep.domain.second)
-	  k =  std::abs(s_vector.rep.domain.first - s_vector.rep.domain.second) /
+  if (s_vector.dist.domain.first != s_vector.dist.domain.second)
+	  k =  std::abs(s_vector.dist.domain.first - s_vector.dist.domain.second) /
 		  std::abs(s_vector.min() - s_vector.max());
   else 
 	  k = 1;
 
   double cdfv = s_vector.classSeries.cdf(*x2), 
-		 Dp = std::abs(cdfv - s_vector.rep.cdf(*x2*k)),
-		 Dm = std::abs(cdfv - s_vector.rep.cdf(*x1*k));
+		 Dp = std::abs(cdfv - s_vector.dist.cdf(*x2*k)),
+		 Dm = std::abs(cdfv - s_vector.dist.cdf(*x1*k));
 
   x1++;
   x2++;
@@ -23,11 +23,11 @@ void KolmConsentCriterion::adapt() {
   while (x2 != s_vector.cend()) {
 	  cdfv = s_vector.classSeries.cdf(*x2);
 
-	  double DpTmp = std::abs(cdfv - s_vector.rep.cdf(*x2*k));
+	  double DpTmp = std::abs(cdfv - s_vector.dist.cdf(*x2*k));
 	  if (DpTmp > Dp)
 		  Dp = DpTmp;
 
-	  double DmTmp = std::abs(cdfv - s_vector.rep.cdf(*x1*k));
+	  double DmTmp = std::abs(cdfv - s_vector.dist.cdf(*x1*k));
 	  if (DmTmp > Dm)
 		  Dm = DmTmp;
 

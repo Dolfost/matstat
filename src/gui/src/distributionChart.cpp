@@ -56,8 +56,8 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 
 	graph->setData(x, y, true);
 
-	if (dataVector->rep.model != ss::Vector::Distribution::Model::Unknown) {
-		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
+	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		if (dataVector->dist.domain.first == dataVector->dist.domain.second)
 			coordinatesLabelString = "${X}\n${Y}";
 		else
 			coordinatesLabelString = "${X} ${X2}\n${Y}";
@@ -65,9 +65,9 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 		QList<double> yDev1, yDev2;
 
 		double a, b;
-		if (dataVector->rep.domain.first != dataVector->rep.domain.second) {
-			a = dataVector->rep.domain.first;
-			b = dataVector->rep.domain.second;
+		if (dataVector->dist.domain.first != dataVector->dist.domain.second) {
+			a = dataVector->dist.domain.first;
+			b = dataVector->dist.domain.second;
 		} else {
 			a = dataVector->min();
 			b = dataVector->max();
@@ -78,9 +78,9 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 				arg <= b;
 				arg += interval/350) {
 			x.push_back(arg);
-			y.push_back(dataVector->rep.cdf(arg));
+			y.push_back(dataVector->dist.cdf(arg));
 			std::pair<double, double> dev =
-				dataVector->rep.cdfConfidence(arg, dataVector->rep.confidence);
+				dataVector->dist.cdfConfidence(arg, dataVector->dist.confidence);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}

@@ -51,18 +51,18 @@ void DensityChart::fill(ss::Vector* dataVector) {
 
 	x.clear(), y.clear();
 
-	if (dataVector->rep.model != ss::Vector::Distribution::Model::Unknown) {
-		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
+	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		if (dataVector->dist.domain.first == dataVector->dist.domain.second)
 			coordinatesLabelString = "${X}\n${Y} ${Y2}";
 		else
 			coordinatesLabelString = "${X} ${X2}\n${Y} ${Y2}";
 
 		this->yAxis2->setTickLabels(true);
-		this->yRange2 = QCPRange(0, dataVector->rep.pdfMax);
+		this->yRange2 = QCPRange(0, dataVector->dist.pdfMax);
 		double a, b;
-		if (dataVector->rep.domain.first != dataVector->rep.domain.second) {
-			a = dataVector->rep.domain.first;
-			b = dataVector->rep.domain.second;
+		if (dataVector->dist.domain.first != dataVector->dist.domain.second) {
+			a = dataVector->dist.domain.first;
+			b = dataVector->dist.domain.second;
 		} else {
 			a = dataVector->min();
 			b = dataVector->max();
@@ -73,7 +73,7 @@ void DensityChart::fill(ss::Vector* dataVector) {
 				arg <= b;
 				arg += interval/350) {
 			x.push_back(arg);
-			y.push_back(dataVector->rep.pdf(arg));
+			y.push_back(dataVector->dist.pdf(arg));
 		}
 
 		density->setData(x, y);
