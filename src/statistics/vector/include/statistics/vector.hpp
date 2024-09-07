@@ -135,10 +135,9 @@ protected:
 	virtual void adapt(std::size_t) override;
 };
 
-class WalshAverages: public utils::StatisticSingle<std::vector<double>> {
+class WalshAverages: public utils::StatisticList<std::list<double>> {
 public:
-	using StatisticSingle::StatisticSingle;
-	virtual void invalidate() override;
+	using StatisticList::StatisticList;
 protected:
 	virtual void adapt() override;
 };
@@ -178,18 +177,29 @@ protected:
 	virtual void adapt() override;
 };
 
-
-class Vector {
+class Min: public utils::StatisticSingle<double> {
 public:
-	struct Stats {
-		std::pair<std::pair<double, double>, bool>
-			reproductionDeviation{{0,0}, false};
+	using StatisticSingle::StatisticSingle;
+protected:
+	virtual void adapt() override;
+};
 
-		std::pair<double, bool> min{0, false};
-		std::pair<double, bool> max{0, false};
-		std::pair<size_t, bool> size{0, false};
-	};
+class Max: public utils::StatisticSingle<double> {
+public:
+	using StatisticSingle::StatisticSingle;
+protected:
+	virtual void adapt() override;
+};
 
+class Sorted: public utils::StatisticList<std::list<double>> {
+public:
+	using StatisticList::StatisticList;
+protected:
+	virtual void adapt() override;
+};
+
+class Vector: protected std::list<double> {
+public:
 	class ClassSeries;
 	class VarSeries;
 
@@ -197,8 +207,6 @@ public:
 	Vector(const std::list<double>& = {});
 	Vector(Vector&);
 	void setVector(const std::list<double>&);
-	const std::list<double>& vector();
-	const std::list<double>& timeVector();
 	~Vector();
 
 public: // new statistics
@@ -225,16 +233,25 @@ public: // new statistics
 	PearConsentCriterion pearConsentCriterion = PearConsentCriterion(this);
 	CoefficientOfVariation cv = CoefficientOfVariation(this);
 	NonparametricCoefficientOfVariation ncv = NonparametricCoefficientOfVariation(this);
+	Sorted sorted = Sorted(this);
+	Min min = Min(this);
+	Max max = Max(this);
 
+	using std::list<double>::size;
+
+	using std::list<double>::front;
+	using std::list<double>::back;
+	using std::list<double>::begin;
+	using std::list<double>::end;
+	using std::list<double>::cbegin;
+	using std::list<double>::cend;
+	using std::list<double>::crbegin;
+	using std::list<double>::crend;
+	using std::list<double>::empty;
 public: // binds
 	double variance(Measure m = Measure::Sample) { return centralMoment(2, m); };
 	double mean() { return rawMoment(1); };
 	double med() { return tmean(0.5); };
-	
-public: // statistics
-	size_t size();
-	double min();
-	double max();
 	
 public: // vector operations
 	void standardize();
@@ -256,13 +273,14 @@ public: // distribution recreation
 
 public: // general
 	QString report();
-	void clearStatistics();
+	void invalidate();
 	static const QString exprtkFuncitons;
+	//  TODO: move from std::list to Vector insertion
+	const std::list<double>& list() { 
+		return static_cast<const std::list<double>&>(*this); 
+	}
 
 private: // data
-	std::list<double> dataVector;
-	std::list<double> timeSeries;
-	Stats stat;
 	ClassSeries* cs;
 	VarSeries* vs;
 	bool csReady = false;
@@ -271,9 +289,6 @@ private: // data
 	bool transformationSymbolTableReady = false;
 	::exprtk::symbol_table<double> transformationSymbolTable;
 	void setTransformationSymbolTable();
-
-private:
-	void computeMinMaxSize();
 };
 
 

@@ -84,7 +84,7 @@ VectorTrimmerDialog::VectorTrimmerDialog(
 }
 
 void VectorTrimmerDialog::trim() {
-	VectorEntry* newEntry = new VectorEntry(new ss::Vector(ve->vector->vector()));
+	VectorEntry* newEntry = new VectorEntry(new ss::Vector(ve->vector->list()));
 	size_t delta = newEntry->vector->trim(glow, ghigh);
 	newEntry->name = "TRIM" + QString::number(++trimIdx) + "(" + ve->name + ")";
 

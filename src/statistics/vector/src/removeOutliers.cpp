@@ -3,7 +3,9 @@
 namespace ss {
 
 bool Vector::removeOutliers() {
-  int popCount = 0;
+	std::size_t popCount = 0;
+
+	Vector dataVector = sorted();
 
   while (true) {
     double a, b, t1 = 2 + 0.2 * log10(0.04 * size()),
@@ -21,23 +23,23 @@ bool Vector::removeOutliers() {
     }
 
     if (a > dataVector.front()) {
-	  auto it = std::find(timeSeries.begin(), timeSeries.end(), dataVector.front());
-	  if(it != timeSeries.end())
-		  timeSeries.erase(it);
+	  auto it = std::find(begin(), end(), front());
+	  if(it != end())
+		  erase(it);
 
-      dataVector.pop_front();
-      clearStatistics();
+      pop_front();
+      invalidate();
       popCount++;
       continue;
     }
 
     if (b < dataVector.back()) {
-	  auto it = std::find(timeSeries.begin(), timeSeries.end(), dataVector.back());
-	  if(it != timeSeries.end())
-		  timeSeries.erase(it);
+	  auto it = std::find(begin(), end(), dataVector.back());
+	  if(it != end())
+		  erase(it);
 	  
       dataVector.pop_back();
-      clearStatistics();
+      invalidate();
       popCount++;
       continue;
     }
@@ -45,10 +47,10 @@ bool Vector::removeOutliers() {
     break;
   }
 
-  if (popCount == 0)
-    return false;
+	static_cast<std::list<double>&>(*this) = dataVector;
+	invalidate();
 
-  return true;
+  return popCount != 0;
 }
 
 }

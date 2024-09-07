@@ -58,6 +58,29 @@ protected:
 	T s_value;
 };
 
+template<class T>
+class StatisticList: public Statistic<T> {
+public:
+	StatisticList() = delete;
+	using Statistic<T>::Statistic;
+	virtual void invalidate() override {
+		s_value.clear();
+		s_valid = false;
+	}
+	virtual const T& value() {
+		if (!s_valid) {
+			adapt();
+			s_valid = true;
+		}
+		return s_value;
+	}
+	const T& operator()() { return value(); };
+protected:
+	virtual void adapt() = 0;
+	bool s_valid = false;
+	T s_value;
+};
+
 template<class T, class Switch>
 class StatisticPair: public Statistic<T> {
 public:

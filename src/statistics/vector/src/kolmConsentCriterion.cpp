@@ -5,7 +5,7 @@
 namespace ss {
 
 void KolmConsentCriterion::adapt() {
-  auto x1 = s_vector.vector().begin(), x2 = ++s_vector.vector().begin();
+  auto x1 = s_vector.cbegin(), x2 = ++s_vector.cbegin();
 
   double k;
   if (s_vector.rep.domain.first != s_vector.rep.domain.second)
@@ -21,7 +21,7 @@ void KolmConsentCriterion::adapt() {
   x1++;
   x2++;
 
-  while (x2 != s_vector.vector().end()) {
+  while (x2 != s_vector.cend()) {
 	  cdfv = s_vector.classSeries()->eCdf(*x2);
 
 	  double DpTmp = std::abs(cdfv - s_vector.rep.cdf(*x2*k));

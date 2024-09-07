@@ -35,7 +35,7 @@ bool Vector::ClassSeries::makeSeries(unsigned short cc) {
 	cumulativeSeries.resize(clsCnt);
 
 	int idx;
-	for (auto const& i : vector->vector()) {
+	for (auto const& i : *vector) {
 		idx = (i - vector->min())/h;
 		if (idx >= clsCnt)
 			idx--;

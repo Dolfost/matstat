@@ -108,8 +108,8 @@ void VectorContainerWidget::fillRow(int row, VectorEntry *vectorEntry) {
     this->setItem(row, i, infoItems[i]);
   }
 
-  auto list = vectorEntry->vector->vector();
-  auto it = list.begin();
+  auto list = vectorEntry->vector;
+  auto it = list->begin();
   for (size_t col = InfoCell::Count;
        col < vectorEntry->vector->size() + InfoCell::Count; col++) {
     QTableWidgetItem *tableItem = new QTableWidgetItem(DataCell::Data);
@@ -275,9 +275,10 @@ void VectorContainerWidget::standardizeAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
   for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector->vector());
+		ss::Vector newVector(*vec.first->vector);
     newVector.standardize();
-    appendList(&newVector.vector(), QString("S(%1)").arg(vec.first->name));
+    appendList(&newVector.list(), QString("S(%1)").arg(vec.first->name));
+		//  TODO: move from std::list to Vector insertion
   }
 }
 
@@ -285,9 +286,9 @@ void VectorContainerWidget::logAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
   for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector->vector());
+		ss::Vector newVector(vec.first->vector->list());
     newVector.transform("log(x)");
-    appendList(&newVector.vector(), QString("LN(%1)").arg(vec.first->name));
+    appendList(&newVector.list(), QString("LN(%1)").arg(vec.first->name));
   }
 }
 
@@ -295,9 +296,9 @@ void VectorContainerWidget::reverseAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
   for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector->vector());
+		ss::Vector newVector(vec.first->vector->list());
     newVector.transform("1/x");
-    appendList(&newVector.vector(), QString("R(%1)").arg(vec.first->name));
+    appendList(&newVector.list(), QString("R(%1)").arg(vec.first->name));
   }
 }
 
@@ -305,9 +306,9 @@ void VectorContainerWidget::rightShiftAction() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
       selectedVectors();
   for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector->vector());
+		ss::Vector newVector(vec.first->vector->list());
     newVector.transform("x+abs(xmin)+1");
-    appendList(&newVector.vector(), QString("RS(%1)").arg(vec.first->name));
+    appendList(&newVector.list(), QString("RS(%1)").arg(vec.first->name));
   }
 }
 
@@ -368,7 +369,7 @@ void VectorContainerWidget::removeOutliersAction() {
       selectedVectors();
 
   for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector->vector());
+		ss::Vector newVector(vec.first->vector->list());
     bool ok = newVector.removeOutliers();
 
     emit outliersRemoved(ok);
@@ -376,7 +377,7 @@ void VectorContainerWidget::removeOutliersAction() {
     if (!ok) // no entries removed
       return;
 
-    appendList(&newVector.vector(), QString("RMOUT(%1)").arg(vec.first->name));
+    appendList(&newVector.list(), QString("RMOUT(%1)").arg(vec.first->name));
   }
 }
 

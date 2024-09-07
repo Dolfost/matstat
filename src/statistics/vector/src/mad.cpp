@@ -6,7 +6,7 @@ void MeanAbsoluteDeviation::adapt() {
   std::list<double> madVector;
   double medValue = s_vector.med();
 
-  for (auto const &i : s_vector.vector()) {
+  for (auto const &i : s_vector) {
     madVector.push_back(abs(i - medValue));
   }
 

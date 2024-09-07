@@ -11,26 +11,20 @@ Vector::Vector(const std::list<double> &input) {
 }
 
 Vector::Vector(Vector &dv) {
-  setVector(dv.vector());
+  setVector(dv);
   cs = new ClassSeries(this);
   vs = new VarSeries(this);
 }
 
 void Vector::setVector(const std::list<double> &input) {
-  dataVector = input;
-	dataVector.sort();
-  timeSeries = input;
-  clearStatistics();
+  static_cast<std::list<double>&>(*this) = input;
+  invalidate();
 }
 
-const std::list<double> &Vector::vector() { return dataVector; }
-const std::list<double> &Vector::timeVector() { return timeSeries; }
-
-void Vector::clearStatistics() {
+void Vector::invalidate() {
   rawMoment.invalidate();
 	centralMoment.invalidate();
   tmean.invalidate();
-  walshAverages.invalidate();
 
   meanDeviation.invalidate();
   varianceDeviation.invalidate();
@@ -48,21 +42,19 @@ void Vector::clearStatistics() {
   mad.invalidate();
   skew.invalidate();
   kurtosis.invalidate();
-  cv.invalidate();
   counterKurtosis.invalidate();
+  cv.invalidate();
 	ncv.invalidate();
   walshAverages.invalidate();
   walshAveragesMed.invalidate();
+
+	sorted.invalidate();
 
   reproduceDistribution(DistributionReproducer::Distribution::UnknownD);
 	pearConsentCriterion.invalidate();
 	kolmConsentCriterion.invalidate();
   vsReady = false;
   csReady = false;
-
-  stat.min.second = false;
-  stat.max.second = false;
-  stat.size.second = false;
 }
 
 QString Vector::report() {

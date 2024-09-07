@@ -3,34 +3,16 @@
 namespace ss {
 
 size_t Vector::trim(double from, double to) {
-  std::list<double> newVector;
-
-  auto it = dataVector.begin();
-  while (it != dataVector.end()) {
-    if (*it >= from)
-      break;
-    it++;
-  }
-
-  while (it != dataVector.end()) {
-    if (*it <= to)
-      newVector.push_back(*(it++));
-    else
-      break;
-  }
-
-  auto x = timeSeries.begin();
-  while (x != timeSeries.end()) {
+	std::size_t n = size();
+  auto x = begin();
+  while (x != end()) {
 	  if (*x <= to or *x >= from)
-		  x = timeSeries.erase(x);
+		  x = erase(x);
   }
 
-  size_t res = dataVector.size() - dataVector.size();
-  dataVector = newVector;
+  invalidate();
 
-  clearStatistics();
-
-  return res;
+  return n - size();
 }
 
 }

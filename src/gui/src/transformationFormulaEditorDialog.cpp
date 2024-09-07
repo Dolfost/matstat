@@ -107,7 +107,7 @@ void TransformationFormulaEditorDialog::transform() {
 	statusTextEdit->clear();
 	for (auto const& v : vecs) {
 		VectorEntry* newVectorEntry = new VectorEntry;
-		newVectorEntry->vector = new ss::Vector(v->vector->vector());
+		newVectorEntry->vector = new ss::Vector(*v->vector);
 		QString res = newVectorEntry->vector->transform(formulaLineEdit->text());
 		if (res.length() != 0) {
 			statusTextEdit->append("Трансформування " + v->name + "\n" + res + "\n");

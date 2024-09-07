@@ -72,7 +72,7 @@ std::list<double> VectorChain::overallVector() {
 	std::list<double> globalVector;
 
 	for (auto const& v : *this) {
-		globalVector.splice(globalVector.end(), std::list<double>(v->vector()));
+		globalVector.splice(globalVector.end(), std::list<double>(v->cbegin(), v->cend()));
 	}
 
 	globalVector.sort();
@@ -110,10 +110,10 @@ double VectorChain::tTestDependent() {
 	if (v1->size() != v2->size())
 		throw "Вибірки різного розміру";
 
-	auto y = v2->timeVector().begin();
+	auto y = v2->begin();
 	std::list<double> z;
-	for (auto x = v1->timeVector().begin();
-			x != v1->timeVector().end(); x++, y++) {
+	for (auto x = v1->begin();
+			x != v1->end(); x++, y++) {
 		z.push_back(*x - *y);
 	}
 
@@ -226,7 +226,7 @@ double VectorChain::testWilcoxon() {
 	Vector* v2 = this->at(1);
 
 	double W = 0;
-	for (auto const& x : v1->vector()) 
+	for (auto const& x : *v1) 
 		W += ranks[x];
 
 	size_t N = overallSize();
@@ -246,8 +246,8 @@ double VectorChain::criteriaU() {
 
 	size_t u = 0;
 
-	for (auto const& x : v1->vector()) {
-		for (auto const& y : v2->vector()) {
+	for (auto const& x : *v1) {
+		for (auto const& y : *v2) {
 			if (x > y)
 				u++;
 		}
@@ -271,12 +271,12 @@ double VectorChain::rankAveragesDifference() {
 
 	double rx = 0, ry = 0;
 
-	for (auto const& x : v1->vector()) {
+	for (auto const& x : *v1) {
 		rx += ranks[x];
 	}
 	rx /= v1->size();
 
-	for (auto const& y : v2->vector()) {
+	for (auto const& y : *v2) {
 		ry += ranks[y];
 	}
 	ry /= v2->size();
@@ -292,7 +292,7 @@ double VectorChain::hTest() {
 
 	for (auto const& v : *this) {
 		double wi = 0;
-		for (auto const& x : v->vector())
+		for (auto const& x : *v)
 			wi += ranks[x];
 		w.push_back(wi/v->size());
 	}
@@ -316,12 +316,12 @@ double VectorChain::signTest() {
 	if (v1->size() != v2->size())
 		throw "Вибірки різного розміру";
 
-	auto iv1 = v1->vector().begin();
-	auto iv2 = v2->vector().begin();
+	auto iv1 = v1->begin();
+	auto iv2 = v2->begin();
 	size_t n = v1->size();
 
 	size_t S = 0;
-	while (iv1 != v1->vector().end() and iv2 != v2->vector().end()) {
+	while (iv1 != v1->end() and iv2 != v2->end()) {
 		double diff = *iv1 - *iv2;
 		if (diff > 0)
 			S++;
@@ -346,7 +346,7 @@ double VectorChain::qTest() {
 	size_t i = 0, j;
 	for (auto const& v : *this) {
 		j = 0;
-		for (auto const& x : v->timeVector()) {
+		for (auto const& x : *v) {
 			if (x == 1) {
 				T[i]++;
 				u[j]++;
@@ -356,7 +356,7 @@ double VectorChain::qTest() {
 		i++;
 	}
 
-	Vector tVector(std::list<double>(T.begin(), T.end()));
+	Vector tVector(std::list<double>(T.cbegin(), T.cend()));
 
 	double uSum = 0, uSum2 = 0;
 	for (auto const& ui : u) {
@@ -375,10 +375,10 @@ double VectorChain::testAbbe() {
 	Vector* v = at(0);
 
 	double d2 = 0;
-	auto i1 = v->timeVector().begin(),
+	auto i1 = v->cbegin(),
 		 i2 = std::next(i1);
 
-	while (i2 != v->timeVector().end()) {
+	while (i2 != v->cend()) {
 		d2 += std::pow(*i2 - *i1, 2);
 		i1++, i2++;
 	}
@@ -409,7 +409,7 @@ void VectorChain::writeToFile(QString filename) {
 
 
   for (auto const& v : *this) {
-	  its.push_back(v->timeVector().begin());
+	  its.push_back(v->begin());
   }
 
   for (size_t i = 0; i < n; i++) {

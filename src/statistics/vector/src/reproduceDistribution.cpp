@@ -26,7 +26,7 @@ bool Vector::reproduceDistribution(
   case DistributionReproducer::WeibullD: {
     double a11 = size() - 1;
     double a21 = 0, a22 = 0, b1 = 0, b2 = 0;
-    for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1);
+    for (auto it = sorted().cbegin(); it != std::prev(sorted().cend(), 1);
          it++) {
       double tmp = log(*it);
       a21 += tmp;
@@ -40,7 +40,7 @@ bool Vector::reproduceDistribution(
     // (a11b2-b1a21)/(a11a22-a21^2)
 
     double S = 0;
-    for (auto it = dataVector.begin(); it != std::prev(dataVector.end(), 1);
+    for (auto it = sorted().begin(); it != std::prev(sorted().end(), 1);
          it++) {
       S += pow(log(log(1 / (1 - cdf(*it)))) - skew(Measure::Population) -
                    beta * log(*it),

@@ -7,7 +7,7 @@ Vector::VarSeries::VarSeries(Vector* ds) {
 };
 
 bool Vector::VarSeries::makeSeries() {
-	std::list<double> vector = dataVector->vector();
+	std::list<double> vector = *dataVector;
 
 	seriesSize = dataVector->size();
 	seriesMin = dataVector->min();

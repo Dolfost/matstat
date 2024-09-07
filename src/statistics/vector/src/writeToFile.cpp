@@ -9,7 +9,7 @@ bool Vector::writeToFile(QString filename) {
     return false;
   QTextStream stream(&file);
 
-  for (auto const &x : dataVector) {
+  for (auto const &x : *this) {
     stream << x << "\n";
   }
 

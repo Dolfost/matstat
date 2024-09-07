@@ -2,32 +2,13 @@
 
 namespace ss {
 
-// double Vector::variance(Measure m) { return centralMoment(2, m); }
-//
-// double Vector::centralMoment(double degree, Measure m) {
-//   if (stat.centralMoment.count(degree) != 1)
-//     computeCentralMoment(degree);
-//
-//   if (m == Measure::PopulationM)
-//     return stat.centralMoment[degree].first;
-//   if (m == Measure::SampleM)
-//     return stat.centralMoment[degree].second;
-//   else
-//     return qQNaN();
-// }
-
-// void Vector::computeCentralMoment(double degree) {
-// }
-//
-// }
-
 void CentralMoment::adapt(double degree) {
   double *populationMoment = &s_values[degree].first;
   double *sampleMoment = &s_values[degree].second;
   double meanValue = s_vector.mean();
   double moment = 0;
 
-  for (auto const &i : s_vector.vector()) {
+  for (auto const &i : s_vector) {
     moment += std::pow(i - meanValue, degree);
   }
 

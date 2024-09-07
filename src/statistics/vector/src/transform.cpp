@@ -24,17 +24,12 @@ QString Vector::transform(QString expression) {
     return msg;
   }
 
-  for (auto &vectorValue : dataVector) {
-    x = vectorValue;
-    vectorValue = expr.value();
-  }
-
-  for (auto &timeSeriesValue : timeSeries) {
+  for (auto &timeSeriesValue : *this) {
     x = timeSeriesValue;
-	timeSeriesValue = expr.value();
+		timeSeriesValue = expr.value();
   }
 
-  clearStatistics();
+  invalidate();
 
   return msg;
 }

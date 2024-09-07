@@ -4,8 +4,9 @@ namespace ss {
 
 void RawMoment::adapt(double degree) {
   double *moment = &s_values[degree];
+	*moment = 0;
 
-  for (auto const &i : s_vector.vector()) {
+  for (auto const &i : s_vector) {
     *moment += std::pow(i, degree);
   }
 
