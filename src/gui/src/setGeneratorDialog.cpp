@@ -51,9 +51,9 @@ SetGeneratorDialog::SetGeneratorDialog(
 		mainLayout->addLayout(layout);
 
 		distributionComboBox = new QComboBox();
-		for (int i = 1; i < ss::DistributionReproducer::Distribution::CountD; i++) {
+		for (int i = 1; i < (int)ss::Vector::Distribution::Model::Count; i++) {
 			distributionComboBox->insertItem(i,
-					ss::DistributionReproducer::distributionName[i]);
+					ss::Vector::Distribution::distributionName[i]);
 		}
 		QGroupBox* distributionBox = new QGroupBox("Розподіл");
 		QVBoxLayout* distributionLayout = new QVBoxLayout;
@@ -72,9 +72,9 @@ SetGeneratorDialog::SetGeneratorDialog(
 		parametersLayout->setContentsMargins(1,1,1,0);
 
 		methodComboBox = new QComboBox;
-		for (int i = 0; i < ss::DistributionReproducer::Method::CountM; i++) {
+		for (int i = 0; i < (int)ss::Vector::Distribution::Method::Count; i++) {
 			methodComboBox->insertItem(i,
-					ss::DistributionReproducer::methodName[i]);
+					ss::Vector::Distribution::methodName[i]);
 		}
 
 		QGroupBox* methodBox = new QGroupBox("Метод відтворення");
@@ -130,16 +130,16 @@ SetGeneratorDialog::SetGeneratorDialog(
 			title.append(QString(" згідно розподілу вектора %1 — ")
 						.arg(ve->name));
 			enabled = false;
-			if (ve->vector->rep.model != ss::DistributionReproducer::UnknownD) {
-				title.append(ss::DistributionReproducer::distributionName[ve->vector->rep.model]);
-				distributionComboBox->setCurrentIndex(ve->vector->rep.model-1);
+			if (ve->vector->rep.model != ss::Vector::Distribution::Model::Unknown) {
+				title.append(ss::Vector::Distribution::distributionName[(int)ve->vector->rep.model]);
+				distributionComboBox->setCurrentIndex((int)ve->vector->rep.model-1);
 				params = ve->vector->rep.parameters;
 				countSpinBox->setValue(ve->vector->size());
 				minSpinBox->setValue(ve->vector->min());
 				maxSpinBox->setValue(ve->vector->max());
 			} else {
-				title.append(ss::DistributionReproducer::distributionName
-						[ss::DistributionReproducer::UnknownD]);
+				title.append(ss::Vector::Distribution::distributionName
+						[(int)ss::Vector::Distribution::Model::Unknown]);
 				statusBar->showMessage("Розподіл " + ve->name +
 						" не був відтворений");
 				minSpinBox->setEnabled(enabled);
@@ -165,23 +165,23 @@ SetGeneratorDialog::SetGeneratorDialog(
 
 void SetGeneratorDialog::generate() {
 	ss::Vector* dv;
-	ss::DistributionReproducer::Method m =
-		ss::DistributionReproducer::Method(methodComboBox->currentIndex());
+	ss::Vector::Distribution::Method m =
+		ss::Vector::Distribution::Method(methodComboBox->currentIndex());
 	size_t count = countSpinBox->value();
 	double
 		min = minSpinBox->value(),
 		max = maxSpinBox->value();
 
-	ss::DistributionReproducer::Distribution dist;
+	ss::Vector::Distribution::Model dist;
 	std::vector<double> parameters;
 
-	if (ve != nullptr and ve->vector->rep.model != ss::DistributionReproducer::UnknownD) {
+	if (ve != nullptr and ve->vector->rep.model != ss::Vector::Distribution::Model::Unknown) {
 		dv = new ss::Vector(ve->vector->rep.generateSet(m, count, min, max));
 		dist = ve->vector->rep.model;
 		parameters = ve->vector->rep.parameters;
 	} else {
-		ss::DistributionReproducer dr;
-		dr.setDistribution(ss::DistributionReproducer::Distribution(distributionComboBox->currentIndex()+1),
+		ss::Vector::Distribution dr;
+		dr.setDistribution(ss::Vector::Distribution::Model(distributionComboBox->currentIndex()+1),
 				parametersWidget->parameters(), count);
 		dv = new ss::Vector(dr.generateSet(m, count, min, max));
 		dist = dr.model;
@@ -198,7 +198,7 @@ void SetGeneratorDialog::distributionSelected(int model) {
 	if (parametersWidget != nullptr)
 		parametersLayout->removeWidget(parametersWidget);
 	delete parametersWidget;
-	parametersWidget = new ParametersWidget(ss::DistributionReproducer::parameterName[model+1], params, enabled);
+	parametersWidget = new ParametersWidget(ss::Vector::Distribution::parameterName[model+1], params, enabled);
 	parametersLayout->addWidget(parametersWidget);
 }
 

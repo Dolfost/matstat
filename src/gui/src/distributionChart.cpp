@@ -56,7 +56,7 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 
 	graph->setData(x, y, true);
 
-	if (dataVector->rep.model != ss::DistributionReproducer::Distribution::UnknownD) {
+	if (dataVector->rep.model != ss::Vector::Distribution::Model::Unknown) {
 		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
 			coordinatesLabelString = "${X}\n${Y}";
 		else

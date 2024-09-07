@@ -122,7 +122,7 @@ void PlotBase::fill(ss::Vector* dataVector) {
 	ss::Vector::ClassSeries& cs = dataVector->classSeries;
 
 	xRange = QCPRange(dataVector->min(), dataVector->max());
-	if (dataVector->rep.model != ss::DistributionReproducer::UnknownD) {
+	if (dataVector->rep.model != ss::Vector::Distribution::Model::Unknown) {
 		xRange2 = QCPRange(dataVector->rep.domain.first,
 				dataVector->rep.domain.second);
 		this->xAxis2->setTickLabels(true);

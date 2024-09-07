@@ -44,7 +44,7 @@ void Vector::invalidate() {
 
 	sorted.invalidate();
 
-  reproduceDistribution(DistributionReproducer::Distribution::UnknownD);
+  reproduceDistribution(Distribution::Model::Unknown);
 	pearConsentCriterion.invalidate();
 	kolmConsentCriterion.invalidate();
 

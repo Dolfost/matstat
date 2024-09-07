@@ -284,8 +284,8 @@ VectorInfoDialog::VectorInfoDialog(
 					"  Параметри: "
 					)
 				.arg(ve->name)
-				.arg(ss::DistributionReproducer::methodName[ve->modelMethod])
-				.arg(ss::DistributionReproducer::distributionName[ve->modelDistribution]);
+				.arg(ss::Vector::Distribution::methodName[(int)ve->modelMethod])
+				.arg(ss::Vector::Distribution::distributionName[(int)ve->modelDistribution]);
 			for (auto const& p : ve->modelParameters) {
 				addInfo.append(QString::number(p, 'f', 3) + " ");
 			}

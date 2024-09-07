@@ -1,6 +1,6 @@
 #include "vector.hpp"
 #include "vectorExprtk.hpp"
-#include "statisticsExprtk.hpp"
+#include "statistics/exprtk_utils.hpp"
 
 namespace ss {
 

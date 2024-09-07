@@ -4,12 +4,10 @@
 #include <QString>
 #include <QDebug>
 #include <QFile>
+#include <exprtk.hpp>
 
-#include <QtPrintSupport/qprinter.h>
 #include <cstddef>
 #include <list>
-
-#include "distributionReproducer.hpp"
 
 #include"utils.hpp"
 
@@ -260,6 +258,66 @@ public:
 			return value().size();
 		};
 	} varSeries = VarSeries(this);
+		
+	class Distribution {
+	public:
+		Distribution();
+		~Distribution();
+
+		enum class Model {
+			Unknown,
+			Normal,
+			Exponential,
+			Weibull,
+			LogNormal,
+			Uniform,
+			Count,
+		} model = Model::Unknown;
+
+		enum class Method {
+			Inverse,
+			Plane,
+			Count,
+		};
+
+		void setDistribution(Model, std::vector<double>, size_t);
+		static const QStringList distributionName;
+		static const QStringList methodName;
+		static const QList<QStringList> parameterName;
+
+		std::list<double> generateSet(Method, size_t = 0, double = 0, double = 1);
+
+	public:
+		double confidence = 0.95;
+
+		std::pair<double, double> cdfConfidence(double x1, double = 0.95);
+
+		QString cdfString;
+		QString pdfString;
+		QString invCdfString;
+
+		double pdf(double);
+		double cdf(double);
+		double cdfDev(double);
+		double invCdf(double);
+
+		std::pair<double, double> domain = {1, 1};	
+
+		size_t size = 0;
+		size_t parametersCount = 0;
+		std::vector<QString> paremeterNames;
+		std::vector<QString> parametersDeviationNames;
+		std::vector<double> parameters{0};
+		std::vector<double> parametersDeviation{0};
+		double parametersCv = 0;
+		double pdfMax = 0;
+
+	private:
+		std::function<double(double)> d_pdf;
+		std::function<double(double)> d_cdf;
+		std::function<double(double)> d_invCdf;
+		std::function<double(double)> d_cdfDev;
+	};
 
 public:
 	Vector(const std::list<double>& = {});
@@ -326,8 +384,8 @@ public: // vector operations
 public: // distribution recreation
 	double cdf(double);
 
-	DistributionReproducer rep;
-	bool reproduceDistribution(DistributionReproducer::Distribution);
+	Distribution rep;
+	bool reproduceDistribution(Distribution::Model);
 
 	void makeClassSeries(unsigned short = 0);
 

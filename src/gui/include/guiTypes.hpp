@@ -10,8 +10,8 @@ struct VectorEntry {
 	QString name;
 
 	bool isModeled;
-	ss::DistributionReproducer::Distribution modelDistribution;
-	ss::	DistributionReproducer::Method modelMethod;
+	ss::Vector::Distribution::Model modelDistribution;
+	ss::Vector::Distribution::Method modelMethod;
 	std::vector<double> modelParameters;
 
 	VectorEntry(ss::Vector* dv = nullptr, QString n = "") {
@@ -19,11 +19,11 @@ struct VectorEntry {
 		name = n;
 
 		isModeled = false;
-		modelDistribution = ss::DistributionReproducer::UnknownD;
+		modelDistribution = ss::Vector::Distribution::Model::Unknown;
 		modelParameters = {};
 	}
 
-	void setModel(ss::DistributionReproducer::Distribution m, std::vector<double> p, ss::DistributionReproducer::Method meth) {
+	void setModel(ss::Vector::Distribution::Model m, std::vector<double> p, ss::Vector::Distribution::Method meth) {
 		isModeled = true;
 		modelDistribution = m;
 		modelParameters = p;

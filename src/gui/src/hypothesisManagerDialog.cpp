@@ -1,4 +1,5 @@
 #include "hypothesisManagerDialog.hpp"
+#include "statistics/quantile.hpp"
 #include <QGroupBox>
 #include <QtCore/qstring.h>
 #include <cstdlib>

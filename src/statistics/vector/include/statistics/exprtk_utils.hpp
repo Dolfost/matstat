@@ -2,7 +2,7 @@
 #define _VECTOR_EXPRTK_HPP_
 
 #include "exprtk.hpp"
-#include "quanitle.hpp"
+#include "quantile.hpp"
 
 namespace ss::exprtk {
 

@@ -1,4 +1,5 @@
 #include "distributionReproducerDialog.hpp"
+#include "statistics/quantile.hpp"
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qtablewidget.h>
 #include <vector>
@@ -16,11 +17,11 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		mainLayout->setContentsMargins(10,10,10,10);
 
 		distributionComboBox = new QComboBox();
-		for (int i = 0; i < ss::DistributionReproducer::Distribution::CountD; i++) {
-			distributionComboBox->insertItem(i, ss::DistributionReproducer::distributionName[i]);
+		for (int i = 0; i < (int)ss::Vector::Distribution::Model::Count; i++) {
+			distributionComboBox->insertItem(i, ss::Vector::Distribution::distributionName[i]);
 		}
 
-		distributionComboBox->setCurrentIndex(ve->vector->rep.model);
+		distributionComboBox->setCurrentIndex((int)ve->vector->rep.model);
 
 		connect(this->distributionComboBox, &QComboBox::currentIndexChanged,
 				this, &DistributionReproducerDialog::distribute);
@@ -140,16 +141,16 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		connect(consentsProbabilitySpinBox, &QDoubleSpinBox::valueChanged,
 				this, &DistributionReproducerDialog::makeConsents);
 
-		distribute(ss::DistributionReproducer::Distribution(distributionComboBox->currentIndex()));
+		distribute(distributionComboBox->currentIndex());
 
 		this->adjustSize();
 		this->show();
 }
 
 void DistributionReproducerDialog::distribute(int dist) {
-	ve->vector->reproduceDistribution(ss::DistributionReproducer::Distribution(dist));
+	ve->vector->reproduceDistribution(ss::Vector::Distribution::Model(dist));
 
-	if (dist != ss::DistributionReproducer::Distribution::UnknownD) {
+	if (dist != (int)ss::Vector::Distribution::Model::Unknown) {
 		refill();
 		makeTtest();
 		tablesWidget->setVisible(true);
@@ -277,9 +278,9 @@ void DistributionReproducerDialog::makeConsents() {
 void DistributionReproducerDialog::makeTtest() {
 	if (ve->isModeled) {
 		ttestWidget->setCurrentIndex(0);
-		ss::DistributionReproducer* rep = &(ve->vector->rep);
+		ss::Vector::Distribution& rep = (ve->vector->rep);
 
-		if (ve->modelDistribution != rep->model) {
+		if (ve->modelDistribution != rep.model) {
 			ttestWidget->setCurrentIndex(2);
 			return;
 		}
@@ -289,14 +290,14 @@ void DistributionReproducerDialog::makeTtest() {
 			0.6, 0.7, 0.8, 0.9, 0.95, 0.96, 0.97, 0.98, 0.99};
 		std::vector<double> t;
 
-		ttestTable->setRowCount(rep->parameters.size());
+		ttestTable->setRowCount(rep.parameters.size());
 		ttestTable->setColumnCount(1 + probs.size());
 
 		QStringList vHeader, hHeader;
-		for (int i = 0; i < rep->parameters.size(); i++) {
-			vHeader.push_back(rep->paremeterNames[i]);
-			t.push_back((ve->modelParameters[i]-rep->parameters[i]) / 
-				std::sqrt(rep->parametersDeviation[i]));
+		for (int i = 0; i < rep.parameters.size(); i++) {
+			vHeader.push_back(rep.paremeterNames[i]);
+			t.push_back((ve->modelParameters[i]-rep.parameters[i]) / 
+				std::sqrt(rep.parametersDeviation[i]));
 			ttestTable->setItem(i, 0, new QTableWidgetItem(
 						QString::number(t[i], 'f', 3)));
 			for (int j = 1; j < probs.size()+1; j++) {

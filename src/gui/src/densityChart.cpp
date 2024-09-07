@@ -51,7 +51,7 @@ void DensityChart::fill(ss::Vector* dataVector) {
 
 	x.clear(), y.clear();
 
-	if (dataVector->rep.model != ss::DistributionReproducer::Distribution::UnknownD) {
+	if (dataVector->rep.model != ss::Vector::Distribution::Model::Unknown) {
 		if (dataVector->rep.domain.first == dataVector->rep.domain.second)
 			coordinatesLabelString = "${X}\n${Y} ${Y2}";
 		else

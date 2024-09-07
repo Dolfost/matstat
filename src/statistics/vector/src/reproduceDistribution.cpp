@@ -3,7 +3,7 @@
 namespace ss {
 
 bool Vector::reproduceDistribution(
-    DistributionReproducer::Distribution type) {
+    Distribution::Model type) {
   // if (csReady == false)
   //   return false;
 
@@ -11,7 +11,7 @@ bool Vector::reproduceDistribution(
 	kolmConsentCriterion.invalidate();
 
   switch (type) {
-  case DistributionReproducer::NormalD: {
+		case Distribution::Model::Normal: {
     rep.setDistribution(
         type,
         {mean(), (size() / (size() - 1.0)) *
@@ -19,11 +19,11 @@ bool Vector::reproduceDistribution(
         size());
     break;
   }
-  case DistributionReproducer::ExponentialD: {
+		case Distribution::Model::Exponential: {
     rep.setDistribution(type, {1 / mean()}, size());
     break;
   }
-  case DistributionReproducer::WeibullD: {
+		case Distribution::Model::Weibull: {
     double a11 = size() - 1;
     double a21 = 0, a22 = 0, b1 = 0, b2 = 0;
     for (auto it = sorted().cbegin(); it != std::prev(sorted().cend(), 1);
@@ -55,19 +55,19 @@ bool Vector::reproduceDistribution(
                         size());
     break;
   }
-  case DistributionReproducer::LogNormalD: {
+		case Distribution::Model::LogNormal: {
     rep.setDistribution(type,
                         {2 * log(mean()) - log(rawMoment(2)) / 2,
                          sqrt(log(rawMoment(2)) - 2 * log(mean()))},
                         size());
     break;
   }
-  case DistributionReproducer::UniformD: {
+		case Distribution::Model::Uniform: {
     double pm = std::sqrt(3 * (rawMoment(2) - std::pow(mean(), 2)));
     rep.setDistribution(type, {mean() - pm, mean() + pm}, size());
     break;
   }
-  case DistributionReproducer::UnknownD: {
+		case Distribution::Model::Unknown: {
     rep.setDistribution(type, {}, size());
     break;
   }
