@@ -3,7 +3,6 @@
 
 #include "qcustomplot.h"
 #include "vector.hpp"
-#include "classSeries.hpp"
 
 #include "axisTickerExp.hpp"
 

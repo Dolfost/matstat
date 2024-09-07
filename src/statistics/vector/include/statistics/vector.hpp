@@ -135,9 +135,9 @@ protected:
 	virtual void adapt(std::size_t) override;
 };
 
-class WalshAverages: public utils::StatisticList<std::list<double>> {
+class WalshAverages: public utils::StatisticContainer<std::list<double>> {
 public:
-	using StatisticList::StatisticList;
+	using StatisticContainer::StatisticContainer;
 protected:
 	virtual void adapt() override;
 };
@@ -191,17 +191,75 @@ protected:
 	virtual void adapt() override;
 };
 
-class Sorted: public utils::StatisticList<std::list<double>> {
+class Sorted: public utils::StatisticContainer<std::list<double>> {
 public:
-	using StatisticList::StatisticList;
+	using StatisticContainer::StatisticContainer;
 protected:
 	virtual void adapt() override;
 };
 
 class Vector: protected std::list<double> {
 public:
-	class ClassSeries;
-	class VarSeries;
+		// iterates as x = (h+0.5)i; i is the vector index
+		// has size of M for O(n) access speed
+	class ClassSeries
+	: public utils::StatisticContainer<std::vector<std::pair<std::size_t, double>>> {
+	public:
+		using StatisticContainer::StatisticContainer;
+		bool makeSeries(std::size_t = 0);
+
+		const std::vector<std::pair<std::size_t, double>>&
+		series() {
+			return value();
+		};
+		const std::vector<std::pair<int, double>>& 
+		cumSeries() {
+			if (!s_valid)
+				adapt();
+			return c_cumSeries;
+		}
+
+		double cdf(double);
+		double pdf(double);
+
+		virtual void invalidate() override {
+			c_cumSeries.clear();
+			StatisticContainer::invalidate();
+		}
+	public: // properties
+		double step(); // h
+		double maxProb(); // max P_i
+		std::size_t maxN(); // max N_i
+		std::size_t setCount(std::size_t);
+		std::size_t count(); // M
+		std::size_t calculateCount();
+
+	private:
+		virtual void adapt() override;
+		std::vector<std::pair<int, double>> c_cumSeries; 
+		std::size_t c_count; // M
+		double c_maxProb; // max P_i
+		std::size_t c_maxCount; // max N_i
+		double c_h; // h
+	} classSeries = ClassSeries(this);
+	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
+	class VarSeries: public utils::StatisticContainer<std::map<double, std::pair<std::size_t, double>>> {
+	public:
+		using StatisticContainer::StatisticContainer;
+		std::map<double, std::pair<std::size_t, double>>::const_iterator begin() { return s_value.cbegin(); };
+		std::map<double, std::pair<std::size_t, double>>::const_iterator end() { return s_value.cend(); };
+		std::map<double, std::pair<std::size_t, double>>::const_iterator cbegin() { return s_value.cbegin(); };
+		std::map<double, std::pair<std::size_t, double>>::const_iterator cend() { return s_value.cend(); };
+		void clear() { return s_value.clear(); };
+		std::pair<std::size_t, double> operator[](double at) {
+			return s_value[at];
+		}
+
+		virtual void adapt() override;
+		std::size_t count() { // r 
+			return value().size();
+		};
+	} varSeries = VarSeries(this);
 
 public:
 	Vector(const std::list<double>& = {});
@@ -209,7 +267,7 @@ public:
 	void setVector(const std::list<double>&);
 	~Vector();
 
-public: // new statistics
+public:
 	RawMoment rawMoment = RawMoment(this);
 	MeanDeviation meanDeviation = MeanDeviation(this);
 	MeanConfidence meanConfidence = MeanConfidence(this);
@@ -241,8 +299,12 @@ public: // new statistics
 
 	using std::list<double>::front;
 	using std::list<double>::back;
-	using std::list<double>::begin;
-	using std::list<double>::end;
+	const_iterator begin() {
+		return cbegin();
+	}
+	const_iterator end() {
+		return cend();
+	}
 	using std::list<double>::cbegin;
 	using std::list<double>::cend;
 	using std::list<double>::crbegin;
@@ -268,8 +330,6 @@ public: // distribution recreation
 	bool reproduceDistribution(DistributionReproducer::Distribution);
 
 	void makeClassSeries(unsigned short = 0);
-	ClassSeries* classSeries();
-	VarSeries* varSeries();
 
 public: // general
 	QString report();
@@ -281,11 +341,6 @@ public: // general
 	}
 
 private: // data
-	ClassSeries* cs;
-	VarSeries* vs;
-	bool csReady = false;
-	bool vsReady = false;
-
 	bool transformationSymbolTableReady = false;
 	::exprtk::symbol_table<double> transformationSymbolTable;
 	void setTransformationSymbolTable();

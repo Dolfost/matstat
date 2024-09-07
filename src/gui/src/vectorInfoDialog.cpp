@@ -9,7 +9,7 @@ VectorInfoDialog::VectorInfoDialog(
 	: QDialog(parent, f) {
 		ve = vectorEntry;
 
-		ss::Vector::VarSeries* varSeries = vectorEntry->vector->varSeries();
+		ss::Vector::VarSeries& varSeries = vectorEntry->vector->varSeries;
 
 		this->setWindowTitle("Інформація про вектор " + vectorEntry->name);
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -105,7 +105,7 @@ VectorInfoDialog::VectorInfoDialog(
 		{"Розмір", "N", QString::number(ve->vector->size()),"—"},
 		{"Найменше спостереження", "xₘᵢₙ", "—", QString::number(ve->vector->min(), 'f', precision), "—", "—", "—"},
 		{"Найбільше спостереження", "xₘₐₓ", "—", QString::number(ve->vector->max(), 'f', precision), "—", "—", "—"},
-		{"Кількість варіант", "r", "—", QString::number(varSeries->variantsCount()), "—", "—","—"},
+		{"Кількість варіант", "r", "—", QString::number(varSeries.count()), "—", "—","—"},
 		};
 
 		for (int x = 1; x <= 8; x++) {
@@ -245,14 +245,14 @@ VectorInfoDialog::VectorInfoDialog(
 		mainLayout->addWidget(section);
 
 		charTable->setRowCount(3);
-		charTable->setColumnCount(varSeries->variantsCount());
+		charTable->setColumnCount(varSeries.count());
 		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 		charTable->setVerticalHeaderLabels(
 				{"Варіанта", "Кількість", "Відносна частота"}
 				);
 
 		col = 0;
-		for (auto const& [variant, value] : varSeries->series()) {
+		for (auto const& [variant, value] : varSeries()) {
 			QTableWidgetItem* tableItem = new QTableWidgetItem(
 					QString::number(variant, 'f', precision));
 			charTable->setItem(0, col, tableItem);

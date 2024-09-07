@@ -9,7 +9,6 @@
 #include <QtCore/qcoreevent.h>
 
 #include "vector.hpp"
-#include "classSeries.hpp"
 #include "guiTypes.hpp"
 
 class VectorProcessorWidget : public QTabWidget {

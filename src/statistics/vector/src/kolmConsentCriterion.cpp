@@ -1,5 +1,4 @@
 #include "vector.hpp"
-#include "classSeries.hpp"
 #include <QtCore/qlogging.h>
 
 namespace ss {
@@ -14,7 +13,7 @@ void KolmConsentCriterion::adapt() {
   else 
 	  k = 1;
 
-  double cdfv = s_vector.classSeries()->eCdf(*x2), 
+  double cdfv = s_vector.classSeries.cdf(*x2), 
 		 Dp = std::abs(cdfv - s_vector.rep.cdf(*x2*k)),
 		 Dm = std::abs(cdfv - s_vector.rep.cdf(*x1*k));
 
@@ -22,7 +21,7 @@ void KolmConsentCriterion::adapt() {
   x2++;
 
   while (x2 != s_vector.cend()) {
-	  cdfv = s_vector.classSeries()->eCdf(*x2);
+	  cdfv = s_vector.classSeries.cdf(*x2);
 
 	  double DpTmp = std::abs(cdfv - s_vector.rep.cdf(*x2*k));
 	  if (DpTmp > Dp)

@@ -5,7 +5,6 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qlogging.h>
 
-#include "classSeries.hpp"
 #include "distributionReproducerDialog.hpp"
 #include "transformationFormulaEditorDialog.hpp"
 #include "vectorInfoDialog.hpp"
@@ -334,13 +333,13 @@ void VectorContainerWidget::reproductionAction() {
       selectedVectors();
 
   for (auto const &vec : vectors) {
-    if (vec.first->vector->classSeries() == nullptr) {
-      vec.first->vector->makeClassSeries();
-      emit message(
-          "Вектор " + vec.first->name + " було розбито на " +
-          QString::number(vec.first->vector->classSeries()->classCount()) +
-          " класів");
-    }
+    // if (vec.first->vector->classSeries() == nullptr) {
+    //   vec.first->vector->makeClassSeries();
+    //   emit message(
+    //       "Вектор " + vec.first->name + " було розбито на " +
+    //       QString::number(vec.first->vector->classSeries()->classCount()) +
+    //       " класів");
+    // }
 
     DistributionReproducerDialog *drd =
         new DistributionReproducerDialog(vec.first, this);

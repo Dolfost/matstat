@@ -2,7 +2,6 @@
 #define _VECTOR_INFO_DIALOG_HPP_
 
 #include "vector.hpp"
-#include "varSeries.hpp"
 
 #include <QDialog>
 #include <QGroupBox>

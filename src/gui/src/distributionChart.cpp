@@ -1,4 +1,3 @@
-#include "classSeries.hpp"
 #include "distributionChart.hpp"
 #include "plotBase.hpp"
 
@@ -39,15 +38,15 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 
 void DistributionChart::fill(ss::Vector* dataVector) {
 	dv = dataVector;
-	ss::Vector::ClassSeries* cs = dataVector->classSeries();
+	ss::Vector::ClassSeries& cs = dataVector->classSeries;
 
 	QVector<double> x, y;
-	for (size_t i = 0; i < cs->classCount(); i++) {
-		x.push_back(dataVector->min() + cs->step()*i);
-		x.push_back(dataVector->min() + cs->step()*(i+1));
+	for (size_t i = 0; i < cs.count(); i++) {
+		x.push_back(dataVector->min() + cs.step()*i);
+		x.push_back(dataVector->min() + cs.step()*(i+1));
 
-		y.push_back(cs->cumSeries()[i].second);
-		y.push_back(cs->cumSeries()[i].second);
+		y.push_back(cs.cumSeries()[i].second);
+		y.push_back(cs.cumSeries()[i].second);
 
 		x.push_back(qQNaN());
 		x.push_back(qQNaN());

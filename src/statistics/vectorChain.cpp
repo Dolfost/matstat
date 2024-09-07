@@ -1,5 +1,4 @@
 #include "vectorChain.hpp"
-#include "classSeries.hpp"
 
 #include <QDebug>
 #include <QtCore/qlogging.h>
@@ -194,16 +193,16 @@ double VectorChain::testKS() {
 	Vector* v1 = this->at(0);
 	Vector* v2 = this->at(1);
 
-	if (!v1->classSeries() or !v2->classSeries())
-		throw "Не всі вибірки були розбиті на класи";
+	// if (!v1.classSeries or !v2->classSeries())
+	// 	throw "Не всі вибірки були розбиті на класи";
 
 	double from = std::min(v1->min(), v2->min()),
 	       to = std::max(v1->max(), v2->max()),
 		   step = std::abs(to - from)/overallSize();
 
-	double z = std::abs(v1->classSeries()->eCdf(from)-v2->classSeries()->eCdf(from));
+	double z = std::abs(v1->classSeries.cdf(from)-v2->classSeries.cdf(from));
 	for (double x = from + step; x <= to + step; x += step) {
-		double tmp = std::abs(v1->classSeries()->eCdf(x)-v2->classSeries()->eCdf(x)); if (tmp > z) 
+		double tmp = std::abs(v1->classSeries.cdf(x)-v2->classSeries.cdf(x)); if (tmp > z) 
 			z = tmp;
 	}
 

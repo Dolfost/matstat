@@ -3,8 +3,6 @@
 #include <QtWidgets/qtablewidget.h>
 #include <vector>
 
-#include "classSeries.hpp"
-
 DistributionReproducerDialog::DistributionReproducerDialog(
 		VectorEntry* vectorEntry,
 		QWidget *parent, Qt::WindowFlags f) 
@@ -258,23 +256,20 @@ void DistributionReproducerDialog::makeConsents() {
 		kolm.append("Головна гіпотеза не виконується (функції не збігаються)");
 
 	QString pear = QString("Критерій згоди Пірсона: ");
-	if (ve->vector->classSeries() != nullptr) {
-			double quantile = ss::pearQuantile(1-prob,
-							ve->vector->classSeries()->classCount()-1);
-			double crit = ve->vector->pearConsentCriterion();
-			pear.append(QString("%1 ≤ pearQuantile(1-%2, %3) = %4\n")
-					.arg(crit)
-					.arg(prob)
-					.arg(ve->vector->classSeries()->classCount()-1)
-					.arg(quantile,
+	double quantile = ss::pearQuantile(1-prob,
+																		ve->vector->classSeries.count()-1);
+	double crit = ve->vector->pearConsentCriterion();
+	pear.append(QString("%1 ≤ pearQuantile(1-%2, %3) = %4\n")
+						 .arg(crit)
+						 .arg(prob)
+						 .arg(ve->vector->classSeries.count()-1)
+						 .arg(quantile,
 						3, 'f', precision)
-					);
-			if (crit <= quantile)
-				pear.append("Головна гіпотеза виконується (функції збігаються)");
-			else
-				pear.append("Головна гіпотеза не виконується (функції не збігаються)");
-	} else 
-		pear.append("вектор не був розбитий на класи");
+						 );
+	if (crit <= quantile)
+		pear.append("Головна гіпотеза виконується (функції збігаються)");
+	else
+		pear.append("Головна гіпотеза не виконується (функції не збігаються)");
 	
 	consentTextEdit->setText(kolm + "\n\n" + pear);
 }

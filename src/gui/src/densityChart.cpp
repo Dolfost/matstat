@@ -3,8 +3,6 @@
 #include "densityChart.hpp"
 #include "plotBase.hpp"
 
-#include "classSeries.hpp"
-
 DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	title->setText("Щільність");
 
@@ -39,14 +37,14 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 
 void DensityChart::fill(ss::Vector* dataVector) {
 	dv = dataVector;
-	ss::Vector::ClassSeries* cs = dataVector->classSeries();
+	ss::Vector::ClassSeries& cs = dataVector->classSeries;
 
-	bars->setWidth(cs->step());
+	bars->setWidth(cs.step());
 
 	QVector<double> x, y;
-	for (size_t i = 0; i < cs->classCount(); i++) {
-		x.push_back(dv->min() + cs->step()*(i+0.5));
-		y.push_back(cs->series()[i].second);
+	for (size_t i = 0; i < cs.count(); i++) {
+		x.push_back(dv->min() + cs.step()*(i+0.5));
+		y.push_back(cs.series()[i].second);
 	}
 
 	bars->setData(x, y, true);
@@ -85,7 +83,7 @@ void DensityChart::fill(ss::Vector* dataVector) {
 		density->data()->clear();
 	};
 
-	yRange = QCPRange(0, cs->maxIntervalProbability());
+	yRange = QCPRange(0, cs.maxProb());
 
 	plotMean();
 	plotStandartDeviation();

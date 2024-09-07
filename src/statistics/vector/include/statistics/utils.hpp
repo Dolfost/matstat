@@ -59,9 +59,9 @@ protected:
 };
 
 template<class T>
-class StatisticList: public Statistic<T> {
+class StatisticContainer: public Statistic<T> {
 public:
-	StatisticList() = delete;
+	StatisticContainer() = delete;
 	using Statistic<T>::Statistic;
 	virtual void invalidate() override {
 		s_value.clear();

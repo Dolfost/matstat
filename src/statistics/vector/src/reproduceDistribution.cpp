@@ -4,8 +4,8 @@ namespace ss {
 
 bool Vector::reproduceDistribution(
     DistributionReproducer::Distribution type) {
-  if (csReady == false)
-    return false;
+  // if (csReady == false)
+  //   return false;
 
 	pearConsentCriterion.invalidate();
 	kolmConsentCriterion.invalidate();

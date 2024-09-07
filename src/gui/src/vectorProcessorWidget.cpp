@@ -80,11 +80,11 @@ void VectorProcessorWidget::appendVector(VectorEntry* vectorEntry) {
 
 void VectorProcessorWidget::append1dVector(QTreeWidgetItem* parent,
 		VectorEntry* vectorEntry) {
-	vectorEntry->vector->makeClassSeries();
+	// vectorEntry->vector->makeClassSeries();
 	ClassTreeItem2D* classItem = new ClassTreeItem2D(ItemType::ClassCount2D);
 	classItem->setIcon(0, this->style()->standardIcon(QStyle::SP_BrowserReload));
 	classItem->setData(0, Qt::EditRole,
-				QVariant(int(vectorEntry->vector->classSeries()->calculateClassCount())));
+				QVariant(int(vectorEntry->vector->classSeries.calculateCount())));
 	parent->addChild(classItem);
 
 	ConfindenceItem2D* confidenceItem =
@@ -267,7 +267,7 @@ void VectorProcessorWidget::emitTabSelected(int tab) {
 }
 
 void VectorProcessorWidget::emit2D(QTreeWidgetItem* item) {
-	item->data(0, Qt::UserRole).value<VectorEntry*>()->vector->makeClassSeries(
+	item->data(0, Qt::UserRole).value<VectorEntry*>()->vector->classSeries.setCount(
 			item->child(2)->data(0, Qt::EditRole).value<int>());
 	item->data(0, Qt::UserRole).value<VectorEntry*>()->
 		vector->rep.confidence = 
@@ -306,11 +306,11 @@ void VectorProcessorWidget::itemChangedHandler(QTreeWidgetItem* item, int col) {
 				VectorEntry* ve = item->parent()->data(0, Qt::UserRole).
 							value<VectorEntry*>();
 				if (item->data(0, Qt::EditRole).value<int>() < 1) {
-					ve->vector->makeClassSeries();
+					// ve->vector->makeClassSeries();
 					item->setData(0, Qt::EditRole, QVariant(
-								(int)ve->vector->classSeries()->classCount()));
+								(int)ve->vector->classSeries.count()));
 				} else {
-					ve->vector->makeClassSeries(item->data(0, Qt::EditRole).value<int>());
+					ve->vector->classSeries.setCount(item->data(0, Qt::EditRole).value<int>());
 				}
 
 				if (item->parent()->data(0, Qt::UserRole+1).value<bool>())

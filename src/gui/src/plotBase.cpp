@@ -119,7 +119,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 }
 
 void PlotBase::fill(ss::Vector* dataVector) {
-	ss::Vector::ClassSeries* cs = dataVector->classSeries();
+	ss::Vector::ClassSeries& cs = dataVector->classSeries;
 
 	xRange = QCPRange(dataVector->min(), dataVector->max());
 	if (dataVector->rep.model != ss::DistributionReproducer::UnknownD) {
@@ -136,9 +136,9 @@ void PlotBase::fill(ss::Vector* dataVector) {
 	this->xAxis2->setRange(xRange2);
 
 	this->xAxis->setRange(xRange);
-	xFixedTicker->setTickStep(cs->step());
-	xFixedTicker->setTickOrigin(dataVector->min()+cs->step()/2);
-	xFixedTicker->setTickCount(cs->classCount());
+	xFixedTicker->setTickStep(cs.step());
+	xFixedTicker->setTickOrigin(dataVector->min()+cs.step()/2);
+	xFixedTicker->setTickCount(cs.count());
 
 	this->yAxis->setRange(yRange);
 	this->yAxis2->setRange(yRange2);

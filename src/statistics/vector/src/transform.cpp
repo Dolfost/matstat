@@ -24,7 +24,7 @@ QString Vector::transform(QString expression) {
     return msg;
   }
 
-  for (auto &timeSeriesValue : *this) {
+  for (auto &timeSeriesValue : static_cast<std::list<double>&>(*this)) {
     x = timeSeriesValue;
 		timeSeriesValue = expr.value();
   }

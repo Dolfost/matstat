@@ -1,19 +1,13 @@
 #include "vector.hpp"
-#include "classSeries.hpp"
-#include "varSeries.hpp"
 
 namespace ss {
 
 Vector::Vector(const std::list<double> &input) {
   setVector(input);
-  cs = new ClassSeries(this);
-  vs = new VarSeries(this);
 }
 
 Vector::Vector(Vector &dv) {
   setVector(dv);
-  cs = new ClassSeries(this);
-  vs = new VarSeries(this);
 }
 
 void Vector::setVector(const std::list<double> &input) {
@@ -53,8 +47,9 @@ void Vector::invalidate() {
   reproduceDistribution(DistributionReproducer::Distribution::UnknownD);
 	pearConsentCriterion.invalidate();
 	kolmConsentCriterion.invalidate();
-  vsReady = false;
-  csReady = false;
+
+	varSeries.invalidate();
+	classSeries.invalidate();
 }
 
 QString Vector::report() {
@@ -81,8 +76,6 @@ QString Vector::report() {
 }
 
 Vector::~Vector() {
-  delete cs;
-  delete vs;
 }
 
 }
