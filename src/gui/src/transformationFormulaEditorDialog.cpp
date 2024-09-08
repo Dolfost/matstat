@@ -45,7 +45,7 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 		"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
 		"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
 		"normCdf(u) — функція розподілу нормованого нормального розподілу"
-		"\n" + ss::Vector::exprtkFuncitons
+		"\n" + QString::fromStdString(ss::Vector::exprtkFuncitons)
 	);
 	QVBoxLayout* statisticsSectionLay = new QVBoxLayout();
 	statisticsSectionLay->addWidget(statisticsLabel);
@@ -108,7 +108,9 @@ void TransformationFormulaEditorDialog::transform() {
 	for (auto const& v : vecs) {
 		VectorEntry* newVectorEntry = new VectorEntry;
 		newVectorEntry->vector = new ss::Vector(*v->vector);
-		QString res = newVectorEntry->vector->transform(formulaLineEdit->text());
+		QString res = QString::fromStdString(
+			newVectorEntry->vector->transform(formulaLineEdit->text().toStdString())
+		);
 		if (res.length() != 0) {
 			statusTextEdit->append("Трансформування " + v->name + "\n" + res + "\n");
 			delete newVectorEntry;

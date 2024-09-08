@@ -4,8 +4,8 @@
 
 namespace ss {
 
-QString Vector::transform(QString expression) {
-  QString msg;
+std::string Vector::transform(std::string expression) {
+	std::string msg;
 
   ::exprtk::expression<double> expr;
   ::exprtk::parser<double> parser;
@@ -17,9 +17,9 @@ QString Vector::transform(QString expression) {
 
   expr.register_symbol_table(transformationSymbolTable);
 
-  if (!parser.compile(expression.toStdString(), expr)) {
-    msg.append("Error computing xₙ: " + QString(parser.error().c_str()) +
-               "\nExpression: '" + QString(expression.toStdString().c_str()) +
+  if (!parser.compile(expression, expr)) {
+    msg.append("Error computing xₙ: " + std::string(parser.error().c_str()) +
+               "\nExpression: '" + std::string(expression.c_str()) +
                "'\n");
     return msg;
   }

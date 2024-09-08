@@ -1,16 +1,16 @@
 #include "vector.hpp"
+#include <fstream>
 
 namespace ss {
 
-bool Vector::writeToFile(QString filename) {
-  QFile file(filename);
+bool Vector::writeToFile(std::string filename) {
+	std::ofstream file(filename, std::ofstream::out);
 
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+  if (!file.good())
     return false;
-  QTextStream stream(&file);
 
   for (auto const &x : *this) {
-    stream << x << "\n";
+    file << x << "\n";
   }
 
   file.close();

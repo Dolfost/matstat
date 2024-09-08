@@ -1,4 +1,5 @@
 #include "vector.hpp"
+#include "sstream"
 
 namespace ss {
 
@@ -52,27 +53,20 @@ void Vector::invalidate() {
 	classSeries.invalidate();
 }
 
-QString Vector::report() {
-  return QString("Мат. сподівння (v₁) %1\n"
-                 "Варіабельність (u₂) %2\n"
-                 "Медіана (MED) %3\n"
-                 "Усічене середнє (α=0.25) %4\n"
-                 "Медіана середніх Уолша (MED*) %5\n"
-                 "CКВ (σ) %6\n"
-                 "Абсолютне відхилення медіани (MAD) %7\n"
-                 "Коеф. асиметрії (A) %8\n"
-                 "Ексцесс %9\n"
-                 "Коефіцієнт варіації (Пірсона) (W) %10\n")
-      .arg(mean())
-      .arg(variance())
-      .arg(med())
-      .arg(tmean(0.25))
-      .arg(walshAveragesMed())
-      .arg(sd())
-      .arg(mad())
-      .arg(skew())
-      .arg(kurtosis())
-      .arg(cv());
+std::string Vector::report() {
+	std::stringstream s;
+	s << "Мат. сподівння (v₁) " << mean() << "\n"
+		<< "Варіабельність (u₂) " << variance() << "\n"
+		<< "Медіана (MED) " << med() << "\n"
+		<< "Усічене середнє (α=0.25) " << tmean(0.25) << "\n"
+		<< "Медіана середніх Уолша (MED*) " << walshAveragesMed() << "\n"
+		<< "CКВ (σ) " << sd() << "\n"
+		<< "Абсолютне відхилення медіани (MAD) " << mad() << "\n"
+		<< "Коеф. асиметрії (A) " << skew() << "\n"
+		<< "Ексцесс " << kurtosis() << "\n"
+		<< "Коефіцієнт варіації (Пірсона) (W) " << cv() << "\n";
+
+	return s.str();
 }
 
 Vector::~Vector() {

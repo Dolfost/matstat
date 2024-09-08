@@ -18,7 +18,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 
 		distributionComboBox = new QComboBox();
 		for (int i = 0; i < (int)ss::Vector::Distribution::Model::Count; i++) {
-			distributionComboBox->insertItem(i, ss::Vector::Distribution::distributionName[i]);
+			distributionComboBox->insertItem(i, QString::fromStdString(ss::Vector::Distribution::distributionName[i]));
 		}
 
 		distributionComboBox->setCurrentIndex((int)ve->vector->dist.model);
@@ -36,7 +36,6 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		tablesWidget->setLayout(tablesLayout);
 		parameterTable = new QTableWidget();
 		deviationTable = new QTableWidget();
-		functionTable = new QTableWidget();
 		functionDeviationTable = new QTableWidget();
 
 		QGroupBox* groupBox;
@@ -60,7 +59,6 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		boxLay = new QVBoxLayout();
 		boxLay->setContentsMargins(0,0,0,0);
 		groupBox->setLayout(boxLay);
-		boxLay->addWidget(functionTable);
 		boxLay->addWidget(functionDeviationTable);
 		tablesLayout->addWidget(groupBox);
 
@@ -73,11 +71,6 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 		deviationTable->setFixedHeight(120);
 		deviationTable->verticalHeader()->setVisible(false);
 		deviationTable->setHorizontalHeaderLabels({"Назва", "Значення"});
-
-		functionTable->setColumnCount(2);
-		functionTable->setFixedHeight(100);
-		functionTable->verticalHeader()->setVisible(false);
-		functionTable->setHorizontalHeaderLabels({"Назва", "Значення"});
 
 		functionDeviationTable->setColumnCount(501);
 		functionDeviationTable->setRowCount(1);
@@ -171,20 +164,17 @@ void DistributionReproducerDialog::refill() {
 	deviationTable->setRowCount(ve->vector->dist.parametersCount);
 	deviationTable->setColumnWidth(0, 100);
 	deviationTable->setColumnWidth(1, 200);
-	functionTable->setRowCount(2);
-	functionTable->setColumnWidth(0, 55);
-	functionTable->setColumnWidth(1, 600);
 	functionDeviationTable->setColumnWidth(0, 55);
 
 	for (int i = 0; i < ve->vector->dist.parametersCount; i++) {
 		parameterTable->setItem(i, 0, new QTableWidgetItem(
-					ve->vector->dist.paremeterNames[i])
+					QString::fromStdString(ve->vector->dist.paremeterNames[i]))
 				);
 		parameterTable->setItem(i, 1, new QTableWidgetItem(
 					QString::number(ve->vector->dist.parameters[i], 'f', precision))
 				);
 		deviationTable->setItem(i, 0, new QTableWidgetItem(
-					"D{" + ve->vector->dist.parametersDeviationNames[i] + "}")
+					"D{" + QString::fromStdString(ve->vector->dist.parametersDeviationNames[i]) + "}")
 				);
 		deviationTable->setItem(i, 1, new QTableWidgetItem(
 					QString::number(ve->vector->dist.parametersDeviation[i], 'f', precision))
@@ -194,22 +184,13 @@ void DistributionReproducerDialog::refill() {
 	if (ve->vector->dist.parametersCount == 2) {
 		deviationTable->insertRow(2);
 		deviationTable->setItem(2, 0, new QTableWidgetItem(
-					"cov{" + ve->vector->dist.paremeterNames[0] + "," +
-					ve->vector->dist.paremeterNames[1] + "}")
+					"cov{" + QString::fromStdString(ve->vector->dist.paremeterNames[0]) + "," +
+					QString::fromStdString(ve->vector->dist.paremeterNames[1]) + "}")
 				);
 		deviationTable->setItem(2, 1, new QTableWidgetItem(
 					QString::number(ve->vector->dist.parametersCv, 'f', precision))
 				);
 	}
-
-	functionTable->setItem(0, 0, new QTableWidgetItem(
-				"f(x)"));
-	functionTable->setItem(0, 1, new QTableWidgetItem(
-				ve->vector->dist.pdfString));
-	functionTable->setItem(1, 0, new QTableWidgetItem(
-				"F(x)"));
-	functionTable->setItem(1, 1, new QTableWidgetItem(
-				ve->vector->dist.cdfString));
 
 	QStringList headers = {" "};
 	QList<double> dispersions;
@@ -295,7 +276,7 @@ void DistributionReproducerDialog::makeTtest() {
 
 		QStringList vHeader, hHeader;
 		for (int i = 0; i < rep.parameters.size(); i++) {
-			vHeader.push_back(rep.paremeterNames[i]);
+			vHeader.push_back(QString::fromStdString(rep.paremeterNames[i]));
 			t.push_back((ve->modelParameters[i]-rep.parameters[i]) / 
 				std::sqrt(rep.parametersDeviation[i]));
 			ttestTable->setItem(i, 0, new QTableWidgetItem(

@@ -324,17 +324,17 @@ std::list<double> Vector::Distribution::generateSet(Method m, size_t s,
 Vector::Distribution::~Distribution() {
 }
 
-const QStringList Vector::Distribution::distributionName = {
+const std::vector<std::string> Vector::Distribution::distributionName = {
 	"Невідомий", "Нормальний",    "Екпоненціальний",
 	"Вейбула",   "Логнормальний", "Рівномірний",
 };
 
-const QStringList Vector::Distribution::methodName = {
+const std::vector<std::string> Vector::Distribution::methodName = {
 	"Звороьньої функції",
 	"Площинний"
 };
 
-const QList<QStringList> Vector::Distribution::parameterName = {
+const std::vector<std::vector<std::string>> Vector::Distribution::parameterName = {
 	{}, {"m", "σ"}, {"λ"}, {"𝛼", "β"}, {"m", "σ"}, {"a", "b"},
 };
 

@@ -53,7 +53,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 		distributionComboBox = new QComboBox();
 		for (int i = 1; i < (int)ss::Vector::Distribution::Model::Count; i++) {
 			distributionComboBox->insertItem(i,
-					ss::Vector::Distribution::distributionName[i]);
+					QString::fromStdString(ss::Vector::Distribution::distributionName[i]));
 		}
 		QGroupBox* distributionBox = new QGroupBox("Розподіл");
 		QVBoxLayout* distributionLayout = new QVBoxLayout;
@@ -74,7 +74,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 		methodComboBox = new QComboBox;
 		for (int i = 0; i < (int)ss::Vector::Distribution::Method::Count; i++) {
 			methodComboBox->insertItem(i,
-					ss::Vector::Distribution::methodName[i]);
+					QString::fromStdString(ss::Vector::Distribution::methodName[i]));
 		}
 
 		QGroupBox* methodBox = new QGroupBox("Метод відтворення");
@@ -198,7 +198,12 @@ void SetGeneratorDialog::distributionSelected(int model) {
 	if (parametersWidget != nullptr)
 		parametersLayout->removeWidget(parametersWidget);
 	delete parametersWidget;
-	parametersWidget = new ParametersWidget(ss::Vector::Distribution::parameterName[model+1], params, enabled);
+	QStringList p;
+	for (auto const& x : ss::Vector::Distribution::parameterName[model+1]) {
+		p.push_back(QString::fromStdString(x));
+	}
+	
+	parametersWidget = new ParametersWidget(p, params, enabled);
 	parametersLayout->addWidget(parametersWidget);
 }
 

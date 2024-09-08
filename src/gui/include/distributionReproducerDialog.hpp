@@ -33,7 +33,6 @@ private:
 	QVBoxLayout* tablesLayout = nullptr;
 	QTableWidget* parameterTable = nullptr;
 	QTableWidget* deviationTable = nullptr;
-	QTableWidget* functionTable = nullptr;
 	QTableWidget* functionDeviationTable = nullptr;
 	QTableWidget* ttestTable = nullptr;
 	QStackedWidget* ttestWidget = nullptr;

@@ -1,13 +1,13 @@
 #ifndef _VECTOR_HPP_
 #define _VECTOR_HPP_
 
-#include <QString>
 #include <QDebug>
 #include <QFile>
 #include <exprtk.hpp>
 
 #include <cstddef>
 #include <list>
+#include <string>
 
 #include"utils.hpp"
 
@@ -281,9 +281,9 @@ public:
 		};
 
 		void setDistribution(Model, std::vector<double>, size_t);
-		static const QStringList distributionName;
-		static const QStringList methodName;
-		static const QList<QStringList> parameterName;
+		static const std::vector<std::string> distributionName;
+		static const std::vector<std::string> methodName;
+		static const std::vector<std::vector<std::string>> parameterName;
 
 		std::list<double> generateSet(Method, size_t = 0, double = 0, double = 1);
 
@@ -291,10 +291,6 @@ public:
 		double confidence = 0.95;
 
 		std::pair<double, double> cdfConfidence(double x1, double = 0.95);
-
-		QString cdfString;
-		QString pdfString;
-		QString invCdfString;
 
 		double pdf(double);
 		double cdf(double);
@@ -305,8 +301,8 @@ public:
 
 		size_t size = 0;
 		size_t parametersCount = 0;
-		std::vector<QString> paremeterNames;
-		std::vector<QString> parametersDeviationNames;
+		std::vector<std::string> paremeterNames;
+		std::vector<std::string> parametersDeviationNames;
 		std::vector<double> parameters{0};
 		std::vector<double> parametersDeviation{0};
 		double parametersCv = 0;
@@ -377,9 +373,9 @@ public: // vector operations
 	void standardize();
 	bool removeOutliers();
 	size_t trim(double, double);
-	QString transform(QString);
+	std::string transform(std::string);
 
-	bool writeToFile(QString);
+	bool writeToFile(std::string);
 
 public: // distribution recreation
 	double cdf(double);
@@ -388,9 +384,9 @@ public: // distribution recreation
 	bool reproduceDistribution(Distribution::Model);
 
 public: // general
-	QString report();
+	std::string report();
 	void invalidate();
-	static const QString exprtkFuncitons;
+	static const std::string exprtkFuncitons;
 	//  TODO: move from std::list to Vector insertion
 	const std::list<double>& list() { 
 		return static_cast<const std::list<double>&>(*this); 

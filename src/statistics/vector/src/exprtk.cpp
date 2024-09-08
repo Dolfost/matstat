@@ -93,7 +93,7 @@ void Vector::setTransformationSymbolTable() {
   transformationSymbolTableReady = true;
 }
 
-const QString Vector::exprtkFuncitons =
+const std::string Vector::exprtkFuncitons =
     "Аргументи:\n "
     "m — тип оцінки. 'pop' – зсунена, 'spl' – не зсунена\n"
     "Функції:\n"
