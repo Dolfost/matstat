@@ -1,70 +1,74 @@
-#include <QString>
-#include <QDebug>
-#include <QFile>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qstring.h>
-#include <QRegularExpression>
-#include <vector>
+#include <list>
+#include <string>
 #include <stdexcept>
+#include <sstream>
+#include <fstream>
+#include <regex>
 
 #include "dataSeries.hpp"
 
-void DataSeries::readData(QString fn) {
-	QString msg;
+std::list<std::string> split(const std::string &s, const std::regex &sep_regex = std::regex{"\\s+"}) {
+  std::sregex_token_iterator iter(s.begin(), s.end(), sep_regex, -1);
+  std::sregex_token_iterator end;
+  return {iter, end};
+}
+
+void DataSeries::readData(std::string fn) {
+	std::stringstream msg;
 	filename = fn;
 
-	QFile file(filename);
+	std::ifstream file;
+	file.exceptions(std::ios::badbit | std::ios::failbit);
 
-    if (!file.open(QIODevice::ReadOnly)) {
-     	msg = "'" + filename + "'" + ": " + file.errorString() + ".";
-			throw std::logic_error(msg.toStdString());
-    }
+	file.open(filename, std::ios::in);
 
-	QString line;
-	QStringList words;
+	std::string line;
+	std::list<std::string> words;
 	unsigned short dim;
 	unsigned long lineno = 0;
 
 	double tmp;
-	bool ok;
 	int column;
 	std::vector<std::list<double>> tmpDataSeries;
-	QRegularExpression reqExp("[\t, ]+");
 
 	dimensions = 0;
-    while (!file.atEnd()) {
+	while (!file.eof()) {
 		// read new line
 		lineno++;
-		line = file.readLine();
-		words = line.split(reqExp, Qt::SkipEmptyParts);
+		line.clear();
+		std::getline(file, line);
+		words = split(line);
+		auto e = std::remove_if(words.begin(), words.end(), [](std::string s) {
+			return !s.length();
+		});
+		words.erase(e, words.end());
+
+		
 
 		// skip empty lines
-		if (words.length() == 0)
+		if (words.size() == 0)
 			continue;
 
 		// check data dimension
 		if (dimensions == 0) {
-			dimensions = words.length();
+			dimensions = words.size();
 			tmpDataSeries.resize(dimensions);
-		} else if (words.length() != dimensions) {
-			msg = QString("Прочитано за%1 входжень у рядку %2 в файлі '%3', очікувано %4, отримано %5.")
-					.arg(words.length() > dimensions ? "багато" : "мало")
-					.arg(QString::number(lineno))
-					.arg(filename)
-					.arg(QString::number(dimensions))
-					.arg(QString::number(words.length()));
-			throw std::logic_error(msg.toStdString());
+		} else if (words.size() != dimensions) {
+			msg << "Прочитано за" << (words.size() > dimensions ? "багато" : "мало")
+				<< "входжень у рядку " << lineno << "в файлі '" << filename
+				<< "', очікувано " << dimensions << ", отримано " << words.size() << ".";
+			throw std::logic_error(msg.str());
 		}
 
 		// parse integers
 		column = 0;
 		for (const auto& word : words) {
-			tmp = word.toDouble(&ok);
-			if (ok == false) {
-				msg = QString("Не вдалося прочитати число у рядку %1 в файлі '%2'.")
-					.arg(QString::number(lineno))
-					.arg(filename);
-				throw std::logic_error(msg.toStdString());
+			try {
+				tmp = std::stod(word);
+			} catch (std::invalid_argument& ex) {
+				msg << "Не вдалося прочитати число у рядку " 
+					<< lineno << " в файлі '" << filename << "'.";
+				throw std::logic_error(msg.str());
 			}
 
 			tmpDataSeries[column].push_back(tmp);
@@ -86,11 +90,6 @@ void DataSeries::readData(QString fn) {
 			filewiseDataSeries.push_back(*(iterators[col]++));
 		}
 	}
-
-	// msg = QString("Прочитано %1 %2-вимірних даних з файлу '%3'.")
-	// 	.arg(QString::number(dataSeries[0].size()))
-	// 	.arg(QString::number(dimensions))
-	// 	.arg(filename);
 }
 
 const std::vector<std::list<double>>& DataSeries::series() {

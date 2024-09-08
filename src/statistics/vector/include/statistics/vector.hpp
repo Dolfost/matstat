@@ -1,8 +1,6 @@
 #ifndef _VECTOR_HPP_
 #define _VECTOR_HPP_
 
-#include <QDebug>
-#include <QFile>
 #include <exprtk.hpp>
 
 #include <cstddef>

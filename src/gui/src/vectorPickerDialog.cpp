@@ -37,8 +37,8 @@ VectorPickerDialog::VectorPickerDialog(QWidget *parent, Qt::WindowFlags f)
 
 void VectorPickerDialog::fileContents(QString filepath) {
 	try {
-		dataSeries.readData(filepath);
-	} catch (std::logic_error& ex) {
+		dataSeries.readData(filepath.toStdString());
+	} catch (std::exception& ex) {
 		statusBar->showMessage(ex.what());
 	}
 
@@ -52,6 +52,7 @@ void VectorPickerDialog::fill() {
 	vectorsTableWidget->clear();
 	vectorsTableWidget->setRowCount(data[0].size());
 	vectorsTableWidget->setColumnCount(dataSeries.dimension());
+
 
 	size_t row = 0, col = 0;
 	for (auto const& vector : data) {

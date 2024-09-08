@@ -1,16 +1,17 @@
 #include "vectorChain.hpp"
 
-#include <QDebug>
-#include <QtCore/qlogging.h>
 #include <algorithm>
 #include <cmath>
+#include <ios>
 #include <iterator>
 #include <list>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 namespace ss {
 
-QStringList VectorChain::procedureName = {
+std::vector<std::string> VectorChain::procedureName = {
 	"Т—тест (залежні віибірки)",
 	"Т—тест (незалежні вибірки)",
 	"F—тест (2 вибірки)",
@@ -389,36 +390,34 @@ double VectorChain::testAbbe() {
 	return u;
 }
 
-void VectorChain::writeToFile(QString filename) {
+void VectorChain::writeToFile(std::string filename) {
   size_t n = at(0)->size();
 
   for (size_t i = 1; i < size(); i++) {
 	  if (at(i)->size() != n)
-		  throw "Вектори не однакового розміру!";
+		  throw std::logic_error("Вектори не однакового розміру!");
   }
 
-  QFile file(filename);
-
-  if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-	  throw "Не вдалося відкрити файл " + filename + ".";
-
-  QTextStream stream(&file);
+	std::ofstream file;
+	file.exceptions(std::ios::badbit | std::ios::failbit);
+	file.open(filename, std::ios::out);
 
   std::vector<std::list<double>::const_iterator> its;
-
 
   for (auto const& v : *this) {
 	  its.push_back(v->begin());
   }
 
+	std::stringstream line;
+	line.setf(std::ios::fixed);
   for (size_t i = 0; i < n; i++) {
-	  QString line;
+		line.str("");
 	  for (auto& xi : its) {
-		  line.append(QString::number(*xi, 'f', 5) + ", ");
+			line << *xi << ", ";
 		  ++xi;
 	  }
-	  line.chop(2);
-	  stream << line << "\n";
+	  
+	  file << (line.str().substr(0, line.str().size() - 2)) << "\n";
   }
 
   file.close();

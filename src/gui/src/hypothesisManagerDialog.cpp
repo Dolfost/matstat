@@ -29,7 +29,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	procedureGroupBox->layout()->setContentsMargins(1,1,1,1);
 	procedureComboBox = new QComboBox();
 	for (int i = ss::VectorChain::Procedure::tTestDependentP; i < ss::VectorChain::Procedure::Count; i++) {
-		procedureComboBox->addItem(ss::VectorChain::procedureName[i]);
+		procedureComboBox->addItem(QString::fromStdString(ss::VectorChain::procedureName[i]));
 	}
 	procedureGroupBox->layout()->addWidget(procedureComboBox);
 

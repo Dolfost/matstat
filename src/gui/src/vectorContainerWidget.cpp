@@ -431,7 +431,7 @@ void VectorContainerWidget::writeAction() {
     set.push_back(v.first->vector);
 
   try {
-	  set.writeToFile(filename);
+	  set.writeToFile(filename.toStdString());
   } catch (const char* msg) {
 	  message(msg);
   }

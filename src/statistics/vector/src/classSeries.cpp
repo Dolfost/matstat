@@ -1,6 +1,3 @@
-#include <QDebug>
-#include <QtCore/qalgorithms.h>
-
 #include "vector.hpp"
 
 namespace ss {

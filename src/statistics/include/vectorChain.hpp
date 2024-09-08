@@ -1,8 +1,10 @@
 #ifndef _DATA_VECTOR_SET_
 #define _DATA_VECTOR_SET_
 
+#include<vector>
+#include<string>
+
 #include "vector.hpp"
-#include <QStringList>
 
 namespace ss {
 
@@ -27,7 +29,7 @@ public:
 		Count
 	};
 
-	static QStringList procedureName;
+	static std::vector<std::string> procedureName;
 
 public: // tests
 	double tTestDependent();
@@ -53,7 +55,7 @@ public: // statistics
 	std::map<double, double> overallRank(); 
 
 public: // misc
-	void writeToFile(QString);
+	void writeToFile(std::string);
 
 private:
 };

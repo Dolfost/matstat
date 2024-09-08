@@ -1,7 +1,3 @@
-find_package(Qt6 REQUIRED COMPONENTS 
-	Core
-)
-
 file(GLOB SOURCES CONFIGURE_DEPENDS 
 	*.cpp
 	vector/src/*.cpp
@@ -30,5 +26,5 @@ target_include_directories(statistics
 )
 
 target_link_libraries(statistics PRIVATE
-	exprtk Qt6::Core 
+	exprtk
 )

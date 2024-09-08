@@ -181,7 +181,7 @@ void MainWindow::_addFile(QString file) {
 	DataSeries s;
 	std::string ans;
 	try {
-		s.readData(file);
+		s.readData(file.toStdString());
 	} catch (std::logic_error& ex) {
 		qDebug() << QString(__func__) + ":" << ex.what();
 		return;

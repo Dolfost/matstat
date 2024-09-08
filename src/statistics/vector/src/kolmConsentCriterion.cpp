@@ -1,5 +1,4 @@
 #include "vector.hpp"
-#include <QtCore/qlogging.h>
 
 namespace ss {
 

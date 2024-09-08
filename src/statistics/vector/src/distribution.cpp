@@ -2,10 +2,6 @@
 
 #include <vector.hpp>
 
-#include <QDebug>
-#include <QStringList>
-#include <QtCore/qalgorithms.h>
-#include <QtCore/qlogging.h>
 #include <vector>
 
 #include <statistics/quantile.hpp>
