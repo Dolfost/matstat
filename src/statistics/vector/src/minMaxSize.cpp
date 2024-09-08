@@ -2,11 +2,11 @@
 
 namespace ss {
 
-void Min::adapt() {
+void Vector::Min::adapt() {
 	s_value = s_vector.sorted().front();
 }
 
-void Max::adapt() {
+void Vector::Max::adapt() {
 	s_value = s_vector.sorted().back();
 }
 

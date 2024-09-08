@@ -2,7 +2,7 @@
 
 namespace ss {
 
-void WalshAverages::adapt() {
+void Vector::WalshAverages::adapt() {
   for (auto const &i : s_vector) {
     for (auto const &j : s_vector) {
       s_value.push_back((i + j) * 0.5);
@@ -10,7 +10,7 @@ void WalshAverages::adapt() {
   }
 }
 
-void WalshAveragesMedian::adapt() {
+void Vector::WalshAveragesMedian::adapt() {
   Vector walshAveragesVector(
 		std::list<double>(
 			s_vector.walshAverages().begin(), 

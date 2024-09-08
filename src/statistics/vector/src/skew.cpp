@@ -15,7 +15,7 @@ namespace ss {
 //     return qQNaN();
 // }
 
-void Skew::adapt() {
+void Vector::Skew::adapt() {
   double N = s_vector.size();
   s_value.first = s_vector.centralMoment(3, Measure::Population) /
                           pow(s_vector.sd(Measure::Population), 3);
@@ -23,7 +23,7 @@ void Skew::adapt() {
       (std::sqrt(N * (N - 1)) / (N - 2)) * s_value.first;
 }
 
-void SkewDeviation::adapt() {
+void Vector::SkewDeviation::adapt() {
   // there is no way this would have ever worked
   // stat.skewDeiviation.first = sqrt(
   // 		(4*beta(4) - 12*beta(3) -
@@ -34,7 +34,7 @@ void SkewDeviation::adapt() {
 	s_value = std::sqrt((6 * (s - 2)) / ((s + 1) * (s + 3)));
 }
 
-void SkewConfidence::adapt(double alpha) {
+void Vector::SkewConfidence::adapt(double alpha) {
 	s_values[alpha] = thetaDeviation(
 		s_vector.skew(Measure::Population), 
 		s_vector.skewDeviation(), 

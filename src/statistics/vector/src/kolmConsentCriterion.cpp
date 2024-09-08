@@ -2,7 +2,7 @@
 
 namespace ss {
 
-void KolmConsentCriterion::adapt() {
+void Vector::KolmConsentCriterion::adapt() {
   auto x1 = s_vector.cbegin(), x2 = ++s_vector.cbegin();
 
   double k;

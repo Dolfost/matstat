@@ -4,7 +4,7 @@
 
 namespace ss {
 
-void PearConsentCriterion::adapt() {
+void Vector::PearConsentCriterion::adapt() {
 	s_value = 0;
 
 	double k, s;

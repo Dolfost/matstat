@@ -3,7 +3,7 @@
 namespace ss {
 #include <cfloat>
 
-void CoefficientOfVariation::adapt() {
+void Vector::CoefficientOfVariation::adapt() {
   if (s_vector.mean() == 0) {
     s_value.first = DBL_MAX;
     s_value.second = DBL_MAX;
@@ -13,7 +13,7 @@ void CoefficientOfVariation::adapt() {
   }
 }
 
-void NonparametricCoefficientOfVariation::adapt() {
+void Vector::NonparametricCoefficientOfVariation::adapt() {
   s_value = s_vector.mad() / s_vector.med();
 }
 

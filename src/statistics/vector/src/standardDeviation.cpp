@@ -2,7 +2,7 @@
 
 namespace ss {
 
-void StandardDeviation::adapt() {
+void Vector::StandardDeviation::adapt() {
   s_value.first =
       std::sqrt(s_vector.centralMoment(2, Measure::Population));
   s_value.second =

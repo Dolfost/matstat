@@ -11,194 +11,196 @@
 
 namespace ss {
 
-class RawMoment: public utils::StatisticMap<double, double> {
-public:
-	using StatisticMap::StatisticMap;
-protected:
-	virtual void adapt(double degree) override;
-};
-
-class MeanDeviation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class MeanConfidence: public utils::Confidence<double, double> {
-public:
-	using Confidence::Confidence;
-protected:
-	virtual void adapt(double) override;
-};
-
-class CentralMoment: public utils::StatisticPairMap<double, double, Measure> {
-public:
-	using StatisticPairMap::StatisticPairMap;
-protected:
-	virtual void adapt(double degre) override;
-};
-
-class VarianceDeviation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class VarianceConfidence: public utils::Confidence<double, double> {
-public:
-	using Confidence::Confidence;
-protected:
-	virtual void adapt(double) override;
-};
-
-class Skew: public utils::StatisticPair<double, Measure> {
-public:
-	using StatisticPair::StatisticPair;
-protected:
-	virtual void adapt() override;
-};
-
-class SkewDeviation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class SkewConfidence: public utils::Confidence<double, double> {
-public:
-	using Confidence::Confidence;
-protected:
-	virtual void adapt(double) override;
-};
-
-class Kurtosis: public utils::StatisticPair<double, Measure> {
-public:
-	using StatisticPair::StatisticPair;
-protected:
-	virtual void adapt() override;
-};
-
-class KurtosisDeviation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class KurtosisConfidence: public utils::Confidence<double, double> {
-public:
-	using Confidence::Confidence;
-protected:
-	virtual void adapt(double) override;
-};
-
-class MeanAbsoluteDeviation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class TurncatedMean: public utils::StatisticMap<double, double, std::size_t> {
-public:
-	using StatisticMap::StatisticMap;
-	virtual double value(double) override;
-protected:
-	virtual void adapt(std::size_t) override;
-};
-
-class CounterKurtosis: public utils::StatisticPair<double, Measure> {
-public:
-	using StatisticPair::StatisticPair;
-protected:
-	virtual void adapt() override;
-};
-
-class StandardDeviation: public utils::StatisticPair<double, Measure> {
-public:
-	using StatisticPair::StatisticPair;
-protected:
-	virtual void adapt() override;
-};
-
-class Beta: public utils::StatisticMap<std::size_t, double> {
-public:
-	using StatisticMap::StatisticMap;
-protected:
-	virtual void adapt(std::size_t) override;
-};
-
-class WalshAverages: public utils::StatisticContainer<std::list<double>> {
-public:
-	using StatisticContainer::StatisticContainer;
-protected:
-	virtual void adapt() override;
-};
-
-class WalshAveragesMedian: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class KolmConsentCriterion: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class PearConsentCriterion: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class CoefficientOfVariation: public utils::StatisticPair<double, Measure> {
-public:
-	using StatisticPair::StatisticPair;
-protected:
-	virtual void adapt() override;
-};
-
-class NonparametricCoefficientOfVariation: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class Min: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class Max: public utils::StatisticSingle<double> {
-public:
-	using StatisticSingle::StatisticSingle;
-protected:
-	virtual void adapt() override;
-};
-
-class Sorted: public utils::StatisticContainer<std::list<double>> {
-public:
-	using StatisticContainer::StatisticContainer;
-protected:
-	virtual void adapt() override;
-};
 
 class Vector: protected std::list<double> {
+public: // statistics
+	class RawMoment: public utils::StatisticMap<double, double> {
+	public:
+		using StatisticMap::StatisticMap;
+	protected:
+		virtual void adapt(double degree) override;
+	} rawMoment = RawMoment(this);
+
+	class MeanDeviation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} meanDeviation = MeanDeviation(this);
+
+	class MeanConfidence: public utils::Confidence<double, double> {
+	public:
+		using Confidence::Confidence;
+	protected:
+		virtual void adapt(double) override;
+	} meanConfidence = MeanConfidence(this);
+
+	class CentralMoment: public utils::StatisticPairMap<double, double, Measure> {
+	public:
+		using StatisticPairMap::StatisticPairMap;
+	protected:
+		virtual void adapt(double degre) override;
+	} centralMoment = CentralMoment(this);
+
+	class VarianceDeviation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} varianceDeviation = VarianceDeviation(this);
+
+	class VarianceConfidence: public utils::Confidence<double, double> {
+	public:
+		using Confidence::Confidence;
+	protected:
+		virtual void adapt(double) override;
+	} varianceConfidence = VarianceConfidence(this);
+
+	class Skew: public utils::StatisticPair<double, Measure> {
+	public:
+		using StatisticPair::StatisticPair;
+	protected:
+		virtual void adapt() override;
+	} skew = Skew(this);
+
+	class SkewDeviation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} skewDeviation = SkewDeviation(this);
+
+	class SkewConfidence: public utils::Confidence<double, double> {
+	public:
+		using Confidence::Confidence;
+	protected:
+		virtual void adapt(double) override;
+	} skewConfidence = SkewConfidence(this);
+
+	class Kurtosis: public utils::StatisticPair<double, Measure> {
+	public:
+		using StatisticPair::StatisticPair;
+	protected:
+		virtual void adapt() override;
+	} kurtosis = Kurtosis(this);
+
+	class KurtosisDeviation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} kurtosisDeviation = KurtosisDeviation(this);
+
+	class KurtosisConfidence: public utils::Confidence<double, double> {
+	public:
+		using Confidence::Confidence;
+	protected:
+		virtual void adapt(double) override;
+	} kurtosisConfidence = KurtosisConfidence(this);
+
+	class MeanAbsoluteDeviation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} mad = MeanAbsoluteDeviation(this);
+
+	class TurncatedMean: public utils::StatisticMap<double, double, std::size_t> {
+	public:
+		using StatisticMap::StatisticMap;
+		virtual double value(double) override;
+	protected:
+		virtual void adapt(std::size_t) override;
+	} tmean = TurncatedMean(this);
+
+	class CounterKurtosis: public utils::StatisticPair<double, Measure> {
+	public:
+		using StatisticPair::StatisticPair;
+	protected:
+		virtual void adapt() override;
+	} counterKurtosis = CounterKurtosis(this);
+
+	class StandardDeviation: public utils::StatisticPair<double, Measure> {
+	public:
+		using StatisticPair::StatisticPair;
+	protected:
+		virtual void adapt() override;
+	} sd = StandardDeviation(this);
+
+	class Beta: public utils::StatisticMap<std::size_t, double> {
+	public:
+		using StatisticMap::StatisticMap;
+	protected:
+		virtual void adapt(std::size_t) override;
+	} beta = Beta(this);
+
+	class WalshAverages: public utils::StatisticContainer<std::list<double>> {
+	public:
+		using StatisticContainer::StatisticContainer;
+	protected:
+		virtual void adapt() override;
+	} walshAverages = WalshAverages(this);
+
+	class WalshAveragesMedian: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} walshAveragesMed = WalshAveragesMedian(this);
+
+	class KolmConsentCriterion: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} kolmConsentCriterion = KolmConsentCriterion(this);
+
+	class PearConsentCriterion: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} pearConsentCriterion = PearConsentCriterion(this);
+
+	class CoefficientOfVariation: public utils::StatisticPair<double, Measure> {
+	public:
+		using StatisticPair::StatisticPair;
+	protected:
+		virtual void adapt() override;
+	} cv = CoefficientOfVariation(this);
+
+	class NonparametricCoefficientOfVariation: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} ncv = NonparametricCoefficientOfVariation(this);
+
+	class Min: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} min = Min(this);
+
+	class Max: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} max = Max(this);
+
+	class Sorted: public utils::StatisticContainer<std::list<double>> {
+	public:
+		using StatisticContainer::StatisticContainer;
+	protected:
+		virtual void adapt() override;
+	} sorted = Sorted(this);
+
 public:
-		// iterates as x = (h+0.5)i; i is the vector index
-		// has size of M for O(n) access speed
 	class ClassSeries
+	// iterates as x = (h+0.5)i; i is the vector index
+	// has size of M for O(n) access speed
 	: public utils::StatisticContainer<std::vector<std::pair<std::size_t, double>>> {
 	public:
 		using StatisticContainer::StatisticContainer;
@@ -320,33 +322,6 @@ public:
 	~Vector();
 
 public:
-	RawMoment rawMoment = RawMoment(this);
-	MeanDeviation meanDeviation = MeanDeviation(this);
-	MeanConfidence meanConfidence = MeanConfidence(this);
-	CentralMoment centralMoment = CentralMoment(this);
-	VarianceDeviation varianceDeviation = VarianceDeviation(this);
-	VarianceConfidence varianceConfidence = VarianceConfidence(this);
-	Skew skew = Skew(this);
-	SkewDeviation skewDeviation = SkewDeviation(this);
-	SkewConfidence skewConfidence = SkewConfidence(this);
-	Kurtosis kurtosis = Kurtosis(this);
-	KurtosisDeviation kurtosisDeviation = KurtosisDeviation(this);
-	KurtosisConfidence kurtosisConfidence = KurtosisConfidence(this);
-	MeanAbsoluteDeviation mad = MeanAbsoluteDeviation(this);
-	TurncatedMean tmean = TurncatedMean(this);
-	CounterKurtosis counterKurtosis = CounterKurtosis(this);
-	StandardDeviation sd = StandardDeviation(this);
-	Beta beta = Beta(this);
-	WalshAverages walshAverages = WalshAverages(this);
-	WalshAveragesMedian walshAveragesMed = WalshAveragesMedian(this);
-	KolmConsentCriterion kolmConsentCriterion = KolmConsentCriterion(this);
-	PearConsentCriterion pearConsentCriterion = PearConsentCriterion(this);
-	CoefficientOfVariation cv = CoefficientOfVariation(this);
-	NonparametricCoefficientOfVariation ncv = NonparametricCoefficientOfVariation(this);
-	Sorted sorted = Sorted(this);
-	Min min = Min(this);
-	Max max = Max(this);
-
 	using std::list<double>::size;
 
 	using std::list<double>::front;

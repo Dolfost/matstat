@@ -3,7 +3,7 @@
 
 namespace ss {
 
-void Kurtosis::adapt() {
+void Vector::Kurtosis::adapt() {
 	double N = s_vector.size();
 
 	s_value.first = s_vector.centralMoment(4, Measure::Population) /
@@ -12,7 +12,7 @@ void Kurtosis::adapt() {
 		((s_value.first - 3) + 6 / (N + 1));
 }
 
-void KurtosisDeviation::adapt() {
+void Vector::KurtosisDeviation::adapt() {
 	s_value = sqrt(
 		(1.0 / s_vector.size()) * (s_vector.beta(6) - 4 *
 		s_vector.beta(4) * s_vector.beta(2) - 8 * s_vector.beta(3) + 4
@@ -21,7 +21,7 @@ void KurtosisDeviation::adapt() {
 	);
 }
 
-void KurtosisConfidence::adapt(double alpha) {
+void Vector::KurtosisConfidence::adapt(double alpha) {
 	s_values[alpha] = thetaDeviation(
 		s_vector.kurtosis(Measure::Population), 
 		s_vector.kurtosisDeviation(), 
