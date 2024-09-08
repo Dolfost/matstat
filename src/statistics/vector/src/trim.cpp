@@ -4,11 +4,13 @@ namespace ss {
 
 size_t Vector::trim(double from, double to) {
 	std::size_t n = size();
-  auto x = begin();
-  while (x != end()) {
-	  if (*x <= to or *x >= from)
-		  x = erase(x);
-  }
+	auto x = begin();
+	while (x != end()) {
+		if (*x <= from or *x >= to)
+			x = erase(x);
+		else
+			x++;
+	}
 
   invalidate();
 
