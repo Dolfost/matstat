@@ -368,7 +368,7 @@ public: // general
 private: // data
 	bool transformationSymbolTableReady = false;
 	::exprtk::symbol_table<double> transformationSymbolTable;
-	void setTransformationSymbolTable();
+	void setExprtkSymbolTable();
 };
 
 

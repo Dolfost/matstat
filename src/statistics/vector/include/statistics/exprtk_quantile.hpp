@@ -1,5 +1,5 @@
-#ifndef _VECTOR_EXPRTK_HPP_
-#define _VECTOR_EXPRTK_HPP_
+#ifndef _VECTOR_EXPRTK_QUANTILE_HPP_
+#define _VECTOR_EXPRTK_QUANTILE_HPP_
 
 #include "exprtk.hpp"
 #include "quantile.hpp"
@@ -41,4 +41,4 @@ struct NormalDistributionCdf final : public ::exprtk::ifunction<double> {
 
 }
 
-#endif // !_VECTOR_EXPRTK_HPP_
+#endif // !_VECTOR_EXPRTK_QUANTILE_HPP_

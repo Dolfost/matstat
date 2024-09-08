@@ -1,11 +1,13 @@
-#ifndef _DATA_VECTOR_EXPRTK_HPP_
-#define _DATA_VECTOR_EXPRTK_HPP_
+#ifndef __EXPRTK_VECTOR__
+#define __EXPRTK_VECTOR__
 
 #include "exprtk.hpp"
 #include "vector.hpp"
 
-struct exprtkMean final : public exprtk::ifunction<double> {
-	exprtkMean(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+namespace ss {
+
+struct exprtkMean final : public ::exprtk::ifunction<double> {
+	exprtkMean(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -14,8 +16,8 @@ struct exprtkMean final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkMed final : public exprtk::ifunction<double> {
-	exprtkMed(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkMed final : public ::exprtk::ifunction<double> {
+	exprtkMed(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -24,8 +26,8 @@ struct exprtkMed final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkMad final : public exprtk::ifunction<double> {
-	exprtkMad(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkMad final : public ::exprtk::ifunction<double> {
+	exprtkMad(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -34,8 +36,8 @@ struct exprtkMad final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkWalshAveragesMed final : public exprtk::ifunction<double> {
-	exprtkWalshAveragesMed(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkWalshAveragesMed final : public ::exprtk::ifunction<double> {
+	exprtkWalshAveragesMed(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -44,8 +46,8 @@ struct exprtkWalshAveragesMed final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkSize final : public exprtk::ifunction<double> {
-	exprtkSize(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkSize final : public ::exprtk::ifunction<double> {
+	exprtkSize(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -54,8 +56,8 @@ struct exprtkSize final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkVariationCoef final : public exprtk::igeneric_function<double> {
-	exprtkVariationCoef(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkVariationCoef final : public ::exprtk::igeneric_function<double> {
+	exprtkVariationCoef(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -74,8 +76,8 @@ return dv->cv(measure);
 	}
 };
 
-struct exprtkKurtosis final : public exprtk::igeneric_function<double> {
-	exprtkKurtosis(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkKurtosis final : public ::exprtk::igeneric_function<double> {
+	exprtkKurtosis(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -95,8 +97,8 @@ struct exprtkKurtosis final : public exprtk::igeneric_function<double> {
 	}
 };
 
-struct exprtkSkew final : public exprtk::igeneric_function<double> {
-	exprtkSkew(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkSkew final : public ::exprtk::igeneric_function<double> {
+	exprtkSkew(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -116,8 +118,8 @@ struct exprtkSkew final : public exprtk::igeneric_function<double> {
 	}
 };
 
-struct exprtkVariance final : public exprtk::igeneric_function<double> {
-	exprtkVariance(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkVariance final : public ::exprtk::igeneric_function<double> {
+	exprtkVariance(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -137,8 +139,8 @@ struct exprtkVariance final : public exprtk::igeneric_function<double> {
 	}
 };
 
-struct exprtkXmin final : public exprtk::ifunction<double> {
-	exprtkXmin(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkXmin final : public ::exprtk::ifunction<double> {
+	exprtkXmin(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -147,8 +149,8 @@ struct exprtkXmin final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkXmax final : public exprtk::ifunction<double> {
-	exprtkXmax(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkXmax final : public ::exprtk::ifunction<double> {
+	exprtkXmax(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -157,8 +159,8 @@ struct exprtkXmax final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkStandartDeviation final : public exprtk::igeneric_function<double> {
-	exprtkStandartDeviation(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkStandartDeviation final : public ::exprtk::igeneric_function<double> {
+	exprtkStandartDeviation(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -178,8 +180,8 @@ struct exprtkStandartDeviation final : public exprtk::igeneric_function<double> 
 	}
 };
 
-struct exprtkRawMoment final : public exprtk::ifunction<double> {
-	exprtkRawMoment(ss::Vector* vec) : exprtk::ifunction<double>(1)  {
+struct exprtkRawMoment final : public ::exprtk::ifunction<double> {
+	exprtkRawMoment(ss::Vector* vec) : ::exprtk::ifunction<double>(1)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -188,8 +190,8 @@ struct exprtkRawMoment final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkCentralMoment final : public exprtk::igeneric_function<double> {
-	exprtkCentralMoment(ss::Vector* vec) : exprtk::igeneric_function<double>("TS")  {
+struct exprtkCentralMoment final : public ::exprtk::igeneric_function<double> {
+	exprtkCentralMoment(ss::Vector* vec) : ::exprtk::igeneric_function<double>("TS")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -210,8 +212,8 @@ struct exprtkCentralMoment final : public exprtk::igeneric_function<double> {
 	}
 };
 
-struct exprtkCounterKurtosis final : public exprtk::igeneric_function<double> {
-	exprtkCounterKurtosis(ss::Vector* vec) : exprtk::igeneric_function<double>("S")  {
+struct exprtkCounterKurtosis final : public ::exprtk::igeneric_function<double> {
+	exprtkCounterKurtosis(ss::Vector* vec) : ::exprtk::igeneric_function<double>("S")  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -231,8 +233,8 @@ struct exprtkCounterKurtosis final : public exprtk::igeneric_function<double> {
 	}
 };
 
-struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
-	exprtkTurncatedMean(ss::Vector* vec) : exprtk::ifunction<double>(1)  {
+struct exprtkTurncatedMean final : public ::exprtk::ifunction<double> {
+	exprtkTurncatedMean(ss::Vector* vec) : ::exprtk::ifunction<double>(1)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -241,8 +243,8 @@ struct exprtkTurncatedMean final : public exprtk::ifunction<double> {
 	}
 };
 
-struct exprtkNonparametricVariationCoef final : public exprtk::ifunction<double> {
-	exprtkNonparametricVariationCoef(ss::Vector* vec) : exprtk::ifunction<double>(0)  {
+struct exprtkNonparametricVariationCoef final : public ::exprtk::ifunction<double> {
+	exprtkNonparametricVariationCoef(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -251,8 +253,8 @@ struct exprtkNonparametricVariationCoef final : public exprtk::ifunction<double>
 	}
 };
 
-struct exprtkBeta final : public exprtk::ifunction<double> {
-	exprtkBeta(ss::Vector* vec) : exprtk::ifunction<double>(1)  {
+struct exprtkBeta final : public ::exprtk::ifunction<double> {
+	exprtkBeta(ss::Vector* vec) : ::exprtk::ifunction<double>(1)  {
 		dv = vec;
 	}
 	ss::Vector* dv;
@@ -261,4 +263,6 @@ struct exprtkBeta final : public exprtk::ifunction<double> {
 	}
 };
 
-#endif // !_DATA_VECTOR_EXPRTK_HPP_
+}
+
+#endif // !__EXPRTK_VECTOR__

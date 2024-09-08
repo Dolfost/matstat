@@ -1,6 +1,6 @@
 #include "vector.hpp"
-#include "vectorExprtk.hpp"
-#include "statistics/exprtk_utils.hpp"
+#include "statistics/exprtk_quantile.hpp"
+#include "statistics/exprtk_vector.hpp"
 
 namespace ss {
 
@@ -8,10 +8,7 @@ double exprtk::NormQuantile::operator()(const double& alpha) {
 	return normQuantile(alpha);
 }
 
-void Vector::setTransformationSymbolTable() {
-  if (transformationSymbolTableReady)
-    return;
-
+void Vector::setExprtkSymbolTable() {
   transformationSymbolTable.add_constant("e", M_E);
   transformationSymbolTable.add_constant("pi", M_PI);
 

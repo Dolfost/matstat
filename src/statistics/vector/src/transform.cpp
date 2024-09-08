@@ -9,7 +9,7 @@ std::string Vector::transform(std::string expression) {
 
   ::exprtk::expression<double> expr;
   ::exprtk::parser<double> parser;
-  setTransformationSymbolTable();
+  setExprtkSymbolTable();
 
   double x;
   transformationSymbolTable.remove_variable("x");

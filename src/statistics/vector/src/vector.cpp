@@ -5,10 +5,12 @@ namespace ss {
 
 Vector::Vector(const std::list<double> &input) {
   setVector(input);
+	setExprtkSymbolTable();
 }
 
 Vector::Vector(Vector &dv) {
   setVector(dv);
+	setExprtkSymbolTable();
 }
 
 void Vector::setVector(const std::list<double> &input) {
