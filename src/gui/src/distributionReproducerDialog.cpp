@@ -1,5 +1,5 @@
 #include "distributionReproducerDialog.hpp"
-#include "statistics/quantile.hpp"
+#include "vector/quantile.hpp"
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qtablewidget.h>
 #include <vector>

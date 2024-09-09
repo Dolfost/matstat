@@ -1,11 +1,7 @@
-#include "vector.hpp"
-
 #include <vector.hpp>
+#include <vector/quantile.hpp>
 
 #include <vector>
-
-#include <statistics/quantile.hpp>
-
 #include <random>
 
 namespace ss {

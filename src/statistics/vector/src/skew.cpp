@@ -1,19 +1,7 @@
 #include "vector.hpp"
-#include "statistics/quantile.hpp"
+#include "vector/quantile.hpp"
 
 namespace ss {
-
-// double Skew::skew(Measure m) {
-//   if (!stat.skew.second)
-//     computeSkew();
-//
-//   if (m == Measure::Population)
-//     return stat.skew.first.first;
-//   if (m == Measure::Sample)
-//     return stat.skew.first.second;
-//   else
-//     return qQNaN();
-// }
 
 void Vector::Skew::adapt() {
   double N = s_vector.size();

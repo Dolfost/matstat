@@ -1,4 +1,4 @@
-#include "statistics/quantile.hpp"
+#include "vector/quantile.hpp"
 #include "vector.hpp"
 
 namespace ss {

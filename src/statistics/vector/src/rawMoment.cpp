@@ -1,5 +1,5 @@
 #include "vector.hpp"
-#include "statistics/quantile.hpp"
+#include "vector/quantile.hpp"
 
 namespace ss {
 

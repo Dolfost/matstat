@@ -1,6 +1,6 @@
 #include "vector.hpp"
-#include "statistics/exprtk_quantile.hpp"
-#include "statistics/exprtk_vector.hpp"
+#include "vector/exprtk_quantile.hpp"
+#include "vector/exprtk_vector.hpp"
 
 namespace ss {
 
