@@ -1,11 +1,11 @@
 file(GLOB SOURCES CONFIGURE_DEPENDS 
 	*.cpp
-	vector/src/*.cpp
 )
 file(GLOB HEADERS CONFIGURE_DEPENDS 
 	include/*.hpp
-	vector/include/*.hpp
 )
+
+add_subdirectory(vector)
 
 qt_add_library(statistics STATIC)
 target_sources(statistics
@@ -15,16 +15,15 @@ target_sources(statistics
 		TYPE HEADERS 
 		BASE_DIRS 
 			include
-			vector/include
 		FILES ${HEADERS}
 )
 
 target_include_directories(statistics 
 	PUBLIC 
 		include/
-		dataVector/
 )
 
-target_link_libraries(statistics PRIVATE
-	exprtk
+target_link_libraries(statistics 
+	PRIVATE exprtk 
+	PUBLIC ss::vector
 )
