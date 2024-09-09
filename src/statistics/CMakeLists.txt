@@ -6,6 +6,7 @@ file(GLOB HEADERS CONFIGURE_DEPENDS
 )
 
 add_subdirectory(vector)
+add_subdirectory(vectorPair)
 
 qt_add_library(statistics STATIC)
 target_sources(statistics
@@ -25,5 +26,5 @@ target_include_directories(statistics
 
 target_link_libraries(statistics 
 	PRIVATE exprtk 
-	PUBLIC ss::vector
+	PUBLIC ss::vector ss::vectorPair
 )

@@ -317,7 +317,7 @@ public:
 
 public:
 	Vector(const std::list<double>& = {});
-	Vector(Vector&);
+	Vector(const Vector&);
 	void setVector(const std::list<double>&);
 	~Vector();
 
@@ -359,6 +359,12 @@ public: // distribution recreation
 public: // general
 	std::string report();
 	void invalidate();
+	std::function<void(void)>& invalidateCallback() {
+		return v_invalidateCallback;
+	};
+	void setInvalidateCallback(std::function<void(void)> fc) {
+		v_invalidateCallback = fc;
+	};
 	static const std::string exprtkFuncitons;
 	//  TODO: move from std::list to Vector insertion
 	const std::list<double>& list() { 
@@ -366,8 +372,8 @@ public: // general
 	}
 
 private: // data
-	bool transformationSymbolTableReady = false;
-	::exprtk::symbol_table<double> transformationSymbolTable;
+	std::function<void(void)> v_invalidateCallback = [](){};
+	::exprtk::symbol_table<double> v_exprtkSymbolTable;
 	void setExprtkSymbolTable();
 };
 

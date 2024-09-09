@@ -12,10 +12,10 @@ std::string Vector::transform(std::string expression) {
   setExprtkSymbolTable();
 
   double x;
-  transformationSymbolTable.remove_variable("x");
-  transformationSymbolTable.add_variable("x", x);
+  v_exprtkSymbolTable.remove_variable("x");
+  v_exprtkSymbolTable.add_variable("x", x);
 
-  expr.register_symbol_table(transformationSymbolTable);
+  expr.register_symbol_table(v_exprtkSymbolTable);
 
   if (!parser.compile(expression, expr)) {
     msg.append("Error computing xₙ: " + std::string(parser.error().c_str()) +

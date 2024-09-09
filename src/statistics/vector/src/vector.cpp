@@ -8,7 +8,7 @@ Vector::Vector(const std::list<double> &input) {
 	setExprtkSymbolTable();
 }
 
-Vector::Vector(Vector &dv) {
+Vector::Vector(const Vector &dv) {
   setVector(dv);
 	setExprtkSymbolTable();
 }
@@ -53,6 +53,8 @@ void Vector::invalidate() {
 
 	varSeries.invalidate();
 	classSeries.invalidate();
+
+	v_invalidateCallback();
 }
 
 std::string Vector::report() {

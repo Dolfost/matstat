@@ -1,6 +1,9 @@
 #include<map>
 #include<utility>
 
+#ifndef _VECTOR_UTILS_HPP_
+#define _VECTOR_UTILS_HPP_
+
 namespace ss {
 
 class Vector;
@@ -21,26 +24,26 @@ enum class Measure {
 
 namespace ss::utils {
 
-template<class T>
+template<class T, class B = Vector>
 class Statistic {
 public:
 	Statistic() = delete;
-	Statistic(Vector& vec): s_vector(vec) {};
-	Statistic(Vector* vec): s_vector(*vec) {};
-	const Vector& vector() const { return s_vector; };
-	Vector& vector() { return s_vector; };
+	Statistic(B& vec): s_vector(vec) {};
+	Statistic(B* vec): s_vector(*vec) {};
+	const B& vector() const { return s_vector; };
+	B& vector() { return s_vector; };
 	virtual void invalidate() = 0;
 protected:
-	Vector& s_vector;
+	B& s_vector;
 private:
 };
 
 
-template<class T>
-class StatisticSingle: public Statistic<T> {
+template<class T, class B = Vector>
+class StatisticSingle: public Statistic<T, B> {
 public:
 	StatisticSingle() = delete;
-	using Statistic<T>::Statistic;
+	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_valid = false;
 	}
@@ -58,11 +61,11 @@ protected:
 	T s_value;
 };
 
-template<class T>
-class StatisticContainer: public Statistic<T> {
+template<class T, class B=Vector>
+class StatisticContainer: public Statistic<T, B> {
 public:
 	StatisticContainer() = delete;
-	using Statistic<T>::Statistic;
+	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_value.clear();
 		s_valid = false;
@@ -81,11 +84,11 @@ protected:
 	T s_value;
 };
 
-template<class T, class Switch>
-class StatisticPair: public Statistic<T> {
+template<class T, class Switch, class B=Vector>
+class StatisticPair: public Statistic<T, B> {
 public:
 	StatisticPair() = delete;
-	using Statistic<T>::Statistic;
+	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_valid = false;
 	}
@@ -109,11 +112,11 @@ protected:
 	std::pair<T, T> s_value;
 };
 
-template<class From, class To, class MapFrom=From>
-class StatisticMap: public Statistic<To> {
+template<class From, class To, class MapFrom=From, class B=Vector>
+class StatisticMap: public Statistic<To, B> {
 public:
 	StatisticMap() = delete;
-	using Statistic<To>::Statistic;
+	using Statistic<To, B>::Statistic;
 	virtual void invalidate() override {
 		s_values.clear();
 	}
@@ -129,11 +132,11 @@ protected:
 	std::map<MapFrom, To> s_values;
 };
 
-template<class From, class To, class Switch>
-class StatisticPairMap: public Statistic<To> {
+template<class From, class To, class Switch, class B=Vector>
+class StatisticPairMap: public Statistic<To, B> {
 public:
 	StatisticPairMap() = delete;
-	using Statistic<To>::Statistic;
+	using Statistic<To, B>::Statistic;
 	virtual void invalidate() override {
 		s_values.clear();
 	}
@@ -154,16 +157,18 @@ protected:
 	std::map<From, std::pair<To, To>> s_values;
 };
 
-template<class From, class To>
-class Confidence: public StatisticPairMap<From, To, Bound> {
+template<class From, class To, class B=Vector>
+class Confidence: public StatisticPairMap<From, To, Bound, B> {
 public:
 	Confidence() = delete;
-	using StatisticPairMap<From, To, Bound>::StatisticPairMap;
+	using StatisticPairMap<From, To, Bound, B>::StatisticPairMap;
 	virtual To value(From alpha, Bound b) {
 		if (alpha < 0 or alpha > 1)
 			throw std::logic_error("Alpha should be in range [0;1]");
-		return StatisticPairMap<From, To, Bound>::value(alpha, b);
+		return StatisticPairMap<From, To, Bound, B>::value(alpha, b);
 	};
 };
 
 }
+
+#endif // !_VECTOR_UTILS_HPP_
