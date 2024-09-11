@@ -22,6 +22,6 @@ target_include_directories(ss_vector
 		include
 )
 
-target_link_libraries(ss_vector PRIVATE 
+target_link_libraries(ss_vector PUBLIC 
 	exprtk
 )

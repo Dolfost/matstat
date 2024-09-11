@@ -17,6 +17,8 @@ void Vector::ClassSeries::adapt() {
 	s_value.resize(c_count);
 	c_cumSeries.resize(c_count);
 
+
+
 	int idx;
 	for (auto const& i : s_vector.sorted()) {
 		idx = (i - s_vector.min())/c_h;
@@ -46,8 +48,8 @@ void Vector::ClassSeries::adapt() {
 }
 
 std::size_t Vector::ClassSeries::calculateCount() {
-	std::size_t cls = s_vector.size() >= 100 ?
-		cbrt(s_vector.size()) : sqrt(s_vector.size());
+	std::size_t cls = (s_vector.size() >= 100 ?
+		std::cbrt(s_vector.size()) : std::sqrt(s_vector.size()));
 	if (cls % 2 == 0)
 		cls--;
 
@@ -92,18 +94,6 @@ double Vector::ClassSeries::step() {
 	if (!s_valid)
 		adapt();
 	return c_h;
-}
-
-std::size_t Vector::ClassSeries::maxN() {
-	if (!s_valid)
-		adapt();
-	return c_maxCount;
-}
-
-double Vector::ClassSeries::maxProb() {
-	if (!s_valid)
-		adapt();
-	return c_maxProb;
 }
 
 std::size_t Vector::ClassSeries::count() {

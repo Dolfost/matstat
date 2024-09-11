@@ -9,7 +9,7 @@ VectorInfoDialog::VectorInfoDialog(
 	: QDialog(parent, f) {
 		ve = vectorEntry;
 
-		ss::Vector::VarSeries& varSeries = vectorEntry->vector->varSeries;
+		ss::Vector::VarSeries& varSeries = vectorEntry->vector->vs;
 
 		this->setWindowTitle("Інформація про вектор " + vectorEntry->name);
 		this->setAttribute(Qt::WA_DeleteOnClose, true);

@@ -11,6 +11,45 @@
 
 namespace ss {
 
+template<class Cont, class B=Vector>
+class ClassSeries
+: public utils::StatisticContainer<std::vector<Cont>, B> {
+public:
+	using utils::StatisticContainer<std::vector<Cont>, B>::StatisticContainer;
+
+	const std::vector<Cont>&
+	series() {
+		return this->value();
+	};
+	virtual void invalidate() override {
+		c_cumSeries.clear();
+		utils::StatisticContainer<std::vector<Cont>, B>::invalidate();
+	}
+
+	const std::vector<Cont>& 
+	cumSeries() {
+		if (!this->s_valid)
+			this->adapt();
+		return c_cumSeries;
+	}
+
+public: // properties
+	std::size_t maxN() {
+		if (!this->s_valid)
+			this->adapt();
+		return c_maxCount;
+	}
+
+	double maxProb() {
+		if (!this->s_valid)
+			this->adapt();
+		return c_maxProb;
+	}
+protected:
+	double c_maxProb; // max P_i
+	std::size_t c_maxCount; // max N_i
+	std::vector<Cont> c_cumSeries; 
+};
 
 class Vector: protected std::list<double> {
 public: // statistics
@@ -198,48 +237,26 @@ public: // statistics
 	} sorted = Sorted(this);
 
 public:
-	class ClassSeries
+	class ClassSeries: public ss::ClassSeries<std::pair<std::size_t, double>> {
 	// iterates as x = (h+0.5)i; i is the vector index
 	// has size of M for O(n) access speed
-	: public utils::StatisticContainer<std::vector<std::pair<std::size_t, double>>> {
 	public:
-		using StatisticContainer::StatisticContainer;
-		bool makeSeries(std::size_t = 0);
-
-		const std::vector<std::pair<std::size_t, double>>&
-		series() {
-			return value();
-		};
-		const std::vector<std::pair<int, double>>& 
-		cumSeries() {
-			if (!s_valid)
-				adapt();
-			return c_cumSeries;
-		}
+		using ss::ClassSeries<std::pair<std::size_t, double>>::ClassSeries;
 
 		double cdf(double);
 		double pdf(double);
 
-		virtual void invalidate() override {
-			c_cumSeries.clear();
-			StatisticContainer::invalidate();
-		}
 	public: // properties
 		double step(); // h
-		double maxProb(); // max P_i
-		std::size_t maxN(); // max N_i
 		std::size_t setCount(std::size_t);
 		std::size_t count(); // M
 		std::size_t calculateCount();
 
 	private:
 		virtual void adapt() override;
-		std::vector<std::pair<int, double>> c_cumSeries; 
-		std::size_t c_count; // M
-		double c_maxProb; // max P_i
-		std::size_t c_maxCount; // max N_i
+		std::size_t c_count = 0; // M
 		double c_h; // h
-	} classSeries = ClassSeries(this);
+	} cs = ClassSeries(this);
 	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
 	class VarSeries: public utils::StatisticContainer<std::map<double, std::pair<std::size_t, double>>> {
 	public:
@@ -257,7 +274,7 @@ public:
 		std::size_t count() { // r 
 			return value().size();
 		};
-	} varSeries = VarSeries(this);
+	} vs = VarSeries(this);
 		
 	class Distribution {
 	public:

@@ -68,7 +68,7 @@ public:
 	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_value.clear();
-		s_valid = false;
+	s_valid = false;
 	}
 	virtual const T& value() {
 		if (!s_valid) {

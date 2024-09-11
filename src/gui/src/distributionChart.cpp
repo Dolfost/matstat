@@ -38,7 +38,7 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 
 void DistributionChart::fill(ss::Vector* dataVector) {
 	dv = dataVector;
-	ss::Vector::ClassSeries& cs = dataVector->classSeries;
+	ss::Vector::ClassSeries& cs = dataVector->cs;
 
 	QVector<double> x, y;
 	for (size_t i = 0; i < cs.count(); i++) {

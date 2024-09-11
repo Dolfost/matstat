@@ -8,23 +8,24 @@ file(GLOB HEADERS CONFIGURE_DEPENDS
 add_subdirectory(vector)
 add_subdirectory(vectorPair)
 
-qt_add_library(statistics STATIC)
-target_sources(statistics
+add_library(ss_statistics STATIC)
+add_library(ss::statistics ALIAS ss_statistics)
+target_sources(ss_statistics
 	PRIVATE
 		${SOURCES}
-	PUBLIC FILE_SET statistics_headers
+	PUBLIC FILE_SET ss_statistics_headers
 		TYPE HEADERS 
 		BASE_DIRS 
 			include
 		FILES ${HEADERS}
 )
 
-target_include_directories(statistics 
+target_include_directories(ss_statistics 
 	PUBLIC 
 		include/
 )
 
-target_link_libraries(statistics 
+target_link_libraries(ss_statistics 
 	PRIVATE exprtk 
-	PUBLIC ss::vector ss::vectorPair
+	PUBLIC ss::vector ss::vectorPair ss::vector
 )

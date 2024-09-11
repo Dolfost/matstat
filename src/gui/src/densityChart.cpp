@@ -37,7 +37,7 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 
 void DensityChart::fill(ss::Vector* dataVector) {
 	dv = dataVector;
-	ss::Vector::ClassSeries& cs = dataVector->classSeries;
+	ss::Vector::ClassSeries& cs = dataVector->cs;
 
 	bars->setWidth(cs.step());
 

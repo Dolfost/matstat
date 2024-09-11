@@ -239,12 +239,12 @@ void DistributionReproducerDialog::makeConsents() {
 
 	QString pear = QString("Критерій згоди Пірсона: ");
 	double quantile = ss::pearQuantile(1-prob,
-																		ve->vector->classSeries.count()-1);
+																		ve->vector->cs.count()-1);
 	double crit = ve->vector->pearConsentCriterion();
 	pear.append(QString("%1 ≤ pearQuantile(1-%2, %3) = %4\n")
 						 .arg(crit)
 						 .arg(prob)
-						 .arg(ve->vector->classSeries.count()-1)
+						 .arg(ve->vector->cs.count()-1)
 						 .arg(quantile,
 						3, 'f', precision)
 						 );

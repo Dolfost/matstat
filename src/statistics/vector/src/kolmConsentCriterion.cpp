@@ -12,7 +12,7 @@ void Vector::KolmConsentCriterion::adapt() {
   else 
 	  k = 1;
 
-  double cdfv = s_vector.classSeries.cdf(*x2), 
+  double cdfv = s_vector.cs.cdf(*x2), 
 		 Dp = std::abs(cdfv - s_vector.dist.cdf(*x2*k)),
 		 Dm = std::abs(cdfv - s_vector.dist.cdf(*x1*k));
 
@@ -20,7 +20,7 @@ void Vector::KolmConsentCriterion::adapt() {
   x2++;
 
   while (x2 != s_vector.cend()) {
-	  cdfv = s_vector.classSeries.cdf(*x2);
+	  cdfv = s_vector.cs.cdf(*x2);
 
 	  double DpTmp = std::abs(cdfv - s_vector.dist.cdf(*x2*k));
 	  if (DpTmp > Dp)

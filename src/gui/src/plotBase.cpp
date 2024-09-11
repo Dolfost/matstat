@@ -119,7 +119,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 }
 
 void PlotBase::fill(ss::Vector* dataVector) {
-	ss::Vector::ClassSeries& cs = dataVector->classSeries;
+	ss::Vector::ClassSeries& cs = dataVector->cs;
 
 	xRange = QCPRange(dataVector->min(), dataVector->max());
 	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {

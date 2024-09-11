@@ -201,9 +201,9 @@ double VectorChain::testKS() {
 	       to = std::max(v1->max(), v2->max()),
 		   step = std::abs(to - from)/overallSize();
 
-	double z = std::abs(v1->classSeries.cdf(from)-v2->classSeries.cdf(from));
+	double z = std::abs(v1->cs.cdf(from)-v2->cs.cdf(from));
 	for (double x = from + step; x <= to + step; x += step) {
-		double tmp = std::abs(v1->classSeries.cdf(x)-v2->classSeries.cdf(x)); if (tmp > z) 
+		double tmp = std::abs(v1->cs.cdf(x)-v2->cs.cdf(x)); if (tmp > z) 
 			z = tmp;
 	}
 

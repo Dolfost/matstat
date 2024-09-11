@@ -26,5 +26,5 @@ target_include_directories(gui
 
 target_link_libraries(gui
 	Qt6::Core Qt6::Widgets Qt6::Gui
-	exprtk statistics qcustomplot
+	exprtk ss::statistics qcustomplot
 )

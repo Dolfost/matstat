@@ -51,8 +51,8 @@ void Vector::invalidate() {
 	pearConsentCriterion.invalidate();
 	kolmConsentCriterion.invalidate();
 
-	varSeries.invalidate();
-	classSeries.invalidate();
+	vs.invalidate();
+	cs.invalidate();
 
 	v_invalidateCallback();
 }
