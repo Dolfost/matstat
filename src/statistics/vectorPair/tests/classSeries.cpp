@@ -4,7 +4,7 @@
 
 int main() {
 	DataSeries dat;
-	dat.readData("../src/statistics/vectorPair/tests/norm3n.txt");
+	dat.readData(TESTPATH "/norm3n.txt");
 	ss::VectorPair vec(
 		dat.series()[0],
 		dat.series()[1]

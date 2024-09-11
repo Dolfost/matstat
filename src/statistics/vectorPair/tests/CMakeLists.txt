@@ -11,6 +11,9 @@ foreach(T ${TESTS})
 	add_executable(${TNAME} 
 		${T}
 	)
+	target_compile_definitions(${TNAME} 
+		PRIVATE TESTPATH="${CMAKE_CURRENT_LIST_DIR}"
+	)
 	target_link_libraries(${TNAME} testutils)
 	add_test(NAME ${TNAME}
 		COMMAND ${TNAME}
