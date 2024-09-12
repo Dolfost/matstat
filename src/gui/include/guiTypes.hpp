@@ -2,18 +2,28 @@
 #define _GUI_TYPES_HPP_
 
 #include <QString>
-#include <vector>
-#include "vector.hpp"
+#include <QTableWidgetItem>
 
-struct VectorEntry {
+#include "vector.hpp"
+#include "vectorPair.hpp"
+#include "vectorChain.hpp"
+
+class VectorEntry {
 public:
 	void setName(QString n) { v_name = n; };
 	QString name() { return v_name; };
+	void setTableItem(QTableWidgetItem* i) { v_tableItem = i; };
+	QTableWidgetItem* tableItem() { return v_tableItem; };
+	virtual ~VectorEntry() = 0;
 protected:
 	QString v_name;
+	QTableWidgetItem* v_tableItem = nullptr;
 };
 
-struct Vector: public VectorEntry {
+inline VectorEntry::~VectorEntry() {};
+
+class Vector: public VectorEntry {
+public:
 	Vector(ss::Vector* dv = nullptr, QString n = "") {
 		v_vector = dv;
 		v_name = n;
@@ -48,12 +58,20 @@ protected:
 	bool v_isModeled;
 };
 
-enum Tab {
-	TwoD,
-	ThreeD,
-	FourD,
-	Count,
-	Current
+class VectorPair: public VectorEntry {
+public:
+	ss::VectorPair* vectorPair() { return v_vectorPair; }
+	void setVectorPair(ss::VectorPair* v) { v_vectorPair = v; }
+protected:
+	ss::VectorPair* v_vectorPair = nullptr;
+};
+
+class VectorChain: public VectorEntry {
+public:
+	ss::VectorChain* chain() { return v_vectorChain; }
+	void setChain(ss::VectorChain* v) { v_vectorChain = v; }
+protected:
+	ss::VectorChain* v_vectorChain = nullptr;
 };
 
 #endif // !_GUI_TYPES_HPP_

@@ -18,23 +18,16 @@
 #include <distributionDialog.hpp>
 #include <densityDialog.hpp>
 
-QList<std::pair<Vector*, QTableWidgetItem*>>
+VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
-	QList<std::pair<Vector*, QTableWidgetItem *>> vectors;
+	SelectedT<VectorEntry> vectors;
 	QList<QTableWidgetItem*> items = this->selectedItems();
 	for (auto const &item : items) {
 		if (item->type() == VectorContainerWidget::InfoCell::Name) {
-			vectors.push_back(
-				{item->data(Qt::UserRole).value<Vector *>(), item});
+			vectors.push_back(item->data(Qt::UserRole).value<Vector *>());
 		}
 	}
 	return vectors;
-}
-
-std::pair<Vector*, QTableWidgetItem*>
-VectorContainerWidget::selectedVector() {
-	QTableWidgetItem *item = this->item(this->currentRow(), InfoCell::Name);
-	return {item->data(Qt::UserRole).value<Vector*>(), item};
 }
 
 VectorContainerWidget::VectorContainerWidget(QWidget *parent)
@@ -77,22 +70,11 @@ void VectorContainerWidget::appendVector(Vector *vectorEntry) {
 	if (vectorEntry->name().length() == 0)
 		vectorEntry->setName("V" + QString::number(++vectorCount));
 
-	fillRow(row, vectorEntry);
-}
-
-void VectorContainerWidget::appendList(const std::list<double> *vec,
-																			 QString name) {
-	Vector *vectorEntry = new Vector;
-	vectorEntry->setVector(new ss::Vector(*vec));
-	vectorEntry->setName(name);
-	appendVector(vectorEntry);
-}
-
-void VectorContainerWidget::fillRow(int row, Vector *vectorEntry) {
 	QList<HorizontalHeaderItem *> infoItems;
 	infoItems.append(new HorizontalHeaderItem(InfoCell::Name));
 	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
 																		QVariant(vectorEntry->name()));
+	vectorEntry->setTableItem(infoItems[InfoCell::Name]);
 	infoItems[InfoCell::Name]->setData(Qt::UserRole,
 																		QVariant::fromValue(vectorEntry));
 
@@ -130,25 +112,70 @@ void VectorContainerWidget::fillRow(int row, Vector *vectorEntry) {
 	}
 }
 
-void VectorContainerWidget::refillRow(int idx, Vector *vectorEntry) {
-	fillRow(idx, vectorEntry);
+void VectorContainerWidget::appendList(const std::list<double> *vec,
+																			 QString name) {
+	Vector *vectorEntry = new Vector;
+	vectorEntry->setVector(new ss::Vector(*vec));
+	vectorEntry->setName(name);
+	appendVector(vectorEntry);
 }
 
 void VectorContainerWidget::showContextMenu(const QPoint &pos) {
 	if (this->currentRow() == -1)
 		return;
 
-	QMenu* menu;
+	QMenu* menu = new QMenu;
 
-	menu = vectorContextMenu();
+	selectedVectorsEntryesList = selectedVectors();
+	selectedVectorsList.clear();
+	selectedVectorPairsList.clear();
+	selectedVectorChainsList.clear();
+	for (auto const& ve : selectedVectorsEntryesList) {
+		Vector* v;
+		if ((v = dynamic_cast<Vector*>(ve)))
+			selectedVectorsList.push_back(v);
+		else {
+			selectedVectorsList.clear();
+			break;
+		}
+	}
+	if (selectedVectorsList.size() == 0) {
+		for (auto const& ve : selectedVectorsEntryesList) {
+			VectorPair* v;
+			if ((v = dynamic_cast<VectorPair*>(ve)))
+				selectedVectorPairsList.push_back(v);
+			else {
+				selectedVectorPairsList.clear();
+				break;
+			}
+		}
+	}
+	if (selectedVectorPairsList.size() == 0) {
+		for (auto const& ve : selectedVectorsEntryesList) {
+			VectorChain* v;
+			if ((v = dynamic_cast<VectorChain*>(ve)))
+				selectedVectorChainsList.push_back(v);
+			else {
+				selectedVectorChainsList.clear();
+				break;
+			}
+		}
+	}
 
+	if (selectedVectorsList.size())
+		fillVectorContextMenu(menu);
+	else if (selectedVectorPairsList.size())
+		fillVectorPairContextMenu(menu);
+	else if (selectedVectorChainsList.size())
+		fillVectorChainContextMenu(menu);
+
+	fillGenericContextMenu(menu);
+	
 	menu->exec(mapToGlobal(pos));
 	delete menu;
 }
 
-QMenu* VectorContainerWidget::vectorContextMenu() {
-	QMenu* menu = new QMenu;
-
+void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	QMenu *graphics = menu->addMenu("Графіка…");
 	QAction *distribution = graphics->addAction("Функція розподілу");
 	connect(distribution, &QAction::triggered, this,
@@ -273,39 +300,35 @@ QMenu* VectorContainerWidget::vectorContextMenu() {
 	connect(writeAction, &QAction::triggered, this,
 				 &VectorContainerWidget::writeAction);
 
+}
+
+void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {}
+void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
+void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	menu->addSeparator();
 
 	QAction *deleteAction = menu->addAction("Видалити");
 	connect(deleteAction, &QAction::triggered, this,
 				 &VectorContainerWidget::deleteAction);
-
-	return menu;
 }
 
 void VectorContainerWidget::classCountAction(int cls) {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		vec.first->vector()->cs.setCount(cls);
-		emit redrawVector(vec.first);
+	for (auto const &vec : selectedVectorsList) {
+		vec->vector()->cs.setCount(cls);
+		emit redrawVector(vec);
 	}
 }
 
 void VectorContainerWidget::confidenceAction(double c) {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		vec.first->vector()->dist.setConfidence(c);
-		emit redrawVector(vec.first);
+	for (auto const &vec : selectedVectorsList) {
+		vec->vector()->dist.setConfidence(c);
+		emit redrawVector(vec);
 	}
 }
 
 void VectorContainerWidget::vectorDistributionAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &v : vectors) {
-		DistributionDialog* dia = new DistributionDialog(vectors.front().first, this);
+	for (auto const &v : selectedVectorsList) {
+		DistributionDialog* dia = new DistributionDialog(v, this);
 		connect(this, SIGNAL(redrawVector(Vector*)),
 					dia, SLOT(fill()));
 		connect(this, &VectorContainerWidget::vectorDeleted,
@@ -314,11 +337,8 @@ void VectorContainerWidget::vectorDistributionAction() {
 }
 
 void VectorContainerWidget::vectorDensityAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &v : vectors) {
-		DensityDialog* dia = new DensityDialog(vectors.front().first, this);
+	for (auto const &v : selectedVectorsList) {
+		DensityDialog* dia = new DensityDialog(v, this);
 		connect(this, SIGNAL(redrawVector(Vector*)),
 					dia, SLOT(fill()));
 		connect(this, &VectorContainerWidget::vectorDeleted,
@@ -327,71 +347,68 @@ void VectorContainerWidget::vectorDensityAction() {
 }
 
 void VectorContainerWidget::makeActiveAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		emit vectorSelected(vec.first);
+	for (auto const &vec : selectedVectorsList) {
+		emit vectorSelected(vec);
 	}
 }
 
 void VectorContainerWidget::deleteAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		emit vectorDeleted(vec.first);
-		delete vec.first;
-		this->removeRow(this->indexFromItem(vec.second).row());
+	for (auto const &vec : selectedVectorsEntryesList) {
+		Vector* vector;
+		VectorPair* vectorPair;
+		VectorChain* vectorChain;
+		if ((vector = dynamic_cast<Vector*>(vec)))
+			emit vectorDeleted(vector);
+		else if ((vectorPair = dynamic_cast<VectorPair*>(vec)))
+			emit vectorPairDeleted(vectorPair);
+		else if ((vectorChain = dynamic_cast<VectorChain*>(vec)))
+			emit vectorChainDeleted(vectorChain);
+		else 
+			throw std::runtime_error("Deleted vector object has unknown type!");
+
+		this->removeRow(this->indexFromItem(vec->tableItem()).row());
+		delete vec;
 	}
 }
 
 void VectorContainerWidget::standardizeAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		ss::Vector newVector(*vec.first->vector());
+	for (auto const &vec : selectedVectorsList) {
+		ss::Vector newVector(*vec->vector());
 		newVector.standardize();
-		appendList(&newVector.list(), QString("S(%1)").arg(vec.first->name()));
+		appendList(&newVector.list(), QString("S(%1)").arg(vec->name()));
 		//  TODO: move from std::list to Vector insertion
 	}
 }
 
 void VectorContainerWidget::logAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector()->list());
+	for (auto const &vec : selectedVectorsList) {
+		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("log(x)");
-		appendList(&newVector.list(), QString("LN(%1)").arg(vec.first->name()));
+		appendList(&newVector.list(), QString("LN(%1)").arg(vec->name()));
 	}
 }
 
 void VectorContainerWidget::reverseAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector()->list());
+	for (auto const &vec : selectedVectorsList) {
+		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("1/x");
-		appendList(&newVector.list(), QString("R(%1)").arg(vec.first->name()));
+		appendList(&newVector.list(), QString("R(%1)").arg(vec->name()));
 	}
 }
 
 void VectorContainerWidget::rightShiftAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector()->list());
+	for (auto const &vec : selectedVectorsList) {
+		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("x+abs(xmin)+1");
-		appendList(&newVector.list(), QString("RS(%1)").arg(vec.first->name()));
+		appendList(&newVector.list(), QString("RS(%1)").arg(vec->name()));
 	}
 }
 
 void VectorContainerWidget::transformAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-	QList<Vector *> vec;
+	QList<Vector*> vec;
 
-	for (auto const &v : vectors) {
-		vec.push_back(v.first);
+	for (auto const &v : selectedVectorsList) {
+		vec.push_back(v);
 	}
 
 	TransformationFormulaEditorDialog *tfe =
@@ -403,25 +420,19 @@ void VectorContainerWidget::transformAction() {
 }
 
 void VectorContainerWidget::reproductionAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &vec : vectors) {
+	for (auto const &vec : selectedVectorsList) {
 		DistributionReproducerDialog *drd =
-			new DistributionReproducerDialog(vec.first, this);
+			new DistributionReproducerDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, drd,
 					&DistributionReproducerDialog::vectorDeletedHandler);
 		connect(drd, &DistributionReproducerDialog::distributionSelected,
-					[=]() { emit redrawVector(vec.first); });
+					[=]() { emit redrawVector(vec); });
 	}
 }
 
 void VectorContainerWidget::trimAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &vec : vectors) {
-		VectorTrimmerDialog *vtd = new VectorTrimmerDialog(vec.first, this);
+	for (auto const &vec : selectedVectorsList) {
+		VectorTrimmerDialog *vtd = new VectorTrimmerDialog(vec, this);
 		connect(vtd, &VectorTrimmerDialog::vectorTrimmed, this,
 					&VectorContainerWidget::appendVector);
 		connect(this, &VectorContainerWidget::vectorDeleted, vtd,
@@ -430,11 +441,8 @@ void VectorContainerWidget::trimAction() {
 }
 
 void VectorContainerWidget::removeOutliersAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &vec : vectors) {
-		ss::Vector newVector(vec.first->vector()->list());
+	for (auto const &vec : selectedVectorsList) {
+		ss::Vector newVector(vec->vector()->list());
 		bool ok = newVector.removeOutliers();
 
 		emit outliersRemoved(ok);
@@ -442,27 +450,21 @@ void VectorContainerWidget::removeOutliersAction() {
 		if (!ok) // no entries removed
 			return;
 
-		appendList(&newVector.list(), QString("RMOUT(%1)").arg(vec.first->name()));
+		appendList(&newVector.list(), QString("RMOUT(%1)").arg(vec->name()));
 	}
 }
 
 void VectorContainerWidget::infoAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &vec : vectors) {
-		VectorInfoDialog *tfe = new VectorInfoDialog(vec.first, this);
+	for (auto const &vec : selectedVectorsList) {
+		VectorInfoDialog *tfe = new VectorInfoDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, tfe,
 					&VectorInfoDialog::vectorDeletedHandler);
 	}
 }
 
 void VectorContainerWidget::generateAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
-	for (auto const &vec : vectors) {
-		SetGeneratorDialog *sgd = new SetGeneratorDialog(vec.first, this);
+	for (auto const &vec : selectedVectorsList) {
+		SetGeneratorDialog *sgd = new SetGeneratorDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, sgd,
 					&SetGeneratorDialog::vectorDeletedHandler);
 		connect(sgd, &SetGeneratorDialog::setGenerated, this,
@@ -473,14 +475,11 @@ void VectorContainerWidget::generateAction() {
 }
 
 void VectorContainerWidget::writeAction() {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
 	QString names;
-	for (auto const& v : vectors) {
+	for (auto const& v : selectedVectorsList) {
 		names.append(QString("%1(%2),")
-							 .arg(v.first->name())
-							 .arg(v.first->vector()->size()));
+							 .arg(v->name())
+							 .arg(v->vector()->size()));
 	}
 	names.chop(1);
 
@@ -493,8 +492,8 @@ void VectorContainerWidget::writeAction() {
 		return;
 
 	ss::VectorChain set;
-	for (auto const &v : vectors)
-	set.push_back(v.first->vector());
+	for (auto const &v : selectedVectorsList)
+	set.push_back(v->vector());
 
 	try {
 		set.writeToFile(filename.toStdString());
@@ -504,12 +503,9 @@ void VectorContainerWidget::writeAction() {
 }
 
 void VectorContainerWidget::makeHypothesisAction(ss::VectorChain::Procedure p) {
-	QList<std::pair<Vector *, QTableWidgetItem *>> vectors =
-		selectedVectors();
-
 	QList<Vector *> vec;
-	for (auto const &v : vectors)
-	vec.push_back(v.first);
+	for (auto const &v : selectedVectorsList)
+	vec.push_back(v);
 
 	HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
 		vec, p, this);

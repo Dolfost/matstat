@@ -31,23 +31,29 @@ private:
 	};
 
 	signed int vectorCount = 0;
-
 	int precision = 4;
 
-	QList<std::pair<Vector*, QTableWidgetItem*>> selectedVectors();
-	std::pair<Vector*, QTableWidgetItem*> selectedVector();
+	template<class T>
+	using SelectedT = QList<T*>;
+	SelectedT<VectorEntry> selectedVectors();
+	SelectedT<VectorEntry> selectedVectorsEntryesList;
+	SelectedT<Vector> selectedVectorsList;
+	SelectedT<VectorPair> selectedVectorPairsList;
+	SelectedT<VectorChain> selectedVectorChainsList;
+
 
 public slots:
 	void appendList(const std::list<double>*, QString = "");
 	void appendVector(Vector*);
-	void fillRow(int, Vector*);
-	void refillRow(int, Vector*);
+	// void appendVectorPair(VectorPair*);
+	// void appendVectorChain(VectorChain*);
 
 private slots:
 	void showContextMenu(const QPoint&);
-	QMenu* vectorContextMenu();
-	// QMenu* vectorPairContextMenu();
-	// QMenu* vectorChainContextMenu();
+	void fillVectorContextMenu(QMenu*);
+	void fillVectorPairContextMenu(QMenu*);
+	void fillVectorChainContextMenu(QMenu*);
+	void fillGenericContextMenu(QMenu*);
 
 	void makeActiveAction();
 	void deleteAction();
@@ -71,7 +77,11 @@ private slots:
 
 signals:
 	void vectorSelected(Vector*);
+
 	void vectorDeleted(Vector*);
+	void vectorPairDeleted(VectorPair*);
+	void vectorChainDeleted(VectorChain*);
+
 	void outliersRemoved(bool);
 	void redrawVector(Vector*);
 

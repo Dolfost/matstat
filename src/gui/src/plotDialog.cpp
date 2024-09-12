@@ -20,6 +20,12 @@ PlotDialog::PlotDialog(PlotBase* p,
 	connect(clearPlotsAction, &QAction::triggered,
 			p_plot, &PlotBase::clear);
 
+	QAction* toogleDensityLogAct = 
+		p_viewMenu->addAction("Логарифмічна сітка щільності");
+	toogleDensityLogAct->setCheckable(true);
+	connect(toogleDensityLogAct, &QAction::toggled,
+			p_plot, &PlotBase::toggleLog);
+
 	p_saveMenu = p_menuBar->addMenu("Зберегти");
 	QAction* saveDensityToPngAction = p_saveMenu->addAction("Зберегти як .png");
 	connect(saveDensityToPngAction, &QAction::triggered,
