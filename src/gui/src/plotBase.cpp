@@ -21,10 +21,6 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->legend->setFillOrder(QCPLegend::foColumnsFirst);
 	this->plotLayout()->setRowStretchFactor(1, 0.001);
 
-	this->plotLayout()->insertRow(0);
-	title = new QCPTextElement(this, "Title");
-	this->plotLayout()->addElement(0, 0, title);
-
 	// axes setup
 	xFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
 	xFixedTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);

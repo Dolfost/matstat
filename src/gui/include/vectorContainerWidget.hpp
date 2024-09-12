@@ -45,6 +45,9 @@ public slots:
 
 private slots:
 	void showContextMenu(const QPoint&);
+	QMenu* vectorContextMenu();
+	// QMenu* vectorPairContextMenu();
+	// QMenu* vectorChainContextMenu();
 
 	void makeActiveAction();
 	void deleteAction();
@@ -61,11 +64,16 @@ private slots:
 	void writeAction();
 	void makeHypothesisAction(ss::VectorChain::Procedure);
 
+	void vectorDistributionAction();
+	void vectorDensityAction();
+	void classCountAction(int);
+
 signals:
 	void vectorSelected(VectorEntry*);
 	void vectorDeleted(VectorEntry*);
 	void outliersRemoved(bool);
 	void distributionSelected(VectorEntry*);
+	void classCountChanged(VectorEntry*);
 
 	void message(QString);
 };

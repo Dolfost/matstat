@@ -2,8 +2,6 @@
 #include "plotBase.hpp"
 
 DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
-	title->setText("Розподіл");
-
 	graph = new QCPGraph(this->xAxis, this->yAxis);
 	graph->setName("F(x) (класи)");
 	QPen graphPen;

@@ -4,14 +4,11 @@
 #include <QMainWindow>
 #include <QtCore/qlist.h>
 #include <QtWidgets/qboxlayout.h>
-#include <QSplitter>
 
 
 #include "vectorContainerWidget.hpp"
-#include "vectorProcessorWidget.hpp"
 #include "vectorPickerDialog.hpp"
 #include "setGeneratorDialog.hpp"
-#include "charts.hpp"
 
 #include "guiTypes.hpp"
 
@@ -23,17 +20,13 @@ public:
 private:
 	QWidget* mainWidget = nullptr;
 	QVBoxLayout* mainLayout = nullptr;
-	QSplitter* mainSplitter = nullptr;
 
 	QString filepath;
 
 	VectorContainerWidget* vectorContainer = nullptr;
-	VectorProcessorWidget* vectorProcessor = nullptr;
 	VectorPickerDialog* vectorPicker = nullptr;
 	SetGeneratorDialog* setGenerator = nullptr;
-	Charts* charts = nullptr;
 
-	void createCharts();
 	void createVectorContainers();
 	void createActions();
 
@@ -49,8 +42,6 @@ private slots:
 
 	// handlers
 	void outliersRemovedHandler(bool);
-	void vectorProcessorDuplicateHandler(VectorEntry*,
-			Tab);
 
 	void showMessage(QString, int = 4000);
 };

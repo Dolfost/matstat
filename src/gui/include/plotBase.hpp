@@ -43,8 +43,6 @@ public:
 	QCPGraph* med = nullptr;
 	QCPGraph* walshMed = nullptr;
 
-	QCPTextElement* title = nullptr;
-
 	QString coordinatesLabelString = "${X}\n${Y}";
 private:
 	QLabel* coordinatesLabel = nullptr;

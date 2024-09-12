@@ -13,6 +13,11 @@
 #include "vectorContainerWidget.hpp"
 #include "vectorTrimmerDialog.hpp"
 
+#include <spinBoxAction.hpp>
+
+#include <distributionDialog.hpp>
+#include <densityDialog.hpp>
+
 QList<std::pair<VectorEntry *, QTableWidgetItem *>>
 VectorContainerWidget::selectedVectors() {
   QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors;
@@ -133,23 +138,40 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   if (this->currentRow() == -1)
     return;
 
-  QMenu menu;
+	QMenu* menu;
 
-  QAction *setActiveAction = menu.addAction("Додати до процессора");
-  connect(setActiveAction, &QAction::triggered, this,
-          &VectorContainerWidget::makeActiveAction);
+	menu = vectorContextMenu();
 
-  menu.addSeparator();
+  menu->exec(mapToGlobal(pos));
+	delete menu;
+}
 
-  QAction *removeOutliersAction = menu.addAction("Видалити аномалії");
+QMenu* VectorContainerWidget::vectorContextMenu() {
+	QMenu* menu = new QMenu;
+
+  QMenu *graphics = menu->addMenu("Графіка…");
+  QAction *distribution = graphics->addAction("Функція розподілу");
+  connect(distribution, &QAction::triggered, this,
+					&VectorContainerWidget::vectorDistributionAction);
+  QAction *density = graphics->addAction("Функція щільності");
+	connect(density, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorDensityAction);
+	SpinBoxAction *classCountAction = new SpinBoxAction("Кількість класів");
+	graphics->addAction(classCountAction);
+	connect(classCountAction->spinBox(), &QSpinBox::valueChanged, this,
+				 &VectorContainerWidget::classCountAction);
+
+  menu->addSeparator();
+
+  QAction *removeOutliersAction = menu->addAction("Видалити аномалії");
   connect(removeOutliersAction, &QAction::triggered, this,
           &VectorContainerWidget::removeOutliersAction);
 
-  QAction *trimAction = menu.addAction("Обрізати…");
+  QAction *trimAction = menu->addAction("Обрізати…");
   connect(trimAction, &QAction::triggered, this,
           &VectorContainerWidget::trimAction);
 
-  QMenu *transform = menu.addMenu("Трансформації…");
+  QMenu *transform = menu->addMenu("Трансформації…");
   QAction *normalizeAction = transform->addAction("Нормалізувати");
   connect(normalizeAction, &QAction::triggered, this,
           &VectorContainerWidget::standardizeAction);
@@ -167,17 +189,17 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(transformAction, &QAction::triggered, this,
           &VectorContainerWidget::transformAction);
 
-  QAction *reproductionAction = menu.addAction("Відтворення розподілу…");
+  QAction *reproductionAction = menu->addAction("Відтворення розподілу…");
   connect(reproductionAction, &QAction::triggered, this,
           &VectorContainerWidget::reproductionAction);
 
-  QAction *generateAction = menu.addAction("Генерація вибірки…");
+  QAction *generateAction = menu->addAction("Генерація вибірки…");
   connect(generateAction, &QAction::triggered, this,
           &VectorContainerWidget::generateAction);
 
-  menu.addSeparator();
+  menu->addSeparator();
 
-  QMenu *hypotesisMenu = menu.addMenu("Перевірка гіпотез…");
+  QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
 
   QMenu *tTestMenu = hypotesisMenu->addMenu("Т—тести…");
   QAction *tTestDependentAction = tTestMenu->addAction("Залежні вибірки…");
@@ -233,23 +255,62 @@ void VectorContainerWidget::showContextMenu(const QPoint &pos) {
   connect(testAbbeAction, &QAction::triggered, this,
 	[this](){ this->makeHypothesisAction(ss::VectorChain::testAbbeP); });
 
-  menu.addSeparator();
+  menu->addSeparator();
 
-  QAction *infoAction = menu.addAction("Про вектор…");
+  QAction *infoAction = menu->addAction("Про вектор…");
   connect(infoAction, &QAction::triggered, this,
           &VectorContainerWidget::infoAction);
 
-  QAction *writeAction = menu.addAction("Зберегти у файл…");
+  QAction *writeAction = menu->addAction("Зберегти у файл…");
   connect(writeAction, &QAction::triggered, this,
           &VectorContainerWidget::writeAction);
 
-  menu.addSeparator();
+  menu->addSeparator();
 
-  QAction *deleteAction = menu.addAction("Видалити");
+  QAction *deleteAction = menu->addAction("Видалити");
   connect(deleteAction, &QAction::triggered, this,
           &VectorContainerWidget::deleteAction);
 
-  menu.exec(mapToGlobal(pos));
+	return menu;
+}
+
+void VectorContainerWidget::classCountAction(int cls) {
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+  for (auto const &vec : vectors) {
+		vec.first->vector->cs.setCount(cls);
+		emit classCountChanged(vec.first);
+  }
+}
+
+void VectorContainerWidget::vectorDistributionAction() {
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+
+	for (auto const &v : vectors) {
+		DistributionDialog* dia = new DistributionDialog(vectors.front().first, this);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+					dia, &DistributionDialog::vectorDeletedHandler);
+		connect(this, &VectorContainerWidget::classCountChanged,
+					dia, &DistributionDialog::fill);
+		connect(this, &VectorContainerWidget::distributionSelected,
+					dia, &DistributionDialog::fill);
+	}
+}
+
+void VectorContainerWidget::vectorDensityAction() {
+  QList<std::pair<VectorEntry *, QTableWidgetItem *>> vectors =
+      selectedVectors();
+
+	for (auto const &v : vectors) {
+		DensityDialog* dia = new DensityDialog(vectors.front().first, this);
+		connect(this, &VectorContainerWidget::vectorDeleted,
+					dia, &DistributionDialog::vectorDeletedHandler);
+		connect(this, &VectorContainerWidget::classCountChanged,
+					dia, &DensityDialog::fill);
+		connect(this, &VectorContainerWidget::distributionSelected,
+					dia, &DensityDialog::fill);
+	}
 }
 
 void VectorContainerWidget::makeActiveAction() {

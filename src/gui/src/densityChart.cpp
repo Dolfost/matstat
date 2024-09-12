@@ -4,8 +4,6 @@
 #include "plotBase.hpp"
 
 DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
-	title->setText("Щільність");
-
 	bars = new QCPBars(this->xAxis, this->yAxis);
 	bars->setName("f(x) (класи)");
 	bars->setWidthType(QCPBars::WidthType::wtPlotCoords);
