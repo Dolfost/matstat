@@ -321,3 +321,42 @@ void PlotBase::zoomHome() {
 	handleZoomY2(yRange2);
 	replot();
 }
+
+void PlotBase::saveToPng() {
+  auto al = antialiasedElements();
+  setAntialiasedElements(QCP::aeAll);
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік",
+		QDir::homePath() + "/" + p_saveFilename + ".png",
+      "Файли фото (*.png)");
+
+  if (filename.length())
+		savePng(filename, 0, 0, 4, 100);
+	setAntialiasedElements(al);
+}
+
+void PlotBase::saveToJpg() {
+  auto al = antialiasedElements();
+  setAntialiasedElements(QCP::aeAll);
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік",
+      QDir::homePath() + "/" + p_saveFilename + ".jpg",
+      "Файли фото (*.jpg)");
+
+  if (filename.length())
+	  saveJpg(filename, 0, 0, 4, 100);
+  setAntialiasedElements(al);
+}
+
+void PlotBase::saveToPdf() {
+  auto al = antialiasedElements();
+  setAntialiasedElements(QCP::aeAll);
+  QString filename = QFileDialog::getSaveFileName(
+      this, "Зберегти графік",
+      QDir::homePath() + "/" + p_saveFilename + ".pdf",
+      "Файли документів (*.pdf)");
+
+  if (filename.length())
+	  savePdf(filename);
+  setAntialiasedElements(al);
+}

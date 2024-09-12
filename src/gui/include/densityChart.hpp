@@ -10,7 +10,7 @@ public:
 	QCPBars* bars = nullptr;
 	QCPGraph* density = nullptr;
 
-	void fill(ss::Vector*);
+	virtual void fill(ss::Vector*) override;
 };
 
 #endif // !_DENSITY_CHART_HPP_

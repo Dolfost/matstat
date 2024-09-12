@@ -3,20 +3,16 @@
 
 #include <vector.hpp>
 #include <qcustomplot.h>
-#include <vectorDialog.hpp>
 #include <densityChart.hpp>
+#include <plotDialog.hpp>
 
 #include <guiTypes.hpp>
 
-class DensityDialog : public VectorDialog {
+class DensityDialog : public PlotDialog {
 	Q_OBJECT
 public:
 	DensityDialog(VectorEntry*, QWidget* = nullptr, 
 										Qt::WindowFlags = Qt::WindowFlags());
-public slots:
-	virtual void fill() override;
-private:
-	DensityChart* d_chart = nullptr;
 };
 
 #endif // !_DENSITY_DIALOG_HPP_

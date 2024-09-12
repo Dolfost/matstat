@@ -12,7 +12,7 @@ public:
 	QCPGraph* distribution = nullptr;
 	QCPGraph* distributionDeviation = nullptr;
 
-	void fill(ss::Vector*);
+	virtual void fill(ss::Vector*) override;
 };
 
 #endif // !_DISTRIBUTION_CHART_HPP_

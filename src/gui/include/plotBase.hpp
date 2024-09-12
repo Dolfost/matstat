@@ -44,6 +44,10 @@ public:
 	QCPGraph* walshMed = nullptr;
 
 	QString coordinatesLabelString = "${X}\n${Y}";
+	virtual void fill(ss::Vector*);
+	void setSaveFilename(QString s) {
+		p_saveFilename = s;
+	}
 private:
 	QLabel* coordinatesLabel = nullptr;
 	QTimer* coordinatesTimer = nullptr;
@@ -55,14 +59,17 @@ private slots:
 	void handleZoomY2(const QCPRange& newRange);
 
 public slots:
+	void saveToPng();
+	void saveToJpg();
+	void saveToPdf();
 	void toggleLog(bool state);
 	void zoomHome();
 	void clear();
 
+
 protected:
 	void mouseMoveEvent(QMouseEvent*) override;
-
-	void fill(ss::Vector*);
+	QString p_saveFilename = "plot";
 };
 
 #endif // !_CHART_BASE_HPP_
