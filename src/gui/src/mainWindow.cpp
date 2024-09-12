@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent) {
 
 	this->resize(900,800);
 
-	connect(this->vectorPicker, SIGNAL(vectorSelected(const std::list<double>*)),
-				 vectorContainer, SLOT(appendList(const std::list<double>*)));
+	connect(this->vectorPicker, SIGNAL(vectorSelected(const std::list<double>&)),
+				 vectorContainer, SLOT(placeList(const std::list<double>&)));
 
 	connect(this->vectorContainer, &VectorContainerWidget::outliersRemoved,
 				 this, &MainWindow::outliersRemovedHandler);

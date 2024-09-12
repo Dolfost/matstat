@@ -43,9 +43,11 @@ private:
 
 
 public slots:
-	void appendList(const std::list<double>*, QString = "");
+	void placeList(const std::list<double>&);
+	void placeVector(ss::Vector&, QString = "");
+	void placeVectorPair(ss::VectorPair&, QString = "");
 	void appendVector(Vector*);
-	// void appendVectorPair(VectorPair*);
+	void appendVectorPair(VectorPair*);
 	// void appendVectorChain(VectorChain*);
 
 private slots:
@@ -74,6 +76,7 @@ private slots:
 	void vectorDensityAction();
 	void classCountAction(int);
 	void confidenceAction(double);
+	void mergePairAction();
 
 signals:
 	void vectorSelected(Vector*);

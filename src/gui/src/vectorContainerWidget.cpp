@@ -24,7 +24,7 @@ VectorContainerWidget::selectedVectors() {
 	QList<QTableWidgetItem*> items = this->selectedItems();
 	for (auto const &item : items) {
 		if (item->type() == VectorContainerWidget::InfoCell::Name) {
-			vectors.push_back(item->data(Qt::UserRole).value<Vector *>());
+			vectors.push_back(item->data(Qt::UserRole).value<VectorEntry*>());
 		}
 	}
 	return vectors;
@@ -58,46 +58,51 @@ VectorContainerWidget::VectorContainerWidget(QWidget *parent)
 				 &VectorContainerWidget::makeActiveAction);
 }
 
-void VectorContainerWidget::appendVector(Vector *vectorEntry) {
+void VectorContainerWidget::placeList(const std::list<double>& l) {
+	ss::Vector v = ss::Vector(l);
+	placeVector(v);
+}
+
+void VectorContainerWidget::appendVector(Vector* v) {
 	int row = this->rowCount();
 
 	this->insertRow(row);
 
 	this->setColumnCount(
-		(vectorEntry->vector()->size() + InfoCell::Count > this->columnCount()
-		? vectorEntry->vector()->size() + InfoCell::Count
+		(v->vector()->size() + InfoCell::Count > this->columnCount()
+		? v->vector()->size() + InfoCell::Count
 		: this->columnCount()));
-	if (vectorEntry->name().length() == 0)
-		vectorEntry->setName("V" + QString::number(++vectorCount));
+	if (v->name().length() == 0)
+		v->setName("V" + QString::number(++vectorCount));
 
 	QList<HorizontalHeaderItem *> infoItems;
 	infoItems.append(new HorizontalHeaderItem(InfoCell::Name));
 	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
-																		QVariant(vectorEntry->name()));
-	vectorEntry->setTableItem(infoItems[InfoCell::Name]);
+																		QVariant(v->name()));
+	v->setTableItem(infoItems[InfoCell::Name]);
 	infoItems[InfoCell::Name]->setData(Qt::UserRole,
-																		QVariant::fromValue(vectorEntry));
+																		QVariant::fromValue(static_cast<VectorEntry*>(v)));
 
 	infoItems.append(new HorizontalHeaderItem(InfoCell::Size));
 	infoItems[InfoCell::Size]->setData(
-		Qt::DisplayRole, QVariant((int)vectorEntry->vector()->size()));
+		Qt::DisplayRole, QVariant((int)v->vector()->size()));
 
 	infoItems.append(new HorizontalHeaderItem(InfoCell::Min));
 	infoItems[InfoCell::Min]->setData(Qt::DisplayRole,
-																	 QVariant(vectorEntry->vector()->min()));
+																	 QVariant(v->vector()->min()));
 
 	infoItems.append(new HorizontalHeaderItem(InfoCell::Max));
 	infoItems[InfoCell::Max]->setData(Qt::DisplayRole,
-																	 QVariant(vectorEntry->vector()->max()));
+																	 QVariant(v->vector()->max()));
 
 	for (int i = 0; i < InfoCell::Count; i++) {
 		this->setItem(row, i, infoItems[i]);
 	}
 
-	auto list = vectorEntry->vector();
+	auto list = v->vector();
 	auto it = list->begin();
 	for (size_t col = InfoCell::Count;
-	col < vectorEntry->vector()->size() + InfoCell::Count; col++) {
+	col < v->vector()->size() + InfoCell::Count; col++) {
 		QTableWidgetItem *tableItem = new QTableWidgetItem(DataCell::Data);
 		tableItem->setText(QString::number(*it, 'f', precision));
 		it++;
@@ -112,12 +117,81 @@ void VectorContainerWidget::appendVector(Vector *vectorEntry) {
 	}
 }
 
-void VectorContainerWidget::appendList(const std::list<double> *vec,
+void VectorContainerWidget::appendVectorPair(VectorPair* vp) {
+	int row = this->rowCount();
+
+	this->insertRow(row);
+	this->setRowHeight(row, this->horizontalHeader()->height()*2);
+
+	this->setColumnCount(
+		(vp->vectorPair()->size() + InfoCell::Count > this->columnCount()
+		? vp->vectorPair()->size() + InfoCell::Count
+		: this->columnCount()));
+	if (vp->name().length() == 0)
+		vp->setName("VP" + QString::number(++vectorCount));
+
+	QList<HorizontalHeaderItem *> infoItems;
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Name));
+	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
+																		QVariant(vp->name()));
+	vp->setTableItem(infoItems[InfoCell::Name]);
+	infoItems[InfoCell::Name]->setData(Qt::UserRole,
+																		QVariant::fromValue(static_cast<VectorEntry*>(vp)));
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Size));
+	infoItems[InfoCell::Size]->setData(
+		Qt::DisplayRole, QVariant((int)vp->vectorPair()->x.size()));
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Min));
+	infoItems[InfoCell::Min]->setData(Qt::DisplayRole,
+																	 QVariant(vp->vectorPair()->min()));
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Max));
+	infoItems[InfoCell::Max]->setData(Qt::DisplayRole,
+																	 QVariant(vp->vectorPair()->max()));
+
+	for (int i = 0; i < InfoCell::Count; i++) {
+		this->setItem(row, i, infoItems[i]);
+	}
+
+	auto x_it = vp->vectorPair()->x.begin();
+	auto y_it = vp->vectorPair()->y.begin();
+	for (size_t col = InfoCell::Count;
+	col < vp->vectorPair()->size() + InfoCell::Count; col++) {
+		QTableWidgetItem *tableItem = new QTableWidgetItem(DataCell::Data);
+		tableItem->setText(QString("%1\n%2").arg(*x_it).arg(*y_it));
+		this->setItem(row, col, tableItem);
+		x_it++, y_it++;
+	}
+
+	for (size_t i = InfoCell::Count; i < this->columnCount() + InfoCell::Count;
+	i++) {
+		QTableWidgetItem *headerItem = new QTableWidgetItem();
+		headerItem->setText(QString::number(i - InfoCell::Count + 1));
+		this->setHorizontalHeaderItem(i, headerItem);
+	}
+}
+
+
+void VectorContainerWidget::placeVector(ss::Vector& vec,
 																			 QString name) {
 	Vector *vectorEntry = new Vector;
-	vectorEntry->setVector(new ss::Vector(*vec));
+	vectorEntry->setVector(new ss::Vector(vec.list()));
 	vectorEntry->setName(name);
 	appendVector(vectorEntry);
+}
+
+void VectorContainerWidget::placeVectorPair(ss::VectorPair& vec,
+																						QString name) {
+	VectorPair *vectorPair = new VectorPair;
+	vectorPair->setVectorPair(
+		new ss::VectorPair(
+			vec.x.list(),
+			vec.y.list()
+		)
+	);
+	vectorPair->setName(name);
+	appendVectorPair(vectorPair);
 }
 
 void VectorContainerWidget::showContextMenu(const QPoint &pos) {
@@ -197,6 +271,13 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 				 &VectorContainerWidget::confidenceAction);
 
 	menu->addSeparator();
+
+	if (selectedVectorsList.size() == 2) {
+		QAction* mergePair = menu->addAction("Створити двовимірний об'єкт");
+		connect(mergePair, &QAction::triggered, this,
+					&VectorContainerWidget::mergePairAction);
+		menu->addSeparator();
+	}
 
 	QAction *removeOutliersAction = menu->addAction("Видалити аномалії");
 	connect(removeOutliersAction, &QAction::triggered, this,
@@ -375,7 +456,7 @@ void VectorContainerWidget::standardizeAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		newVector.standardize();
-		appendList(&newVector.list(), QString("S(%1)").arg(vec->name()));
+		placeVector(newVector, QString("S(%1)").arg(vec->name()));
 		//  TODO: move from std::list to Vector insertion
 	}
 }
@@ -384,7 +465,7 @@ void VectorContainerWidget::logAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("log(x)");
-		appendList(&newVector.list(), QString("LN(%1)").arg(vec->name()));
+		placeVector(newVector, QString("LN(%1)").arg(vec->name()));
 	}
 }
 
@@ -392,7 +473,7 @@ void VectorContainerWidget::reverseAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("1/x");
-		appendList(&newVector.list(), QString("R(%1)").arg(vec->name()));
+		placeVector(newVector, QString("R(%1)").arg(vec->name()));
 	}
 }
 
@@ -400,7 +481,7 @@ void VectorContainerWidget::rightShiftAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(vec->vector()->list());
 		newVector.transform("x+abs(xmin)+1");
-		appendList(&newVector.list(), QString("RS(%1)").arg(vec->name()));
+		placeVector(newVector, QString("RS(%1)").arg(vec->name()));
 	}
 }
 
@@ -450,7 +531,7 @@ void VectorContainerWidget::removeOutliersAction() {
 		if (!ok) // no entries removed
 			return;
 
-		appendList(&newVector.list(), QString("RMOUT(%1)").arg(vec->name()));
+		placeVector(newVector, QString("RMOUT(%1)").arg(vec->name()));
 	}
 }
 
@@ -472,6 +553,14 @@ void VectorContainerWidget::generateAction() {
 		connect(sgd, &SetGeneratorDialog::message,
 					[=](QString msg) { emit message(msg); });
 	}
+}
+
+void VectorContainerWidget::mergePairAction() {
+	ss::VectorPair vp = ss::VectorPair(
+		selectedVectorsList[0]->vector()->list(), 
+		selectedVectorsList[1]->vector()->list()
+	);
+	placeVectorPair(vp);
 }
 
 void VectorContainerWidget::writeAction() {
