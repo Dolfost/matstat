@@ -1,7 +1,7 @@
 #include<plotDialog.hpp>
 
 PlotDialog::PlotDialog(PlotBase* p,
-											 VectorEntry* v,
+											 Vector* v,
 											 QWidget* w,
 											 Qt::WindowFlags f 
 											 ): VectorDialog(v, w, f) {
@@ -9,7 +9,7 @@ PlotDialog::PlotDialog(PlotBase* p,
 	p_menuBar->setNativeMenuBar(false);
 	p_viewMenu = p_menuBar->addMenu("Вигляд");
 	p_plot = p;
-	p_plot->fill(v->vector);
+	p_plot->fill(v->vector());
 	v_mainLayout->addWidget(p_plot);
 
 	QAction* zoomHomeAction = p_viewMenu->addAction("Відмаштабувати");
@@ -35,7 +35,7 @@ PlotDialog::PlotDialog(PlotBase* p,
 }
 
 void PlotDialog::fill() {
-	p_plot->fill(v_vector->vector);
+	p_plot->fill(v_vector->vector());
 }
 
 void PlotDialog::saveToPng() {

@@ -5,12 +5,12 @@
 #include <vector>
 
 DistributionReproducerDialog::DistributionReproducerDialog(
-		VectorEntry* vectorEntry,
+		Vector* vectorEntry,
 		QWidget *parent, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
 		ve = vectorEntry;
 
-		this->setWindowTitle("Інформація про відтворення розподілу " + ve->name);
+	this->setWindowTitle("Інформація про відтворення розподілу " + ve->name());
 		this->setAttribute(Qt::WA_DeleteOnClose, true);
 		QVBoxLayout* mainLayout = new QVBoxLayout();
 		this->setLayout(mainLayout);
@@ -21,7 +21,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 			distributionComboBox->insertItem(i, QString::fromStdString(ss::Vector::Distribution::distributionName[i]));
 		}
 
-		distributionComboBox->setCurrentIndex((int)ve->vector->dist.model);
+	distributionComboBox->setCurrentIndex((int)ve->vector()->dist.model);
 
 		connect(this->distributionComboBox, &QComboBox::currentIndexChanged,
 				this, &DistributionReproducerDialog::distribute);
@@ -141,7 +141,7 @@ DistributionReproducerDialog::DistributionReproducerDialog(
 }
 
 void DistributionReproducerDialog::distribute(int dist) {
-	ve->vector->reproduceDistribution(ss::Vector::Distribution::Model(dist));
+	ve->vector()->reproduceDistribution(ss::Vector::Distribution::Model(dist));
 
 	if (dist != (int)ss::Vector::Distribution::Model::Unknown) {
 		refill();
@@ -158,37 +158,37 @@ void DistributionReproducerDialog::distribute(int dist) {
 }
 
 void DistributionReproducerDialog::refill() {
-	parameterTable->setRowCount(ve->vector->dist.parametersCount);
+	parameterTable->setRowCount(ve->vector()->dist.parametersCount);
 	parameterTable->setColumnWidth(0, 55);
 	parameterTable->setColumnWidth(1, 200);
-	deviationTable->setRowCount(ve->vector->dist.parametersCount);
+	deviationTable->setRowCount(ve->vector()->dist.parametersCount);
 	deviationTable->setColumnWidth(0, 100);
 	deviationTable->setColumnWidth(1, 200);
 	functionDeviationTable->setColumnWidth(0, 55);
 
-	for (int i = 0; i < ve->vector->dist.parametersCount; i++) {
+	for (int i = 0; i < ve->vector()->dist.parametersCount; i++) {
 		parameterTable->setItem(i, 0, new QTableWidgetItem(
-					QString::fromStdString(ve->vector->dist.paremeterNames[i]))
+					QString::fromStdString(ve->vector()->dist.paremeterNames[i]))
 				);
 		parameterTable->setItem(i, 1, new QTableWidgetItem(
-					QString::number(ve->vector->dist.parameters[i], 'f', precision))
+					QString::number(ve->vector()->dist.parameters[i], 'f', precision))
 				);
 		deviationTable->setItem(i, 0, new QTableWidgetItem(
-					"D{" + QString::fromStdString(ve->vector->dist.parametersDeviationNames[i]) + "}")
+					"D{" + QString::fromStdString(ve->vector()->dist.parametersDeviationNames[i]) + "}")
 				);
 		deviationTable->setItem(i, 1, new QTableWidgetItem(
-					QString::number(ve->vector->dist.parametersDeviation[i], 'f', precision))
+					QString::number(ve->vector()->dist.parametersDeviation[i], 'f', precision))
 				);
 	}
 
-	if (ve->vector->dist.parametersCount == 2) {
+	if (ve->vector()->dist.parametersCount == 2) {
 		deviationTable->insertRow(2);
 		deviationTable->setItem(2, 0, new QTableWidgetItem(
-					"cov{" + QString::fromStdString(ve->vector->dist.paremeterNames[0]) + "," +
-					QString::fromStdString(ve->vector->dist.paremeterNames[1]) + "}")
+					"cov{" + QString::fromStdString(ve->vector()->dist.paremeterNames[0]) + "," +
+					QString::fromStdString(ve->vector()->dist.paremeterNames[1]) + "}")
 				);
 		deviationTable->setItem(2, 1, new QTableWidgetItem(
-					QString::number(ve->vector->dist.parametersCv, 'f', precision))
+					QString::number(ve->vector()->dist.parametersCv, 'f', precision))
 				);
 	}
 
@@ -196,20 +196,20 @@ void DistributionReproducerDialog::refill() {
 	QList<double> dispersions;
 
 	double step, a, b;
-	if (ve->vector->dist.domain.first == ve->vector->dist.domain.second) {
-		a = ve->vector->min();
-		b = ve->vector->max();
+	if (ve->vector()->dist.domain.first == ve->vector()->dist.domain.second) {
+		a = ve->vector()->min();
+		b = ve->vector()->max();
 		step = abs(a-b)/500;
 	} else {
-		a = ve->vector->dist.domain.first;
-		b = ve->vector->dist.domain.second;
+		a = ve->vector()->dist.domain.first;
+		b = ve->vector()->dist.domain.second;
 		step = abs(a-b)/500;
 	}
 
 	for (double x = a + 0.01;
 			x <= b;
 			x += step) {
-		dispersions.append(ve->vector->dist.cdfDev(x));
+		dispersions.append(ve->vector()->dist.cdfDev(x));
 		headers.append("x = " + QString::number(x, 'f', precision));
 	}
 	functionDeviationTable->setHorizontalHeaderLabels(headers);
@@ -230,21 +230,21 @@ void DistributionReproducerDialog::makeConsents() {
 	double prob = consentsProbabilitySpinBox->value();
 	QString kolm = QString(
 				"Уточнений критерій згоди колмогорова: 1 - %1 ≤ %2\n")
-			.arg(ve->vector->kolmConsentCriterion(), 3, 'f', precision)
+			.arg(ve->vector()->kolmConsentCriterion(), 3, 'f', precision)
 			.arg(prob);
-	if (1 - ve->vector->kolmConsentCriterion() <= prob)
+	if (1 - ve->vector()->kolmConsentCriterion() <= prob)
 		kolm.append("Головна гіпотеза виконується (функції збігаються)");
 	else
 		kolm.append("Головна гіпотеза не виконується (функції не збігаються)");
 
 	QString pear = QString("Критерій згоди Пірсона: ");
 	double quantile = ss::pearQuantile(1-prob,
-																		ve->vector->cs.count()-1);
-	double crit = ve->vector->pearConsentCriterion();
+																		ve->vector()->cs.count()-1);
+	double crit = ve->vector()->pearConsentCriterion();
 	pear.append(QString("%1 ≤ pearQuantile(1-%2, %3) = %4\n")
 						 .arg(crit)
 						 .arg(prob)
-						 .arg(ve->vector->cs.count()-1)
+						 .arg(ve->vector()->cs.count()-1)
 						 .arg(quantile,
 						3, 'f', precision)
 						 );
@@ -257,11 +257,11 @@ void DistributionReproducerDialog::makeConsents() {
 }
 
 void DistributionReproducerDialog::makeTtest() {
-	if (ve->isModeled) {
+	if (ve->isModeled()) {
 		ttestWidget->setCurrentIndex(0);
-		ss::Vector::Distribution& rep = (ve->vector->dist);
+		ss::Vector::Distribution& rep = (ve->vector()->dist);
 
-		if (ve->modelDistribution != rep.model) {
+		if (ve->model()!= rep.model) {
 			ttestWidget->setCurrentIndex(2);
 			return;
 		}
@@ -277,14 +277,14 @@ void DistributionReproducerDialog::makeTtest() {
 		QStringList vHeader, hHeader;
 		for (int i = 0; i < rep.parameters.size(); i++) {
 			vHeader.push_back(QString::fromStdString(rep.paremeterNames[i]));
-			t.push_back((ve->modelParameters[i]-rep.parameters[i]) / 
+			t.push_back((ve->parameters()[i]-rep.parameters[i]) / 
 				std::sqrt(rep.parametersDeviation[i]));
 			ttestTable->setItem(i, 0, new QTableWidgetItem(
 						QString::number(t[i], 'f', 3)));
 			for (int j = 1; j < probs.size()+1; j++) {
 			ttestTable->setItem(i, j, new QTableWidgetItem(
 				std::abs(t[i]) <= 
-				ss::studQuantile(1-probs[j-1]/2, ve->vector->size()) 
+				ss::studQuantile(1-probs[j-1]/2, ve->vector()->size()) 
 				? "+" : "-"));
 			}
 		}
@@ -306,7 +306,7 @@ void DistributionReproducerDialog::makeTtest() {
 	}
 }
 
-void DistributionReproducerDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
+void DistributionReproducerDialog::vectorDeletedHandler(Vector* vectorEntry) {
 	if (ve == vectorEntry)
 		this->close();
 }

@@ -6,7 +6,7 @@
 #include <functional>
 
 HypothesisManagerDialog::HypothesisManagerDialog(
-		QList<VectorEntry*> v,
+		QList<Vector*> v,
 		ss::VectorChain::Procedure proc,
 		QWidget* parent,
 		Qt::WindowFlags flags
@@ -14,7 +14,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	vectors = v;
 
 	for (auto const& vec : vectors) {
-		vectorSet.push_back(vec->vector);
+		vectorSet.push_back(vec->vector());
 	}
 
 	this->setWindowTitle("Менеджер гіпотез");
@@ -353,14 +353,14 @@ void HypothesisManagerDialog::compute() {
 void HypothesisManagerDialog::makeVectorList() {
 	QString vecs;
 	for (auto const& v : vectors) {
-		vecs.append(v->name + ", ");
+		vecs.append(v->name() + ", ");
 	}
 	vecs.chop(2);
 
 	vectorsLineEdit->setText(vecs);
 };
 
-void HypothesisManagerDialog::vectorDeletedHandler(VectorEntry* vec) {
+void HypothesisManagerDialog::vectorDeletedHandler(Vector* vec) {
 	if (vectors.removeAll(vec)) {
 		makeVectorList();
 		compute();
@@ -368,7 +368,7 @@ void HypothesisManagerDialog::vectorDeletedHandler(VectorEntry* vec) {
 
 	vectorSet.erase(std::remove_if(vectorSet.begin(), 
                               vectorSet.end(),
-                              [=](ss::Vector* x) { return x == vec->vector; }),
+																[=](ss::Vector* x) { return x == vec->vector(); }),
                vectorSet.end());
 
 	if (!vectors.size())

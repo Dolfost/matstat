@@ -8,7 +8,7 @@ class PlotDialog: public VectorDialog {
 	Q_OBJECT
 public:
 	PlotDialog(PlotBase*,
-						VectorEntry*, 
+						Vector*, 
 						QWidget* = nullptr, 
 						Qt::WindowFlags = Qt::WindowFlags());
 public slots:

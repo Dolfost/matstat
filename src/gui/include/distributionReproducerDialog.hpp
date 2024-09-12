@@ -21,7 +21,7 @@ class DistributionReproducerDialog : public QDialog {
 	Q_OBJECT
 public:
 	DistributionReproducerDialog(
-			VectorEntry*,
+			Vector*,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
@@ -40,14 +40,14 @@ private:
 
 	QDoubleSpinBox* consentsProbabilitySpinBox = nullptr;
 
-	VectorEntry* ve = nullptr;
+	Vector* ve = nullptr;
 
 	void refill();
 
 	int precision = 4;
 
 public slots:
-	void vectorDeletedHandler(VectorEntry*);
+	void vectorDeletedHandler(Vector*);
 
 private slots:
 	void distribute(int);
@@ -55,7 +55,7 @@ private slots:
 	void makeTtest();
 
 signals:
-	void distributionSelected(VectorEntry*);
+	void distributionSelected(Vector*);
 };
 
 #endif // !_DISTRIBUTION_REPRODUCER_DIALOG_

@@ -9,9 +9,9 @@ namespace ss {
 Vector::Distribution::Distribution() {
 }
 
-std::pair<double, double> Vector::Distribution::cdfConfidence(double x, double alpha) {
+std::pair<double, double> Vector::Distribution::cdfConfidence(double x) {
 	return thetaDeviation(
-		cdf(x), cdfDev(x), alpha, 61, true);
+		cdf(x), cdfDev(x), d_confidence, 61, true);
 }
 
 void Vector::Distribution::setDistribution(

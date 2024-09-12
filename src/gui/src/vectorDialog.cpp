@@ -1,7 +1,7 @@
 #include <vectorDialog.hpp>
 
 VectorDialog::VectorDialog(
-	VectorEntry* v, 
+	Vector* v, 
 	QWidget* parent,
 	Qt::WindowFlags wflags): QDialog(parent, wflags) {
 	v_vector = v;
@@ -13,7 +13,7 @@ VectorDialog::VectorDialog(
 	resize(500, 400);
 }
 
-void VectorDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
+void VectorDialog::vectorDeletedHandler(Vector* vectorEntry) {
 	if (v_vector == vectorEntry)
 		this->close();
 }

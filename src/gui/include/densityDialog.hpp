@@ -11,7 +11,7 @@
 class DensityDialog : public PlotDialog {
 	Q_OBJECT
 public:
-	DensityDialog(VectorEntry*, QWidget* = nullptr, 
+	DensityDialog(Vector*, QWidget* = nullptr, 
 										Qt::WindowFlags = Qt::WindowFlags());
 };
 

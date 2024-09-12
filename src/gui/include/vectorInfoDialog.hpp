@@ -24,15 +24,15 @@
 class VectorInfoDialog : public QDialog {
   Q_OBJECT
 public:
-  VectorInfoDialog(VectorEntry *, QWidget * = nullptr,
+  VectorInfoDialog(Vector *, QWidget * = nullptr,
                    Qt::WindowFlags = Qt::WindowFlags());
 
 private:
-  VectorEntry *ve = nullptr;
+  Vector *ve = nullptr;
   int precision = 4;
 
 public slots:
-  void vectorDeletedHandler(VectorEntry *);
+  void vectorDeletedHandler(Vector *);
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_

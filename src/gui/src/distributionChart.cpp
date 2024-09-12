@@ -78,7 +78,7 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 			x.push_back(arg);
 			y.push_back(dataVector->dist.cdf(arg));
 			std::pair<double, double> dev =
-				dataVector->dist.cdfConfidence(arg, dataVector->dist.confidence);
+				dataVector->dist.cdfConfidence(arg);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}

@@ -36,7 +36,7 @@ std::vector<double> ParametersWidget::parameters() {
 }
 
 SetGeneratorDialog::SetGeneratorDialog(
-		VectorEntry* vectorEntry,
+		Vector* vectorEntry,
 		QWidget *parent, bool show, Qt::WindowFlags f) 
 	: QDialog(parent, f) {
 		ve = vectorEntry;
@@ -128,19 +128,19 @@ SetGeneratorDialog::SetGeneratorDialog(
 
 		if (ve != nullptr) {
 			title.append(QString(" згідно розподілу вектора %1 — ")
-						.arg(ve->name));
+								.arg(ve->name()));
 			enabled = false;
-			if (ve->vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
-				title.append(ss::Vector::Distribution::distributionName[(int)ve->vector->dist.model]);
-				distributionComboBox->setCurrentIndex((int)ve->vector->dist.model-1);
-				params = ve->vector->dist.parameters;
-				countSpinBox->setValue(ve->vector->size());
-				minSpinBox->setValue(ve->vector->min());
-				maxSpinBox->setValue(ve->vector->max());
+		if (ve->vector()->dist.model != ss::Vector::Distribution::Model::Unknown) {
+			title.append(ss::Vector::Distribution::distributionName[(int)ve->vector()->dist.model]);
+			distributionComboBox->setCurrentIndex((int)ve->vector()->dist.model-1);
+			params = ve->vector()->dist.parameters;
+			countSpinBox->setValue(ve->vector()->size());
+			minSpinBox->setValue(ve->vector()->min());
+			maxSpinBox->setValue(ve->vector()->max());
 			} else {
 				title.append(ss::Vector::Distribution::distributionName
 						[(int)ss::Vector::Distribution::Model::Unknown]);
-				statusBar->showMessage("Розподіл " + ve->name +
+			statusBar->showMessage("Розподіл " + ve->name() +
 						" не був відтворений");
 				minSpinBox->setEnabled(enabled);
 				maxSpinBox->setEnabled(enabled);
@@ -175,10 +175,10 @@ void SetGeneratorDialog::generate() {
 	ss::Vector::Distribution::Model dist;
 	std::vector<double> parameters;
 
-	if (ve != nullptr and ve->vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
-		dv = new ss::Vector(ve->vector->dist.generateSet(m, count, min, max));
-		dist = ve->vector->dist.model;
-		parameters = ve->vector->dist.parameters;
+	if (ve != nullptr and ve->vector()->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		dv = new ss::Vector(ve->vector()->dist.generateSet(m, count, min, max));
+		dist = ve->vector()->dist.model;
+		parameters = ve->vector()->dist.parameters;
 	} else {
 		ss::Vector::Distribution dr;
 		dr.setDistribution(ss::Vector::Distribution::Model(distributionComboBox->currentIndex()+1),
@@ -188,7 +188,7 @@ void SetGeneratorDialog::generate() {
 		parameters = dr.parameters;
 	}
 
-	VectorEntry* newve = new VectorEntry(dv);
+	Vector* newve = new Vector(dv);
 	newve->setModel(dist, parameters, m);
 	
 	emit setGenerated(newve);
@@ -231,7 +231,7 @@ void SetGeneratorDialog::maxBoundChanged(double val) {
 	maxSpinBox->blockSignals(false);
 }
 
-void SetGeneratorDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
+void SetGeneratorDialog::vectorDeletedHandler(Vector* vectorEntry) {
 	if (ve == vectorEntry)
 		this->close();
 }

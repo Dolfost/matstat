@@ -11,7 +11,7 @@
 class DistributionDialog : public PlotDialog {
 	Q_OBJECT
 public:
-	DistributionDialog(VectorEntry*, QWidget* = nullptr, 
+	DistributionDialog(Vector*, QWidget* = nullptr, 
 										Qt::WindowFlags = Qt::WindowFlags());
 };
 

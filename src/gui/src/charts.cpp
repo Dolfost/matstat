@@ -102,9 +102,9 @@ QMenuBar* Charts::createMenuBar3() {
 	return new QMenuBar(this);
 }
 
-void Charts::plot2D(VectorEntry* ve) {
-	densityChart->fill(ve->vector);
-	distributionChart->fill(ve->vector);
+void Charts::plot2D(Vector* ve) {
+	densityChart->fill(ve->vector());
+	distributionChart->fill(ve->vector());
 }
 
 void Charts::saveDensityToPng() {

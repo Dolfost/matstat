@@ -18,14 +18,14 @@
 class HypothesisManagerDialog : public QDialog {
 public:
 	HypothesisManagerDialog(
-			QList<VectorEntry*>,
+			QList<Vector*>,
 			ss::VectorChain::Procedure = ss::VectorChain::Procedure::tTestDependentP,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 
 private:
-	QList<VectorEntry*> vectors;
+	QList<Vector*> vectors;
 	ss::VectorChain vectorSet;
 
 private:
@@ -42,7 +42,7 @@ private slots:
 	void compute();
 
 public slots:
-	void vectorDeletedHandler(VectorEntry*);
+	void vectorDeletedHandler(Vector*);
 
 };
 

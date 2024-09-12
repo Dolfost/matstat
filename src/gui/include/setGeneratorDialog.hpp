@@ -29,7 +29,7 @@ private:
 class SetGeneratorDialog : public QDialog {
   Q_OBJECT
 public:
-  SetGeneratorDialog(VectorEntry * = nullptr, QWidget * = nullptr,
+  SetGeneratorDialog(Vector * = nullptr, QWidget * = nullptr,
                      bool show = true, Qt::WindowFlags = Qt::WindowFlags());
 
 private:
@@ -46,7 +46,7 @@ private:
 
   QStatusBar *statusBar = nullptr;
 
-  VectorEntry *ve = nullptr;
+  Vector *ve = nullptr;
 
   std::vector<double> params = {};
 
@@ -55,7 +55,7 @@ private:
   int precision = 4;
 
 public slots:
-  void vectorDeletedHandler(VectorEntry *);
+  void vectorDeletedHandler(Vector *);
 
 private slots:
   void generate();
@@ -65,7 +65,7 @@ private slots:
   void maxBoundChanged(double);
 
 signals:
-  void setGenerated(VectorEntry *);
+  void setGenerated(Vector *);
   void message(QString);
 };
 

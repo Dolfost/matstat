@@ -14,7 +14,7 @@ public:
 		QWidget* pWidget = new QWidget (nullptr);
 		pWidget->setContentsMargins(0,0,0,0);
 		QHBoxLayout* pLayout = new QHBoxLayout();
-		pLayout->setContentsMargins(3,1,3,1);
+		pLayout->setContentsMargins(6,2,6,2);
 		QLabel* pLabel = new QLabel (title);
 		pLayout->addWidget (pLabel);
 		pSpinBox = new QSpinBox(nullptr);
@@ -30,6 +30,31 @@ public:
 
 private:
 	QSpinBox * pSpinBox;
+};
+
+class DoubleSpinBoxAction : public QWidgetAction {
+public:
+	DoubleSpinBoxAction (const QString& title) : 
+		QWidgetAction (nullptr) {
+		QWidget* pWidget = new QWidget (nullptr);
+		pWidget->setContentsMargins(0,0,0,0);
+		QHBoxLayout* pLayout = new QHBoxLayout();
+		pLayout->setContentsMargins(6,2,6,2);
+		QLabel* pLabel = new QLabel (title);
+		pLayout->addWidget (pLabel);
+		pSpinBox = new QDoubleSpinBox(nullptr);
+		pLayout->addWidget (pSpinBox);
+		pWidget->setLayout (pLayout);
+
+		setDefaultWidget(pWidget);
+	}
+
+	QDoubleSpinBox* spinBox () {
+		return pSpinBox;
+	}
+
+private:
+	QDoubleSpinBox* pSpinBox;
 };
 
 #endif // !_SPIN_BOX_ACTION_HPP_

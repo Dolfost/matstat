@@ -12,17 +12,17 @@ class VectorDialog: public QDialog {
 	Q_OBJECT
 public:
 	VectorDialog(
-		VectorEntry*,
+		Vector*,
 		QWidget* = nullptr,
 		Qt::WindowFlags = Qt::WindowFlags()
 	);
 
 	virtual void fill() = 0;
 public slots:
-	virtual void vectorDeletedHandler(VectorEntry*);
+	virtual void vectorDeletedHandler(Vector*);
 
 protected:
-	VectorEntry* v_vector = nullptr;
+	Vector* v_vector = nullptr;
 	QVBoxLayout* v_mainLayout = nullptr;
 };
 

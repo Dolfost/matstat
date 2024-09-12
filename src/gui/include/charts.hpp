@@ -24,7 +24,7 @@ private:
 	QMenuBar* createMenuBar3();
 
 public slots:
-	void plot2D(VectorEntry*);
+	void plot2D(Vector*);
 
 private slots:
 	void saveDensityToPng();

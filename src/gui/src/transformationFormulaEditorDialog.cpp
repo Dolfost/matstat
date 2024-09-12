@@ -5,7 +5,7 @@
 int TransformationFormulaEditorDialog::trIdx = 0;
 
 TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
-	QList<VectorEntry*> vectors,
+	QList<Vector*> vectors,
 	QWidget *parent, Qt::WindowFlags f) 
 : QDialog(parent, f) {
 	vecs = vectors;
@@ -106,20 +106,20 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 void TransformationFormulaEditorDialog::transform() {
 	statusTextEdit->clear();
 	for (auto const& v : vecs) {
-		VectorEntry* newVectorEntry = new VectorEntry;
-		newVectorEntry->vector = new ss::Vector(*v->vector);
+		Vector* newVectorEntry = new Vector;
+		newVectorEntry->setVector(new ss::Vector(*v->vector()));
 		QString res = QString::fromStdString(
-			newVectorEntry->vector->transform(formulaLineEdit->text().toStdString())
+			newVectorEntry->vector()->transform(formulaLineEdit->text().toStdString())
 		);
 		if (res.length() != 0) {
-			statusTextEdit->append("Трансформування " + v->name + "\n" + res + "\n");
+			statusTextEdit->append("Трансформування " + v->name() + "\n" + res + "\n");
 			delete newVectorEntry;
 		} else {
-			newVectorEntry->name = "TR" + QString::number(++trIdx) + "(" + v->name + ")";
-			statusTextEdit->append("Вектор " + v->name + " перетворено вдало.\n" +
+			newVectorEntry->setName("TR" + QString::number(++trIdx) + "(" + v->name() + ")");
+			statusTextEdit->append("Вектор " + v->name() + " перетворено вдало.\n" +
 													"xᵢ = " + formulaLineEdit->text() + ".\n"
 													"Новий вектор було збережено у " +
-													newVectorEntry->name + "\n");
+													newVectorEntry->name() + "\n");
 			emit vectorTransformed(newVectorEntry);
 		}
 	}
@@ -128,14 +128,14 @@ void TransformationFormulaEditorDialog::transform() {
 void TransformationFormulaEditorDialog::makeVectorNames() {
 	QString vectors;
 	for (auto const& v : vecs) {
-		vectors.append(v->name + ", ");
+		vectors.append(v->name() + ", ");
 	}
 	vectors.chop(2);
 
 	vectorNames->setText(vectors);
 }
 
-void TransformationFormulaEditorDialog::vectorDeletedHandler(VectorEntry* vectorEntry) {
+void TransformationFormulaEditorDialog::vectorDeletedHandler(Vector* vectorEntry) {
 	if (vecs.removeAll(vectorEntry))
 		makeVectorNames();
 

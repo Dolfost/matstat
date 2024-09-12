@@ -10,8 +10,6 @@
 #include "vectorPickerDialog.hpp"
 #include "setGeneratorDialog.hpp"
 
-#include "guiTypes.hpp"
-
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 public:

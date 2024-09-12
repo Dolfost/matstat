@@ -148,8 +148,8 @@ void MainWindow::_addFile(QString file) {
 		return;
 	}
 
-	VectorEntry* ve = new VectorEntry;
-	ve->vector = new ss::Vector(s.filewiseSeries());
+	Vector* ve = new Vector;
+	ve->setVector(new ss::Vector(s.filewiseSeries()));
 	vectorContainer->appendVector(ve);
 }
 

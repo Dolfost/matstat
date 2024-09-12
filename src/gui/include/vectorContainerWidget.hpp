@@ -34,14 +34,14 @@ private:
 
 	int precision = 4;
 
-	QList<std::pair<VectorEntry*, QTableWidgetItem*>> selectedVectors();
-	std::pair<VectorEntry*, QTableWidgetItem*> selectedVector();
+	QList<std::pair<Vector*, QTableWidgetItem*>> selectedVectors();
+	std::pair<Vector*, QTableWidgetItem*> selectedVector();
 
 public slots:
 	void appendList(const std::list<double>*, QString = "");
-	void appendVector(VectorEntry*);
-	void fillRow(int, VectorEntry*);
-	void refillRow(int, VectorEntry*);
+	void appendVector(Vector*);
+	void fillRow(int, Vector*);
+	void refillRow(int, Vector*);
 
 private slots:
 	void showContextMenu(const QPoint&);
@@ -67,13 +67,13 @@ private slots:
 	void vectorDistributionAction();
 	void vectorDensityAction();
 	void classCountAction(int);
+	void confidenceAction(double);
 
 signals:
-	void vectorSelected(VectorEntry*);
-	void vectorDeleted(VectorEntry*);
+	void vectorSelected(Vector*);
+	void vectorDeleted(Vector*);
 	void outliersRemoved(bool);
-	void distributionSelected(VectorEntry*);
-	void classCountChanged(VectorEntry*);
+	void redrawVector(Vector*);
 
 	void message(QString);
 };

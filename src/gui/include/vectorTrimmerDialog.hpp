@@ -21,13 +21,13 @@ class VectorTrimmerDialog : public QDialog {
 	Q_OBJECT
 public:
 	VectorTrimmerDialog(
-			VectorEntry*,
+			Vector*,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 
 private:
-	VectorEntry* ve = nullptr;
+	Vector* ve = nullptr;
 	static int trimIdx;
 
 	QDoubleRangeSlider* slider = nullptr;
@@ -41,13 +41,13 @@ private:
 
 public slots:
 	void trim();
-	void vectorDeletedHandler(VectorEntry*);
+	void vectorDeletedHandler(Vector*);
 	void boundsChanged(int, int, double, double);
 	void lowChanged(double);
 	void highChanged(double);
 
 signals:
-	void vectorTrimmed(VectorEntry*);
+	void vectorTrimmed(Vector*);
 };
 
 #endif // !_VECTOR_TRIMMER_DIALOG_HPP_

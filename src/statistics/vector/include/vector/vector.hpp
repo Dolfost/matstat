@@ -305,9 +305,9 @@ public:
 		std::list<double> generateSet(Method, size_t = 0, double = 0, double = 1);
 
 	public:
-		double confidence = 0.95;
-
-		std::pair<double, double> cdfConfidence(double x1, double = 0.95);
+		std::pair<double, double> cdfConfidence(double x1);
+		double confidence() { return d_confidence; };
+		void setConfidence(double c) { d_confidence = c; };
 
 		double pdf(double);
 		double cdf(double);
@@ -330,6 +330,7 @@ public:
 		std::function<double(double)> d_cdf;
 		std::function<double(double)> d_invCdf;
 		std::function<double(double)> d_cdfDev;
+		double d_confidence = 0.95;
 	};
 
 public:

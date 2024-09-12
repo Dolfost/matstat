@@ -1,10 +1,10 @@
 #include <distributionDialog.hpp>
 
-DistributionDialog::DistributionDialog(VectorEntry* v, 
+DistributionDialog::DistributionDialog(Vector* v, 
 																			 QWidget* w, 
 																			 Qt::WindowFlags f) :
 	PlotDialog(new DistributionChart, v, w, f) {
 	p_plot->setSaveFilename("distribution");
-	setWindowTitle("Розподіл вектора " + v_vector->name);
+	setWindowTitle("Розподіл вектора " + v_vector->name());
 	fill();
 }
