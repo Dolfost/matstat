@@ -6,11 +6,11 @@ void Vector::ClassSeries::adapt() {
 	if (c_count == 0)
 		c_count = calculateCount();
 	
-	double seriesMin = s_vector.min();
-	double seriesMax = s_vector.max();
-	double entryCount = s_vector.size();
+	double seriesMin = s_vector->min();
+	double seriesMax = s_vector->max();
+	double entryCount = s_vector->size();
 
-	c_h = (s_vector.max()-s_vector.min())/double(c_count);
+	c_h = (s_vector->max()-s_vector->min())/double(c_count);
 
 	s_value.clear();
 	c_cumSeries.clear();
@@ -20,8 +20,8 @@ void Vector::ClassSeries::adapt() {
 
 
 	int idx;
-	for (auto const& i : s_vector.sorted()) {
-		idx = (i - s_vector.min())/c_h;
+	for (auto const& i : s_vector->sorted()) {
+		idx = (i - s_vector->min())/c_h;
 		if (idx >= c_count)
 			idx--;
 		s_value[idx].first++;
@@ -48,8 +48,8 @@ void Vector::ClassSeries::adapt() {
 }
 
 std::size_t Vector::ClassSeries::calculateCount() {
-	std::size_t cls = (s_vector.size() >= 100 ?
-		std::cbrt(s_vector.size()) : std::sqrt(s_vector.size()));
+	std::size_t cls = (s_vector->size() >= 100 ?
+		std::cbrt(s_vector->size()) : std::sqrt(s_vector->size()));
 	if (cls % 2 == 0)
 		cls--;
 
@@ -58,12 +58,12 @@ std::size_t Vector::ClassSeries::calculateCount() {
 
 double Vector::ClassSeries::cdf(double x) {
 	auto cumS = cumSeries();
-	if (x < s_vector.min())
+	if (x < s_vector->min())
 		return 0;
-	if (x > s_vector.max())
+	if (x > s_vector->max())
 		return 1;
 
-	std::size_t idx = (x - s_vector.min())/c_h;
+	std::size_t idx = (x - s_vector->min())/c_h;
 	if (idx >= c_count)
 		idx--;
 
@@ -72,12 +72,12 @@ double Vector::ClassSeries::cdf(double x) {
 
 double Vector::ClassSeries::pdf(double x) {
 	auto s = series();
-	if (x < s_vector.min())
+	if (x < s_vector->min())
 		return 0;
-	if (x > s_vector.max())
+	if (x > s_vector->max())
 		return 1;
 
-	std::size_t idx = (x - s_vector.min())/c_h;
+	std::size_t idx = (x - s_vector->min())/c_h;
 	if (idx >= c_count)
 		idx--;
 

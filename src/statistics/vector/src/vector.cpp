@@ -3,14 +3,46 @@
 
 namespace ss {
 
-Vector::Vector(const std::list<double> &input) {
-  setVector(input);
+Vector::Vector() {
 	setExprtkSymbolTable();
 }
 
-Vector::Vector(const Vector &dv) {
-  setVector(dv);
-	setExprtkSymbolTable();
+Vector::Vector(const std::list<double> &input): Vector() {
+  setVector(input);
+}
+
+Vector::Vector(const Vector &other) {
+	static_cast<std::list<double>&>(*this) = other;
+
+	rawMoment = other.rawMoment;
+	meanDeviation = other.meanDeviation;
+	meanConfidence = other.meanConfidence;
+	centralMoment = other.centralMoment;
+	varianceDeviation = other.varianceDeviation;
+	varianceConfidence = other.varianceConfidence;
+	skew = other.skew;
+	skewDeviation = other.skewDeviation;
+	skewConfidence = other.skewConfidence;
+	kurtosis = other.kurtosis;
+	kurtosisDeviation = other.kurtosisDeviation;
+	kurtosisConfidence = other.kurtosisConfidence;
+	mad = other.mad;
+	tmean = other.tmean;
+	counterKurtosis = other.counterKurtosis;
+	sd = other.sd;
+	beta = other.beta;
+	walshAverages = other.walshAverages;
+	walshAveragesMed = other.walshAveragesMed;
+	kolmConsentCriterion = other.kolmConsentCriterion;
+	pearConsentCriterion = other.pearConsentCriterion;
+	cv = other.cv;
+	ncv = other.ncv;
+	min = other.min;
+	max = other.max;
+	sorted = other.sorted;
+
+	cs = other.cs;
+	vs = other.vs;
 }
 
 void Vector::setVector(const std::list<double> &input) {

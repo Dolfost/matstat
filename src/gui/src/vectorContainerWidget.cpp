@@ -176,7 +176,7 @@ void VectorContainerWidget::appendVectorPair(VectorPair* vp) {
 void VectorContainerWidget::placeVector(ss::Vector& vec,
 																			 QString name) {
 	Vector *vectorEntry = new Vector;
-	vectorEntry->setVector(new ss::Vector(vec.list()));
+	vectorEntry->setVector(new ss::Vector(vec));
 	vectorEntry->setName(name);
 	appendVector(vectorEntry);
 }
@@ -186,8 +186,8 @@ void VectorContainerWidget::placeVectorPair(ss::VectorPair& vec,
 	VectorPair *vectorPair = new VectorPair;
 	vectorPair->setVectorPair(
 		new ss::VectorPair(
-			vec.x.list(),
-			vec.y.list()
+			vec.x,
+			vec.y
 		)
 	);
 	vectorPair->setName(name);
@@ -463,7 +463,7 @@ void VectorContainerWidget::standardizeAction() {
 
 void VectorContainerWidget::logAction() {
 	for (auto const &vec : selectedVectorsList) {
-		ss::Vector newVector(vec->vector()->list());
+		ss::Vector newVector(*vec->vector());
 		newVector.transform("log(x)");
 		placeVector(newVector, QString("LN(%1)").arg(vec->name()));
 	}
@@ -471,7 +471,7 @@ void VectorContainerWidget::logAction() {
 
 void VectorContainerWidget::reverseAction() {
 	for (auto const &vec : selectedVectorsList) {
-		ss::Vector newVector(vec->vector()->list());
+		ss::Vector newVector(*vec->vector());
 		newVector.transform("1/x");
 		placeVector(newVector, QString("R(%1)").arg(vec->name()));
 	}
@@ -479,7 +479,7 @@ void VectorContainerWidget::reverseAction() {
 
 void VectorContainerWidget::rightShiftAction() {
 	for (auto const &vec : selectedVectorsList) {
-		ss::Vector newVector(vec->vector()->list());
+		ss::Vector newVector(*vec->vector());
 		newVector.transform("x+abs(xmin)+1");
 		placeVector(newVector, QString("RS(%1)").arg(vec->name()));
 	}
@@ -523,7 +523,7 @@ void VectorContainerWidget::trimAction() {
 
 void VectorContainerWidget::removeOutliersAction() {
 	for (auto const &vec : selectedVectorsList) {
-		ss::Vector newVector(vec->vector()->list());
+		ss::Vector newVector(*vec->vector());
 		bool ok = newVector.removeOutliers();
 
 		emit outliersRemoved(ok);
@@ -556,9 +556,10 @@ void VectorContainerWidget::generateAction() {
 }
 
 void VectorContainerWidget::mergePairAction() {
+	
 	ss::VectorPair vp = ss::VectorPair(
-		selectedVectorsList[0]->vector()->list(), 
-		selectedVectorsList[1]->vector()->list()
+		*selectedVectorsList[0]->vector(), 
+		*selectedVectorsList[1]->vector()
 	);
 	placeVectorPair(vp);
 }

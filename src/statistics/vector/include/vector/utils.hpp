@@ -28,13 +28,14 @@ template<class T, class B = Vector>
 class Statistic {
 public:
 	Statistic() = delete;
-	Statistic(B& vec): s_vector(vec) {};
-	Statistic(B* vec): s_vector(*vec) {};
-	const B& vector() const { return s_vector; };
-	B& vector() { return s_vector; };
+	Statistic(B& vec): s_vector(&vec) {};
+	Statistic(B* vec): s_vector(vec) {};
+	B& vector() const { return *s_vector; };
+	void setVector(B* v) { s_vector = v; };
+	void setVector(B& v) { s_vector = &v; };
 	virtual void invalidate() = 0;
 protected:
-	B& s_vector;
+	B* s_vector = nullptr;
 private:
 };
 
@@ -43,6 +44,10 @@ template<class T, class B = Vector>
 class StatisticSingle: public Statistic<T, B> {
 public:
 	StatisticSingle() = delete;
+	StatisticSingle(const StatisticSingle& other) {
+		s_valid = other.s_valid;
+		s_value = other.s_value;
+	}
 	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_valid = false;
@@ -65,6 +70,10 @@ template<class T, class B=Vector>
 class StatisticContainer: public Statistic<T, B> {
 public:
 	StatisticContainer() = delete;
+	StatisticContainer(const StatisticContainer& other) {
+		s_valid = other.s_valid;
+		s_value = other.s_value;
+	}
 	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_value.clear();
@@ -88,6 +97,10 @@ template<class T, class Switch, class B=Vector>
 class StatisticPair: public Statistic<T, B> {
 public:
 	StatisticPair() = delete;
+	StatisticPair(const StatisticPair& other) {
+		s_valid = other.s_valid;
+		s_value = other.s_value;
+	}
 	using Statistic<T, B>::Statistic;
 	virtual void invalidate() override {
 		s_valid = false;
@@ -116,6 +129,9 @@ template<class From, class To, class MapFrom=From, class B=Vector>
 class StatisticMap: public Statistic<To, B> {
 public:
 	StatisticMap() = delete;
+	StatisticMap(const StatisticMap& other) {
+		s_values = other.s_values;
+	}
 	using Statistic<To, B>::Statistic;
 	virtual void invalidate() override {
 		s_values.clear();
@@ -136,6 +152,9 @@ template<class From, class To, class Switch, class B=Vector>
 class StatisticPairMap: public Statistic<To, B> {
 public:
 	StatisticPairMap() = delete;
+	StatisticPairMap(const StatisticPairMap& other) {
+		s_values = other.s_values;
+	}
 	using Statistic<To, B>::Statistic;
 	virtual void invalidate() override {
 		s_values.clear();

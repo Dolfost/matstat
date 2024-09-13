@@ -14,12 +14,12 @@ public:
 	class Min: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
-		virtual void adapt() override { s_value = std::min(s_vector.x.min(), s_vector.y.min()); }
+		virtual void adapt() override { s_value = std::min(s_vector->x.min(), s_vector->y.min()); }
 	} min = Min(this);
 	class Max: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
-		virtual void adapt() override { s_value = std::max(s_vector.x.max(), s_vector.y.max()); }
+		virtual void adapt() override { s_value = std::max(s_vector->x.max(), s_vector->y.max()); }
 	} max = Max(this);
 
 public:
@@ -41,6 +41,8 @@ public:
 public:
 	VectorPair(const std::list<double> ft = {}, 
 						const std::list<double> sd = {});
+	VectorPair(const Vector&,
+						const Vector&);
 	std::size_t size() { return v_x.size(); };
 
 public:
@@ -49,7 +51,7 @@ public:
 private:
 	Vector v_x;
 	Vector v_y;
-	void checkSize() const;
+	void checkSize();
 };
 
 }

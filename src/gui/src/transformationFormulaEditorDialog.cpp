@@ -106,21 +106,21 @@ TransformationFormulaEditorDialog::TransformationFormulaEditorDialog(
 void TransformationFormulaEditorDialog::transform() {
 	statusTextEdit->clear();
 	for (auto const& v : vecs) {
-		Vector* newVectorEntry = new Vector;
-		newVectorEntry->setVector(new ss::Vector(*v->vector()));
+		Vector* newVector = new Vector;
+		newVector->setVector(new ss::Vector(*v->vector()));
 		QString res = QString::fromStdString(
-			newVectorEntry->vector()->transform(formulaLineEdit->text().toStdString())
+			newVector->vector()->transform(formulaLineEdit->text().toStdString())
 		);
 		if (res.length() != 0) {
 			statusTextEdit->append("Трансформування " + v->name() + "\n" + res + "\n");
-			delete newVectorEntry;
+			delete newVector;
 		} else {
-			newVectorEntry->setName("TR" + QString::number(++trIdx) + "(" + v->name() + ")");
+			newVector->setName("TR" + QString::number(++trIdx) + "(" + v->name() + ")");
 			statusTextEdit->append("Вектор " + v->name() + " перетворено вдало.\n" +
 													"xᵢ = " + formulaLineEdit->text() + ".\n"
 													"Новий вектор було збережено у " +
-													newVectorEntry->name() + "\n");
-			emit vectorTransformed(newVectorEntry);
+													newVector->name() + "\n");
+			emit vectorTransformed(newVector);
 		}
 	}
 }

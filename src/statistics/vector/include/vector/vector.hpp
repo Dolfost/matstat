@@ -16,7 +16,11 @@ class ClassSeries
 : public utils::StatisticContainer<std::vector<Cont>, B> {
 public:
 	using utils::StatisticContainer<std::vector<Cont>, B>::StatisticContainer;
-
+	ClassSeries(const ClassSeries& other): utils::StatisticContainer<std::vector<Cont>, B>(other) {
+		c_maxProb = other.c_maxProb;
+		c_maxCount = other.c_maxCount;
+		c_cumSeries = other.c_cumSeries;
+	}
 	const std::vector<Cont>&
 	series() {
 		return this->value();
@@ -334,7 +338,8 @@ public:
 	};
 
 public:
-	Vector(const std::list<double>& = {});
+	Vector();
+	Vector(const std::list<double>&);
 	Vector(const Vector&);
 	void setVector(const std::list<double>&);
 	~Vector();
