@@ -102,6 +102,8 @@ void MainWindow::open() {
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/ravn.txt"; 
 	// filepath = "/Users/vladyslav/Lib/NAU/Mathematical_statistics/Labs/data/500/veib.txt"; 
 
+	if (filepath.size() == 0)
+		return;
 
 	vectorPicker->fileContents(filepath);
 	openVectorPicker();

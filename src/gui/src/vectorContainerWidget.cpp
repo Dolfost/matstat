@@ -557,10 +557,17 @@ void VectorContainerWidget::generateAction() {
 
 void VectorContainerWidget::mergePairAction() {
 	
-	ss::VectorPair vp = ss::VectorPair(
-		*selectedVectorsList[0]->vector(), 
-		*selectedVectorsList[1]->vector()
-	);
+	ss::VectorPair vp; 
+
+	try {
+		vp = ss::VectorPair(
+			*selectedVectorsList[0]->vector(), 
+			*selectedVectorsList[1]->vector()
+		);
+	} catch (std::logic_error& ex) {
+		message("Вектори різного розміру. Сформувати пару не вдалося");
+		return;
+	}
 	placeVectorPair(vp);
 }
 

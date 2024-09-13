@@ -43,6 +43,8 @@ public:
 						const std::list<double> sd = {});
 	VectorPair(const Vector&,
 						const Vector&);
+	VectorPair(const VectorPair&);
+	VectorPair& operator=(const VectorPair&);
 	std::size_t size() { return v_x.size(); };
 
 public:

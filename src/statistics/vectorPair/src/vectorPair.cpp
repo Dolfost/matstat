@@ -1,3 +1,4 @@
+#include <iostream>
 #include <vectorPair.hpp>
 
 #include <stdexcept>
@@ -36,6 +37,20 @@ VectorPair::VectorPair(const Vector& xx,
 
 void VectorPair::invalidate() {
 	checkSize();
+}
+
+VectorPair::VectorPair(const VectorPair& other) {
+	operator=(other);
+}
+VectorPair& VectorPair::operator=(const VectorPair& other) {
+	v_x = other.v_x;
+	v_y = other.v_y;
+
+	min = other.min;
+	max = other.max;
+	cs = other.cs;
+
+	return *this;
 }
 
 void VectorPair::checkSize() {
