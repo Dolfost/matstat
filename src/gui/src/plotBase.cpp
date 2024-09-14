@@ -68,6 +68,12 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis->setRange(yRange);
 	this->yAxis2->setRange(yRange2);
 
+	scatterPen.setWidthF(1.8);
+	scatterStyle.setSize(18);
+	scatterStyle.setShape(QCPScatterStyle::ssTriangle);
+
+	addLayer("stat", layer("main"));
+
 	this->replot();
 	// coordinatesLabel setup
 	coordinatesLabel = new QLabel("", this);

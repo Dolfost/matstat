@@ -26,8 +26,6 @@ protected:
 	QSharedPointer<QCPAxisTicker> yTicker;
 	QSharedPointer<QCPAxisTickerLog> yLogTicker;
 
-	QCPScatterStyle scatterStyle;
-	QPen scatterPen;
 	QCPGraph* mean = nullptr;
 	QCPGraph* standatrDeviation = nullptr;
 	QCPGraph* med = nullptr;

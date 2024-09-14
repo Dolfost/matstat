@@ -21,6 +21,10 @@ protected:
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
 	QSharedPointer<QCPAxisTickerFixed> yFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
 	QSharedPointer<QCPAxisTickerLog> yLogTicker = QSharedPointer<QCPAxisTickerLog>(new QCPAxisTickerLog);
+
+	QCPGraph* mean = nullptr;
+	QCPGraph* standatrDeviation = nullptr;
+	QCPGraph* med = nullptr;
 };
 
 #endif // !_VECTOR_PAIR_PLOT_BASE_HPP_

@@ -2,7 +2,7 @@
 #define _PLOT_DIALOG_HPP_
 
 #include<dialogBase.hpp>
-#include<PlotBase.hpp>
+#include<plotBase.hpp>
 
 class PlotDialog: public DialogBase {
 	Q_OBJECT

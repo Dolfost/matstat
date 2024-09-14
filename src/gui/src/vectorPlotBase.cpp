@@ -28,11 +28,8 @@ VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent
 
 	toggleLog(Qt::Unchecked);
 
-	scatterPen.setWidthF(1.8);
-	scatterStyle.setSize(18);
-	scatterStyle.setShape(QCPScatterStyle::ssTriangle);
-
 	mean = new QCPGraph(this->xAxis, this->yAxis);
+	mean->setLayer(layer("stat"));
 	mean->setName("Мат. спод.");
 	scatterPen.setColor("#FF0000");
 	scatterStyle.setPen(scatterPen);
@@ -40,6 +37,7 @@ VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent
 	mean->setLineStyle(QCPGraph::lsNone);
 
 	standatrDeviation = new QCPGraph(this->xAxis, this->yAxis);
+	standatrDeviation->setLayer(layer("stat"));
 	standatrDeviation->setName("Ск. відх.");
 	standatrDeviation->setLineStyle(QCPGraph::lsNone);
 	scatterPen.setColor(Qt::magenta);
@@ -47,6 +45,7 @@ VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent
 	standatrDeviation->setScatterStyle(scatterStyle);
 
 	walshMed = new QCPGraph(this->xAxis, this->yAxis);
+	walshMed->setLayer(layer("stat"));
 	walshMed->setName("Мед. сер. Уолша");
 	walshMed->setLineStyle(QCPGraph::lsNone);
 	scatterPen.setColor(Qt::darkMagenta);
@@ -54,6 +53,7 @@ VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent
 	walshMed->setScatterStyle(scatterStyle);
 
 	med = new QCPGraph(this->xAxis, this->yAxis);
+	med->setLayer(layer("stat"));
 	med->setName("Мед.");
 	med->setLineStyle(QCPGraph::lsNone);
 	scatterPen.setColor(Qt::green);
