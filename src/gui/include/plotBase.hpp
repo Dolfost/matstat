@@ -16,9 +16,6 @@ protected:
 	QCPRange yRange;
 	QCPRange yRange2;
 
-	QCPScatterStyle scatterStyle;
-	QPen scatterPen;
-
 	QString coordinatesLabelString = "${X}\n${Y}";
 
 	QLabel* coordinatesLabel = nullptr;

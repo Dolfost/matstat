@@ -19,18 +19,6 @@ public slots:
 	virtual void toggleLog(bool) override;
 
 protected:
-	void enableMean();
-	void plotMean();
-
-	void enableStandartDeviation();
-	void plotStandartDeviation();
-
-	void enableMed();
-	void plotMed();
-
-	void enableWalshMed();
-	void plotWalshMed();
-
 	ss::Vector* v_vector = nullptr;
 
 	QSharedPointer<QCPAxisTickerFixed> xFixedTicker;

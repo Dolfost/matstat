@@ -16,8 +16,8 @@
 
 #include <spinBoxAction.hpp>
 
-#include <distributionDialog.hpp>
-#include <densityDialog.hpp>
+#include <vectorDistributionDialog.hpp>
+#include <vectorDensityDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -466,21 +466,21 @@ void VectorContainerWidget::confidenceAction(double c) {
 
 void VectorContainerWidget::vectorDistributionAction() {
 	for (auto const &v : selectedVectorsList) {
-		DistributionDialog* dia = new DistributionDialog(v, this);
+		VectorDistributionDialog* dia = new VectorDistributionDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &DistributionDialog::fill);
+					dia, &VectorDistributionDialog::fill);
 		connect(this, &VectorContainerWidget::vectorDeleted,
-			dia, &DistributionDialog::vectorDeletedHandler);
+			dia, &VectorDistributionDialog::vectorDeletedHandler);
 	}
 }
 
 void VectorContainerWidget::vectorDensityAction() {
 	for (auto const &v : selectedVectorsList) {
-		DensityDialog* dia = new DensityDialog(v, this);
+		VectorDensityDialog* dia = new VectorDensityDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &DistributionDialog::fill);
+					dia, &VectorDistributionDialog::fill);
 		connect(this, &VectorContainerWidget::vectorDeleted,
-					dia, &DensityDialog::vectorDeletedHandler);
+					dia, &VectorDensityDialog::vectorDeletedHandler);
 	}
 }
 
