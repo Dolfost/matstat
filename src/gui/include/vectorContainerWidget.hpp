@@ -78,6 +78,7 @@ private slots:
 
 	void vectorPairDensityAction();
 	void vectorPairDistributionAction();
+	void vectorPairCorelationAction();
 	void vectorPairClassCountActionX(int);
 	void vectorPairClassCountActionY(int);
 

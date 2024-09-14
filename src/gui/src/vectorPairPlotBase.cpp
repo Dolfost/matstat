@@ -26,25 +26,25 @@ VectorPairPlotBase::VectorPairPlotBase(ss::VectorPair* v, QWidget* p): PlotBase(
 	xFixedTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
 	yFixedTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
 
-	scatterStyle.setShape(QCPScatterStyle::ssCrossCircle);
-	scatterStyle.setSize(15);
-	scatterPen.setWidthF(0.8);
+	statScatter.setShape(QCPScatterStyle::ssCross);
+	statScatter.setSize(10);
+	statScatterPen.setWidthF(1);
 
 	mean = new QCPGraph(this->xAxis, this->yAxis);
 	mean->setLayer(layer("stat"));
 	mean->setName("Мат. спод.");
 	mean->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::blue);
-	scatterStyle.setPen(scatterPen);
-	mean->setScatterStyle(scatterStyle);
+	statScatterPen.setColor(Qt::cyan);
+	statScatter.setPen(statScatterPen);
+	mean->setScatterStyle(statScatter);
 
 	med = new QCPGraph(this->xAxis, this->yAxis);
 	med->setLayer(layer("stat"));
 	med->setName("Медіана");
 	med->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::green);
-	scatterStyle.setPen(scatterPen);
-	med->setScatterStyle(scatterStyle);
+	statScatterPen.setColor(Qt::darkGreen);
+	statScatter.setPen(statScatterPen);
+	med->setScatterStyle(statScatter);
 }
 
 void VectorPairPlotBase::fill() {

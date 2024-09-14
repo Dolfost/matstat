@@ -23,7 +23,7 @@ protected:
 	QSharedPointer<QCPAxisTickerLog> yLogTicker = QSharedPointer<QCPAxisTickerLog>(new QCPAxisTickerLog);
 
 	QCPGraph* mean = nullptr;
-	QCPGraph* standatrDeviation = nullptr;
+	QCPGraph* sd = nullptr;
 	QCPGraph* med = nullptr;
 };
 

@@ -68,9 +68,9 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis->setRange(yRange);
 	this->yAxis2->setRange(yRange2);
 
-	scatterPen.setWidthF(1.8);
-	scatterStyle.setSize(18);
-	scatterStyle.setShape(QCPScatterStyle::ssTriangle);
+	statScatterPen.setWidthF(1.8);
+	statScatter.setSize(18);
+	statScatter.setShape(QCPScatterStyle::ssTriangle);
 
 	addLayer("stat", layer("main"));
 
@@ -80,7 +80,7 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	coordinatesLabel->setAlignment(Qt::AlignCenter);
 	coordinatesLabel->setStyleSheet("color: black; font-size: 11px;");
 	coordinatesLabel->setAlignment(Qt::AlignHCenter | Qt::AlignRight);
-	coordinatesTimer = new QTimer();
+	coordinatesTimer = new QTimer(this);
 	coordinatesTimer->setSingleShot(true);
 	connect(coordinatesTimer, &QTimer::timeout, this, [this]{coordinatesLabel->hide();});
 }

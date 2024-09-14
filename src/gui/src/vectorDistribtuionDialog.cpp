@@ -7,5 +7,4 @@ VectorDistributionDialog::VectorDistributionDialog(
 : PlotDialog(new VectorDistributionPlot(v->vector()), v, w, f) {
 	p_plot->setSaveFilename("distribution");
 	setWindowTitle("Розподіл вектора " + v_vector->name());
-	p_plot->fill();
 }

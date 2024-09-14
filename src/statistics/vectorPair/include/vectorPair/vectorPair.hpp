@@ -11,16 +11,32 @@ namespace ss {
 
 class VectorPair {
 public:
+	class Corelation: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} cor = Corelation(this);
+
+	class ProductRawMoment: public utils::StatisticMap<double, double, double, VectorPair> {
+	public:
+		using StatisticMap::StatisticMap;
+		virtual void adapt(double) override;
+	} pRawMoment = ProductRawMoment(this);
+
 	class Min: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override { s_value = std::min(s_vector->x.min(), s_vector->y.min()); }
 	} min = Min(this);
+
 	class Max: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override { s_value = std::max(s_vector->x.max(), s_vector->y.max()); }
 	} max = Max(this);
+
+	std::size_t size() { return v_x.size(); };
+	double pmean() { return pRawMoment(1); };
 
 public:
 	using ClassSeriesT = std::vector<std::pair<std::size_t, double>>;
@@ -83,7 +99,6 @@ public:
 						const Vector&);
 	VectorPair(const VectorPair&);
 	VectorPair& operator=(const VectorPair&);
-	std::size_t size() { return v_x.size(); };
 
 public:
 	void invalidate();

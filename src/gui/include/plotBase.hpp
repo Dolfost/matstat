@@ -21,8 +21,8 @@ protected:
 	QLabel* coordinatesLabel = nullptr;
 	QTimer* coordinatesTimer = nullptr;
 
-	QCPScatterStyle scatterStyle;
-	QPen scatterPen;
+	QCPScatterStyle statScatter;
+	QPen statScatterPen;
 
 	void mouseMoveEvent(QMouseEvent*) override;
 	QString p_saveFilename = "plot";

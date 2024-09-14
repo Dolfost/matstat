@@ -31,34 +31,34 @@ VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent
 	mean = new QCPGraph(this->xAxis, this->yAxis);
 	mean->setLayer(layer("stat"));
 	mean->setName("Мат. спод.");
-	scatterPen.setColor("#FF0000");
-	scatterStyle.setPen(scatterPen);
-	mean->setScatterStyle(scatterStyle);
+	statScatterPen.setColor("#FF0000");
+	statScatter.setPen(statScatterPen);
+	mean->setScatterStyle(statScatter);
 	mean->setLineStyle(QCPGraph::lsNone);
 
 	standatrDeviation = new QCPGraph(this->xAxis, this->yAxis);
 	standatrDeviation->setLayer(layer("stat"));
 	standatrDeviation->setName("Ск. відх.");
 	standatrDeviation->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::magenta);
-	scatterStyle.setPen(scatterPen);
-	standatrDeviation->setScatterStyle(scatterStyle);
+	statScatterPen.setColor(Qt::magenta);
+	statScatter.setPen(statScatterPen);
+	standatrDeviation->setScatterStyle(statScatter);
 
 	walshMed = new QCPGraph(this->xAxis, this->yAxis);
 	walshMed->setLayer(layer("stat"));
 	walshMed->setName("Мед. сер. Уолша");
 	walshMed->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::darkMagenta);
-	scatterStyle.setPen(scatterPen);
-	walshMed->setScatterStyle(scatterStyle);
+	statScatterPen.setColor(Qt::darkMagenta);
+	statScatter.setPen(statScatterPen);
+	walshMed->setScatterStyle(statScatter);
 
 	med = new QCPGraph(this->xAxis, this->yAxis);
 	med->setLayer(layer("stat"));
 	med->setName("Мед.");
 	med->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::green);
-	scatterStyle.setPen(scatterPen);
-	med->setScatterStyle(scatterStyle);
+	statScatterPen.setColor(Qt::green);
+	statScatter.setPen(statScatterPen);
+	med->setScatterStyle(statScatter);
 
 
 	this->xAxis->setLabel("x (класи)");

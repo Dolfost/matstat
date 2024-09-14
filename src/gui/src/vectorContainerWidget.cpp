@@ -21,6 +21,7 @@
 
 #include <vectorPairDensityDialog.hpp>
 #include <vectorPairDistributionDialog.hpp>
+#include <vectorPairCorelationDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -400,6 +401,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(density, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairDensityAction);
 
+	QAction *corelation = graphics->addAction("Кореляційне поле");
+	connect(corelation, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairCorelationAction);
+
 	SpinBoxAction *classCountActionX = new SpinBoxAction("Кількість класів по х");
 	classCountActionX->spinBox()->setRange(0, 1000);
 	graphics->addAction(classCountActionX);
@@ -447,6 +452,16 @@ void VectorContainerWidget::vectorPairDistributionAction() {
 					dia, &VectorPairDistributionDialog::fill);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairDistributionDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorPairCorelationAction() {
+	for (auto& v : selectedVectorPairsList) {
+		VectorPairCorelationDialog* dia = new VectorPairCorelationDialog(v, this);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorPairCorelationDialog::fill);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorPairCorelationDialog::vectorDeletedHandler);
 	}
 }
 

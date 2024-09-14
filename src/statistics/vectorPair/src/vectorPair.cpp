@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vectorPair.hpp>
 
 #include <stdexcept>

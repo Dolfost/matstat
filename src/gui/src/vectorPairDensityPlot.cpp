@@ -1,4 +1,3 @@
-#include <iostream>
 #include<vectorPairDensityPlot.hpp>
 
 VectorPairDensityPlot::VectorPairDensityPlot(
@@ -29,7 +28,6 @@ void VectorPairDensityPlot::fill() {
 	);
 	for (std::size_t i = 0; i < cs.countX(); ++i)
 		for (std::size_t j = 0; j < cs.countY(); ++j) {
-			std::cout << "AAA" << std::endl;
 			map->data()->setCell(i, j, (*ser)[i][j].second);
 		}
 	map->rescaleDataRange();

@@ -169,7 +169,7 @@ void Vector::Distribution::setDistribution(
 			};
 			d_invCdf = [m, o](double x) {
 				if (x > 0)
-					return std::exp(m + 0*normQuantile(x));
+					return std::exp(m + o*normQuantile(x));
 				return 0.0;
 			};
 
