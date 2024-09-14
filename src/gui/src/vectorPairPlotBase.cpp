@@ -10,15 +10,8 @@ VectorPairPlotBase::VectorPairPlotBase(ss::VectorPair* v, QWidget* p): PlotBase(
 	this->xAxis->setTicker(xFixedTicker);
 	this->xAxis2->setTicker(xFixedTicker);
 
-	yFixedTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
 	this->yAxis->setTicker(yFixedTicker);
 	this->yAxis2->setTicker(yFixedTicker);
-
-	yLogTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
-	yLogTicker->setTickCount(6);
-	yLogTicker->setLogBase(10);
-
-	toggleLog(Qt::Unchecked);
 
 	// this->xAxis->setLabel("x (класи)");
 	// this->yAxis->setLabel("y (класи)");
@@ -27,6 +20,11 @@ VectorPairPlotBase::VectorPairPlotBase(ss::VectorPair* v, QWidget* p): PlotBase(
 	gpen.setWidthF(1.2);
 	this->xAxis->grid()->setPen(gpen);
 	this->yAxis->grid()->setPen(gpen);
+
+	xFixedTicker->setScaleStrategy(QCPAxisTickerFixed::ssMultiples);
+	yFixedTicker->setScaleStrategy(QCPAxisTickerFixed::ssMultiples);
+	xFixedTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
+	yFixedTicker->setTickStepStrategy(QCPAxisTicker::tssReadability);
 }
 
 void VectorPairPlotBase::fill() {
