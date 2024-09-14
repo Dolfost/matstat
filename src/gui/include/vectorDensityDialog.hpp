@@ -4,11 +4,11 @@
 #include <vector.hpp>
 #include <qcustomplot.h>
 #include <vectorDensityPlot.hpp>
-#include <plotDialog.hpp>
+#include <plotDialogBase.hpp>
 
 #include <guiTypes.hpp>
 
-class VectorDensityDialog : public PlotDialog {
+class VectorDensityDialog : public PlotDialogBase {
 	Q_OBJECT
 public:
 	VectorDensityDialog(Vector*, QWidget* = nullptr, 

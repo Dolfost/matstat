@@ -1,17 +1,17 @@
 #ifndef _VECTOR_PAIR_DENSITY_DIALOG_HPP_
 #define _VECTOR_PAIR_DENSITY_DIALOG_HPP_
 
-#include<plotDialog.hpp>
+#include<plotDialogBase.hpp>
 #include<vectorPairDensityPlot.hpp>
 #include<vectorPair.hpp>
 
-class VectorPairDensityDialog: public PlotDialog {
+class VectorPairDensityDialog: public PlotDialogBase {
 public:
 	VectorPairDensityDialog(
 		VectorPair* v,
 		QWidget* p = nullptr,
 		Qt::WindowFlags f = Qt::WindowFlags())
-	: PlotDialog(new VectorPairDensityPlot(v->vectorPair()), v, p, f) {
+	: PlotDialogBase(new VectorPairDensityPlot(v->vectorPair()), v, p, f) {
 		p_plot->setSaveFilename("2d-density");
 		setWindowTitle("Щільність двовимірного вектора " + v_vector->name());
 

@@ -1,6 +1,6 @@
-#include<plotDialog.hpp>
+#include<plotDialogBase.hpp>
 
-PlotDialog::PlotDialog(PlotBase* p,
+PlotDialogBase::PlotDialogBase(PlotBase* p,
 											 VectorEntry* v,
 											 QWidget* w,
 											 Qt::WindowFlags f 
@@ -40,17 +40,17 @@ PlotDialog::PlotDialog(PlotBase* p,
 	v_mainLayout->setMenuBar(p_menuBar);
 }
 
-void PlotDialog::fill(VectorEntry* ve) {
+void PlotDialogBase::fill(VectorEntry* ve) {
 	if (ve == v_vector)
 	p_plot->fill();
 }
 
-void PlotDialog::saveToPng() {
+void PlotDialogBase::saveToPng() {
 	p_plot->saveToPng();
 }
-void PlotDialog::saveToJpg() {
+void PlotDialogBase::saveToJpg() {
 	p_plot->saveToJpg();
 }
-void PlotDialog::saveToPdf() {
+void PlotDialogBase::saveToPdf() {
 	p_plot->saveToPdf();
 }

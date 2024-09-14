@@ -1,13 +1,13 @@
-#ifndef _PLOT_DIALOG_HPP_
-#define _PLOT_DIALOG_HPP_
+#ifndef _PLOT_DIALOG_BASE_HPP_
+#define _PLOT_DIALOG_BASE_HPP_
 
 #include<dialogBase.hpp>
 #include<plotBase.hpp>
 
-class PlotDialog: public DialogBase {
+class PlotDialogBase: public DialogBase {
 	Q_OBJECT
 public:
-	PlotDialog(PlotBase*,
+	PlotDialogBase(PlotBase*,
 						VectorEntry*, 
 						QWidget* = nullptr, 
 						Qt::WindowFlags = Qt::WindowFlags());
@@ -23,4 +23,4 @@ protected:
 	QMenu* p_saveMenu = nullptr;
 };
 
-#endif // !_PLOT_DIALOG_HPP_
+#endif // !_PLOT_DIALOG_BASE_HPP_

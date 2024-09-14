@@ -4,11 +4,11 @@
 #include <vector.hpp>
 #include <qcustomplot.h>
 #include <vectorDistributionPlot.hpp>
-#include <plotDialog.hpp>
+#include <plotDialogBase.hpp>
 
 #include <guiTypes.hpp>
 
-class VectorDistributionDialog : public PlotDialog {
+class VectorDistributionDialog : public PlotDialogBase {
 	Q_OBJECT
 public:
 	VectorDistributionDialog(Vector*, QWidget* = nullptr, 
