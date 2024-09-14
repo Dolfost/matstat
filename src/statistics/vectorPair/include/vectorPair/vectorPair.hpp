@@ -30,8 +30,46 @@ public:
 
 		double pdf(double, double);
 		double cdf(double, double);
+		std::size_t countX() { 
+			if (!s_valid)
+				adapt();
+			return c_countX; 
+		};
+		std::size_t countY() { 
+			if (!s_valid)
+				adapt();
+			return c_countY; 
+		};
+		double stepX() { 
+			if (!s_valid)
+				adapt();
+			return c_stepX; 
+		};
+		double stepY() { 
+			if (!s_valid)
+				adapt();
+			return c_stepY; 
+		};
+		std::size_t setCountX(std::size_t c) { 
+			std::size_t old = c_countX;
+			c_countX = c;
+			if (c != old)
+				invalidate();
+			return old; 
+		};
+		std::size_t setCountY(std::size_t c) { 
+			std::size_t old = c_countY;
+			c_countY = c;
+			if (c != old)
+				invalidate();
+			return old; 
+		};
 	private:
 		virtual void adapt() override;
+		std::size_t c_countX = 0;
+		std::size_t c_countY = 0;
+		double c_stepX = 0;
+		double c_stepY = 0;
 	} cs = ClassSeries(this);
 	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
 	

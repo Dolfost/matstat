@@ -1,16 +1,17 @@
 #ifndef _DENSITY_CHART_HPP_
 #define _DENSITY_CHART_HPP_
 
-#include "plotBase.hpp"
+#include "vectorPlotBase.hpp"
 
-class DensityChart : public PlotBase {
+class DensityChart : public VectorPlotBase {
 	Q_OBJECT
 public:
-    DensityChart(QWidget* parent = nullptr);
+    DensityChart(ss::Vector*, QWidget* parent = nullptr);
 	QCPBars* bars = nullptr;
 	QCPGraph* density = nullptr;
 
-	virtual void fill(ss::Vector*) override;
+public slots:
+	virtual void fill() override;
 };
 
 #endif // !_DENSITY_CHART_HPP_

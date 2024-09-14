@@ -1,18 +1,19 @@
 #ifndef _DISTRIBUTION_CHART_HPP_
 #define _DISTRIBUTION_CHART_HPP_
 
-#include "plotBase.hpp"
+#include "vectorPlotBase.hpp"
 
-class DistributionChart : public PlotBase {
+class DistributionChart : public VectorPlotBase {
 	Q_OBJECT
 public:
-    DistributionChart(QWidget* parent = nullptr);
+    DistributionChart(ss::Vector*, QWidget* parent = nullptr);
 
 	QCPGraph* graph = nullptr;
 	QCPGraph* distribution = nullptr;
 	QCPGraph* distributionDeviation = nullptr;
 
-	virtual void fill(ss::Vector*) override;
+public slots:
+	virtual void fill() override;
 };
 
 #endif // !_DISTRIBUTION_CHART_HPP_

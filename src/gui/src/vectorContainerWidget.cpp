@@ -11,6 +11,7 @@
 #include "hypothesisManagerDialog.hpp"
 #include "setGeneratorDialog.hpp"
 #include "vectorContainerWidget.hpp"
+#include "vectorPairDensityDialog.hpp"
 #include "vectorTrimmerDialog.hpp"
 
 #include <spinBoxAction.hpp>
@@ -54,8 +55,6 @@ VectorContainerWidget::VectorContainerWidget(QWidget *parent)
 
 	connect(this, &QTableWidget::customContextMenuRequested, this,
 				 &VectorContainerWidget::showContextMenu);
-	connect(this, &QTableWidget::cellDoubleClicked, this,
-				 &VectorContainerWidget::makeActiveAction);
 }
 
 void VectorContainerWidget::placeList(const std::list<double>& l) {
@@ -266,9 +265,14 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	confidence->spinBox()->setRange(0.0, 1.0);
 	confidence->spinBox()->setDecimals(5);
 	confidence->spinBox()->setSingleStep(0.1);
-	graphics->addAction(confidence);
 	connect(confidence->spinBox(), &QDoubleSpinBox::valueChanged, this,
 				 &VectorContainerWidget::confidenceAction);
+	graphics->addAction(confidence);
+
+	if (selectedVectorsList.size() == 1) {
+		classCountAction->spinBox()->setValue(selectedVectorsList[0]->vector()->cs.count());
+		confidence->spinBox()->setValue(selectedVectorsList[0]->vector()->dist.confidence());
+	}
 
 	menu->addSeparator();
 
@@ -383,7 +387,36 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 
 }
 
-void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {}
+void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
+	QMenu *graphics = menu->addMenu("Графіка…");
+	// QAction *distribution = graphics->addAction("Функція розподілу");
+	// connect(distribution, &QAction::triggered, this,
+	// 			 &VectorContainerWidget::vectorPairDistributionAction);
+	QAction *density = graphics->addAction("Функція щільності");
+	connect(density, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairDensityAction);
+
+	SpinBoxAction *classCountActionX = new SpinBoxAction("Кількість класів по х");
+	classCountActionX->spinBox()->setRange(0, 1000);
+	graphics->addAction(classCountActionX);
+	connect(classCountActionX->spinBox(), &QSpinBox::valueChanged, this,
+				 &VectorContainerWidget::vectorPairClassCountActionX);
+
+	SpinBoxAction *classCountActionY = new SpinBoxAction("Кількість класів по y");
+	classCountActionY->spinBox()->setRange(0, 1000);
+	graphics->addAction(classCountActionY);
+	connect(classCountActionY->spinBox(), &QSpinBox::valueChanged, this,
+				 &VectorContainerWidget::vectorPairClassCountActionY);
+
+	if (selectedVectorPairsList.size() == 1) {
+		classCountActionX->spinBox()->setValue(
+			selectedVectorPairsList[0]->vectorPair()->cs.countX()
+		);
+		classCountActionY->spinBox()->setValue(
+			selectedVectorPairsList[0]->vectorPair()->cs.countY()
+		);
+	}
+}
 void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
 void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	menu->addSeparator();
@@ -391,6 +424,30 @@ void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	QAction *deleteAction = menu->addAction("Видалити");
 	connect(deleteAction, &QAction::triggered, this,
 				 &VectorContainerWidget::deleteAction);
+}
+
+void VectorContainerWidget::vectorPairDensityAction() {
+	for (auto& v : selectedVectorPairsList) {
+		VectorPairDensityDialog* dia = new VectorPairDensityDialog(v, this);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorPairDensityDialog::fill);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorPairDensityDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorPairClassCountActionX(int cls) {
+	for (auto& v : selectedVectorPairsList) {
+		v->vectorPair()->cs.setCountX(cls);
+		emit redrawVector(v);
+	}
+}
+
+void VectorContainerWidget::vectorPairClassCountActionY(int cls) {
+	for (auto& v : selectedVectorPairsList) {
+		v->vectorPair()->cs.setCountY(cls);
+		emit redrawVector(v);
+	}
 }
 
 void VectorContainerWidget::classCountAction(int cls) {
@@ -410,8 +467,8 @@ void VectorContainerWidget::confidenceAction(double c) {
 void VectorContainerWidget::vectorDistributionAction() {
 	for (auto const &v : selectedVectorsList) {
 		DistributionDialog* dia = new DistributionDialog(v, this);
-		connect(this, SIGNAL(redrawVector(Vector*)),
-					dia, SLOT(fill()));
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &DistributionDialog::fill);
 		connect(this, &VectorContainerWidget::vectorDeleted,
 			dia, &DistributionDialog::vectorDeletedHandler);
 	}
@@ -420,16 +477,10 @@ void VectorContainerWidget::vectorDistributionAction() {
 void VectorContainerWidget::vectorDensityAction() {
 	for (auto const &v : selectedVectorsList) {
 		DensityDialog* dia = new DensityDialog(v, this);
-		connect(this, SIGNAL(redrawVector(Vector*)),
-					dia, SLOT(fill()));
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &DistributionDialog::fill);
 		connect(this, &VectorContainerWidget::vectorDeleted,
 					dia, &DensityDialog::vectorDeletedHandler);
-	}
-}
-
-void VectorContainerWidget::makeActiveAction() {
-	for (auto const &vec : selectedVectorsList) {
-		emit vectorSelected(vec);
 	}
 }
 

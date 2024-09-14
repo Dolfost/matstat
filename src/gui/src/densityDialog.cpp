@@ -3,8 +3,8 @@
 DensityDialog::DensityDialog(Vector* v, 
 																			 QWidget* w, 
 																			 Qt::WindowFlags f) :
-	PlotDialog(new DensityChart, v, w, f) {
-	p_plot->setSaveFilename("distribution");
+	PlotDialog(new DensityChart(v->vector()), v, w, f) {
+	p_plot->setSaveFilename("2d-density");
 	setWindowTitle("Щільність вектора " + v_vector->name());
-	fill();
+	p_plot->fill();
 }

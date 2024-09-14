@@ -8,24 +8,34 @@ double VectorPair::ClassSeries::pdf(double x, double y) {
 
 void VectorPair::ClassSeries::adapt() {
 	s_value.clear();
+
+	if (!c_countX)
+		c_countX = 2*s_vector->x.cs.calculateCount();
+	if (!c_countY)
+		c_countY = 2*s_vector->y.cs.calculateCount();
+
+	c_stepX = s_vector->x.len()/c_countX;
+	c_stepY = s_vector->y.len()/c_countY;
+
 	s_value = std::vector<std::vector<std::pair<std::size_t, double>>>(
-		s_vector->x.cs.count(), 
+		c_countX, 
 		std::vector<std::pair<std::size_t, double>>(
-			s_vector->y.cs.count(),
+			c_countY,
 			{0, 0}
 		)
 	);
 
-	std::size_t x_idx, y_idx;
+	long int x_idx, y_idx;
 	auto x_it = s_vector->x.begin();
 	auto y_it = s_vector->y.begin();
+
 	while (x_it != s_vector->x.end()) {
-		x_idx = (*x_it - s_vector->x.min())/s_vector->x.cs.step();
-		if (x_idx >= s_vector->x.cs.count())
+		x_idx = (*x_it - s_vector->x.min())/c_stepX;
+		if (x_idx >= c_countX)
 			x_idx--;
 
-		y_idx = (*y_it - s_vector->y.min())/s_vector->y.cs.step();
-		if (y_idx >= s_vector->y.cs.count())
+		y_idx = (*y_it - s_vector->y.min())/c_stepY;
+		if (y_idx >= c_countY)
 			y_idx--;
 
 		s_value[x_idx][y_idx].first++;
@@ -45,29 +55,31 @@ void VectorPair::ClassSeries::adapt() {
 		}
 	}
 
+
+	c_cumSeries.clear();
 	c_cumSeries = std::vector<std::vector<std::pair<std::size_t, double>>>(
-		s_vector->x.cs.count(), 
+		c_countX,
 		std::vector<std::pair<std::size_t, double>>(
-			s_vector->y.cs.count(),
+			c_countY,
 			{0, 0}
 		)
 	);
 
 	c_cumSeries[0][0] = s_value[0][0];
-	for (int j = 1; j < s_vector->y.cs.count(); j++) {
+	for (int j = 1; j < c_countY; j++) {
 		c_cumSeries[0][j].first = c_cumSeries[0][j-1].first + 
 			s_value[0][j].first;
 		c_cumSeries[0][j].second = c_cumSeries[0][j-1].second + 
 			s_value[0][j].second;
 	}
-	for (int j = 1; j < s_vector->y.cs.count(); j++) {
-		c_cumSeries[0][j].first = s_value[0][j].first + 
-			c_cumSeries[0][j-1].first;
-		c_cumSeries[0][j].second = s_value[0][j].second + 
-			c_cumSeries[0][j-1].second;
+	for (int j = 1; j < c_countX; j++) {
+		c_cumSeries[j][0].first = s_value[j][0].first + 
+			c_cumSeries[j-1][0].first;
+		c_cumSeries[j][0].second = s_value[j][0].second + 
+			c_cumSeries[j-1][0].second;
 	}
-	for (int i = 1; i < s_vector->x.cs.count(); i++) {
-		for (int j = 1; j < s_vector->y.cs.count(); j++) {
+	for (int i = 1; i < c_countX; i++) {
+		for (int j = 1; j < c_countY; j++) {
 			c_cumSeries[i][j].first = c_cumSeries[i-1][j].first +
 				c_cumSeries[i][j-1].first + s_value[i][j].first - 
 				c_cumSeries[i-1][j-1].first;

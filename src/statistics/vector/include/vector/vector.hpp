@@ -233,6 +233,13 @@ public: // statistics
 		virtual void adapt() override;
 	} max = Max(this);
 
+	class Length: public utils::StatisticSingle<double> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} len = Length(this);
+
 	class Sorted: public utils::StatisticContainer<std::list<double>> {
 	public:
 		using StatisticContainer::StatisticContainer;

@@ -2,20 +2,20 @@
 #define _PLOT_DIALOG_HPP_
 
 #include<vectorDialog.hpp>
-#include<plotBase.hpp>
+#include<PlotBase.hpp>
 
 class PlotDialog: public VectorDialog {
 	Q_OBJECT
 public:
 	PlotDialog(PlotBase*,
-						Vector*, 
+						VectorEntry*, 
 						QWidget* = nullptr, 
 						Qt::WindowFlags = Qt::WindowFlags());
 public slots:
 	void saveToPng();
 	void saveToJpg();
 	void saveToPdf();
-	virtual void fill() override;
+	virtual void fill(VectorEntry*) override;
 protected:
 	PlotBase* p_plot = nullptr;
 	QMenuBar* p_menuBar = nullptr;

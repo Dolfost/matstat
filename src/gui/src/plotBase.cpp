@@ -1,10 +1,4 @@
-#include <QGraphicsSceneMouseEvent>
-#include <QtCore/qlogging.h>
-#include <QtCore/qnamespace.h>
-#include <QtCore/qobject.h>
-#include <QtWidgets/qboxlayout.h>
-
-#include "plotBase.hpp"
+#include <plotBase.hpp>
 
 PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
@@ -22,31 +16,13 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->plotLayout()->setRowStretchFactor(1, 0.001);
 
 	// axes setup
-	xFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
-	xFixedTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
-	this->xAxis->setTicker(xFixedTicker);
-	this->xAxis->setTickLabelRotation(90);
+	this->xAxis->setTickLabelRotation(45);
 	this->xAxis->setNumberFormat("f");
 	this->xAxis->setNumberPrecision(3);
 	this->xAxis->setScaleType(QCPAxis::stLinear);
-	this->xAxis->setLabel("x (класи)");
-	xTicker = QSharedPointer<QCPAxisTicker>(new QCPAxisTicker);
-	xTicker->setTickCount(7);
-	this->xAxis2->setTicker(xTicker);
 	this->xAxis2->setNumberFormat("f");
 	this->xAxis2->setNumberPrecision(2);
 	this->xAxis2->setScaleType(QCPAxis::stLinear);
-
-	yTicker = QSharedPointer<QCPAxisTicker>(new QCPAxisTicker);
-	yTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
-	yTicker->setTickCount(11);
-
-	yLogTicker = QSharedPointer<AxisTickerExp>(new AxisTickerExp);
-	yLogTicker->setTickStepStrategy(QCPAxisTicker::TickStepStrategy::tssMeetTickCount);
-	yLogTicker->setTickCount(6);
-	yLogTicker->setLogBase(10);
-
-	toggleLog(Qt::Unchecked);
 
 	this->yAxis->setTickLength(0, 5);
 	this->yAxis->setSubTickLength(0, 3);
@@ -62,19 +38,14 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis2->setVisible(true);
 	this->yAxis2->setTickLabels(true);
 
-	// connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
-	// 		this->xAxis2, SLOT(setRange(QCPRange)));
-	// connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
-	// 		this->xAxis, SLOT(setRange(QCPRange)));
-
-	connect(this->xAxis, SIGNAL(rangeChanged(QCPRange)),
-			SLOT(handleZoomX(QCPRange)));
-	connect(this->xAxis2, SIGNAL(rangeChanged(QCPRange)),
-			SLOT(handleZoomX2(QCPRange)));
-	connect(this->yAxis, SIGNAL(rangeChanged(QCPRange)),
-			SLOT(handleZoomY(QCPRange)));
-	connect(this->yAxis2, SIGNAL(rangeChanged(QCPRange)),
-			SLOT(handleZoomY2(QCPRange)));
+	connect(this->xAxis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
+			this, &PlotBase::handleZoomX);
+	connect(this->xAxis2, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
+			this, &PlotBase::handleZoomX2);
+	connect(this->yAxis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
+			this, &PlotBase::handleZoomY);
+	connect(this->yAxis2, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
+			this, &PlotBase::handleZoomY2);
 
 	this->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
@@ -91,14 +62,12 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 			this->yAxis2}
 			);
 
-
 	xRange = QCPRange(-5, 5);
 	yRange = yRange2 = QCPRange(0, 1);
 	this->xAxis->setRange(xRange);
 	this->yAxis->setRange(yRange);
 	this->yAxis2->setRange(yRange2);
 
-	
 	scatterPen.setWidthF(1.8);
 	scatterStyle.setSize(18);
 	scatterStyle.setShape(QCPScatterStyle::ssTriangle);
@@ -114,32 +83,8 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	connect(coordinatesTimer, &QTimer::timeout, this, [this]{coordinatesLabel->hide();});
 }
 
-void PlotBase::fill(ss::Vector* dataVector) {
-	ss::Vector::ClassSeries& cs = dataVector->cs;
-
-	xRange = QCPRange(dataVector->min(), dataVector->max());
-	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {
-		xRange2 = QCPRange(dataVector->dist.domain.first,
-				dataVector->dist.domain.second);
-		this->xAxis2->setTickLabels(true);
-	}
-
-	if (dataVector->dist.domain.first == dataVector->dist.domain.second) {
-		this->xAxis2->setTickLabels(false);
-		xRange2 = xRange;
-	} 
-
-	this->xAxis2->setRange(xRange2);
-
-	this->xAxis->setRange(xRange);
-	xFixedTicker->setTickStep(cs.step());
-	xFixedTicker->setTickOrigin(dataVector->min()+cs.step()/2);
-	xFixedTicker->setTickCount(cs.count());
-
-	this->yAxis->setRange(yRange);
-	this->yAxis2->setRange(yRange2);
-
-	this->replot();
+void PlotBase::fill() {
+	replot();
 }
 
 void PlotBase::clear() {
@@ -158,77 +103,6 @@ void PlotBase::clear() {
 
 	this->replot();
 }
-
-void PlotBase::enableMean() {
-	mean = new QCPGraph(this->xAxis, this->yAxis);
-	mean->setName("Мат. спод.");
-	scatterPen.setColor("#FF0000");
-	scatterStyle.setPen(scatterPen);
-	mean->setScatterStyle(scatterStyle);
-	mean->setLineStyle(QCPGraph::lsNone);
-}
-
-void PlotBase::plotMean() {
-	QVector<double> x{dv->mean()}, y{yRange.lower};
-	mean->setData(x, y);
-}
-
-void PlotBase::enableStandartDeviation() {
-	standatrDeviation = new QCPGraph(this->xAxis, this->yAxis);
-	standatrDeviation->setName("Ск. відх.");
-	standatrDeviation->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::magenta);
-	scatterStyle.setPen(scatterPen);
-	standatrDeviation->setScatterStyle(scatterStyle);
-}
-
-void PlotBase::plotStandartDeviation() {
-	double meanValue = dv->mean();
-	double standatrDeviationValue = dv->sd();
-	QVector<double>
-		x{meanValue - standatrDeviationValue,
-			meanValue + standatrDeviationValue},
-		y{yRange.lower, yRange.lower};
-
-	standatrDeviation->setData(x, y);
-}
-
-void PlotBase::enableWalshMed() {
-	walshMed = new QCPGraph(this->xAxis, this->yAxis);
-	walshMed->setName("Мед. сер. Уолша");
-	walshMed->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::darkMagenta);
-	scatterStyle.setPen(scatterPen);
-	walshMed->setScatterStyle(scatterStyle);
-}
-
-void PlotBase::plotWalshMed() {
-	QVector<double> x{dv->walshAveragesMed()},
-		y{yRange.lower};
-
-	walshMed->setData(x, y);
-}
-
-void PlotBase::enableMed() {
-	med = new QCPGraph(this->xAxis, this->yAxis);
-	med->setName("Мед.");
-	med->setLineStyle(QCPGraph::lsNone);
-	scatterPen.setColor(Qt::green);
-	scatterStyle.setPen(scatterPen);
-	med->setScatterStyle(scatterStyle);
-}
-
-void PlotBase::plotMed() {
-	QVector<double> x{dv->med()},
-		y{yRange.lower};
-
-	med->setData(x, y);
-}
-
-ss::Vector* PlotBase::vector() {
-	return dv;
-}
-
 
 void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	QPoint screenPoint = event->pos();
@@ -278,7 +152,7 @@ void PlotBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 
 	yAxis2->blockSignals(true);
-	yAxis2->setScaleRatio(yAxis, yRange2.upper/yRange.upper);
+	yAxis2->setScaleRatio(yAxis, yRange2.size()/yRange.size());
 	yAxis2->blockSignals(false);
 }
 
@@ -286,32 +160,8 @@ void PlotBase::handleZoomY2(const QCPRange& newRange) {
 	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
 
 	yAxis->blockSignals(true);
-	yAxis->setScaleRatio(yAxis2, yRange.upper/yRange2.upper);
+	yAxis->setScaleRatio(yAxis2, yRange.size()/yRange2.size());
 	yAxis->blockSignals(false);
-}
-
-void PlotBase::toggleLog(bool state) {
-	if (state == true) {
-		this->yAxis->setTicker(yLogTicker);
-		this->yAxis->setScaleType(QCPAxis::stLogarithmic);
-		this->yAxis2->setTicker(yLogTicker);
-		this->yAxis2->setScaleType(QCPAxis::stLogarithmic);
-		this->yAxis->setNumberFormat("eb");
-		this->yAxis->setNumberPrecision(0);
-		this->yAxis2->setNumberFormat("eb");
-		this->yAxis2->setNumberPrecision(0);
-	} else {
-		this->yAxis->setTicker(yTicker);
-		this->yAxis->setScaleType(QCPAxis::stLinear);
-		this->yAxis2->setTicker(yTicker);
-		this->yAxis2->setScaleType(QCPAxis::stLinear);
-		this->yAxis->setNumberFormat("f");
-		this->yAxis->setNumberPrecision(3);
-		this->yAxis2->setNumberFormat("f");
-		this->yAxis2->setNumberPrecision(3);
-	}
-
-	this->replot();
 }
 
 void PlotBase::zoomHome() {

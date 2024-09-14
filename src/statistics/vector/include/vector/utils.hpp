@@ -31,8 +31,8 @@ public:
 	Statistic(B& vec): s_vector(&vec) {};
 	Statistic(B* vec): s_vector(vec) {};
 	B& vector() const { return *s_vector; };
-	void setVector(B* v) { s_vector = v; };
-	void setVector(B& v) { s_vector = &v; };
+	// void setVector(B* v) { s_vector = v; };
+	// void setVector(B& v) { s_vector = &v; };
 	virtual void invalidate() = 0;
 protected:
 	B* s_vector = nullptr;

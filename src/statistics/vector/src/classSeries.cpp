@@ -1,4 +1,5 @@
 #include "vector.hpp"
+#include <iostream>
 
 namespace ss {
 
@@ -10,14 +11,12 @@ void Vector::ClassSeries::adapt() {
 	double seriesMax = s_vector->max();
 	double entryCount = s_vector->size();
 
-	c_h = (s_vector->max()-s_vector->min())/double(c_count);
+	c_h = (s_vector->len())/double(c_count);
 
 	s_value.clear();
 	c_cumSeries.clear();
 	s_value.resize(c_count);
 	c_cumSeries.resize(c_count);
-
-
 
 	int idx;
 	for (auto const& i : s_vector->sorted()) {
@@ -87,7 +86,8 @@ double Vector::ClassSeries::pdf(double x) {
 std::size_t Vector::ClassSeries::setCount(std::size_t c) {
 	std::size_t old = c_count;
 	c_count = c;
-	invalidate();
+	if (old != c_count)
+		invalidate();
 	return old;
 }
 double Vector::ClassSeries::step() {

@@ -1,7 +1,7 @@
 #include "distributionChart.hpp"
-#include "plotBase.hpp"
+#include "vectorPlotBase.hpp"
 
-DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
+DistributionChart::DistributionChart(ss::Vector* v, QWidget* parent) : VectorPlotBase(v, parent) {
 	graph = new QCPGraph(this->xAxis, this->yAxis);
 	graph->setName("F(x) (класи)");
 	QPen graphPen;
@@ -34,14 +34,13 @@ DistributionChart::DistributionChart(QWidget* parent) : PlotBase(parent) {
 	this->yAxis->setLabel("F(x)");
 }
 
-void DistributionChart::fill(ss::Vector* dataVector) {
-	dv = dataVector;
-	ss::Vector::ClassSeries& cs = dataVector->cs;
+void DistributionChart::fill() {
+	ss::Vector::ClassSeries& cs = v_vector->cs;
 
 	QVector<double> x, y;
 	for (size_t i = 0; i < cs.count(); i++) {
-		x.push_back(dataVector->min() + cs.step()*i);
-		x.push_back(dataVector->min() + cs.step()*(i+1));
+		x.push_back(v_vector->min() + cs.step()*i);
+		x.push_back(v_vector->min() + cs.step()*(i+1));
 
 		y.push_back(cs.cumSeries()[i].second);
 		y.push_back(cs.cumSeries()[i].second);
@@ -54,8 +53,8 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 
 	graph->setData(x, y, true);
 
-	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {
-		if (dataVector->dist.domain.first == dataVector->dist.domain.second)
+	if (v_vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		if (v_vector->dist.domain.first == v_vector->dist.domain.second)
 			coordinatesLabelString = "${X}\n${Y}";
 		else
 			coordinatesLabelString = "${X} ${X2}\n${Y}";
@@ -63,12 +62,12 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 		QList<double> yDev1, yDev2;
 
 		double a, b;
-		if (dataVector->dist.domain.first != dataVector->dist.domain.second) {
-			a = dataVector->dist.domain.first;
-			b = dataVector->dist.domain.second;
+		if (v_vector->dist.domain.first != v_vector->dist.domain.second) {
+			a = v_vector->dist.domain.first;
+			b = v_vector->dist.domain.second;
 		} else {
-			a = dataVector->min();
-			b = dataVector->max();
+			a = v_vector->min();
+			b = v_vector->max();
 		}
 
 		double interval = abs(a - b)/2;
@@ -76,9 +75,9 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 				arg <= b;
 				arg += interval/350) {
 			x.push_back(arg);
-			y.push_back(dataVector->dist.cdf(arg));
+			y.push_back(v_vector->dist.cdf(arg));
 			std::pair<double, double> dev =
-				dataVector->dist.cdfConfidence(arg);
+				v_vector->dist.cdfConfidence(arg);
 			yDev1.push_back(dev.first);
 			yDev2.push_back(dev.second);
 		}
@@ -104,6 +103,6 @@ void DistributionChart::fill(ss::Vector* dataVector) {
 
 	this->yAxis->setRange(yRange);
 
-	PlotBase::fill(dv);
+	VectorPlotBase::fill();
 }
 

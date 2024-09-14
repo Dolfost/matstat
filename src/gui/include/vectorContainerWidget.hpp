@@ -57,7 +57,6 @@ private slots:
 	void fillVectorChainContextMenu(QMenu*);
 	void fillGenericContextMenu(QMenu*);
 
-	void makeActiveAction();
 	void deleteAction();
 	void standardizeAction();
 	void logAction();
@@ -71,22 +70,23 @@ private slots:
 	void generateAction();
 	void writeAction();
 	void makeHypothesisAction(ss::VectorChain::Procedure);
-
 	void vectorDistributionAction();
 	void vectorDensityAction();
 	void classCountAction(int);
 	void confidenceAction(double);
 	void mergePairAction();
 
-signals:
-	void vectorSelected(Vector*);
+	void vectorPairDensityAction();
+	void vectorPairClassCountActionX(int);
+	void vectorPairClassCountActionY(int);
 
+signals:
 	void vectorDeleted(Vector*);
 	void vectorPairDeleted(VectorPair*);
 	void vectorChainDeleted(VectorChain*);
 
 	void outliersRemoved(bool);
-	void redrawVector(Vector*);
+	void redrawVector(VectorEntry*);
 
 	void message(QString);
 };

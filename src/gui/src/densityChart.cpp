@@ -1,9 +1,9 @@
 #include <QDebug>
 
 #include "densityChart.hpp"
-#include "plotBase.hpp"
+#include "vectorPlotBase.hpp"
 
-DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
+DensityChart::DensityChart(ss::Vector*v, QWidget* parent) : VectorPlotBase(v, parent) {
 	bars = new QCPBars(this->xAxis, this->yAxis);
 	bars->setName("f(x) (класи)");
 	bars->setWidthType(QCPBars::WidthType::wtPlotCoords);
@@ -33,15 +33,14 @@ DensityChart::DensityChart(QWidget* parent) : PlotBase(parent) {
 	this->yAxis->setLabel("f(x) (класи)");
 }
 
-void DensityChart::fill(ss::Vector* dataVector) {
-	dv = dataVector;
-	ss::Vector::ClassSeries& cs = dataVector->cs;
+void DensityChart::fill() {
+	ss::Vector::ClassSeries& cs = v_vector->cs;
 
 	bars->setWidth(cs.step());
 
 	QVector<double> x, y;
 	for (size_t i = 0; i < cs.count(); i++) {
-		x.push_back(dv->min() + cs.step()*(i+0.5));
+		x.push_back(v_vector->min() + cs.step()*(i+0.5));
 		y.push_back(cs.series()[i].second);
 	}
 
@@ -49,21 +48,21 @@ void DensityChart::fill(ss::Vector* dataVector) {
 
 	x.clear(), y.clear();
 
-	if (dataVector->dist.model != ss::Vector::Distribution::Model::Unknown) {
-		if (dataVector->dist.domain.first == dataVector->dist.domain.second)
+	if (v_vector->dist.model != ss::Vector::Distribution::Model::Unknown) {
+		if (v_vector->dist.domain.first == v_vector->dist.domain.second)
 			coordinatesLabelString = "${X}\n${Y} ${Y2}";
 		else
 			coordinatesLabelString = "${X} ${X2}\n${Y} ${Y2}";
 
 		this->yAxis2->setTickLabels(true);
-		this->yRange2 = QCPRange(0, dataVector->dist.pdfMax);
+		this->yRange2 = QCPRange(0, v_vector->dist.pdfMax);
 		double a, b;
-		if (dataVector->dist.domain.first != dataVector->dist.domain.second) {
-			a = dataVector->dist.domain.first;
-			b = dataVector->dist.domain.second;
+		if (v_vector->dist.domain.first != v_vector->dist.domain.second) {
+			a = v_vector->dist.domain.first;
+			b = v_vector->dist.domain.second;
 		} else {
-			a = dataVector->min();
-			b = dataVector->max();
+			a = v_vector->min();
+			b = v_vector->max();
 		}
 
 		double interval = abs(a - b)/2;
@@ -71,7 +70,7 @@ void DensityChart::fill(ss::Vector* dataVector) {
 				arg <= b;
 				arg += interval/350) {
 			x.push_back(arg);
-			y.push_back(dataVector->dist.pdf(arg));
+			y.push_back(v_vector->dist.pdf(arg));
 		}
 
 		density->setData(x, y);
@@ -88,6 +87,6 @@ void DensityChart::fill(ss::Vector* dataVector) {
 	plotMed();
 	plotWalshMed();
 
-	PlotBase::fill(dv);
+	VectorPlotBase::fill();
 }
 
