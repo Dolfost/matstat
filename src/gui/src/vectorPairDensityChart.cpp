@@ -31,6 +31,7 @@ void VectorPairDensityChart::fill() {
 		for (std::size_t j = 0; j < cs.countY(); ++j) {
 			map->data()->setCell(i, j, cs.series()[i][j].second);
 		}
+	map->updateLegendIcon();
 
 	scale->setGradient(map->gradient());
 	scale->setDataRange(map->dataRange());

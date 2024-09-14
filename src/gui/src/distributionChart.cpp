@@ -97,7 +97,6 @@ void DistributionChart::fill() {
 		distributionDeviation->data()->clear();
 	}
 
-
 	plotMed();
 	plotWalshMed();
 
@@ -105,4 +104,3 @@ void DistributionChart::fill() {
 
 	VectorPlotBase::fill();
 }
-
