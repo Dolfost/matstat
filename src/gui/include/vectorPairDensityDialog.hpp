@@ -12,8 +12,8 @@ public:
 		QWidget* p = nullptr,
 		Qt::WindowFlags f = Qt::WindowFlags())
 	: PlotDialog(new VectorPairDensityPlot(v->vectorPair()), v, p, f) {
-		p_plot->setSaveFilename("distribution");
-		setWindowTitle("Розподіл двовимірного вектора " + v_vector->name());
+		p_plot->setSaveFilename("2d-density");
+		setWindowTitle("Щільність двовимірного вектора " + v_vector->name());
 		p_plot->fill();
 
 		QAction* interpolate = p_viewMenu->addAction("Інтерполяція");

@@ -19,6 +19,9 @@
 #include <vectorDistributionDialog.hpp>
 #include <vectorDensityDialog.hpp>
 
+#include <vectorPairDensityDialog.hpp>
+#include <vectorPairDistributionDialog.hpp>
+
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
 	SelectedT<VectorEntry> vectors;
@@ -389,9 +392,10 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 
 void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	QMenu *graphics = menu->addMenu("Графіка…");
-	// QAction *distribution = graphics->addAction("Функція розподілу");
-	// connect(distribution, &QAction::triggered, this,
-	// 			 &VectorContainerWidget::vectorPairDistributionAction);
+	QAction *distribution = graphics->addAction("Функція розподілу");
+	connect(distribution, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairDistributionAction);
+
 	QAction *density = graphics->addAction("Функція щільності");
 	connect(density, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairDensityAction);
@@ -433,6 +437,16 @@ void VectorContainerWidget::vectorPairDensityAction() {
 					dia, &VectorPairDensityDialog::fill);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairDensityDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorPairDistributionAction() {
+	for (auto& v : selectedVectorPairsList) {
+		VectorPairDistributionDialog* dia = new VectorPairDistributionDialog(v, this);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorPairDistributionDialog::fill);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorPairDistributionDialog::vectorDeletedHandler);
 	}
 }
 

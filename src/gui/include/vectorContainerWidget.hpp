@@ -77,6 +77,7 @@ private slots:
 	void mergePairAction();
 
 	void vectorPairDensityAction();
+	void vectorPairDistributionAction();
 	void vectorPairClassCountActionX(int);
 	void vectorPairClassCountActionY(int);
 
