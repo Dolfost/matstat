@@ -86,6 +86,8 @@ void Vector::setExprtkSymbolTable() {
       new ss::exprtk::NormalDistributionCdf();
 
   v_exprtkSymbolTable.add_function("normCfd", *eNormalDistribtuionCdf);
+
+  v_exprtkSymbolTable.add_function("uRand", *new ss::exprtkUniformRandom);
 }
 
 const std::string Vector::exprtkFuncitons =
@@ -109,6 +111,7 @@ const std::string Vector::exprtkFuncitons =
     "turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
     "rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
     "centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
-    "beta(k) — бета–коефіцієнт";
+    "beta(k) — бета–коефіцієнт\n"
+    "uRand(a, b) — рівномірно розподілена випадкова величина";
 
 }

@@ -3,6 +3,7 @@
 
 #include "exprtk.hpp"
 #include "vector.hpp"
+#include <random>
 
 namespace ss {
 
@@ -16,6 +17,16 @@ struct exprtkMean final : public ::exprtk::ifunction<double> {
 	}
 };
 
+struct exprtkUniformRandom final : public ::exprtk::ifunction<double> {
+	exprtkUniformRandom(): ::exprtk::ifunction<double>(2) {};
+	double operator()(const double& f, const double& t) {
+		std::default_random_engine generator;
+		generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+		std::uniform_real_distribution<double> dist(f, t);
+		return dist(generator);
+	};
+
+};
 struct exprtkMed final : public ::exprtk::ifunction<double> {
 	exprtkMed(ss::Vector* vec) : ::exprtk::ifunction<double>(0)  {
 		dv = vec;
