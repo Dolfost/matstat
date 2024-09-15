@@ -15,6 +15,7 @@ VectoPairCorelationPlot::VectoPairCorelationPlot(
 	corScatter.setPen(scatterPen);
 
 	cor->setScatterStyle(corScatter);
+
 }
 
 void VectoPairCorelationPlot::fill() {
@@ -23,4 +24,9 @@ void VectoPairCorelationPlot::fill() {
 		QList<double>(v_pair->y.begin(), v_pair->y.end())
 	);
 	VectorPairPlotBase::fill();
+}
+
+void VectoPairCorelationPlot::setAdaptiveSampling(bool state) {
+	cor->setAdaptiveSampling(state);
+	replot();
 }

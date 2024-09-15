@@ -9,6 +9,7 @@ public:
 
 public slots:
 	virtual void fill() override;
+	virtual void setAdaptiveSampling(bool);
 
 protected:
 	QCPGraph* cor = nullptr;

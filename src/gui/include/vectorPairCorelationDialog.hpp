@@ -13,6 +13,15 @@ public:
 	): PlotDialogBase(new VectoPairCorelationPlot(vp->vectorPair()), vp, p, f) {
 		setWindowTitle("Кореляційне поле вектора " + vp->name());
 		p_plot->setSaveFilename("2d-corelation");
+
+		QAction* adaptiveSamling = p_viewMenu->addAction("Адаптивне семплування");
+		adaptiveSamling->setCheckable(true);
+		connect(
+			adaptiveSamling, 
+			&QAction::triggered,
+			dynamic_cast<VectoPairCorelationPlot*>(p_plot), 
+			&VectoPairCorelationPlot::setAdaptiveSampling
+		);
 	}
 };
 
