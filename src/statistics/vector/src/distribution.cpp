@@ -286,7 +286,7 @@ std::list<double> Vector::Distribution::generateSet(Method m, size_t s,
 	std::list<double> set;
 
 	std::default_random_engine generator;
-	generator.seed();
+	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
 	switch (m) {
 		case Method::Inverse: {
 			std::uniform_real_distribution<double> distribution(0.0, 1.0);
