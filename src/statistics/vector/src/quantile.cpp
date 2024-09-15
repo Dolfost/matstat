@@ -12,12 +12,12 @@ double normQuantile(double alpha) {
 		d1 = 1.432788,
 		d2 = 0.1892659,
 		d3 = 0.001308,
-		t = sqrt(log(1/(alpha*alpha)));
+		t = std::sqrt(std::log(1/std::pow(alpha, 2)));
 
-	quantile = t - (c0 + c1*t + c2*t*t) /
-		(1 + d1*t+d2*t*t + d3*t*t*t);
+	quantile = t - (c0 + c1*t + c2*std::pow(t, 2)) /
+		(1 + d1*t + d2*std::pow(t, 2) + d3*std::pow(t, 3));
 	
-	return -quantile;
+	return quantile;
 }
 
 double pearQuantile(double alpha, int v) {

@@ -53,9 +53,9 @@ void VectorInfoDialog::fill() {
 			"Стат. початковий момент першого порядку", "v₁",
 			n(v_vector->vector()->mean()), 
 			n(v_vector->vector()->meanDeviation()),
-			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
-			"—",
 			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Lower)),
+			"",
+			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Стат. центральний момент другого порядку", "μ₂",
@@ -63,7 +63,7 @@ void VectorInfoDialog::fill() {
 			n(v_vector->vector()->varianceDeviation()),
 			n(v_vector->vector()->varianceConfidence(i_prob, ss::Bound::Lower)),
 			n(v_vector->vector()->variance(ss::Measure::Population)),
-			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
+			n(v_vector->vector()->varianceConfidence(i_prob, ss::Bound::Upper)),
 		 },
 		{
 			"Коефіцієнт асиметрії", "A",
@@ -84,91 +84,91 @@ void VectorInfoDialog::fill() {
 		{
 			"Медіана серідніх Уолша", "WAM",
 			n(v_vector->vector()->walshAveragesMed()),
-			"—",
-			"—", 
-			"—", 
-			"—"
+			"",
+			"", 
+			"", 
+			""
 		},
 		{
 			"Середньоквадратичне відхилення", "СКВ",
 			n(v_vector->vector()->sd()),
-			"—",
-			"—", 
+			"",
+			"", 
 			n(v_vector->vector()->sd(ss::Measure::Population)),
-			"—"
+			""
 		},
 		{
 			"Абсолютне відхилення медіани", "MAD",
 			n(v_vector->vector()->mad()), 
-			"—",
-			"—",
-			"—", 
-			"—", 
-			"—"
+			"",
+			"",
+			"", 
+			"", 
+			""
 		},
 		{
 			"Коефіцієнт контрексцесу", "𝜘",
 			n(v_vector->vector()->counterKurtosis()), 
-			"—",
-			"—",
+			"",
+			"",
 			n(v_vector->vector()->counterKurtosis(ss::Measure::Population)),
-			"—"
+			""
 		},
 		{
 			"Коефіцієнт варіації Пірсона", "W",
 			n(v_vector->vector()->cv()), 
-			"—",
-			"—", 
+			"",
+			"", 
 			n(v_vector->vector()->cv(ss::Measure::Population)),
-			"—"
+			""
 		},
 		{
 			"Непараметричнйи коефіцієнт варіації", "Wₕ",
 			n(v_vector->vector()->ncv()),
-			"—",
-			"—", 
-			"—", 
-			"—"
+			"",
+			"", 
+			"", 
+			""
 		},
 		{
 			"Медіана", "MED", 
 			n(v_vector->vector()->med()), 
-			"—", 
-			"—", 
-			"—", 
-			"—"
+			"", 
+			"", 
+			"", 
+			""
 		},
 		{
 			"Розмір", "N", 
 			n(v_vector->vector()->size()),
-			"—"
-			"—", 
-			"—", 
-			"—"
+			""
+			"", 
+			"", 
+			""
 		},
 		{
 			"Найменше спостереження", "xₘᵢₙ", 
 			n(v_vector->vector()->min()), 
-			"—", 
-			"—", 
-			"—", 
-			"—"
+			"", 
+			"", 
+			"", 
+			""
 		},
 		{
 			"Найбільше спостереження", "xₘₐₓ", 
 			n(v_vector->vector()->max()),
-			"—", 
-			"—",
-			"—",
-			"—"
+			"", 
+			"",
+			"",
+			""
 		},
 		{
 			"Кількість варіант", "r", 
 			n(v_vector->vector()->vs.count()),
-			"—", 
-			"—", 
-			"—",
-			"—"
+			"", 
+			"", 
+			"",
+			""
 		},
 	};
 
@@ -177,10 +177,10 @@ void VectorInfoDialog::fill() {
 			{
 				"Центральний момент " + QString::number(x) + " порядку", "μ" + QString(QChar(0x2080+x)), 
 				n(v_vector->vector()->centralMoment(x)),
-				"—", 
-				"—", 
+				"", 
+				"", 
 				n(v_vector->vector()->centralMoment(x, ss::Measure::Population)), 
-				"—"
+				""
 			}
 		);
 	}
@@ -190,10 +190,10 @@ void VectorInfoDialog::fill() {
 			{
 				"Початковий момент " + QString::number(x) + " порядку", "v" + QString(QChar(0x2080+x)), 
 				n(v_vector->vector()->rawMoment(x)), 
-				"—", 
-				"—", 
-				"—", 
-				"—"
+				"", 
+				"", 
+				"", 
+				""
 			}
 		);
 	}
@@ -203,10 +203,10 @@ void VectorInfoDialog::fill() {
 			{
 				"Усічене середнє (α=" + QString::number(x) + ")", "X*", 
 				n(v_vector->vector()->tmean(x)),
-				"—", 
-				"—",
-				"—", 
-				"—"
+				"", 
+				"",
+				"", 
+				""
 			}
 		);
 	}

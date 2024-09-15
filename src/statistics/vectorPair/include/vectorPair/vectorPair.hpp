@@ -17,6 +17,12 @@ public:
 		virtual void adapt() override;
 	} cor = Corelation(this);
 
+	class CorelationConfidence: public utils::Confidence<double, double, VectorPair> {
+	public:
+		using Confidence::Confidence;
+		virtual void adapt(double) override;
+	} corConfidence = CorelationConfidence(this);
+
 	class ProductRawMoment: public utils::StatisticMap<double, double, double, VectorPair> {
 	public:
 		using StatisticMap::StatisticMap;

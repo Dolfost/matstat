@@ -24,6 +24,13 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->xAxis2->setNumberPrecision(2);
 	this->xAxis2->setScaleType(QCPAxis::stLinear);
 
+	this->yAxis->setNumberFormat("f");
+	this->yAxis->setNumberPrecision(3);
+	this->yAxis->setScaleType(QCPAxis::stLinear);
+	this->yAxis2->setNumberFormat("f");
+	this->yAxis2->setNumberPrecision(2);
+	this->yAxis2->setScaleType(QCPAxis::stLinear);
+
 	this->yAxis->setTickLength(0, 5);
 	this->yAxis->setSubTickLength(0, 3);
 	this->xAxis->setTickLength(0, 5);

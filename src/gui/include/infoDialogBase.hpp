@@ -25,9 +25,6 @@ protected:
 protected:
 	double i_prob = 0.95;
 	static const int i_precision = 4;
-	QList<int> i_columnWidths = {
-		600, 80, 150, 130, 120, 150, 60
-	};
 	QStringList i_headers = {
 		"Назва", "Позначення", "Незсунуте значення", "σ{θ}", "Нижн. дов. знач. (0.95)", 
 		"Зсунуте значення", "Верх. дов. знач. (0.95)"

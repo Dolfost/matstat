@@ -45,9 +45,10 @@ void InfoDialogBase::fillTable(QList<QStringList> contents) {
 	for (auto& rowLabels : contents) {
 		col = 0;
 		for (auto& itemLabel : rowLabels) {
-			QTableWidgetItem* tableItem = new QTableWidgetItem(itemLabel);
+			QTableWidgetItem* tableItem = new QTableWidgetItem(
+				itemLabel.size() ? itemLabel : "—"
+			);
 			i_table->setItem(row, col, tableItem);
-			i_table->setColumnWidth(col, i_columnWidths[col]);
 			col++;
 		}
 		row++;
