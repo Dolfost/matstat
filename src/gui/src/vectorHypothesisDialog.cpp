@@ -1,4 +1,4 @@
-#include "hypothesisManagerDialog.hpp"
+#include "vectorHypothesisDialog.hpp"
 #include "vector/quantile.hpp"
 #include <QGroupBox>
 #include <QtCore/qstring.h>
@@ -7,7 +7,7 @@
 
 VectorHypothesisDialog::VectorHypothesisDialog(
 		QList<Vector*> v,
-		ss::VectorChain::Procedure proc,
+		ss::VectorHypothesis::Procedure proc,
 		QWidget* parent,
 		Qt::WindowFlags flags
 		) : QDialog(parent, flags) {
@@ -28,8 +28,8 @@ VectorHypothesisDialog::VectorHypothesisDialog(
 	procedureGroupBox->setLayout(new QHBoxLayout);
 	procedureGroupBox->layout()->setContentsMargins(1,1,1,1);
 	procedureComboBox = new QComboBox();
-	for (int i = ss::VectorChain::Procedure::tTestDependentP; i < ss::VectorChain::Procedure::Count; i++) {
-		procedureComboBox->addItem(QString::fromStdString(ss::VectorChain::procedureName[i]));
+	for (int i = (int)ss::VectorHypothesis::Procedure::tTestDependent; i < (int)ss::VectorHypothesis::Procedure::Count; i++) {
+		procedureComboBox->addItem(QString::fromStdString(ss::VectorHypothesis::procedureName[i]));
 	}
 	procedureGroupBox->layout()->addWidget(procedureComboBox);
 
@@ -69,7 +69,7 @@ VectorHypothesisDialog::VectorHypothesisDialog(
 	connect(procedureComboBox, &QComboBox::currentTextChanged,
 			this, &VectorHypothesisDialog::compute);
 
-	procedureComboBox->setCurrentIndex(proc);
+	procedureComboBox->setCurrentIndex((int)proc);
 
 	this->compute();
 	this->resize(645, this->height());
@@ -85,8 +85,8 @@ void VectorHypothesisDialog::compute() {
 	std::function<bool(double)> qf;
 
 	try {
-		switch (procedureComboBox->currentIndex()) {
-			case ss::VectorChain::Procedure::tTestDependentP:
+		switch ((ss::VectorHypothesis::Procedure)procedureComboBox->currentIndex()) {
+			case ss::VectorHypothesis::Procedure::tTestDependent:
 				{
 					criteria = vectorSet.tTestDependent();
 					quantile = ss::studQuantile(1-critLevel/2, vectorSet[0]->size()-2);
@@ -102,7 +102,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::tTestIndependentP:
+			case ss::VectorHypothesis::Procedure::tTestIndependent:
 				{
 					criteria = vectorSet.tTestIndependent();
 					quantile = ss::studQuantile(1-critLevel/2,
@@ -120,7 +120,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::fTestP:
+			case ss::VectorHypothesis::Procedure::fTest:
 				{
 					criteria = vectorSet.fTest();
 					quantile = ss::fishQuantile(1-critLevel,
@@ -139,7 +139,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::fTestBartlettP:
+			case ss::VectorHypothesis::Procedure::fTestBartlett:
 				{
 					criteria = vectorSet.fTestBartlett();
 					quantile = ss::pearQuantile(1-critLevel,
@@ -157,7 +157,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::oneWayANOVAP:
+			case ss::VectorHypothesis::Procedure::oneWayANOVA:
 				{
 					criteria = vectorSet.oneWayANOVA();
 					double v1 = vectorSet.size() - 1,
@@ -178,7 +178,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::testKSP:
+			case ss::VectorHypothesis::Procedure::testKS:
 				{
 					criteria = 1 - vectorSet.testKS();
 					quantile = critLevel;
@@ -192,7 +192,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::testWilcoxonP:
+			case ss::VectorHypothesis::Procedure::testWilcoxon:
 				{
 					criteria = vectorSet.testWilcoxon();
 					quantile = ss::normQuantile(1-critLevel/2);
@@ -207,7 +207,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::criteriaUP:
+			case ss::VectorHypothesis::Procedure::criteriaU:
 				{
 					criteria = vectorSet.criteriaU();
 					quantile = ss::normQuantile(1-critLevel/2);
@@ -222,7 +222,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::rankAveragesDifferenceP:
+			case ss::VectorHypothesis::Procedure::rankAveragesDifference:
 				{
 					criteria = vectorSet.rankAveragesDifference();
 					quantile = ss::normQuantile(1-critLevel/2);
@@ -237,7 +237,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::hTestP:
+			case ss::VectorHypothesis::Procedure::hTest:
 				{
 					criteria = vectorSet.hTest();
 					quantile = ss::pearQuantile(1-critLevel, vectorSet.size()-1);
@@ -253,7 +253,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::signTestP:
+			case ss::VectorHypothesis::Procedure::signTest:
 				{
 					criteria = vectorSet.signTest();
 					quantile = ss::normQuantile(1-critLevel);
@@ -269,7 +269,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::qTestP:
+			case ss::VectorHypothesis::Procedure::qTest:
 				{
 					criteria = vectorSet.qTest();
 					quantile = ss::pearQuantile(1-critLevel, vectorSet.size() - 1);
@@ -286,7 +286,7 @@ void VectorHypothesisDialog::compute() {
 					};
 					break;
 				}
-			case ss::VectorChain::Procedure::testAbbeP:
+			case ss::VectorHypothesis::Procedure::testAbbe:
 				{
 					criteria = vectorSet.testAbbe();
 					quantile = ss::normQuantile(critLevel);

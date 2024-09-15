@@ -13,20 +13,20 @@
 
 #include "guiTypes.hpp"
 
-#include "vectorChain.hpp"
+#include "vector/hypothesis.hpp"
 
 class VectorHypothesisDialog : public QDialog {
 public:
 	VectorHypothesisDialog(
 			QList<Vector*>,
-			ss::VectorChain::Procedure = ss::VectorChain::Procedure::tTestDependentP,
+			ss::VectorHypothesis::Procedure = ss::VectorHypothesis::Procedure::tTestDependent,
 			QWidget* = nullptr,
 			Qt::WindowFlags = Qt::WindowFlags()
 			);
 
 private:
 	QList<Vector*> vectors;
-	ss::VectorChain vectorSet;
+	ss::VectorHypothesis vectorSet;
 
 private:
 	QVBoxLayout* mainLayout = nullptr;

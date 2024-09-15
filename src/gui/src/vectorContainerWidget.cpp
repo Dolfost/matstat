@@ -9,7 +9,7 @@
 
 #include <transformationFormulaEditorDialog.hpp>
 #include <distributionReproducerDialog.hpp>
-#include <hypothesisManagerDialog.hpp>
+#include <vectorHypothesisDialog.hpp>
 #include <setGeneratorDialog.hpp>
 
 #include <vectorContainerWidget.hpp>
@@ -330,56 +330,56 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	QMenu *tTestMenu = hypotesisMenu->addMenu("Т—тести…");
 	QAction *tTestDependentAction = tTestMenu->addAction("Залежні вибірки…");
 	connect(tTestDependentAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::tTestDependentP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::tTestDependent); });
 	QAction *tTestIndependentAction = tTestMenu->addAction("Незалежні вибірки…");
 	connect(tTestIndependentAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::tTestIndependentP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::tTestIndependent); });
 
 	QMenu *fTestMenu = hypotesisMenu->addMenu("F—тести…");
 	QAction* fTestAction = fTestMenu->addAction("F—тест");
 	connect(fTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::fTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::fTest); });
 	QAction* fTestBartlettAction = fTestMenu->addAction("F—тест Бартлетта");
 	connect(fTestBartlettAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::fTestBartlettP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::fTestBartlett); });
 
 	QMenu *indentityMenu = hypotesisMenu->addMenu("Тести однорідності…");
 
 	QAction* testKSAction = indentityMenu->addAction("Тест Колмогорова-Смірнова");
 	connect(testKSAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testKSP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testKS); });
 
 	QAction* testWilcoxonAction = indentityMenu->addAction("Критерій суми рангів Вілкоксона");
 	connect(testWilcoxonAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testWilcoxonP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testWilcoxon); });
 
 	QAction* criteriaUAction = indentityMenu->addAction("U-критерій");
 	connect(criteriaUAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::criteriaUP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::criteriaU); });
 
 	QAction* rankAveragesDifferenceAction = indentityMenu->addAction("Крит. різн. сер. ранг. виб.");
 	connect(rankAveragesDifferenceAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::rankAveragesDifferenceP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::rankAveragesDifference); });
 
 	QAction* hTestAction = indentityMenu->addAction("H-критерій");
 	connect(hTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::hTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::hTest); });
 
 	QAction* signTestAction = indentityMenu->addAction("Критерій знаків");
 	connect(signTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::signTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::signTest); });
 
 	QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
 	connect(oneWayANOVAAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::oneWayANOVAP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::oneWayANOVA); });
 
 	QAction* qTest = hypotesisMenu->addAction("Q-критерій Кохрена");
 	connect(qTest, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::qTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::qTest); });
 
 	QAction* testAbbeAction = hypotesisMenu->addAction("Критерій Аббе");
 	connect(testAbbeAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testAbbeP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testAbbe); });
 
 	menu->addSeparator();
 
@@ -695,7 +695,7 @@ void VectorContainerWidget::vectorWriteAction() {
 	}
 }
 
-void VectorContainerWidget::vectorMakeHypothesisAction(ss::VectorChain::Procedure p) {
+void VectorContainerWidget::vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure p) {
 	QList<Vector *> vec;
 	for (auto const &v : selectedVectorsList)
 	vec.push_back(v);

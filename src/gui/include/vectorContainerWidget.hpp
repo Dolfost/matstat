@@ -10,7 +10,7 @@
 
 
 #include "guiTypes.hpp"
-#include "vectorChain.hpp"
+#include "vector/hypothesis.hpp"
 
 
 class VectorContainerWidget : public QTableWidget {
@@ -70,7 +70,7 @@ private slots:
 	void vectorInfoAction();
 	void vectorGenerateAction();
 	void vectorWriteAction();
-	void vectorMakeHypothesisAction(ss::VectorChain::Procedure);
+	void vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure);
 	void vectorDistributionAction();
 	void vectorDensityAction();
 	void vectorClassCountAction(int);
