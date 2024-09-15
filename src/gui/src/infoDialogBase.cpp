@@ -7,10 +7,13 @@ InfoDialogBase::InfoDialogBase(
 	Qt::WindowFlags f): DialogBase(ve, p, f) {
 	setWindowTitle("Інформація про вектор " + v_vectorEntry->name());
 
+	v_mainLayout->setContentsMargins(0, 0, 0, 5);
+
 	i_table = new QTableWidget;
 	i_table->verticalHeader()->hide();
 	i_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	i_table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	i_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 	v_mainLayout->addWidget(i_table);
 
@@ -50,12 +53,10 @@ void InfoDialogBase::fillTable(QList<QStringList> contents) {
 		row++;
 	}
 
-	i_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-
 	int width = 0;
 	for (int i = 0; i < 3; i += 1) {
 		width += i_table->horizontalHeader()->sectionSize(i);
 	}
 
-	resize(width + 15, height());
+	resize(width + 50, height());
 }

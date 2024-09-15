@@ -7,7 +7,6 @@ VectorInfoDialog::VectorInfoDialog(
 	: InfoDialogBase(v, p, f) {
 	v_vector = v;
 
-	v_mainLayout->setContentsMargins(0, 0, 0, 5);
 	ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
 	QHBoxLayout* lay = new QHBoxLayout;
 	lay->setContentsMargins(0,0,0,0);
@@ -52,9 +51,10 @@ void VectorInfoDialog::fill() {
 	QList<QStringList> contents = {
 		{
 			"Стат. початковий момент першого порядку", "v₁",
-			n(v_vector->vector()->mean()), "—",
+			n(v_vector->vector()->mean()), 
 			n(v_vector->vector()->meanDeviation()),
 			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
+			"—",
 			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Lower)),
 		},
 		{

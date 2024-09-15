@@ -2,26 +2,28 @@
 
 #include <QGuiApplication>
 #include <QStyleHints>
-#include <QtCore/qlist.h>
-#include <QtCore/qlogging.h>
-
-#include "distributionReproducerDialog.hpp"
-#include "transformationFormulaEditorDialog.hpp"
-#include "vectorInfoDialog.hpp"
-#include "hypothesisManagerDialog.hpp"
-#include "setGeneratorDialog.hpp"
-#include "vectorContainerWidget.hpp"
-#include "vectorPairDensityDialog.hpp"
-#include "vectorTrimmerDialog.hpp"
+#include <QList>
+#include <QDebug>
 
 #include <spinBoxAction.hpp>
 
+#include <transformationFormulaEditorDialog.hpp>
+#include <distributionReproducerDialog.hpp>
+#include <hypothesisManagerDialog.hpp>
+#include <setGeneratorDialog.hpp>
+
+#include <vectorContainerWidget.hpp>
+
+#include <vectorInfoDialog.hpp>
+#include <vectorTrimmerDialog.hpp>
 #include <vectorDistributionDialog.hpp>
 #include <vectorDensityDialog.hpp>
 
-#include <vectorPairDensityDialog.hpp>
 #include <vectorPairDistributionDialog.hpp>
 #include <vectorPairCorelationDialog.hpp>
+#include <vectorPairDensityDialog.hpp>
+#include <vectorPairDensityDialog.hpp>
+#include <vectorPairInfoDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -264,13 +266,13 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	classCountAction->spinBox()->setRange(0, 1000);
 	graphics->addAction(classCountAction);
 	connect(classCountAction->spinBox(), &QSpinBox::valueChanged, this,
-				 &VectorContainerWidget::classCountAction);
+				 &VectorContainerWidget::vectorClassCountAction);
 	DoubleSpinBoxAction *confidence = new DoubleSpinBoxAction("Критерій довіри");
 	confidence->spinBox()->setRange(0.0, 1.0);
 	confidence->spinBox()->setDecimals(5);
 	confidence->spinBox()->setSingleStep(0.1);
 	connect(confidence->spinBox(), &QDoubleSpinBox::valueChanged, this,
-				 &VectorContainerWidget::confidenceAction);
+				 &VectorContainerWidget::vectorConfidenceAction);
 	graphics->addAction(confidence);
 
 	if (selectedVectorsList.size() == 1) {
@@ -283,43 +285,43 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	if (selectedVectorsList.size() == 2) {
 		QAction* mergePair = menu->addAction("Створити двовимірний об'єкт");
 		connect(mergePair, &QAction::triggered, this,
-					&VectorContainerWidget::mergePairAction);
+					&VectorContainerWidget::vectorMergePairAction);
 		menu->addSeparator();
 	}
 
 	QAction *removeOutliersAction = menu->addAction("Видалити аномалії");
 	connect(removeOutliersAction, &QAction::triggered, this,
-				 &VectorContainerWidget::removeOutliersAction);
+				 &VectorContainerWidget::vectorRemoveOutliersAction);
 
 	QAction *trimAction = menu->addAction("Обрізати…");
 	connect(trimAction, &QAction::triggered, this,
-				 &VectorContainerWidget::trimAction);
+				 &VectorContainerWidget::vectorTrimAction);
 
 	QMenu *transform = menu->addMenu("Трансформації…");
 	QAction *normalizeAction = transform->addAction("Нормалізувати");
 	connect(normalizeAction, &QAction::triggered, this,
-				 &VectorContainerWidget::standardizeAction);
+				 &VectorContainerWidget::vectorStandardizeAction);
 	QAction *logAction = transform->addAction("Логарифмувати");
 	connect(logAction, &QAction::triggered, this,
-				 &VectorContainerWidget::logAction);
+				 &VectorContainerWidget::vectorLogAction);
 	QAction *reverseAction = transform->addAction("Обернути");
 	connect(reverseAction, &QAction::triggered, this,
-				 &VectorContainerWidget::reverseAction);
+				 &VectorContainerWidget::vectorReverseAction);
 	QAction *rightShiftAction = transform->addAction("Зсунути на xₘᵢₙ+1");
 	connect(rightShiftAction, &QAction::triggered, this,
-				 &VectorContainerWidget::rightShiftAction);
+				 &VectorContainerWidget::vectorRightShiftAction);
 	transform->addSeparator();
 	QAction *transformAction = transform->addAction("Власне перетворення…");
 	connect(transformAction, &QAction::triggered, this,
-				 &VectorContainerWidget::transformAction);
+				 &VectorContainerWidget::vectorTransformAction);
 
 	QAction *reproductionAction = menu->addAction("Відтворення розподілу…");
 	connect(reproductionAction, &QAction::triggered, this,
-				 &VectorContainerWidget::reproductionAction);
+				 &VectorContainerWidget::vectorReproductionAction);
 
 	QAction *generateAction = menu->addAction("Генерація вибірки…");
 	connect(generateAction, &QAction::triggered, this,
-				 &VectorContainerWidget::generateAction);
+				 &VectorContainerWidget::vectorGenerateAction);
 
 	menu->addSeparator();
 
@@ -328,66 +330,66 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	QMenu *tTestMenu = hypotesisMenu->addMenu("Т—тести…");
 	QAction *tTestDependentAction = tTestMenu->addAction("Залежні вибірки…");
 	connect(tTestDependentAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::tTestDependentP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::tTestDependentP); });
 	QAction *tTestIndependentAction = tTestMenu->addAction("Незалежні вибірки…");
 	connect(tTestIndependentAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::tTestIndependentP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::tTestIndependentP); });
 
 	QMenu *fTestMenu = hypotesisMenu->addMenu("F—тести…");
 	QAction* fTestAction = fTestMenu->addAction("F—тест");
 	connect(fTestAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::fTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::fTestP); });
 	QAction* fTestBartlettAction = fTestMenu->addAction("F—тест Бартлетта");
 	connect(fTestBartlettAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::fTestBartlettP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::fTestBartlettP); });
 
 	QMenu *indentityMenu = hypotesisMenu->addMenu("Тести однорідності…");
 
 	QAction* testKSAction = indentityMenu->addAction("Тест Колмогорова-Смірнова");
 	connect(testKSAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::testKSP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testKSP); });
 
 	QAction* testWilcoxonAction = indentityMenu->addAction("Критерій суми рангів Вілкоксона");
 	connect(testWilcoxonAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::testWilcoxonP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testWilcoxonP); });
 
 	QAction* criteriaUAction = indentityMenu->addAction("U-критерій");
 	connect(criteriaUAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::criteriaUP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::criteriaUP); });
 
 	QAction* rankAveragesDifferenceAction = indentityMenu->addAction("Крит. різн. сер. ранг. виб.");
 	connect(rankAveragesDifferenceAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::rankAveragesDifferenceP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::rankAveragesDifferenceP); });
 
 	QAction* hTestAction = indentityMenu->addAction("H-критерій");
 	connect(hTestAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::hTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::hTestP); });
 
 	QAction* signTestAction = indentityMenu->addAction("Критерій знаків");
 	connect(signTestAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::signTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::signTestP); });
 
 	QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
 	connect(oneWayANOVAAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::oneWayANOVAP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::oneWayANOVAP); });
 
 	QAction* qTest = hypotesisMenu->addAction("Q-критерій Кохрена");
 	connect(qTest, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::qTestP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::qTestP); });
 
 	QAction* testAbbeAction = hypotesisMenu->addAction("Критерій Аббе");
 	connect(testAbbeAction, &QAction::triggered, this,
-				 [this](){ this->makeHypothesisAction(ss::VectorChain::testAbbeP); });
+				 [this](){ this->vectorMakeHypothesisAction(ss::VectorChain::testAbbeP); });
 
 	menu->addSeparator();
 
 	QAction *infoAction = menu->addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered, this,
-				 &VectorContainerWidget::infoAction);
+				 &VectorContainerWidget::vectorInfoAction);
 
 	QAction *writeAction = menu->addAction("Зберегти у файл…");
 	connect(writeAction, &QAction::triggered, this,
-				 &VectorContainerWidget::writeAction);
+				 &VectorContainerWidget::vectorWriteAction);
 
 }
 
@@ -425,6 +427,12 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 			selectedVectorPairsList[0]->vectorPair()->cs.countY()
 		);
 	}
+
+	menu->addSeparator();
+
+	QAction *infoAction = menu->addAction("Про вектор…");
+	connect(infoAction, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairInfoAction);
 }
 void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
 void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
@@ -479,14 +487,22 @@ void VectorContainerWidget::vectorPairClassCountActionY(int cls) {
 	}
 }
 
-void VectorContainerWidget::classCountAction(int cls) {
+void VectorContainerWidget::vectorPairInfoAction() {
+	for (auto& v : selectedVectorPairsList) {
+		VectorPairInfoDialog* dia = new VectorPairInfoDialog(v, this);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorPairInfoDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorClassCountAction(int cls) {
 	for (auto const &vec : selectedVectorsList) {
 		vec->vector()->cs.setCount(cls);
 		emit redrawVector(vec);
 	}
 }
 
-void VectorContainerWidget::confidenceAction(double c) {
+void VectorContainerWidget::vectorConfidenceAction(double c) {
 	for (auto const &vec : selectedVectorsList) {
 		vec->vector()->dist.setConfidence(c);
 		emit redrawVector(vec);
@@ -532,7 +548,7 @@ void VectorContainerWidget::deleteAction() {
 	}
 }
 
-void VectorContainerWidget::standardizeAction() {
+void VectorContainerWidget::vectorStandardizeAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		newVector.standardize();
@@ -541,7 +557,7 @@ void VectorContainerWidget::standardizeAction() {
 	}
 }
 
-void VectorContainerWidget::logAction() {
+void VectorContainerWidget::vectorLogAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		newVector.transform("log(x)");
@@ -549,7 +565,7 @@ void VectorContainerWidget::logAction() {
 	}
 }
 
-void VectorContainerWidget::reverseAction() {
+void VectorContainerWidget::vectorReverseAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		newVector.transform("1/x");
@@ -557,7 +573,7 @@ void VectorContainerWidget::reverseAction() {
 	}
 }
 
-void VectorContainerWidget::rightShiftAction() {
+void VectorContainerWidget::vectorRightShiftAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		newVector.transform("x+abs(xmin)+1");
@@ -565,7 +581,7 @@ void VectorContainerWidget::rightShiftAction() {
 	}
 }
 
-void VectorContainerWidget::transformAction() {
+void VectorContainerWidget::vectorTransformAction() {
 	QList<Vector*> vec;
 
 	for (auto const &v : selectedVectorsList) {
@@ -580,7 +596,7 @@ void VectorContainerWidget::transformAction() {
 				 &TransformationFormulaEditorDialog::vectorDeletedHandler);
 }
 
-void VectorContainerWidget::reproductionAction() {
+void VectorContainerWidget::vectorReproductionAction() {
 	for (auto const &vec : selectedVectorsList) {
 		DistributionReproducerDialog *drd =
 			new DistributionReproducerDialog(vec, this);
@@ -591,7 +607,7 @@ void VectorContainerWidget::reproductionAction() {
 	}
 }
 
-void VectorContainerWidget::trimAction() {
+void VectorContainerWidget::vectorTrimAction() {
 	for (auto const &vec : selectedVectorsList) {
 		VectorTrimmerDialog *vtd = new VectorTrimmerDialog(vec, this);
 		connect(vtd, &VectorTrimmerDialog::vectorTrimmed, this,
@@ -601,7 +617,7 @@ void VectorContainerWidget::trimAction() {
 	}
 }
 
-void VectorContainerWidget::removeOutliersAction() {
+void VectorContainerWidget::vectorRemoveOutliersAction() {
 	for (auto const &vec : selectedVectorsList) {
 		ss::Vector newVector(*vec->vector());
 		bool ok = newVector.removeOutliers();
@@ -615,7 +631,7 @@ void VectorContainerWidget::removeOutliersAction() {
 	}
 }
 
-void VectorContainerWidget::infoAction() {
+void VectorContainerWidget::vectorInfoAction() {
 	for (auto const &vec : selectedVectorsList) {
 		VectorInfoDialog *tfe = new VectorInfoDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, tfe,
@@ -623,7 +639,7 @@ void VectorContainerWidget::infoAction() {
 	}
 }
 
-void VectorContainerWidget::generateAction() {
+void VectorContainerWidget::vectorGenerateAction() {
 	for (auto const &vec : selectedVectorsList) {
 		SetGeneratorDialog *sgd = new SetGeneratorDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, sgd,
@@ -635,7 +651,7 @@ void VectorContainerWidget::generateAction() {
 	}
 }
 
-void VectorContainerWidget::mergePairAction() {
+void VectorContainerWidget::vectorMergePairAction() {
 	
 	ss::VectorPair vp; 
 
@@ -651,7 +667,7 @@ void VectorContainerWidget::mergePairAction() {
 	placeVectorPair(vp);
 }
 
-void VectorContainerWidget::writeAction() {
+void VectorContainerWidget::vectorWriteAction() {
 	QString names;
 	for (auto const& v : selectedVectorsList) {
 		names.append(QString("%1(%2),")
@@ -679,7 +695,7 @@ void VectorContainerWidget::writeAction() {
 	}
 }
 
-void VectorContainerWidget::makeHypothesisAction(ss::VectorChain::Procedure p) {
+void VectorContainerWidget::vectorMakeHypothesisAction(ss::VectorChain::Procedure p) {
 	QList<Vector *> vec;
 	for (auto const &v : selectedVectorsList)
 	vec.push_back(v);

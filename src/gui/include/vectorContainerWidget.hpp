@@ -58,29 +58,31 @@ private slots:
 	void fillGenericContextMenu(QMenu*);
 
 	void deleteAction();
-	void standardizeAction();
-	void logAction();
-	void reverseAction();
-	void rightShiftAction();
-	void transformAction();
-	void reproductionAction();
-	void trimAction();
-	void removeOutliersAction();
-	void infoAction();
-	void generateAction();
-	void writeAction();
-	void makeHypothesisAction(ss::VectorChain::Procedure);
+
+	void vectorStandardizeAction();
+	void vectorLogAction();
+	void vectorReverseAction();
+	void vectorRightShiftAction();
+	void vectorTransformAction();
+	void vectorReproductionAction();
+	void vectorTrimAction();
+	void vectorRemoveOutliersAction();
+	void vectorInfoAction();
+	void vectorGenerateAction();
+	void vectorWriteAction();
+	void vectorMakeHypothesisAction(ss::VectorChain::Procedure);
 	void vectorDistributionAction();
 	void vectorDensityAction();
-	void classCountAction(int);
-	void confidenceAction(double);
-	void mergePairAction();
+	void vectorClassCountAction(int);
+	void vectorConfidenceAction(double);
+	void vectorMergePairAction();
 
 	void vectorPairDensityAction();
 	void vectorPairDistributionAction();
 	void vectorPairCorelationAction();
 	void vectorPairClassCountActionX(int);
 	void vectorPairClassCountActionY(int);
+	void vectorPairInfoAction();
 
 signals:
 	void vectorDeleted(Vector*);

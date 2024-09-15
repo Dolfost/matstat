@@ -10,6 +10,7 @@ void VectorPair::ProductRawMoment::adapt(double degree) {
 	auto yit = s_vector->y.begin();
   while (xit != s_vector->x.end()) {
     *moment += std::pow(*xit**yit, degree);
+		xit++, yit++;
   }
 
   *moment /= s_vector->size();
