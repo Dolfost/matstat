@@ -22,6 +22,15 @@ void VectorPairInfoDialog::fill() {
 			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Upper)),
 		},
 	});
+	
+	fillConfidence({
+		{
+			"r",
+			"",
+			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corConfidence(a, b); },
+			n(v_pair->vectorPair()->cor()),
+		},
+	});
 
 	i_additionalText->setText("Вектор імпортовано у програму.");
 }

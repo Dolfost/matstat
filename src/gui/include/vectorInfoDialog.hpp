@@ -33,11 +33,7 @@ protected:
 	Vector* v_vector;
 
 protected:
-	QTableWidget* v_interval = nullptr;
 	QTableWidget* v_var = nullptr;
-	QList<double> v_probs = {
-		0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8
-	};
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_

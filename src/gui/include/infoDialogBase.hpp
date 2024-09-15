@@ -15,12 +15,19 @@ public:
 	
 protected:
 	QTableWidget* i_table = nullptr;
+
+	QTableWidget* i_interval = nullptr;
+	QList<double> i_probs = {
+		0.99, 0.98, 0.97, 0.96, 0.95, 0.9, 0.85, 0.8, 0.7, 0.6
+	};
+
 	ui::Section* i_additionalSection = nullptr;
 	QTextEdit* i_additionalText = nullptr;
 
 protected:
 	QString n(double);
 	void fillTable(QList<QStringList>);
+	void fillConfidence(QList<std::tuple<QString, QString, std::function<double(double, ss::Bound)>, QString>>);
 
 protected:
 	double i_prob = 0.95;

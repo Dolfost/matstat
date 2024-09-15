@@ -7,28 +7,9 @@ VectorInfoDialog::VectorInfoDialog(
 	: InfoDialogBase(v, p, f) {
 	v_vector = v;
 
-	ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
+
+	ui::Section* section = new ui::Section("Варіаційний ряд", 150);
 	QHBoxLayout* lay = new QHBoxLayout;
-	lay->setContentsMargins(0,0,0,0);
-	v_interval = new QTableWidget();
-	v_interval->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	v_interval->setRowCount(4);
-	v_interval->setColumnCount(2 + 2*v_probs.size());
-	v_interval->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	v_interval->setFixedHeight(160);
-	lay->addWidget(v_interval);
-	v_mainLayout->addWidget(section);
-	v_interval->setVerticalHeaderLabels({
-		"σ{v₁}",
-    "σ{μ₂}",
-    "σ{A}", 
-		"σ{E}", 
-	});
-	section->setContentLayout(*lay);
-
-
-	section = new ui::Section("Варіаційний ряд", 150);
-	lay = new QHBoxLayout;
 	lay->setContentsMargins(0,0,0,0);
 	v_var = new QTableWidget;
 	v_var->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -212,76 +193,36 @@ void VectorInfoDialog::fill() {
 	}
 	fillTable(contents);
 
+	fillConfidence({
+		{
+			"v₁",
+			n(v_vector->vector()->meanDeviation()),
+			[=](double a, ss::Bound b) { return v_vector->vector()->meanConfidence(a, b); },
+			n(v_vector->vector()->mean()),
+		},
+		{
+    "μ₂",
+			n(v_vector->vector()->varianceDeviation()),
+			[=](double a, ss::Bound b) { return v_vector->vector()->varianceConfidence(a, b); },
+			n(v_vector->vector()->variance()),
+		},
+		{
+			"A", 
+			n(v_vector->vector()->skewDeviation()),
+			[=](double a, ss::Bound b) { return v_vector->vector()->skewConfidence(a, b); },
+			n(v_vector->vector()->skew()),
+		},
+		{
+			"E", 
+			n(v_vector->vector()->kurtosisDeviation()),
+			[=](double a, ss::Bound b) { return v_vector->vector()->kurtosisConfidence(a, b); },
+			n(v_vector->vector()->kurtosis()),
+		},
+	});
 
-	QStringList deviation = {
-		n(v_vector->vector()->meanDeviation()),
-		n(v_vector->vector()->varianceDeviation()),
-		n(v_vector->vector()->skewDeviation()),
-		n(v_vector->vector()->kurtosisDeviation()),
-	};
 	int row, col;
-	for (row = 0; row < v_interval->rowCount(); row++) {
-		QTableWidgetItem* tableItem = new QTableWidgetItem(deviation[row]);
-		v_interval->setItem(row, 0, tableItem);
-	}
-
-	QStringList header = {"Значення σ"};
-	for (col = 1 ; col < v_probs.length()+1; col++) {
-		int prob = col - 1;
-		header.append("INF 𝛼 = " + QString::number(v_probs[prob]));
-		v_interval->setItem(0, col, new QTableWidgetItem(
-			n(v_vector->vector()->meanConfidence(
-				v_probs[prob], ss::Bound::Lower))
-		));
-		v_interval->setItem(1, col, new QTableWidgetItem(
-			n(v_vector->vector()->varianceConfidence(
-				v_probs[prob], ss::Bound::Lower))
-		));
-		v_interval->setItem(2, col, new QTableWidgetItem(
-			n(v_vector->vector()->skewConfidence(
-				v_probs[prob], ss::Bound::Lower))
-		));
-		v_interval->setItem(3, col, new QTableWidgetItem(
-			n(v_vector->vector()->kurtosisConfidence(
-				v_probs[prob], ss::Bound::Lower))
-		));
-	}
-
-	header.append("θ зсунута");
-	v_interval->setItem(0, col, new QTableWidgetItem(
-		n(v_vector->vector()->mean())));
-	v_interval->setItem(1, col, new QTableWidgetItem(
-		n(v_vector->vector()->variance(ss::Measure::Population))));
-	v_interval->setItem(2, col, new QTableWidgetItem(
-		n(v_vector->vector()->skew(ss::Measure::Population))));
-	v_interval->setItem(3, col, new QTableWidgetItem(
-		n(v_vector->vector()->kurtosis(ss::Measure::Population))));
-
-	for (int from = col; col < v_interval->columnCount(); col++) {
-		int prob = v_probs.length() - (col - from) - 1;
-		header.append("SUP 𝛼 = " + QString::number(v_probs[prob]));
-		v_interval->setItem(0, col, new QTableWidgetItem(
-			n(v_vector->vector()->meanConfidence(
-				v_probs[prob], ss::Bound::Upper))
-		));
-		v_interval->setItem(1, col, new QTableWidgetItem(
-			n(v_vector->vector()->varianceConfidence(
-				v_probs[prob], ss::Bound::Upper))
-		));
-		v_interval->setItem(2, col, new QTableWidgetItem(
-			n(v_vector->vector()->skewConfidence(
-				v_probs[prob], ss::Bound::Upper))
-		));
-		v_interval->setItem(3, col, new QTableWidgetItem(
-			n(v_vector->vector()->kurtosisConfidence(
-				v_probs[prob], ss::Bound::Upper))
-		));
-	}
-	v_interval->setHorizontalHeaderLabels(header);
-
-	header.clear();
+	QStringList header;
 	v_var->setColumnCount(v_vector->vector()->vs.count());
-
 	col = 0;
 	for (auto const& [variant, value] : v_vector->vector()->vs()) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem(
