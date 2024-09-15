@@ -700,10 +700,10 @@ void VectorContainerWidget::vectorMakeHypothesisAction(ss::VectorChain::Procedur
 	for (auto const &v : selectedVectorsList)
 	vec.push_back(v);
 
-	HypothesisManagerDialog *hmd = new HypothesisManagerDialog(
+	VectorHypothesisDialog *hmd = new VectorHypothesisDialog(
 		vec, p, this);
 	connect(this, &VectorContainerWidget::vectorDeleted, hmd,
-				 &HypothesisManagerDialog::vectorDeletedHandler);
+				 &VectorHypothesisDialog::vectorDeletedHandler);
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem(int type) : QTableWidgetItem(type) {

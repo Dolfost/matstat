@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <functional>
 
-HypothesisManagerDialog::HypothesisManagerDialog(
+VectorHypothesisDialog::VectorHypothesisDialog(
 		QList<Vector*> v,
 		ss::VectorChain::Procedure proc,
 		QWidget* parent,
@@ -65,9 +65,9 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	mainLayout->addWidget(pmTable);
 
 	connect(levelSpinBox, &QDoubleSpinBox::valueChanged,
-			this, &HypothesisManagerDialog::compute);
+			this, &VectorHypothesisDialog::compute);
 	connect(procedureComboBox, &QComboBox::currentTextChanged,
-			this, &HypothesisManagerDialog::compute);
+			this, &VectorHypothesisDialog::compute);
 
 	procedureComboBox->setCurrentIndex(proc);
 
@@ -76,7 +76,7 @@ HypothesisManagerDialog::HypothesisManagerDialog(
 	this->show();
 }
 
-void HypothesisManagerDialog::compute() {
+void VectorHypothesisDialog::compute() {
 	QString res, cond, implies;
 	bool accepted = false;
 	double critLevel = levelSpinBox->value();
@@ -350,7 +350,7 @@ void HypothesisManagerDialog::compute() {
 
 }
 
-void HypothesisManagerDialog::makeVectorList() {
+void VectorHypothesisDialog::makeVectorList() {
 	QString vecs;
 	for (auto const& v : vectors) {
 		vecs.append(v->name() + ", ");
@@ -360,7 +360,7 @@ void HypothesisManagerDialog::makeVectorList() {
 	vectorsLineEdit->setText(vecs);
 };
 
-void HypothesisManagerDialog::vectorDeletedHandler(Vector* vec) {
+void VectorHypothesisDialog::vectorDeletedHandler(Vector* vec) {
 	if (vectors.removeAll(vec)) {
 		makeVectorList();
 		compute();

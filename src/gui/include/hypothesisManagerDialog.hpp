@@ -1,5 +1,5 @@
-#ifndef _HYPOTHESIS_MANAGER_DIALOG_HPP_
-#define _HYPOTHESIS_MANAGER_DIALOG_HPP_
+#ifndef _VECTOR_HYPOTHESIS_DIALOG_HPP_
+#define _VECTOR_HYPOTHESIS_DIALOG_HPP_
 
 #include <QDialog>
 #include <QList>
@@ -15,9 +15,9 @@
 
 #include "vectorChain.hpp"
 
-class HypothesisManagerDialog : public QDialog {
+class VectorHypothesisDialog : public QDialog {
 public:
-	HypothesisManagerDialog(
+	VectorHypothesisDialog(
 			QList<Vector*>,
 			ss::VectorChain::Procedure = ss::VectorChain::Procedure::tTestDependentP,
 			QWidget* = nullptr,
@@ -46,4 +46,4 @@ public slots:
 
 };
 
-#endif // !_HYPOTHESIS_MANAGER_DIALOG_HPP_
+#endif // !_VECTOR_HYPOTHESIS_DIALOG_HPP_
