@@ -17,22 +17,27 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
-#include "Section.h"
+#include <infoDialogBase.hpp>
 
-#include "guiTypes.hpp"
-
-class VectorInfoDialog : public QDialog {
-  Q_OBJECT
+class VectorInfoDialog: public InfoDialogBase {
 public:
-  VectorInfoDialog(Vector *, QWidget * = nullptr,
-                   Qt::WindowFlags = Qt::WindowFlags());
-
-private:
-  Vector *ve = nullptr;
-  int precision = 4;
+  VectorInfoDialog(
+		Vector *, QWidget * = nullptr,
+    Qt::WindowFlags = Qt::WindowFlags()
+	);
 
 public slots:
-  void vectorDeletedHandler(Vector *);
+	virtual void fill() override;
+
+protected:
+	Vector* v_vector;
+
+protected:
+	QTableWidget* v_interval = nullptr;
+	QTableWidget* v_var = nullptr;
+	QList<double> v_probs = {
+		0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8
+	};
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_

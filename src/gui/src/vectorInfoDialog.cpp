@@ -1,305 +1,322 @@
 #include "vectorInfoDialog.hpp"
 #include "Section.h"
-#include <QtCore/qcontainerfwd.h>
-#include <numeric>
 
 VectorInfoDialog::VectorInfoDialog(
-		Vector* vectorEntry,
-		QWidget *parent, Qt::WindowFlags f) 
-	: QDialog(parent, f) {
-		ve = vectorEntry;
+		Vector* v,
+		QWidget *p, Qt::WindowFlags f) 
+	: InfoDialogBase(v, p, f) {
+	v_vector = v;
 
-	ss::Vector::VarSeries& varSeries = vectorEntry->vector()->vs;
-
-	this->setWindowTitle("Інформація про вектор " + vectorEntry->name());
-		this->setAttribute(Qt::WA_DeleteOnClose, true);
-		QVBoxLayout* mainLayout = new QVBoxLayout();
-		this->setLayout(mainLayout);
-		mainLayout->setContentsMargins(8,8,8,8);
-		mainLayout->setSpacing(8);
-
-		QGroupBox* gropupBox = new QGroupBox("Точкові оцінки");
-		auto* lay = new QHBoxLayout;
-		QTableWidget* charTable = new QTableWidget;
-		charTable->verticalHeader()->hide();
-		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		charTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		lay->setContentsMargins(0,0,0,0);
-		gropupBox->setLayout(lay);
-		lay->addWidget(charTable);
-		mainLayout->addWidget(gropupBox);
-
-		QStringList headers = {
-			"Назва", "Позначення", "Нижн. дов. знач. (0.95)", "Незсунуте значення",
-			"Зсунуте значення", "Верх. дов. знач. (0.95)", "σ{θ}"
-		};
-		QList<int> columnWidths = {
-			300, 80, 150, 130, 120, 150, 60
-		};
-		double prob = 0.95;
-
-		QList<QStringList> contents = {
-		{"Стат. початковий момент першого порядку", "v₁",
-			QString::number(ve->vector()->meanConfidence(prob,
-						ss::Bound::Upper), 'f', precision),
-			QString::number(ve->vector()->mean(), 'f', precision), "—",
-			QString::number(ve->vector()->meanConfidence(prob,
-						ss::Bound::Lower), 'f', precision),
-			QString::number(ve->vector()->meanDeviation(), 'f', precision)},
-		{"Стат. центральний момент другого порядку", "μ₂",
-			QString::number(ve->vector()->varianceConfidence(prob,
-						ss::Bound::Lower), 'f', precision),
-			QString::number(ve->vector()->variance(), 'f', precision),
-			QString::number(ve->vector()->variance(ss::Measure::Population), 'f', precision),
-			QString::number(ve->vector()->meanConfidence(prob,
-						ss::Bound::Upper), 'f', precision),
-			QString::number(ve->vector()->varianceDeviation(), 'f', precision)},
-		{"Коефіцієнт асиметрії", "A",
-			QString::number(ve->vector()->skewConfidence(prob,
-						ss::Bound::Lower), 'f', precision),
-			QString::number(ve->vector()->skew(), 'f',
-				precision),
-			QString::number(ve->vector()->skew(ss::Measure::Population), 'f', precision),
-			QString::number(ve->vector()->skewConfidence(prob,
-						ss::Bound::Upper), 'f', precision),
-			QString::number(ve->vector()->skewDeviation(), 'f', precision)},
-		{"Коефіцієнт ексцесу", "E",
-			QString::number(ve->vector()->kurtosisConfidence(prob,
-						ss::Bound::Lower), 'f', precision),
-			QString::number(ve->vector()->kurtosis(),
-				'f', precision), 
-			QString::number(ve->vector()->kurtosis(ss::Measure::Population), 'f', precision),
-			QString::number(ve->vector()->kurtosisConfidence(prob,
-						ss::Bound::Upper), 'f', precision),
-			QString::number(ve->vector()->kurtosisDeviation(), 'f', precision)},
-		{"Медіана серідніх Уолша", "WAM",
-			"—",
-			QString::number(ve->vector()->walshAveragesMed(), 'f',
-					precision),
-			"—", "—", "—"},
-		{"Середньоквадратичне відхилення", "СКВ",
-			"—",
-			QString::number(ve->vector()->sd(), 'f', precision),
-			QString::number(ve->vector()->sd(ss::Measure::Population), 'f', precision),
-			"—", "—"},
-		{"Абсолютне відхилення медіани", "MAD",
-			"—",
-			QString::number(ve->vector()->mad(), 'f', precision), "—",
-			"—", "—", "—"},
-		{"Коефіцієнт контрексцесу", "𝜘",
-			"—",
-			QString::number(ve->vector()->counterKurtosis(), 'f', precision), 
-			QString::number(ve->vector()->counterKurtosis(ss::Measure::Population), 'f', precision),
-			"—", "—"},
-		{"Коефіцієнт варіації Пірсона", "W",
-			"—",
-			QString::number(ve->vector()->cv(), 'f', precision), 
-			QString::number(ve->vector()->cv(ss::Measure::Population), 'f', precision),
-			"—", "—"},
-		{"Непараметричнйи коефіцієнт варіації", "Wₕ",
-			"—",
-			QString::number(ve->vector()->ncv(), 'f',
-					precision), 
-			"—", "—", "—"},
-		{"Медіана", "MED", "—", QString::number(ve->vector()->med(), 'f', precision), "—", "—", "—"},
-		{"Розмір", "N", QString::number(ve->vector()->size()),"—"},
-		{"Найменше спостереження", "xₘᵢₙ", "—", QString::number(ve->vector()->min(), 'f', precision), "—", "—", "—"},
-		{"Найбільше спостереження", "xₘₐₓ", "—", QString::number(ve->vector()->max(), 'f', precision), "—", "—", "—"},
-		{"Кількість варіант", "r", "—", QString::number(varSeries.count()), "—", "—","—"},
-		};
-
-		for (int x = 1; x <= 8; x++) {
-		contents.append({"Центральний момент " + QString::number(x) + " порядку",
-				"μ" + QString(QChar(0x2080+x)), "—", QString::number(ve->vector()->centralMoment(x), 'f', precision),
-				QString::number(ve->vector()->centralMoment(x, ss::Measure::Population), 'f', precision), "—", "—"});
-		}
-		for (int x = 1; x <= 8; x++) {
-		contents.append({"Початковий момент " + QString::number(x) + " порядку",
-				"v" + QString(QChar(0x2080+x)), "—", QString::number(ve->vector()->rawMoment(x), 'f', precision), "—", "—", "—"});
-		}
-		for (double x = 0.0; x <= 0.5 ; x+=0.05) {
-		contents.append({"Усічене середнє (α=" + QString::number(x) + ")", 
-				"X*", "—", QString::number(ve->vector()->tmean(x), 'f', precision), "—", "—", "—"});
-		}
+	v_mainLayout->setContentsMargins(0, 0, 0, 5);
+	ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
+	QHBoxLayout* lay = new QHBoxLayout;
+	lay->setContentsMargins(0,0,0,0);
+	v_interval = new QTableWidget();
+	v_interval->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	v_interval->setRowCount(4);
+	v_interval->setColumnCount(2 + 2*v_probs.size());
+	v_interval->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	v_interval->setFixedHeight(160);
+	lay->addWidget(v_interval);
+	v_mainLayout->addWidget(section);
+	v_interval->setVerticalHeaderLabels({
+		"σ{v₁}",
+    "σ{μ₂}",
+    "σ{A}", 
+		"σ{E}", 
+	});
+	section->setContentLayout(*lay);
 
 
-		charTable->setMinimumWidth(std::accumulate(columnWidths.begin(), columnWidths.end(), 20));
-		charTable->setRowCount(contents.length());
-		charTable->setColumnCount(contents[0].length());
-		charTable->setHorizontalHeaderLabels(headers);
+	section = new ui::Section("Варіаційний ряд", 150);
+	lay = new QHBoxLayout;
+	lay->setContentsMargins(0,0,0,0);
+	v_var = new QTableWidget;
+	v_var->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	v_var->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	lay->addWidget(v_var);
+	v_mainLayout->addWidget(section);
+	v_var->setRowCount(3);
+	v_var->setVerticalHeaderLabels(
+		{"Xᵢ", "Nᵢ", "Pᵢ"}
+	);
+	v_var->setFixedHeight(130);
+	section->setContentLayout(*lay);
+	
+	v_mainLayout->addWidget(i_additionalSection);
 
-		int col = 0, row = 0;
-		for (auto& rowLabels : contents) {
-			col = 0;
-			for (auto& itemLabel : rowLabels) {
-				QTableWidgetItem* tableItem = new QTableWidgetItem(itemLabel);
-				charTable->setItem(row, col, tableItem);
-				charTable->setColumnWidth(col, columnWidths[col]);
-				col++;
-			}
-			row++;
-		}
-
-		ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
-		lay = new QHBoxLayout;
-		lay->setContentsMargins(0,0,0,0);
-		charTable = new QTableWidget();
-		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		charTable->setRowCount(4);
-		charTable->setColumnCount(2);
-		headers = {"Величина", "Значення"};
-		charTable->verticalHeader()->hide();
-		charTable->setFixedHeight(165);
-		charTable->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-		charTable->setHorizontalHeaderLabels(headers);
-		lay->addWidget(charTable);
-		mainLayout->addWidget(section);
-		QList<QStringList> deviation = {
-			{"σ{v₁}", QString::number(ve->vector()->meanDeviation(), 'f', precision)},
-			{"σ{μ₂}", QString::number(ve->vector()->varianceDeviation(), 'f', precision)},
-			{"σ{A}", QString::number(ve->vector()->skewDeviation(), 'f', precision)},
-			{"σ{E}", QString::number(ve->vector()->kurtosisDeviation(), 'f', precision)},
-		};
-		charTable->setColumnWidth(0, 75);
-		charTable->setColumnWidth(1, 150);
-		for (row = 0; row < charTable->rowCount(); row++) {
-			for (col = 0; col < charTable->columnCount(); col++) {
-				QTableWidgetItem* tableItem = new QTableWidgetItem(deviation[row][col]);
-				charTable->setItem(row, col, tableItem);
-			}
-		}
-		section->setContentLayout(*lay);
-
-		charTable = new QTableWidget();
-		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		charTable->setRowCount(4);
-		headers = {"Величина"};
-		charTable->verticalHeader()->hide();
-		charTable->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		lay->addWidget(charTable);
-		QList<double> probs = {
-			0.99, 0.98, 0.97, 0.95, 0.9, 0.85, 0.8
-		};
-
-		charTable->setColumnCount(probs.length()*2+2);
-		charTable->setColumnWidth(0, 70);
-
-		charTable->setItem(0, 0, new QTableWidgetItem("θv₁"));
-		charTable->setItem(1, 0, new QTableWidgetItem("θμ₂"));
-		charTable->setItem(2, 0, new QTableWidgetItem("θA"));
-		charTable->setItem(3, 0, new QTableWidgetItem("θE"));
-
-		for (col = 1 ; col < probs.length()+1; col++) {
-			int prob = col - 1;
-			headers.append("INF 𝛼 = " + QString::number(probs[prob]));
-			charTable->setItem(0, col, new QTableWidgetItem(
-						QString::number(ve->vector()->meanConfidence(probs[prob], 
-								ss::Bound::Lower), 'f', precision)));
-			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
-							ve->vector()->varianceConfidence(probs[prob],
-								ss::Bound::Lower), 'f', precision)));
-			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
-							ve->vector()->skewConfidence(probs[prob], 
-								ss::Bound::Lower), 'f', precision)));
-			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
-							ve->vector()->kurtosisConfidence(probs[prob],
-								ss::Bound::Lower), 'f', precision)));
-		}
-
-		headers.append("θ зсунута");
-		charTable->setItem(0, col, new QTableWidgetItem(
-					QString::number(ve->vector()->mean(), 'f', precision)));
-		charTable->setItem(1, col, new QTableWidgetItem(
-					QString::number(ve->vector()->variance(ss::Measure::Population), 'f', precision)));
-		charTable->setItem(2, col, new QTableWidgetItem(
-					QString::number(ve->vector()->skew(ss::Measure::Population), 'f', precision)));
-		charTable->setItem(3, col, new QTableWidgetItem(
-					QString::number(ve->vector()->kurtosis(ss::Measure::Population), 'f', precision)));
-
-		for (int from = col; col < charTable->columnCount(); col++) {
-			int prob = probs.length() - (col - from) - 1;
-			headers.append("SUP 𝛼 = " + QString::number(probs[prob]));
-			charTable->setItem(0, col, new QTableWidgetItem(
-						QString::number(ve->vector()->meanConfidence(probs[prob], 
-								ss::Bound::Upper), 'f', precision)));
-			charTable->setItem(1, col, new QTableWidgetItem(QString::number(
-							ve->vector()->varianceConfidence(probs[prob],
-								ss::Bound::Upper), 'f', precision)));
-			charTable->setItem(2, col, new QTableWidgetItem(QString::number(
-							ve->vector()->skewConfidence(probs[prob], 
-								ss::Bound::Upper), 'f', precision)));
-			charTable->setItem(3, col, new QTableWidgetItem(QString::number(
-							ve->vector()->kurtosisConfidence(probs[prob],
-								ss::Bound::Upper), 'f', precision)));
-		}
-
-		charTable->setHorizontalHeaderLabels(headers);
-
-		section = new ui::Section("Варіаційний ряд", 100);
-		lay = new QHBoxLayout;
-		lay->setContentsMargins(0,0,0,0);
-		charTable = new QTableWidget;
-		charTable->setFixedHeight(130);
-		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		lay->addWidget(charTable);
-		mainLayout->addWidget(section);
-
-		charTable->setRowCount(3);
-		charTable->setColumnCount(varSeries.count());
-		charTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-		charTable->setVerticalHeaderLabels(
-				{"Варіанта", "Кількість", "Відносна частота"}
-				);
-
-		col = 0;
-		for (auto const& [variant, value] : varSeries()) {
-			QTableWidgetItem* tableItem = new QTableWidgetItem(
-					QString::number(variant, 'f', precision));
-			charTable->setItem(0, col, tableItem);
-			tableItem = new QTableWidgetItem(
-					QString::number(value.first));
-			charTable->setItem(1, col, tableItem);
-			tableItem = new QTableWidgetItem(
-					QString::number(value.second, 'f', precision));
-			charTable->setItem(2, col, tableItem);
-			col++;
-		}
-		section->setContentLayout(*lay);
-
-		section = new ui::Section("Додаткова інформація про вектор", 100);
-		lay = new QHBoxLayout;
-		lay->setContentsMargins(0,0,0,0);
-		mainLayout->addWidget(section);
-
-		QTextEdit* additionalInfoTextEdit = new QTextEdit;
-		additionalInfoTextEdit->setMaximumHeight(100);
-		additionalInfoTextEdit->setReadOnly(true);
-		lay->addWidget(additionalInfoTextEdit);
-
-	if (ve->isModeled()) {
-			QString addInfo = QString(
-					"Вектор %1 змодельвано у програмі.\n"
-					"  Метод: %2\n"
-					"  Розподіл: %3\n"
-					"  Параметри: "
-					)
-			.arg(ve->name())
-			.arg(QString::fromStdString(ss::Vector::Distribution::methodName[(int)ve->method()]))
-			.arg(QString::fromStdString(ss::Vector::Distribution::distributionName[(int)ve->model()]));
-		for (auto const& p : ve->parameters()) {
-				addInfo.append(QString::number(p, 'f', 3) + " ");
-			}
-			additionalInfoTextEdit->append(addInfo);
-		}
-
-		section->setContentLayout(*lay);
-		
-
-		this->resize(800, 300);
-		this->show();
+	fill();
 }
 
-void VectorInfoDialog::vectorDeletedHandler(Vector* vectorEntry) {
-	if (vectorEntry == ve)
-		this->close();
+void VectorInfoDialog::fill() {
+	QList<QStringList> contents = {
+		{
+			"Стат. початковий момент першого порядку", "v₁",
+			n(v_vector->vector()->mean()), "—",
+			n(v_vector->vector()->meanDeviation()),
+			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
+			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Lower)),
+		},
+		{
+			"Стат. центральний момент другого порядку", "μ₂",
+			n(v_vector->vector()->variance()),
+			n(v_vector->vector()->varianceDeviation()),
+			n(v_vector->vector()->varianceConfidence(i_prob, ss::Bound::Lower)),
+			n(v_vector->vector()->variance(ss::Measure::Population)),
+			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
+		 },
+		{
+			"Коефіцієнт асиметрії", "A",
+			n(v_vector->vector()->skew()),
+			n(v_vector->vector()->skewDeviation()),
+			n(v_vector->vector()->skewConfidence(i_prob, ss::Bound::Lower)),
+			n(v_vector->vector()->skew(ss::Measure::Population)),
+			n(v_vector->vector()->skewConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Коефіцієнт ексцесу", "E",
+			n(v_vector->vector()->kurtosis()), 
+			n(v_vector->vector()->kurtosisDeviation()),
+			n(v_vector->vector()->kurtosisConfidence(i_prob, ss::Bound::Lower)),
+			n(v_vector->vector()->kurtosis(ss::Measure::Population)),
+			n(v_vector->vector()->kurtosisConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Медіана серідніх Уолша", "WAM",
+			n(v_vector->vector()->walshAveragesMed()),
+			"—",
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Середньоквадратичне відхилення", "СКВ",
+			n(v_vector->vector()->sd()),
+			"—",
+			"—", 
+			n(v_vector->vector()->sd(ss::Measure::Population)),
+			"—"
+		},
+		{
+			"Абсолютне відхилення медіани", "MAD",
+			n(v_vector->vector()->mad()), 
+			"—",
+			"—",
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Коефіцієнт контрексцесу", "𝜘",
+			n(v_vector->vector()->counterKurtosis()), 
+			"—",
+			"—",
+			n(v_vector->vector()->counterKurtosis(ss::Measure::Population)),
+			"—"
+		},
+		{
+			"Коефіцієнт варіації Пірсона", "W",
+			n(v_vector->vector()->cv()), 
+			"—",
+			"—", 
+			n(v_vector->vector()->cv(ss::Measure::Population)),
+			"—"
+		},
+		{
+			"Непараметричнйи коефіцієнт варіації", "Wₕ",
+			n(v_vector->vector()->ncv()),
+			"—",
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Медіана", "MED", 
+			n(v_vector->vector()->med()), 
+			"—", 
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Розмір", "N", 
+			n(v_vector->vector()->size()),
+			"—"
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Найменше спостереження", "xₘᵢₙ", 
+			n(v_vector->vector()->min()), 
+			"—", 
+			"—", 
+			"—", 
+			"—"
+		},
+		{
+			"Найбільше спостереження", "xₘₐₓ", 
+			n(v_vector->vector()->max()),
+			"—", 
+			"—",
+			"—",
+			"—"
+		},
+		{
+			"Кількість варіант", "r", 
+			n(v_vector->vector()->vs.count()),
+			"—", 
+			"—", 
+			"—",
+			"—"
+		},
+	};
+
+	for (int x = 1; x <= 8; x++) {
+		contents.append(
+			{
+				"Центральний момент " + QString::number(x) + " порядку", "μ" + QString(QChar(0x2080+x)), 
+				n(v_vector->vector()->centralMoment(x)),
+				"—", 
+				"—", 
+				n(v_vector->vector()->centralMoment(x, ss::Measure::Population)), 
+				"—"
+			}
+		);
+	}
+
+	for (int x = 1; x <= 8; x++) {
+		contents.append(
+			{
+				"Початковий момент " + QString::number(x) + " порядку", "v" + QString(QChar(0x2080+x)), 
+				n(v_vector->vector()->rawMoment(x)), 
+				"—", 
+				"—", 
+				"—", 
+				"—"
+			}
+		);
+	}
+
+	for (double x = 0.0; x <= 0.5 ; x+=0.05) {
+		contents.append(
+			{
+				"Усічене середнє (α=" + QString::number(x) + ")", "X*", 
+				n(v_vector->vector()->tmean(x)),
+				"—", 
+				"—",
+				"—", 
+				"—"
+			}
+		);
+	}
+	fillTable(contents);
+
+
+	QStringList deviation = {
+		n(v_vector->vector()->meanDeviation()),
+		n(v_vector->vector()->varianceDeviation()),
+		n(v_vector->vector()->skewDeviation()),
+		n(v_vector->vector()->kurtosisDeviation()),
+	};
+	int row, col;
+	for (row = 0; row < v_interval->rowCount(); row++) {
+		QTableWidgetItem* tableItem = new QTableWidgetItem(deviation[row]);
+		v_interval->setItem(row, 0, tableItem);
+	}
+
+	QStringList header = {"Значення σ"};
+	for (col = 1 ; col < v_probs.length()+1; col++) {
+		int prob = col - 1;
+		header.append("INF 𝛼 = " + QString::number(v_probs[prob]));
+		v_interval->setItem(0, col, new QTableWidgetItem(
+			n(v_vector->vector()->meanConfidence(
+				v_probs[prob], ss::Bound::Lower))
+		));
+		v_interval->setItem(1, col, new QTableWidgetItem(
+			n(v_vector->vector()->varianceConfidence(
+				v_probs[prob], ss::Bound::Lower))
+		));
+		v_interval->setItem(2, col, new QTableWidgetItem(
+			n(v_vector->vector()->skewConfidence(
+				v_probs[prob], ss::Bound::Lower))
+		));
+		v_interval->setItem(3, col, new QTableWidgetItem(
+			n(v_vector->vector()->kurtosisConfidence(
+				v_probs[prob], ss::Bound::Lower))
+		));
+	}
+
+	header.append("θ зсунута");
+	v_interval->setItem(0, col, new QTableWidgetItem(
+		n(v_vector->vector()->mean())));
+	v_interval->setItem(1, col, new QTableWidgetItem(
+		n(v_vector->vector()->variance(ss::Measure::Population))));
+	v_interval->setItem(2, col, new QTableWidgetItem(
+		n(v_vector->vector()->skew(ss::Measure::Population))));
+	v_interval->setItem(3, col, new QTableWidgetItem(
+		n(v_vector->vector()->kurtosis(ss::Measure::Population))));
+
+	for (int from = col; col < v_interval->columnCount(); col++) {
+		int prob = v_probs.length() - (col - from) - 1;
+		header.append("SUP 𝛼 = " + QString::number(v_probs[prob]));
+		v_interval->setItem(0, col, new QTableWidgetItem(
+			n(v_vector->vector()->meanConfidence(
+				v_probs[prob], ss::Bound::Upper))
+		));
+		v_interval->setItem(1, col, new QTableWidgetItem(
+			n(v_vector->vector()->varianceConfidence(
+				v_probs[prob], ss::Bound::Upper))
+		));
+		v_interval->setItem(2, col, new QTableWidgetItem(
+			n(v_vector->vector()->skewConfidence(
+				v_probs[prob], ss::Bound::Upper))
+		));
+		v_interval->setItem(3, col, new QTableWidgetItem(
+			n(v_vector->vector()->kurtosisConfidence(
+				v_probs[prob], ss::Bound::Upper))
+		));
+	}
+	v_interval->setHorizontalHeaderLabels(header);
+
+	header.clear();
+	v_var->setColumnCount(v_vector->vector()->vs.count());
+
+	col = 0;
+	for (auto const& [variant, value] : v_vector->vector()->vs()) {
+		QTableWidgetItem* tableItem = new QTableWidgetItem(
+			n(variant)
+		);
+		v_var->setItem(0, col, tableItem);
+		tableItem = new QTableWidgetItem(
+			n(value.first)
+		);
+		v_var->setItem(1, col, tableItem);
+		tableItem = new QTableWidgetItem(
+			n(value.second));
+		v_var->setItem(2, col, tableItem);
+		col++;
+	}
+
+	if (v_vector->isModeled()) {
+		QString addInfo = QString(
+			"Вектор %1 змодельвано у програмі.\n"
+			"  Метод: %2\n"
+			"  Розподіл: %3\n"
+			"  Параметри: \n"
+		)
+			.arg(v_vector->name())
+			.arg(QString::fromStdString(ss::Vector::Distribution::methodName[(int)v_vector->method()]))
+			.arg(QString::fromStdString(ss::Vector::Distribution::distributionName[(int)v_vector->model()]));
+		int i = 0;
+		for (auto const& p : v_vector->parameters()) {
+			addInfo.append(
+				QString::fromStdString("    " + ss::Vector::Distribution::parameterName[(int)v_vector->model()][i++]) + 
+				" " + n(p) + "\n");
+		}
+		i_additionalText->setText(addInfo);
+	} else
+		i_additionalText->setText("Вектор було імпортовано в програму.");
 }
+
+

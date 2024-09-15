@@ -1,21 +1,37 @@
 #ifndef _INFO_DIALOG_BASE_HPP_
 #define _INFO_DIALOG_BASE_HPP_
 
+#include "Section.h"
+#include <QTextEdit>
 #include<dialogBase.hpp>
 
 class InfoDialogBase: public DialogBase {
 public:
-	InfoDialogBase(VectorEntry*, QWidget*);
+	InfoDialogBase(
+		VectorEntry*, 
+		QWidget* = nullptr,
+		Qt::WindowFlags = Qt::WindowFlags()
+	);
 	
 protected:
 	QTableWidget* i_table = nullptr;
-
-protected slots:
-	virtual void fill() = 0;
+	ui::Section* i_additionalSection = nullptr;
+	QTextEdit* i_additionalText = nullptr;
 
 protected:
 	QString n(double);
+	void fillTable(QList<QStringList>);
+
+protected:
+	double i_prob = 0.95;
 	static const int i_precision = 4;
+	QList<int> i_columnWidths = {
+		600, 80, 150, 130, 120, 150, 60
+	};
+	QStringList i_headers = {
+		"Назва", "Позначення", "Незсунуте значення", "σ{θ}", "Нижн. дов. знач. (0.95)", 
+		"Зсунуте значення", "Верх. дов. знач. (0.95)"
+	};
 };
 
 #endif // !_INFO_DIALOG_BASE_HPP_

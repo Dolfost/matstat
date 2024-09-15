@@ -40,8 +40,7 @@ PlotDialogBase::PlotDialogBase(PlotBase* p,
 	v_mainLayout->setMenuBar(p_menuBar);
 }
 
-void PlotDialogBase::fill(VectorEntry* ve) {
-	if (ve == v_vector)
+void PlotDialogBase::fill() {
 	p_plot->fill();
 }
 

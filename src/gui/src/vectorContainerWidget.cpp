@@ -439,7 +439,7 @@ void VectorContainerWidget::vectorPairDensityAction() {
 	for (auto& v : selectedVectorPairsList) {
 		VectorPairDensityDialog* dia = new VectorPairDensityDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &VectorPairDensityDialog::fill);
+					dia, &VectorPairDensityDialog::sync);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairDensityDialog::vectorDeletedHandler);
 	}
@@ -449,7 +449,7 @@ void VectorContainerWidget::vectorPairDistributionAction() {
 	for (auto& v : selectedVectorPairsList) {
 		VectorPairDistributionDialog* dia = new VectorPairDistributionDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &VectorPairDistributionDialog::fill);
+					dia, &VectorPairDistributionDialog::sync);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairDistributionDialog::vectorDeletedHandler);
 	}
@@ -459,7 +459,7 @@ void VectorContainerWidget::vectorPairCorelationAction() {
 	for (auto& v : selectedVectorPairsList) {
 		VectorPairCorelationDialog* dia = new VectorPairCorelationDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &VectorPairCorelationDialog::fill);
+					dia, &VectorPairCorelationDialog::sync);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairCorelationDialog::vectorDeletedHandler);
 	}
@@ -497,7 +497,7 @@ void VectorContainerWidget::vectorDistributionAction() {
 	for (auto const &v : selectedVectorsList) {
 		VectorDistributionDialog* dia = new VectorDistributionDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &VectorDistributionDialog::fill);
+					dia, &VectorDistributionDialog::sync);
 		connect(this, &VectorContainerWidget::vectorDeleted,
 			dia, &VectorDistributionDialog::vectorDeletedHandler);
 	}
@@ -507,7 +507,7 @@ void VectorContainerWidget::vectorDensityAction() {
 	for (auto const &v : selectedVectorsList) {
 		VectorDensityDialog* dia = new VectorDensityDialog(v, this);
 		connect(this, &VectorContainerWidget::redrawVector,
-					dia, &VectorDistributionDialog::fill);
+					dia, &VectorDistributionDialog::sync);
 		connect(this, &VectorContainerWidget::vectorDeleted,
 					dia, &VectorDensityDialog::vectorDeletedHandler);
 	}

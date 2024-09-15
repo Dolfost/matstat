@@ -12,7 +12,7 @@ public:
 		Qt::WindowFlags f = Qt::WindowFlags())
 	: PlotDialogBase(new VectorPairDistributionPlot(v->vectorPair()), v, p, f) {
 		p_plot->setSaveFilename("distribution");
-		setWindowTitle("Розподіл двовимірного вектора " + v_vector->name());
+		setWindowTitle("Розподіл двовимірного вектора " + v_vectorEntry->name());
 
 		QAction* interpolate = p_viewMenu->addAction("Інтерполяція");
 		interpolate->setCheckable(true);

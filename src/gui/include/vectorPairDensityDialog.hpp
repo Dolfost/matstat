@@ -13,7 +13,7 @@ public:
 		Qt::WindowFlags f = Qt::WindowFlags())
 	: PlotDialogBase(new VectorPairDensityPlot(v->vectorPair()), v, p, f) {
 		p_plot->setSaveFilename("2d-density");
-		setWindowTitle("Щільність двовимірного вектора " + v_vector->name());
+		setWindowTitle("Щільність двовимірного вектора " + v_vectorEntry->name());
 
 		QAction* interpolate = p_viewMenu->addAction("Інтерполяція");
 		interpolate->setCheckable(true);

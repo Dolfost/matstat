@@ -4,7 +4,7 @@ DialogBase::DialogBase(
 	VectorEntry* v, 
 	QWidget* parent,
 	Qt::WindowFlags wflags): QDialog(parent, wflags) {
-	v_vector = v;
+	v_vectorEntry = v;
 	setAttribute(Qt::WA_DeleteOnClose, true);
 	v_mainLayout = new QVBoxLayout();
 	setLayout(v_mainLayout);
@@ -14,6 +14,6 @@ DialogBase::DialogBase(
 }
 
 void DialogBase::vectorDeletedHandler(VectorEntry* vectorEntry) {
-	if (v_vector == vectorEntry)
+	if (v_vectorEntry == vectorEntry)
 		this->close();
 }

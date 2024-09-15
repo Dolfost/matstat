@@ -17,12 +17,16 @@ public:
 		Qt::WindowFlags = Qt::WindowFlags()
 	);
 
-	virtual void fill(VectorEntry*) = 0;
 public slots:
+	virtual void sync(VectorEntry* ve) {
+		if (ve == v_vectorEntry)
+			fill();
+	}
+	virtual void fill() = 0;
 	virtual void vectorDeletedHandler(VectorEntry*);
 
 protected:
-	VectorEntry* v_vector = nullptr;
+	VectorEntry* v_vectorEntry = nullptr;
 	QVBoxLayout* v_mainLayout = nullptr;
 };
 

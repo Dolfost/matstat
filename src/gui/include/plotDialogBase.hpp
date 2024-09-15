@@ -15,7 +15,7 @@ public slots:
 	void saveToPng();
 	void saveToJpg();
 	void saveToPdf();
-	virtual void fill(VectorEntry*) override;
+	virtual void fill() override;
 protected:
 	PlotBase* p_plot = nullptr;
 	QMenuBar* p_menuBar = nullptr;

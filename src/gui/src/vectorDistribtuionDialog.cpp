@@ -6,5 +6,5 @@ VectorDistributionDialog::VectorDistributionDialog(
 	Qt::WindowFlags f) 
 : PlotDialogBase(new VectorDistributionPlot(v->vector()), v, w, f) {
 	p_plot->setSaveFilename("distribution");
-	setWindowTitle("Розподіл вектора " + v_vector->name());
+	setWindowTitle("Розподіл вектора " + v_vectorEntry->name());
 }
