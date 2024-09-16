@@ -1,10 +1,10 @@
 #ifndef _PLOT_DIALOG_BASE_HPP_
 #define _PLOT_DIALOG_BASE_HPP_
 
-#include<dialogBase.hpp>
+#include<vectorEntryDialogBase.hpp>
 #include<plotBase.hpp>
 
-class PlotDialogBase: public DialogBase {
+class PlotDialogBase: public VectorEntryDialogBase {
 	Q_OBJECT
 public:
 	PlotDialogBase(PlotBase*,

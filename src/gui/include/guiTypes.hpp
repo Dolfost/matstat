@@ -41,6 +41,7 @@ public:
 	}
 
 	ss::Vector* vector() { return v_vector; }
+	ss::Vector* data() { return v_vector; }
 	void setVector(ss::Vector* v) { v_vector = v; }
 	ss::Vector::Distribution::Model model() { return v_model; }
 	ss::Vector::Distribution::Method method() { return v_modelMethod; }
@@ -61,6 +62,7 @@ protected:
 class VectorPair: public VectorEntry {
 public:
 	ss::VectorPair* vectorPair() { return v_vectorPair; }
+	ss::VectorPair* data() { return v_vectorPair; }
 	void setVectorPair(ss::VectorPair* v) { v_vectorPair = v; }
 protected:
 	ss::VectorPair* v_vectorPair = nullptr;
@@ -69,6 +71,7 @@ protected:
 class VectorChain: public VectorEntry {
 public:
 	ss::VectorChain* chain() { return v_vectorChain; }
+	ss::VectorChain* data() { return v_vectorChain; }
 	void setChain(ss::VectorChain* v) { v_vectorChain = v; }
 protected:
 	ss::VectorChain* v_vectorChain = nullptr;

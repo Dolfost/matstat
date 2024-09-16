@@ -4,7 +4,7 @@
 InfoDialogBase::InfoDialogBase(
 	VectorEntry* ve, 
 	QWidget* p,
-	Qt::WindowFlags f): DialogBase(ve, p, f) {
+	Qt::WindowFlags f): VectorEntryDialogBase(ve, p, f) {
 	setWindowTitle("Інформація про вектор " + v_vectorEntry->name());
 
 	v_mainLayout->setContentsMargins(0, 0, 0, 5);

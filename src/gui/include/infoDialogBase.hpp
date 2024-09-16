@@ -3,9 +3,9 @@
 
 #include "Section.h"
 #include <QTextEdit>
-#include<dialogBase.hpp>
+#include<vectorEntryDialogBase.hpp>
 
-class InfoDialogBase: public DialogBase {
+class InfoDialogBase: public VectorEntryDialogBase {
 public:
 	InfoDialogBase(
 		VectorEntry*, 

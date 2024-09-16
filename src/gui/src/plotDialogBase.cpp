@@ -4,7 +4,7 @@ PlotDialogBase::PlotDialogBase(PlotBase* p,
 											 VectorEntry* v,
 											 QWidget* w,
 											 Qt::WindowFlags f 
-											 ): DialogBase(v, w, f) {
+											 ): VectorEntryDialogBase(v, w, f) {
 	p_menuBar = new QMenuBar(this);
 	p_menuBar->setNativeMenuBar(false);
 	p_viewMenu = p_menuBar->addMenu("Вигляд");
