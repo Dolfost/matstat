@@ -3,7 +3,8 @@
 namespace ss {
 
 const std::vector<std::string> VectorPairHypothesis::procedureName {
-	"Значущість коефіцієнта кореляції"
+	"Значущість коефіцієнта кореляції",
+	"Збіг коефіцієтів кореляції k вибірок"
 };
 
 void VectorPairHypothesis::TTestCor::adapt() {
@@ -14,6 +15,22 @@ void VectorPairHypothesis::TTestCor::adapt() {
 
 	s_value = (vp->cor()*std::sqrt(vp->size() - 2)) /
 		std::sqrt(1 - std::pow(vp->cor(), 2));
+}
+
+void VectorPairHypothesis::CompareCor::adapt() {
+	if (s_vector->size() <= 1)
+		throw "Кількість вибірок замала";
+
+	double sumNi = 0;
+	double sumZi = 0;
+	double sumZi2 = 0;
+	for (auto& v : *s_vector) {
+		double ni = (v->size() - 3);
+		double zi = 0.5+std::log((1+v->cor())/(1-v->cor()));
+		sumNi += ni; sumZi += sumNi*zi; sumZi2 += sumNi*std::pow(zi, 2);
+	}
+	
+	s_value = sumZi2 - std::pow(sumZi, 2)/sumNi;
 }
 
 void VectorPairHypothesis::invalidate() {

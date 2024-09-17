@@ -438,6 +438,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(tTestCor, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::tTestCor); });
 
+	QAction *compareCor = hypotesisMenu->addAction("Збіг кореляцій");
+	connect(compareCor, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::compareCor); });
+
 	menu->addSeparator();
 
 	QAction *infoAction = menu->addAction("Про вектор…");

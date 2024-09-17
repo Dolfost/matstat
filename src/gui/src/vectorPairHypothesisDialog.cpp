@@ -28,6 +28,16 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
+		case ss::VectorPairHypothesis::Procedure::compareCor: {
+			doTest(
+				"<=",
+				[&](){ return h_hypot.compareCor(); },
+				[&](double a) { return ss::pearQuantile(1-a, h_hypot.size()-1); },
+				std::less_equal<double>(),
+				{"r₁ = r₂ = … = rₖ (коефіцієнти кореляції збігаються)", "r₁ ≠ r₂ ≠ … ≠ rₖ (коефіцієнти кореляції не збігаються)",}
+			);
+			break;
+		}
 
 		case ss::VectorPairHypothesis::Procedure::Count: {}
 	}

@@ -11,6 +11,7 @@ public:
 
 	enum class Procedure {
 		tTestCor,
+		compareCor,
 		Count
 	};
 	
@@ -23,6 +24,13 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} tTestCor = TTestCor(this);
+
+	class CompareCor: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} compareCor = CompareCor(this);
 
 public:
 	virtual void invalidate() override;

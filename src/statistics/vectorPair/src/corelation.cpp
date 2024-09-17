@@ -15,7 +15,8 @@ void VectorPair::CorelationConfidence::adapt(double alpha) {
 
 	double base = cor + (cor*(1 - std::pow(cor, 2)))/(2*N);
 	double q = normQuantile(1-alpha/2)*(1-std::pow(cor, 2))/std::sqrt(N-1);
-	s_values[alpha] = { base - q, base + q};
+	//  NOTE: Signs are inverted
+	s_values[alpha] = { base + q, base - q};
 }
 
 }
