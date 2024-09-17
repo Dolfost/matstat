@@ -10,19 +10,20 @@ template<class V>
 class Hypothesis: protected std::vector<V*> {
 public:
 	using std::vector<V*>::vector;
+	using std::vector<V*>::operator[];
+	using std::vector<V*>::size;
+	using std::vector<V*>::erase;
+	using std::vector<V*>::cbegin;
+	using std::vector<V*>::cend;
+	using std::vector<V*>::begin;
+	using std::vector<V*>::end;
+	using std::vector<V*>::push_back;
+
+	virtual void invalidate() = 0;
 };
 
-class VectorHypothesis: protected std::vector<Vector*> {
+class VectorHypothesis: public Hypothesis<Vector> {
 public:
-	using std::vector<Vector*>::vector;
-	using std::vector<Vector*>::operator[];
-	using std::vector<Vector*>::size;
-	using std::vector<Vector*>::erase;
-	using std::vector<Vector*>::cbegin;
-	using std::vector<Vector*>::cend;
-	using std::vector<Vector*>::begin;
-	using std::vector<Vector*>::end;
-	using std::vector<Vector*>::push_back;
 
 	enum class Procedure {
 		tTestDependent,
@@ -178,7 +179,7 @@ public: // tests
 	} overallSize = OverallSize(this);
 
 public:
-	void invalidate();
+	virtual void invalidate() override;
 };
 
 }

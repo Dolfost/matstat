@@ -25,3 +25,5 @@ target_include_directories(ss_vector
 target_link_libraries(ss_vector PUBLIC 
 	exprtk
 )
+
+add_subdirectory(tests)

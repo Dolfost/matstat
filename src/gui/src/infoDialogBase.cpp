@@ -17,13 +17,14 @@ InfoDialogBase::InfoDialogBase(
 
 	v_mainLayout->addWidget(i_table);
 
-	ui::Section* section = new ui::Section("Інтервальні оцінки", 100);
+	ui::Section* section = new ui::Section("Інтервальні оцінки", 100, this);
 	QHBoxLayout* lay = new QHBoxLayout;
 	lay->setContentsMargins(0,0,0,0);
 	i_interval = new QTableWidget();
 	i_interval->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	i_interval->setColumnCount(2 + 2*i_probs.size());
 	i_interval->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	i_interval->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
 	lay->addWidget(i_interval);
 	v_mainLayout->addWidget(section);
 	section->setContentLayout(*lay);
@@ -105,5 +106,4 @@ void InfoDialogBase::fillConfidence( // name, deviation, conf functor, value
 
 	i_interval->setVerticalHeaderLabels(vheader);
 	i_interval->setHorizontalHeaderLabels(header);
-	i_interval->setFixedHeight(i_interval->rowCount()*41 + 41);
 }

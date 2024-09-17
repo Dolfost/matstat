@@ -17,7 +17,7 @@ double normQuantile(double alpha) {
 	quantile = t - (c0 + c1*t + c2*std::pow(t, 2)) /
 		(1 + d1*t + d2*std::pow(t, 2) + d3*std::pow(t, 3));
 	
-	return quantile;
+	return -quantile;
 }
 
 double pearQuantile(double alpha, int v) {
@@ -38,7 +38,7 @@ double studQuantile(double alpha, int v) {
 		nq5 = nq3*nq2,
 		nq7 = nq5*nq2,
 		nq9 = nq7*nq2,
-		g1 = (nq3+ nq)/4,
+		g1 = (nq3 + nq)/4,
 		g2 = (5*nq5 + 16*nq3 + 3*nq)/96,
 		g3 = (3*nq7 + 19*nq5 + 17*nq3 - 15*nq)/384,
 		g4 = (79*nq9 + 779*nq7 + 1482*nq5 - 1920*nq3 - 945*nq)/92160;
@@ -117,9 +117,10 @@ std::pair<double, double> thetaDeviation(
 		quantile = studQuantile(1-alpha/2, size-1);
 	}
 
-	interval.first = theta - quantile *
+	// NOTE: Be aware that signs are inverted
+	interval.first = theta + quantile *
 		deviation;
-	interval.second = theta + quantile *
+	interval.second = theta - quantile *
 		deviation;
 
 	return interval;

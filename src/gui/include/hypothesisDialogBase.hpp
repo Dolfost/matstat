@@ -33,8 +33,9 @@ public:
 		secondaryLayout->setContentsMargins(5,5,5,5);
 
 		QGroupBox* procedureGroupBox = new QGroupBox("Процедура:");
+		procedureGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		procedureGroupBox->setLayout(new QHBoxLayout);
-		procedureGroupBox->layout()->setContentsMargins(1,1,1,1);
+		procedureGroupBox->layout()->setContentsMargins(2,2,2,2);
 		procedureComboBox = new QComboBox();
 		for (int i = 0; i < (int)H::Procedure::Count; i++) {
 			procedureComboBox->addItem(QString::fromStdString(H::procedureName[i]));
@@ -42,8 +43,9 @@ public:
 		procedureGroupBox->layout()->addWidget(procedureComboBox);
 
 		QGroupBox* vectorsGroupBox = new QGroupBox("Вектори:");
+		vectorsGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 		vectorsGroupBox->setLayout(new QHBoxLayout);
-		vectorsGroupBox->layout()->setContentsMargins(1,1,1,1);
+		vectorsGroupBox->layout()->setContentsMargins(2,2,2,2);
 		vectorsLineEdit = new QLineEdit;
 		vectorsLineEdit->setReadOnly(true);
 		vectorsGroupBox->layout()->addWidget(vectorsLineEdit);
@@ -51,7 +53,7 @@ public:
 
 		levelSpinBox = new QDoubleSpinBox;
 		levelSpinBox->setRange(0.001, 0.999);
-		levelSpinBox->setDecimals(3);
+		levelSpinBox->setDecimals(5);
 		levelSpinBox->setSingleStep(0.05);
 		levelSpinBox->setValue(0.95);
 		QGridLayout* spinBoxLayout = new QGridLayout;
@@ -59,8 +61,8 @@ public:
 		spinBoxLayout->addWidget(levelSpinBox, 0, 1);
 
 		resTextEdit = new QTextEdit;
+		resTextEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		resTextEdit->setReadOnly(true);
-		resTextEdit->setMaximumHeight(90);
 
 		pmTable = new QTableWidget;
 		pmTable->setMaximumHeight(80);
@@ -90,7 +92,7 @@ public:
 	};
 
 	void doTest(
-		QString condition,
+		QString c,
 		std::function<double()> criteria, 
 		std::function<double(double)> quantile,
 		std::function<bool(double, double)> comparator,
@@ -105,12 +107,17 @@ public:
 			return;
 		}
 
-		QString res;
-		if (condition.size())
-			res = QString("Умова: " + condition + "\n")
-				.arg(critValue)
-				.arg(critLevel)
-				.arg(QString::number(quantile(critLevel)));
+		QString res = QString(
+			"H₀: %1\nH₁: %2\n\n"
+		).arg(implies.first).arg(implies.second);
+
+		res.append(
+			QString("Умова: %1 %2 %3 = %4\n")
+			.arg(critValue)
+			.arg(c)
+			.arg(critLevel)
+			.arg(QString::number(quantile(critLevel)))
+		);
 
 		if (comparator(critValue, quantile(critLevel)))
 			res.append(QString("Головна гіпотеза прийнята — %1")

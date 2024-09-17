@@ -6,7 +6,7 @@ target_sources(testutils
 		TYPE HEADERS 
 		BASE_DIRS 
 			include/
-		FILES include/testutils.hpp
+		FILES include/vectorPairTestutils.hpp
 )
 
 target_link_libraries(testutils 

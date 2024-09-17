@@ -9,7 +9,6 @@
 
 #include <transformationFormulaEditorDialog.hpp>
 #include <distributionReproducerDialog.hpp>
-#include <vectorHypothesisDialog.hpp>
 #include <setGeneratorDialog.hpp>
 
 #include <vectorContainerWidget.hpp>
@@ -18,12 +17,14 @@
 #include <vectorTrimmerDialog.hpp>
 #include <vectorDistributionDialog.hpp>
 #include <vectorDensityDialog.hpp>
+#include <vectorHypothesisDialog.hpp>
 
 #include <vectorPairDistributionDialog.hpp>
 #include <vectorPairCorelationDialog.hpp>
 #include <vectorPairDensityDialog.hpp>
 #include <vectorPairDensityDialog.hpp>
 #include <vectorPairInfoDialog.hpp>
+#include <vectorPairHypothesisDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -330,56 +331,56 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	QMenu *tTestMenu = hypotesisMenu->addMenu("Т—тести…");
 	QAction *tTestDependentAction = tTestMenu->addAction("Залежні вибірки…");
 	connect(tTestDependentAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::tTestDependent); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::tTestDependent); });
 	QAction *tTestIndependentAction = tTestMenu->addAction("Незалежні вибірки…");
 	connect(tTestIndependentAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::tTestIndependent); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::tTestIndependent); });
 
 	QMenu *fTestMenu = hypotesisMenu->addMenu("F—тести…");
 	QAction* fTestAction = fTestMenu->addAction("F—тест");
 	connect(fTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::fTest); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::fTest); });
 	QAction* fTestBartlettAction = fTestMenu->addAction("F—тест Бартлетта");
 	connect(fTestBartlettAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::fTestBartlett); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::fTestBartlett); });
 
 	QMenu *indentityMenu = hypotesisMenu->addMenu("Тести однорідності…");
 
 	QAction* testKSAction = indentityMenu->addAction("Тест Колмогорова-Смірнова");
 	connect(testKSAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testKS); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::testKS); });
 
 	QAction* testWilcoxonAction = indentityMenu->addAction("Критерій суми рангів Вілкоксона");
 	connect(testWilcoxonAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testWilcoxon); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::testWilcoxon); });
 
 	QAction* criteriaUAction = indentityMenu->addAction("U-критерій");
 	connect(criteriaUAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::criteriaU); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::criteriaU); });
 
 	QAction* rankAveragesDifferenceAction = indentityMenu->addAction("Крит. різн. сер. ранг. виб.");
 	connect(rankAveragesDifferenceAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::rankAveragesDifference); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::rankAveragesDifference); });
 
 	QAction* hTestAction = indentityMenu->addAction("H-критерій");
 	connect(hTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::hTest); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::hTest); });
 
 	QAction* signTestAction = indentityMenu->addAction("Критерій знаків");
 	connect(signTestAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::signTest); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::signTest); });
 
 	QAction* oneWayANOVAAction = hypotesisMenu->addAction("Одноф. дисп. аналіз");
 	connect(oneWayANOVAAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::oneWayANOVA); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::oneWayANOVA); });
 
 	QAction* qTest = hypotesisMenu->addAction("Q-критерій Кохрена");
 	connect(qTest, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::qTest); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::qTest); });
 
 	QAction* testAbbeAction = hypotesisMenu->addAction("Критерій Аббе");
 	connect(testAbbeAction, &QAction::triggered, this,
-				 [this](){ this->vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure::testAbbe); });
+				 [this](){ this->vectorHypothesisAction(ss::VectorHypothesis::Procedure::testAbbe); });
 
 	menu->addSeparator();
 
@@ -430,11 +431,22 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 
 	menu->addSeparator();
 
+	QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
+
+	QMenu *tTestMenu = hypotesisMenu->addMenu("Т—теcти…");
+	QAction *tTestCor = tTestMenu->addAction("Значущість коефіцієнта кореляції…");
+	connect(tTestCor, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::tTestCor); });
+
+	menu->addSeparator();
+
 	QAction *infoAction = menu->addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairInfoAction);
 }
+
 void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
+
 void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	menu->addSeparator();
 
@@ -695,13 +707,16 @@ void VectorContainerWidget::vectorWriteAction() {
 	}
 }
 
-void VectorContainerWidget::vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure p) {
-	QList<Vector *> vec;
-	for (auto const &v : selectedVectorsList)
-	vec.push_back(v);
-
+void VectorContainerWidget::vectorHypothesisAction(ss::VectorHypothesis::Procedure p) {
 	VectorHypothesisDialog *hmd = new VectorHypothesisDialog(
-		vec, p, this);
+		selectedVectorsList, p, this);
+	connect(this, &VectorContainerWidget::vectorDeleted, hmd,
+				 &VectorHypothesisDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure p) {
+	VectorPairHypothesisDialog *hmd = new VectorPairHypothesisDialog(
+		selectedVectorPairsList, p, this);
 	connect(this, &VectorContainerWidget::vectorDeleted, hmd,
 				 &VectorHypothesisDialog::vectorDeletedHandler);
 }

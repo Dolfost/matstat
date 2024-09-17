@@ -12,7 +12,7 @@ VectorHypothesisDialog::VectorHypothesisDialog(
 	Qt::WindowFlags flags
 ) : HypothesisDialogBase<Vector, ss::VectorHypothesis>(v, proc, parent, flags) {
 
-	this->setWindowTitle("Менеджер одновимірних гіпотез");
+	this->setWindowTitle("Одновимірні гіпотези");
 	fill();
 }
 
@@ -20,7 +20,7 @@ void VectorHypothesisDialog::fill() {
 	switch ((ss::VectorHypothesis::Procedure)procedureComboBox->currentIndex()) {
 		case ss::VectorHypothesis::Procedure::tTestDependent: {
 			doTest(
-				"|%1| < t(%2) = %3",
+				"<=",
 				[&](){ return std::abs(h_hypot.tTestDependent()); },
 				[&](double a) { return ss::studQuantile(1-a/2, h_hypot[0]->size()-2); },
 				std::less_equal<double>(),
@@ -45,7 +45,7 @@ void VectorHypothesisDialog::fill() {
 		// 			}
 		case ss::VectorHypothesis::Procedure::tTestIndependent: {
 			doTest(
-				"%1 < t(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.tTestIndependent(); },
 				[&](double a) { return ss::studQuantile(1-a/2, h_hypot[0]->size() + h_hypot[1]->size() -2); },
 				std::less_equal<double>(),
@@ -73,7 +73,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::fTest:
 			doTest(
-				"|%1| < f(%2) = %3",
+				"<=",
 				[&](){ return std::abs(h_hypot.fTest()); },
 				[&](double a) { return ss::fishQuantile(1-a, h_hypot[0]->size() - 1, h_hypot[1]->size() - 1); },
 				std::less_equal<double>(),
@@ -101,7 +101,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::fTestBartlett: {
 			doTest(
-				"%1 < 𝜒(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.fTestBartlett(); },
 				[&](double a) { return ss::pearQuantile(1-a, h_hypot.size() - 1); },
 				std::less_equal<double>(),
@@ -129,7 +129,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::oneWayANOVA: {
 			doTest(
-				"%1 < f(%2) = %3",
+				"<",
 				[&](){ return h_hypot.oneWayANOVA(); },
 				[&](double a) { return ss::fishQuantile(1-a, h_hypot.size() - 1, h_hypot.overallSize() - h_hypot.size()); },
 				std::less_equal<double>(),
@@ -160,7 +160,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::testKS: {
 			doTest(
-				"%1 > %2 = %3",
+				"<=",
 				[&](){ return 1 - h_hypot.testKS(); },
 				[&](double a) { return a; },
 				std::less_equal<double>(),
@@ -184,7 +184,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::testWilcoxon: {
 			doTest(
-				"%1 < u(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.testWilcoxon(); },
 				[&](double a) { return ss::normQuantile(1 - a/2); },
 				std::less_equal<double>(),
@@ -209,7 +209,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::criteriaU: {
 			doTest(
-				"%1 < u(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.criteriaU(); },
 				[&](double a) { return ss::normQuantile(1 - a/2); },
 				std::less_equal<double>(),
@@ -234,7 +234,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::rankAveragesDifference: {
 			doTest(
-				"|%1| < u(%2) = %3",
+				"<=",
 				[&](){ return std::abs(h_hypot.rankAveragesDifference()); },
 				[&](double a) { return ss::normQuantile(1 - a/2); },
 				std::less_equal<double>(),
@@ -259,7 +259,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::hTest: {
 			doTest(
-				"%1 < 𝜒(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.hTest(); },
 				[&](double a) { return ss::pearQuantile(1 - a, h_hypot.size() - 1); },
 				std::less_equal<double>(),
@@ -285,7 +285,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::signTest: {
 			doTest(
-				"%1 < u(%2) = %3",
+				"<",
 				[&](){ return h_hypot.signTest(); },
 				[&](double a) { return ss::normQuantile(1 - a); },
 				std::less<double>(),
@@ -311,7 +311,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::qTest: {
 			doTest(
-				"%1 < 𝜒(%2) = %3",
+				"<=",
 				[&](){ return h_hypot.qTest(); },
 				[&](double a) { return ss::pearQuantile(1 - a, h_hypot.size() - 1); },
 				std::less_equal<double>(),
@@ -338,7 +338,7 @@ void VectorHypothesisDialog::fill() {
 	// 			}
 		case ss::VectorHypothesis::Procedure::testAbbe: {
 			doTest(
-				"%1 > u(%2) = %3",
+				">",
 				[&](){ return h_hypot.testAbbe(); },
 				[&](double a) { return ss::normQuantile(a); },
 				std::greater<double>(),

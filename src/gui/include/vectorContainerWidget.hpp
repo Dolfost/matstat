@@ -11,6 +11,7 @@
 
 #include "guiTypes.hpp"
 #include "vector/hypothesis.hpp"
+#include "vectorPair/hypothesis.hpp"
 
 
 class VectorContainerWidget : public QTableWidget {
@@ -70,7 +71,7 @@ private slots:
 	void vectorInfoAction();
 	void vectorGenerateAction();
 	void vectorWriteAction();
-	void vectorMakeHypothesisAction(ss::VectorHypothesis::Procedure);
+	void vectorHypothesisAction(ss::VectorHypothesis::Procedure);
 	void vectorDistributionAction();
 	void vectorDensityAction();
 	void vectorClassCountAction(int);
@@ -83,6 +84,7 @@ private slots:
 	void vectorPairClassCountActionX(int);
 	void vectorPairClassCountActionY(int);
 	void vectorPairInfoAction();
+	void vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure);
 
 signals:
 	void vectorDeleted(Vector*);
