@@ -4,7 +4,8 @@ namespace ss {
 
 const std::vector<std::string> VectorPairHypothesis::procedureName {
 	"Значущість коефіцієнта кореляції",
-	"Збіг коефіцієтів кореляції k вибірок"
+	"Збіг коефіцієтів кореляції k вибірок",
+	"Значущість кореляційного відношення",
 };
 
 void VectorPairHypothesis::TTestCor::adapt() {
@@ -31,6 +32,12 @@ void VectorPairHypothesis::CompareCor::adapt() {
 	}
 	
 	s_value = sumZi2 - std::pow(sumZi, 2)/sumNi;
+}
+
+void VectorPairHypothesis::TTestCorRatio::adapt() {
+	VectorPair* vp = s_vector->at(0);
+	double p2 = std::pow(vp->corRatio(), 2);
+	s_value = (p2/(1.0-p2))*((double)(vp->size() - vp->corRatio.count())/(vp->corRatio.count() - 1));
 }
 
 void VectorPairHypothesis::invalidate() {

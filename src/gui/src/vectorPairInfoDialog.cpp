@@ -24,7 +24,7 @@ void VectorPairInfoDialog::fill() {
 		{
 			"Коефіцієнт кореляційного відношення", "ρ",
 			n(v_pair->vectorPair()->corRatio()), 
-			"—",
+			n(v_pair->vectorPair()->corRatioDeviation()),
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Lower)),
 			"—",
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Upper)),

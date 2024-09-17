@@ -13,6 +13,8 @@ void Vector::RawMoment::adapt(double degree) {
 	for (auto const &i : *s_vector) {
 		moment += std::pow(i, degree);
 	}
+
+	moment /= s_vector->size();
 }
 
 void Vector::MeanDeviation::adapt() {

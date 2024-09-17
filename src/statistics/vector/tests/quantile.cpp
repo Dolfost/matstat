@@ -35,5 +35,11 @@ int main() {
 		{0, 1},
 		"Norm quantile"
 	);
+
+	plot(
+		[](double a){ return ss::fishQuantile(a, 10, 10); },
+		{0, 1},
+		"Fish quantile v1 = v2 = 10"
+	);
 	return 0;
 }

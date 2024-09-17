@@ -434,9 +434,12 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
 
 	QMenu *tTestMenu = hypotesisMenu->addMenu("Т—теcти…");
-	QAction *tTestCor = tTestMenu->addAction("Значущість коефіцієнта кореляції…");
+	QAction *tTestCor = tTestMenu->addAction("Значущість коефіцієнта кореляції");
 	connect(tTestCor, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::tTestCor); });
+	QAction *tTestCorRatio = tTestMenu->addAction("Значущість кореляційного відношення");
+	connect(tTestCorRatio, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::tTestCorRatio); });
 
 	QAction *compareCor = hypotesisMenu->addAction("Збіг кореляцій");
 	connect(compareCor, &QAction::triggered, this,

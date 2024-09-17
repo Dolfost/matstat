@@ -38,6 +38,16 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
+		case ss::VectorPairHypothesis::Procedure::tTestCorRatio: {
+			doTest(
+				"<=",
+				[&](){ return h_hypot.tTestCorRatio(); },
+				[&](double a) { return ss::fishQuantile(1-a, h_hypot[0]->corRatio.count() - 1, h_hypot[0]->size() - h_hypot[0]->corRatio.count()); },
+				std::less_equal<double>(),
+				{"кореляційне відноешння не значуще", "кореляційне відношення значуще"}
+			);
+			break;
+		}
 
 		case ss::VectorPairHypothesis::Procedure::Count: {}
 	}

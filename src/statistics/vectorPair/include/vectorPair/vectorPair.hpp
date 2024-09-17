@@ -45,12 +45,12 @@ public:
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
-		std::size_t delta() {
+		std::size_t count() {
 			if (!s_valid)
 				adapt();
 			return c_count;
 		}
-		std::size_t setDelta(std::size_t d) {
+		std::size_t setCount(std::size_t d) {
 			std::size_t old = c_count;
 			c_count = d;
 			invalidate();
