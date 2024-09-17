@@ -4,18 +4,19 @@
 namespace ss {
 
 void Vector::RawMoment::adapt(double degree) {
-  double *moment = &s_values[degree];
-	*moment = 0;
+	double& moment = s_values[degree];
+	moment = 0;
 
-  for (auto const &i : *s_vector) {
-    *moment += std::pow(i, degree);
-  }
+	if (s_vector->size() == 0)
+		return;
 
-  *moment /= s_vector->size();
+	for (auto const &i : *s_vector) {
+		moment += std::pow(i, degree);
+	}
 }
 
 void Vector::MeanDeviation::adapt() {
-  s_value = this->s_vector->sd() / sqrt(this->s_vector->size());
+	s_value = this->s_vector->sd() / sqrt(this->s_vector->size());
 }
 
 void Vector::MeanConfidence::adapt(double alpha) {

@@ -41,6 +41,41 @@ public:
 		virtual void adapt() override { s_value = std::max(s_vector->x.max(), s_vector->y.max()); }
 	} max = Max(this);
 
+	class CorelationRatio: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+		std::size_t delta() {
+			if (!s_valid)
+				adapt();
+			return c_count;
+		}
+		std::size_t setDelta(std::size_t d) {
+			std::size_t old = c_count;
+			c_count = d;
+			invalidate();
+			return old;
+		}
+		virtual void invalidate() override {
+			s_vector->corRatioDeviation.invalidate();
+			StatisticSingle::invalidate();
+		}
+	protected:
+		std::size_t c_count = 0;
+	} corRatio = CorelationRatio(this);
+
+	class CorelationRatioDeviation: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} corRatioDeviation = CorelationRatioDeviation(this);
+
+	class CorelationRatioConfidence: public utils::Confidence<double, double, VectorPair> {
+	public:
+		using Confidence::Confidence;
+		virtual void adapt(double) override;
+	} corRatioConfidence = CorelationRatioConfidence(this);
+
 	std::size_t size() { return v_x.size(); };
 	double pmean() { return pRawMoment(1); };
 

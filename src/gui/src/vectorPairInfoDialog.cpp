@@ -21,6 +21,14 @@ void VectorPairInfoDialog::fill() {
 			"—",
 			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Upper)),
 		},
+		{
+			"Коефіцієнт кореляційного відношення", "ρ",
+			n(v_pair->vectorPair()->corRatio()), 
+			"—",
+			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Lower)),
+			"—",
+			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Upper)),
+		},
 	});
 	
 	fillConfidence({
@@ -29,6 +37,12 @@ void VectorPairInfoDialog::fill() {
 			"",
 			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corConfidence(a, b); },
 			n(v_pair->vectorPair()->cor()),
+		},
+		{
+			"ρ",
+			n(v_pair->vectorPair()->corRatioDeviation()),
+			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corRatioConfidence(a, b); },
+			n(v_pair->vectorPair()->corRatio()),
 		},
 	});
 
