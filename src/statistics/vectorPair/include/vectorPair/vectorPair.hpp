@@ -80,6 +80,27 @@ public:
 	double pmean() { return pRawMoment(1); };
 
 public:
+	class Distribution {
+	public:
+		void setDistribution(std::vector<double>, size_t);
+		static const std::vector<std::string> distributionName;
+		static const std::vector<std::string> methodName;
+		static const std::vector<std::vector<std::string>> parameterName;
+
+		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t = 0);
+
+	public:
+		double pdf(double, double);
+
+		size_t size = 0;
+		size_t parametersCount = 0;
+		std::vector<std::string> paremeterNames;
+		std::vector<double> parameters{0};
+
+	private:
+		std::function<double(double, double)> d_pdf;
+	} dist;
+
 	using ClassSeriesT = std::vector<std::pair<std::size_t, double>>;
 	class ClassSeries : public ss::ClassSeries<ClassSeriesT, VectorPair> {
 	public:

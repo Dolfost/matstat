@@ -320,10 +320,6 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 	connect(reproductionAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorReproductionAction);
 
-	QAction *generateAction = menu->addAction("Генерація вибірки…");
-	connect(generateAction, &QAction::triggered, this,
-				 &VectorContainerWidget::vectorGenerateAction);
-
 	menu->addSeparator();
 
 	QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
@@ -655,18 +651,6 @@ void VectorContainerWidget::vectorInfoAction() {
 		VectorInfoDialog *tfe = new VectorInfoDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, tfe,
 					&VectorInfoDialog::vectorDeletedHandler);
-	}
-}
-
-void VectorContainerWidget::vectorGenerateAction() {
-	for (auto const &vec : selectedVectorsList) {
-		SetGeneratorDialog *sgd = new SetGeneratorDialog(vec, this);
-		connect(this, &VectorContainerWidget::vectorDeleted, sgd,
-					&SetGeneratorDialog::vectorDeletedHandler);
-		connect(sgd, &SetGeneratorDialog::setGenerated, this,
-					&VectorContainerWidget::appendVector);
-		connect(sgd, &SetGeneratorDialog::message,
-					[=](QString msg) { emit message(msg); });
 	}
 }
 

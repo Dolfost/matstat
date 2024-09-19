@@ -14,6 +14,8 @@
 
 #include "guiTypes.hpp"
 
+#include <dialogBase.hpp>
+
 class ParametersWidget : public QWidget {
   Q_OBJECT
 public:
@@ -26,27 +28,35 @@ private:
   int precision = 4;
 };
 
-class SetGeneratorDialog : public QDialog {
+class SetGeneratorDialog : public DialogBase {
   Q_OBJECT
 public:
-  SetGeneratorDialog(Vector * = nullptr, QWidget * = nullptr,
+  SetGeneratorDialog(QWidget * = nullptr,
                      bool show = true, Qt::WindowFlags = Qt::WindowFlags());
 
 private:
-  QComboBox *distributionComboBox = nullptr;
-  QGroupBox *boundsBox = nullptr;
-  QSpinBox *countSpinBox = nullptr;
-  QDoubleSpinBox *minSpinBox = nullptr;
-  QDoubleSpinBox *maxSpinBox = nullptr;
-  ParametersWidget *parametersWidget = nullptr;
-  QVBoxLayout *parametersLayout = nullptr;
-  QComboBox *methodComboBox = nullptr;
+	void setVectorTab();
+	void setVectorPairTab();
+
+  QComboBox *vectorDistributionComboBox = nullptr;
+  QGroupBox *vectorBoundsBox = nullptr;
+  QDoubleSpinBox *vectorMinSpinBox = nullptr;
+  QDoubleSpinBox *vectorMaxSpinBox = nullptr;
+  ParametersWidget *vectorParametersWidget = nullptr;
+  QVBoxLayout *vectorParametersLayout = nullptr;
+  QComboBox *vectorMethodComboBox = nullptr;
 
   QPushButton *generateButton = nullptr;
+  QSpinBox *countSpinBox = nullptr;
+
+  ParametersWidget *vectorPairParametersWidget = nullptr;
+  QVBoxLayout *vectorPairParametersLayout = nullptr;
+
+	QTabWidget* tabs = nullptr;
+	QWidget* vectorTab = nullptr;
+	QWidget* vectorPairTab = nullptr;
 
   QStatusBar *statusBar = nullptr;
-
-  Vector *ve = nullptr;
 
   std::vector<double> params = {};
 
@@ -54,18 +64,21 @@ private:
 
   int precision = 4;
 
+  void generateVector();
+  void generateVectorPair();
 public slots:
-  void vectorDeletedHandler(Vector *);
+	virtual void fill() {};
 
 private slots:
-  void generate();
-  void distributionSelected(int);
-  void methodSelected(int);
-  void minBoundChanged(double);
-  void maxBoundChanged(double);
+	void generateHandler();
+  void vectorDistributionSelected(int);
+  void vectorMethodSelected(int);
+  void vectorMinBoundChanged(double);
+  void vectorMaxBoundChanged(double);
 
 signals:
-  void setGenerated(Vector *);
+  void vectorGenerated(Vector*);
+  void vectorPairGenerated(VectorPair*);
   void message(QString);
 };
 

@@ -64,10 +64,12 @@ void MainWindow::createVectorContainers() {
 
 	mainLayout->addWidget(containersWidget);
 
-	setGenerator = new SetGeneratorDialog(nullptr, this, false);
+	setGenerator = new SetGeneratorDialog(this, false);
 	setGenerator->setAttribute(Qt::WA_DeleteOnClose, false);
-	connect(setGenerator, &SetGeneratorDialog::setGenerated,
+	connect(setGenerator, &SetGeneratorDialog::vectorGenerated,
 				 vectorContainer, &VectorContainerWidget::appendVector);
+	connect(setGenerator, &SetGeneratorDialog::vectorPairGenerated,
+				 vectorContainer, &VectorContainerWidget::appendVectorPair);
 }
 
 void MainWindow::createActions() {

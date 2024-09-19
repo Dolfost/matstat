@@ -27,211 +27,236 @@ std::vector<double> ParametersWidget::parameters() {
 	std::vector<double> p;
 	for (int i = 0; i < size; i++) {
 		p.push_back(
-				static_cast<QDoubleSpinBox*>(
-					layout->itemAtPosition(i, 1)->widget())
-				->value());
+			static_cast<QDoubleSpinBox*>(
+				layout->itemAtPosition(i, 1)->widget())
+			->value());
 	}
 
 	return p;
 }
 
 SetGeneratorDialog::SetGeneratorDialog(
-		Vector* vectorEntry,
-		QWidget *parent, bool show, Qt::WindowFlags f) 
-	: QDialog(parent, f) {
-		ve = vectorEntry;
+	QWidget *parent, bool show, Qt::WindowFlags f) 
+: DialogBase(parent, f) {
+	this->setWindowTitle("Генератор вибірок");
+	tabs = new QTabWidget;
+	v_mainLayout->addWidget(tabs);
+	v_mainLayout->setSpacing(5);
 
-		this->setAttribute(Qt::WA_DeleteOnClose, true);
-		QVBoxLayout* mainLayout = new QVBoxLayout();
-		this->setLayout(mainLayout);
-		mainLayout->setContentsMargins(0,0,0,0);
+	setVectorTab();
+	setVectorPairTab();
 
-		QVBoxLayout* layout = new QVBoxLayout;
-		layout->setContentsMargins(10,10,10,0);
-		mainLayout->addLayout(layout);
+	generateButton = new QPushButton("Генерувати");
+	connect(generateButton, &QPushButton::clicked,
+				 this, &SetGeneratorDialog::generateHandler);
+	QGridLayout* genLay = new QGridLayout;
+	genLay->addWidget(new QLabel("Розмір вибірки"), 0, 0);
+	genLay->setContentsMargins(5, 0, 5, 0);
+	countSpinBox = new QSpinBox;
+	countSpinBox->setRange(2, INT_MAX);
+	countSpinBox->setValue(500);
+	genLay->addWidget(countSpinBox, 0, 1);
+	genLay->addWidget(generateButton, 0, 2);
+	v_mainLayout->addLayout(genLay);
 
-		distributionComboBox = new QComboBox();
-		for (int i = 1; i < (int)ss::Vector::Distribution::Model::Count; i++) {
-			distributionComboBox->insertItem(i,
-					QString::fromStdString(ss::Vector::Distribution::distributionName[i]));
-		}
-		QGroupBox* distributionBox = new QGroupBox("Розподіл");
-		QVBoxLayout* distributionLayout = new QVBoxLayout;
-		distributionLayout->setContentsMargins(1,1,1,1);
-		distributionBox->setLayout(distributionLayout);
-		distributionLayout->addWidget(distributionComboBox);
+	statusBar = new QStatusBar();
+	statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	statusBar->setContentsMargins(0,0,0,0);
+	v_mainLayout->addWidget(statusBar);
 
-		QGridLayout* countLayout = new QGridLayout;
-		countLayout->addWidget(new QLabel("Розмір вибірки"), 0, 0);
-		countSpinBox = new QSpinBox;
-		countSpinBox->setRange(2, INT_MAX);
-		countSpinBox->setValue(500);
-		countLayout->addWidget(countSpinBox, 0, 1);
+	this->adjustSize();
+	this->resize(500, this->height());
 
-		parametersLayout = new QVBoxLayout;
-		parametersLayout->setContentsMargins(1,1,1,0);
+	if (show)
+		this->show();
+}
+void SetGeneratorDialog::setVectorPairTab() {
+	vectorPairTab = new QWidget;
+	tabs->addTab(vectorPairTab, "Двовимірні");
 
-		methodComboBox = new QComboBox;
-		for (int i = 0; i < (int)ss::Vector::Distribution::Method::Count; i++) {
-			methodComboBox->insertItem(i,
-					QString::fromStdString(ss::Vector::Distribution::methodName[i]));
-		}
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->setContentsMargins(10,10,10,0);
+	vectorPairTab->setLayout(layout);
 
-		QGroupBox* methodBox = new QGroupBox("Метод відтворення");
-		QVBoxLayout* methodLayout = new QVBoxLayout;
-		methodLayout->setContentsMargins(1,1,1,0);
-		methodBox->setLayout(methodLayout);
-		methodLayout->addWidget(methodComboBox);
+	QGroupBox* parametersBox = new QGroupBox("Нормальний розподіл");
+	parametersBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	QVBoxLayout* parametersLayout = new QVBoxLayout;
+	parametersLayout->setContentsMargins(1,1,1,1);
+	parametersBox->setLayout(parametersLayout);
 
-		boundsBox = new QGroupBox("Межі реалізаці випадкової величини");
-		QHBoxLayout* boundsLayout = new QHBoxLayout;
-		boundsLayout->setContentsMargins(1,1,1,0);
-		boundsBox->setLayout(boundsLayout);
-		minSpinBox = new QDoubleSpinBox();
-		minSpinBox->setMinimum(INT_MIN);
-		minSpinBox->setDecimals(precision);
-		maxSpinBox = new QDoubleSpinBox();
-		maxSpinBox->setMaximum(INT_MAX);
-		maxSpinBox->setDecimals(precision);
-		boundsLayout->addWidget(minSpinBox);
-		boundsLayout->addWidget(maxSpinBox);
+	QStringList p;
+	for (auto const& x : ss::VectorPair::Distribution::parameterName[0]) {
+		p.push_back(QString::fromStdString(x));
+	}
+	vectorPairParametersWidget = new ParametersWidget(p, {0, 0, 1, 1, 0.5}, enabled);
+	parametersLayout->addWidget(vectorPairParametersWidget);
 
-		generateButton = new QPushButton("Генерувати");
-		connect(generateButton, &QPushButton::clicked,
-				this, &SetGeneratorDialog::generate);
-
-		statusBar = new QStatusBar();
-		statusBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		statusBar->setContentsMargins(0,0,0,0);
-		
-		distributionLayout->addLayout(parametersLayout);
-		layout->addWidget(distributionBox);
-		layout->addLayout(countLayout);
-		layout->addWidget(boundsBox);
-		layout->addWidget(methodBox);
-		layout->addWidget(generateButton);
-
-		mainLayout->addWidget(statusBar);
-
-		connect(distributionComboBox, &QComboBox::currentIndexChanged,
-				this, &SetGeneratorDialog::distributionSelected);
-
-		connect(methodComboBox, &QComboBox::currentIndexChanged,
-				this, &SetGeneratorDialog::methodSelected);
-
-		connect(minSpinBox, &QDoubleSpinBox::valueChanged,
-				this, &SetGeneratorDialog::minBoundChanged);
-		connect(maxSpinBox, &QDoubleSpinBox::valueChanged,
-				this, &SetGeneratorDialog::maxBoundChanged);
-
-		QString title = QString("Генератор вибірок");
-
-		if (ve != nullptr) {
-			title.append(QString(" згідно розподілу вектора %1 — ")
-								.arg(ve->name()));
-			enabled = false;
-		if (ve->vector()->dist.model != ss::Vector::Distribution::Model::Unknown) {
-			title.append(ss::Vector::Distribution::distributionName[(int)ve->vector()->dist.model]);
-			distributionComboBox->setCurrentIndex((int)ve->vector()->dist.model-1);
-			params = ve->vector()->dist.parameters;
-			countSpinBox->setValue(ve->vector()->size());
-			minSpinBox->setValue(ve->vector()->min());
-			maxSpinBox->setValue(ve->vector()->max());
-			} else {
-				title.append(ss::Vector::Distribution::distributionName
-						[(int)ss::Vector::Distribution::Model::Unknown]);
-			statusBar->showMessage("Розподіл " + ve->name() +
-						" не був відтворений");
-				minSpinBox->setEnabled(enabled);
-				maxSpinBox->setEnabled(enabled);
-				countSpinBox->setEnabled(enabled);
-				methodComboBox->setEnabled(enabled);
-				generateButton->setEnabled(enabled);
-			}
-
-			distributionComboBox->setEnabled(enabled);
-		}
-
-		this->setWindowTitle(title);
-
-		distributionSelected(distributionComboBox->currentIndex());
-		methodSelected(methodComboBox->currentIndex());
-
-		this->adjustSize();
-		this->resize(500, this->height());
-		if (show)
-			this->show();
+	layout->addWidget(parametersBox);
 }
 
-void SetGeneratorDialog::generate() {
+void SetGeneratorDialog::setVectorTab() {
+	vectorTab = new QWidget;
+	tabs->addTab(vectorTab, "Одновимріні");
+
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->setContentsMargins(10,10,10,0);
+	vectorTab->setLayout(layout);
+
+	vectorDistributionComboBox = new QComboBox();
+	for (int i = 1; i < (int)ss::Vector::Distribution::Model::Count; i++) {
+		vectorDistributionComboBox->insertItem(
+			i,
+			QString::fromStdString(ss::Vector::Distribution::distributionName[i])
+		);
+	}
+	QGroupBox* distributionBox = new QGroupBox("Розподіл");
+	distributionBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	QVBoxLayout* distributionLayout = new QVBoxLayout;
+	distributionLayout->setContentsMargins(1,1,1,1);
+	distributionBox->setLayout(distributionLayout);
+	distributionLayout->addWidget(vectorDistributionComboBox);
+
+
+	vectorParametersLayout = new QVBoxLayout;
+	vectorParametersLayout->setContentsMargins(1,1,1,0);
+
+	vectorMethodComboBox = new QComboBox;
+	for (int i = 0; i < (int)ss::Vector::Distribution::Method::Count; i++) {
+		vectorMethodComboBox->insertItem(i,
+																	 QString::fromStdString(ss::Vector::Distribution::methodName[i]));
+	}
+
+	QGroupBox* methodBox = new QGroupBox("Метод відтворення");
+	methodBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	QVBoxLayout* methodLayout = new QVBoxLayout;
+	methodLayout->setContentsMargins(1,1,1,0);
+	methodBox->setLayout(methodLayout);
+	methodLayout->addWidget(vectorMethodComboBox);
+
+	vectorBoundsBox = new QGroupBox("Межі реалізаці випадкової величини");
+	QHBoxLayout* boundsLayout = new QHBoxLayout;
+	boundsLayout->setContentsMargins(1,1,1,0);
+	vectorBoundsBox->setLayout(boundsLayout);
+	vectorMinSpinBox = new QDoubleSpinBox();
+	vectorMinSpinBox->setMinimum(INT_MIN);
+	vectorMinSpinBox->setDecimals(precision);
+	vectorMaxSpinBox = new QDoubleSpinBox();
+	vectorMaxSpinBox->setMaximum(INT_MAX);
+	vectorMaxSpinBox->setDecimals(precision);
+	boundsLayout->addWidget(vectorMinSpinBox);
+	boundsLayout->addWidget(vectorMaxSpinBox);
+
+	distributionLayout->addLayout(vectorParametersLayout);
+	layout->addWidget(distributionBox);
+	layout->addWidget(vectorBoundsBox);
+	layout->addWidget(methodBox);
+
+	connect(vectorDistributionComboBox, &QComboBox::currentIndexChanged,
+				 this, &SetGeneratorDialog::vectorDistributionSelected);
+
+	connect(vectorMethodComboBox, &QComboBox::currentIndexChanged,
+				 this, &SetGeneratorDialog::vectorMethodSelected);
+
+	connect(vectorMinSpinBox, &QDoubleSpinBox::valueChanged,
+				 this, &SetGeneratorDialog::vectorMinBoundChanged);
+	connect(vectorMaxSpinBox, &QDoubleSpinBox::valueChanged,
+				 this, &SetGeneratorDialog::vectorMaxBoundChanged);
+
+	vectorDistributionSelected(vectorDistributionComboBox->currentIndex());
+	vectorMethodSelected(vectorMethodComboBox->currentIndex());
+}
+
+void SetGeneratorDialog::generateVector() {
 	ss::Vector* dv;
 	ss::Vector::Distribution::Method m =
-		ss::Vector::Distribution::Method(methodComboBox->currentIndex());
+		ss::Vector::Distribution::Method(vectorMethodComboBox->currentIndex());
 	size_t count = countSpinBox->value();
 	double
-		min = minSpinBox->value(),
-		max = maxSpinBox->value();
+	min = vectorMinSpinBox->value(),
+	max = vectorMaxSpinBox->value();
 
 	ss::Vector::Distribution::Model dist;
 	std::vector<double> parameters;
 
-	if (ve != nullptr and ve->vector()->dist.model != ss::Vector::Distribution::Model::Unknown) {
-		dv = new ss::Vector(ve->vector()->dist.generateSet(m, count, min, max));
-		dist = ve->vector()->dist.model;
-		parameters = ve->vector()->dist.parameters;
-	} else {
-		ss::Vector::Distribution dr;
-		dr.setDistribution(ss::Vector::Distribution::Model(distributionComboBox->currentIndex()+1),
-				parametersWidget->parameters(), count);
-		dv = new ss::Vector(dr.generateSet(m, count, min, max));
-		dist = dr.model;
-		parameters = dr.parameters;
-	}
+	ss::Vector::Distribution dr;
+	dr.setDistribution(ss::Vector::Distribution::Model(vectorDistributionComboBox->currentIndex()+1),
+										vectorParametersWidget->parameters(), count);
+	dv = new ss::Vector(dr.generateSet(m, count, min, max));
+	dist = dr.model;
+	parameters = dr.parameters;
 
 	Vector* newve = new Vector(dv);
 	newve->setModel(dist, parameters, m);
-	
-	emit setGenerated(newve);
+
+	emit vectorGenerated(newve);
 }
 
-void SetGeneratorDialog::distributionSelected(int model) {
-	if (parametersWidget != nullptr)
-		parametersLayout->removeWidget(parametersWidget);
-	delete parametersWidget;
+void SetGeneratorDialog::generateVectorPair() {
+	ss::VectorPair* dv;
+	size_t count = countSpinBox->value();
+	std::vector<double> parameters;
+
+	ss::VectorPair::Distribution dr;
+	std::vector<double> p = vectorPairParametersWidget->parameters();
+	dr.setDistribution(p, count);
+	std::pair<std::list<double>, std::list<double>> set = dr.generateSet(count);
+	dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
+	parameters = dr.parameters;
+
+	VectorPair* newve = new VectorPair;
+	newve->setVectorPair(dv);
+	newve->setModel(true);
+	newve->setParameters(p);
+
+	emit vectorPairGenerated(newve);
+}
+
+void SetGeneratorDialog::generateHandler() {
+	switch (tabs->currentIndex()) {
+		case 0: {
+			generateVector();
+			break;
+		}
+		case 1: {
+			generateVectorPair();
+			break;
+		}
+	}
+}
+
+void SetGeneratorDialog::vectorDistributionSelected(int model) {
+	if (vectorParametersWidget != nullptr)
+		vectorParametersLayout->removeWidget(vectorParametersWidget);
+	delete vectorParametersWidget;
 	QStringList p;
 	for (auto const& x : ss::Vector::Distribution::parameterName[model+1]) {
 		p.push_back(QString::fromStdString(x));
 	}
-	
-	parametersWidget = new ParametersWidget(p, params, enabled);
-	parametersLayout->addWidget(parametersWidget);
+
+	vectorParametersWidget = new ParametersWidget(p, params, enabled);
+	vectorParametersLayout->addWidget(vectorParametersWidget);
 }
 
-void SetGeneratorDialog::methodSelected(int method) {
-	boundsBox->setVisible(method);
+void SetGeneratorDialog::vectorMethodSelected(int method) {
+	vectorBoundsBox->setVisible(method);
 }
 
-void SetGeneratorDialog::minBoundChanged(double val) {
-	minSpinBox->blockSignals(true);
-	maxSpinBox->blockSignals(true);
+void SetGeneratorDialog::vectorMinBoundChanged(double val) {
+	vectorMinSpinBox->blockSignals(true);
+	vectorMaxSpinBox->blockSignals(true);
 
-	maxSpinBox->setMinimum(val+0.001);
+	vectorMaxSpinBox->setMinimum(val+0.001);
 
-	minSpinBox->blockSignals(false);
-	maxSpinBox->blockSignals(false);
+	vectorMinSpinBox->blockSignals(false);
+	vectorMaxSpinBox->blockSignals(false);
 }
 
-void SetGeneratorDialog::maxBoundChanged(double val) {
-	minSpinBox->blockSignals(true);
-	maxSpinBox->blockSignals(true);
+void SetGeneratorDialog::vectorMaxBoundChanged(double val) {
+	vectorMinSpinBox->blockSignals(true);
+	vectorMaxSpinBox->blockSignals(true);
 
-	minSpinBox->setMaximum(val-0.001);
+	vectorMinSpinBox->setMaximum(val-0.001);
 
-	minSpinBox->blockSignals(false);
-	maxSpinBox->blockSignals(false);
-}
-
-void SetGeneratorDialog::vectorDeletedHandler(Vector* vectorEntry) {
-	if (ve == vectorEntry)
-		this->close();
+	vectorMinSpinBox->blockSignals(false);
+	vectorMaxSpinBox->blockSignals(false);
 }

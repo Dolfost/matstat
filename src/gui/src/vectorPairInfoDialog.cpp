@@ -46,5 +46,13 @@ void VectorPairInfoDialog::fill() {
 		},
 	});
 
-	i_additionalText->setText("Вектор імпортовано у програму.");
+	if (v_pair->isModeled()) {
+		i_additionalText->setText("Вектор змодельвано в програмі:\n  Параметри");
+		for (std::size_t i = 0; i < ss::VectorPair::Distribution::parameterName[0].size(); i++) {
+			i_additionalText->append("   " + 
+			 QString::fromStdString(ss::VectorPair::Distribution::parameterName[0][i]) + 
+			 " " + n(v_pair->parameters()[i]));
+		}
+	} else
+		i_additionalText->setText("Вектор імпортовано у програму.");
 }

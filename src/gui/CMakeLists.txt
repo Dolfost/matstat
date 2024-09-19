@@ -1,5 +1,6 @@
 find_package(Qt6 REQUIRED COMPONENTS 
-	Core Widgets Gui
+	Core Widgets Gui 
+	# Graphs
 )
 
 file(GLOB SOURCES CONFIGURE_DEPENDS 
@@ -25,6 +26,6 @@ target_include_directories(gui
 )
 
 target_link_libraries(gui
-	Qt6::Core Qt6::Widgets Qt6::Gui
+	Qt6::Core Qt6::Widgets Qt6::Gui # Qt6::Graphs
 	exprtk ss::statistics qcustomplot
 )

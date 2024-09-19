@@ -69,7 +69,6 @@ private slots:
 	void vectorTrimAction();
 	void vectorRemoveOutliersAction();
 	void vectorInfoAction();
-	void vectorGenerateAction();
 	void vectorWriteAction();
 	void vectorHypothesisAction(ss::VectorHypothesis::Procedure);
 	void vectorDistributionAction();
