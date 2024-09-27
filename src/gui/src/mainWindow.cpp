@@ -65,6 +65,7 @@ void MainWindow::createVectorContainers() {
 	mainLayout->addWidget(containersWidget);
 
 	setGenerator = new SetGeneratorDialog(this, false);
+	setGenerator->hide();
 	setGenerator->setAttribute(Qt::WA_DeleteOnClose, false);
 	connect(setGenerator, &SetGeneratorDialog::vectorGenerated,
 				 vectorContainer, &VectorContainerWidget::appendVector);

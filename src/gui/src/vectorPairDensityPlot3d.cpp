@@ -4,17 +4,17 @@ VectorPairDensityPlot3d::VectorPairDensityPlot3d(
 	ss::VectorPair* v
 ): Plot3dBase(v) {
 	axisX()->setTitle(QStringLiteral("X"));
-	axisY()->setTitle(QStringLiteral("Y"));
-	axisZ()->setTitle(QStringLiteral("Z"));
+	axisY()->setTitle(QStringLiteral("f(x)"));
+	axisZ()->setTitle(QStringLiteral("Y"));
 }
 
 void VectorPairDensityPlot3d::fill() {
 	QSurfaceDataArray dataArray;
 
-	static const std::size_t n = 2000;
+	static const std::size_t n = 100;
 
-	double stepX = s_vector->x.size()/(double)(n-1);
-	double stepY = s_vector->y.size()/(double)(n-1);
+	double stepX = s_vector->x.len()/(double)(n-1);
+	double stepY = s_vector->y.len()/(double)(n-1);
 
 	dataArray.reserve(n);
 	for (int i = 0 ; i < n ; i++) {
