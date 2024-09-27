@@ -1,5 +1,5 @@
 find_package(Qt6 REQUIRED COMPONENTS 
-	Core PrintSupport Widgets Gui Charts
+	Core PrintSupport Widgets Gui Graphs
 )
 
 qt_standard_project_setup()
@@ -16,6 +16,6 @@ qt_add_executable(lab
 )
 
 target_link_libraries(lab PRIVATE
-	Qt6::Core Qt6::Widgets Qt6::Gui
-	gui
+	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Graphs
+	gui 
 )

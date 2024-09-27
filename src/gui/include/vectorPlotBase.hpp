@@ -4,9 +4,9 @@
 #include "qcustomplot.h"
 #include "vector.hpp"
 
-#include<plotBase.hpp>
+#include<plot2dBase.hpp>
 
-class VectorPlotBase : public PlotBase {
+class VectorPlotBase : public Plot2dBase {
 	Q_OBJECT
 public:
 	VectorPlotBase(ss::Vector*, QWidget* parent = nullptr);

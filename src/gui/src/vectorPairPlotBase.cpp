@@ -1,6 +1,6 @@
 #include<vectorPairPlotBase.hpp>
 
-VectorPairPlotBase::VectorPairPlotBase(ss::VectorPair* v, QWidget* p): PlotBase(p) {
+VectorPairPlotBase::VectorPairPlotBase(ss::VectorPair* v, QWidget* p): Plot2dBase(p) {
 	v_pair = v;
 
 	this->xAxis2->setTickLabels(false);
@@ -69,7 +69,7 @@ void VectorPairPlotBase::fill() {
 	mean->setData({v_pair->x.mean()}, {v_pair->y.mean()});
 	med->setData({v_pair->x.med()}, {v_pair->y.med()});
 
-	PlotBase::fill();
+	Plot2dBase::fill();
 }
 
 void VectorPairPlotBase::toggleLog(bool state) {}

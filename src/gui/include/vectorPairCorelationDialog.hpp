@@ -1,16 +1,16 @@
 #ifndef _VECTOR_PAIR_CORELATION_DIALOG_HPP_
 #define _VECTOR_PAIR_CORELATION_DIALOG_HPP_
 
-#include<plotDialogBase.hpp>
+#include<plot2dDialogBase.hpp>
 #include<vectorPairCorelationPlot.hpp>
 
-class VectorPairCorelationDialog: public PlotDialogBase {
+class VectorPairCorelationDialog: public Plot2dDialogBase {
 public:
 	VectorPairCorelationDialog(
 		VectorPair* vp, 
 		QWidget* p = nullptr,
 		Qt::WindowFlags f = Qt::WindowFlags()
-	): PlotDialogBase(new VectoPairCorelationPlot(vp->vectorPair()), vp, p, f) {
+	): Plot2dDialogBase(new VectoPairCorelationPlot(vp->vectorPair()), vp, p, f) {
 		setWindowTitle("Кореляційне поле вектора " + vp->name());
 		p_plot->setSaveFilename("2d-corelation");
 

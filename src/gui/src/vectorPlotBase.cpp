@@ -6,7 +6,7 @@
 
 #include "vectorPlotBase.hpp"
 
-VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : PlotBase(parent) {
+VectorPlotBase::VectorPlotBase(ss::Vector* v, QWidget* parent) : Plot2dBase(parent) {
 	v_vector = v;
 
 	xFixedTicker = QSharedPointer<QCPAxisTickerFixed>(new QCPAxisTickerFixed);
@@ -107,7 +107,7 @@ void VectorPlotBase::fill() {
 	y = {yRange.lower};
 	med->setData(x, y);
 
-	PlotBase::fill();
+	Plot2dBase::fill();
 }
 
 void VectorPlotBase::toggleLog(bool state) {

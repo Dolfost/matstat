@@ -3,9 +3,9 @@
 
 #include<qcustomplot.h>
 
-class PlotBase: public QCustomPlot {
+class Plot2dBase: public QCustomPlot {
 public:
-	PlotBase(QWidget* parent = nullptr);
+	Plot2dBase(QWidget* parent = nullptr);
 	void setSaveFilename(QString s) {
 		p_saveFilename = s;
 	}

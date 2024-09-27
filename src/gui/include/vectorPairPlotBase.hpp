@@ -1,10 +1,10 @@
 #ifndef _VECTOR_PAIR_PLOT_BASE_HPP_
 #define _VECTOR_PAIR_PLOT_BASE_HPP_
 
-#include<plotBase.hpp>
+#include<plot2dBase.hpp>
 #include<vectorPair.hpp>
 
-class VectorPairPlotBase: public PlotBase {
+class VectorPairPlotBase: public Plot2dBase {
 public:
 	VectorPairPlotBase(ss::VectorPair*, QWidget*);
 

@@ -1,6 +1,6 @@
-#include <plotBase.hpp>
+#include <plot2dBase.hpp>
 
-PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
+Plot2dBase::Plot2dBase(QWidget* parent) : QCustomPlot(parent) {
 	this->setLocale(QLocale(QLocale::English, QLocale::UnitedKingdom));
 	this->legend->setVisible(true);
 	this->setAutoAddPlottableToLegend(true);
@@ -46,13 +46,13 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	this->yAxis2->setTickLabels(true);
 
 	connect(this->xAxis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
-			this, &PlotBase::handleZoomX);
+			this, &Plot2dBase::handleZoomX);
 	connect(this->xAxis2, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
-			this, &PlotBase::handleZoomX2);
+			this, &Plot2dBase::handleZoomX2);
 	connect(this->yAxis, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
-			this, &PlotBase::handleZoomY);
+			this, &Plot2dBase::handleZoomY);
 	connect(this->yAxis2, qOverload<const QCPRange&>(&QCPAxis::rangeChanged),
-			this, &PlotBase::handleZoomY2);
+			this, &Plot2dBase::handleZoomY2);
 
 	this->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
@@ -92,11 +92,11 @@ PlotBase::PlotBase(QWidget* parent) : QCustomPlot(parent) {
 	connect(coordinatesTimer, &QTimer::timeout, this, [this]{coordinatesLabel->hide();});
 }
 
-void PlotBase::fill() {
+void Plot2dBase::fill() {
 	replot();
 }
 
-void PlotBase::clear() {
+void Plot2dBase::clear() {
 	for (int i = 0; i < this->plottableCount(); i++) {
 		QCPAbstractPlottable* plottable = this->plottable(i);
 
@@ -113,7 +113,7 @@ void PlotBase::clear() {
 	this->replot();
 }
 
-void PlotBase::mouseMoveEvent(QMouseEvent *event) {
+void Plot2dBase::mouseMoveEvent(QMouseEvent *event) {
 	QPoint screenPoint = event->pos();
 	double x = this->xAxis->pixelToCoord(screenPoint.x());
 	double x2 = this->xAxis2->pixelToCoord(screenPoint.x());
@@ -141,7 +141,7 @@ void PlotBase::mouseMoveEvent(QMouseEvent *event) {
 	QCustomPlot::mouseMoveEvent(event);
 }
 
-void PlotBase::handleZoomX(const QCPRange& newRange) {
+void Plot2dBase::handleZoomX(const QCPRange& newRange) {
 	this->xAxis->setRange(newRange.bounded(xRange.lower, xRange.upper));
 
 	xAxis2->blockSignals(true);
@@ -149,7 +149,7 @@ void PlotBase::handleZoomX(const QCPRange& newRange) {
 	xAxis2->blockSignals(false);
 }
 
-void PlotBase::handleZoomX2(const QCPRange& newRange) {
+void Plot2dBase::handleZoomX2(const QCPRange& newRange) {
 	this->xAxis2->setRange(newRange.bounded(xRange2.lower, xRange2.upper));
 
 	xAxis->blockSignals(true);
@@ -157,7 +157,7 @@ void PlotBase::handleZoomX2(const QCPRange& newRange) {
 	xAxis->blockSignals(false);
 }
 
-void PlotBase::handleZoomY(const QCPRange& newRange) {
+void Plot2dBase::handleZoomY(const QCPRange& newRange) {
 	this->yAxis->setRange(newRange.bounded(yRange.lower, yRange.upper));
 
 	yAxis2->blockSignals(true);
@@ -165,7 +165,7 @@ void PlotBase::handleZoomY(const QCPRange& newRange) {
 	yAxis2->blockSignals(false);
 }
 
-void PlotBase::handleZoomY2(const QCPRange& newRange) {
+void Plot2dBase::handleZoomY2(const QCPRange& newRange) {
 	this->yAxis2->setRange(newRange.bounded(yRange2.lower, yRange2.upper));
 
 	yAxis->blockSignals(true);
@@ -173,7 +173,7 @@ void PlotBase::handleZoomY2(const QCPRange& newRange) {
 	yAxis->blockSignals(false);
 }
 
-void PlotBase::zoomHome() {
+void Plot2dBase::zoomHome() {
 	handleZoomX(xRange);
 	handleZoomX2(xRange);
 	handleZoomY(yRange);
@@ -181,7 +181,7 @@ void PlotBase::zoomHome() {
 	replot();
 }
 
-void PlotBase::saveToPng() {
+void Plot2dBase::saveToPng() {
   auto al = antialiasedElements();
   setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
@@ -194,7 +194,7 @@ void PlotBase::saveToPng() {
 	setAntialiasedElements(al);
 }
 
-void PlotBase::saveToJpg() {
+void Plot2dBase::saveToJpg() {
   auto al = antialiasedElements();
   setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(
@@ -207,7 +207,7 @@ void PlotBase::saveToJpg() {
   setAntialiasedElements(al);
 }
 
-void PlotBase::saveToPdf() {
+void Plot2dBase::saveToPdf() {
   auto al = antialiasedElements();
   setAntialiasedElements(QCP::aeAll);
   QString filename = QFileDialog::getSaveFileName(

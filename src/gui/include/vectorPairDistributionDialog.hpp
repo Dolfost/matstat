@@ -1,16 +1,16 @@
 #ifndef _VECTOR_PAIR_DISTRIBUTION_DIALOG_HPP_
 #define _VECTOR_PAIR_DISTRIBUTION_DIALOG_HPP_
 
-#include<plotDialogBase.hpp>
+#include<plot2dDialogBase.hpp>
 #include<vectorPairDistributionPlot.hpp>
 
-class VectorPairDistributionDialog: public PlotDialogBase {
+class VectorPairDistributionDialog: public Plot2dDialogBase {
 public:
 	VectorPairDistributionDialog(
 		VectorPair* v,
 		QWidget* p = nullptr,
 		Qt::WindowFlags f = Qt::WindowFlags())
-	: PlotDialogBase(new VectorPairDistributionPlot(v->vectorPair()), v, p, f) {
+	: Plot2dDialogBase(new VectorPairDistributionPlot(v->vectorPair()), v, p, f) {
 		p_plot->setSaveFilename("distribution");
 		setWindowTitle("Розподіл двовимірного вектора " + v_vectorEntry->name());
 

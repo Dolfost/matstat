@@ -2,12 +2,12 @@
 #define _PLOT_DIALOG_BASE_HPP_
 
 #include<vectorEntryDialogBase.hpp>
-#include<plotBase.hpp>
+#include<plot2dBase.hpp>
 
-class PlotDialogBase: public VectorEntryDialogBase {
+class Plot2dDialogBase: public VectorEntryDialogBase {
 	Q_OBJECT
 public:
-	PlotDialogBase(PlotBase*,
+	Plot2dDialogBase(Plot2dBase*,
 						VectorEntry*, 
 						QWidget* = nullptr, 
 						Qt::WindowFlags = Qt::WindowFlags());
@@ -17,7 +17,7 @@ public slots:
 	void saveToPdf();
 	virtual void fill() override;
 protected:
-	PlotBase* p_plot = nullptr;
+	Plot2dBase* p_plot = nullptr;
 	QMenuBar* p_menuBar = nullptr;
 	QMenu* p_viewMenu = nullptr;
 	QMenu* p_saveMenu = nullptr;

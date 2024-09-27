@@ -1,6 +1,6 @@
-#include<plotDialogBase.hpp>
+#include<plot2dDialogBase.hpp>
 
-PlotDialogBase::PlotDialogBase(PlotBase* p,
+Plot2dDialogBase::Plot2dDialogBase(Plot2dBase* p,
 											 VectorEntry* v,
 											 QWidget* w,
 											 Qt::WindowFlags f 
@@ -14,42 +14,42 @@ PlotDialogBase::PlotDialogBase(PlotBase* p,
 
 	QAction* zoomHomeAction = p_viewMenu->addAction("Відмаштабувати");
 	connect(zoomHomeAction, &QAction::triggered,
-			p_plot, &PlotBase::zoomHome);
+			p_plot, &Plot2dBase::zoomHome);
 
 	QAction* clearPlotsAction = p_viewMenu->addAction("Очистити");
 	connect(clearPlotsAction, &QAction::triggered,
-			p_plot, &PlotBase::clear);
+			p_plot, &Plot2dBase::clear);
 
 	QAction* toogleDensityLogAct = 
 		p_viewMenu->addAction("Логарифмічна сітка щільності");
 	toogleDensityLogAct->setCheckable(true);
 	connect(toogleDensityLogAct, &QAction::toggled,
-			p_plot, &PlotBase::toggleLog);
+			p_plot, &Plot2dBase::toggleLog);
 
 	p_saveMenu = p_menuBar->addMenu("Зберегти");
 	QAction* saveDensityToPngAction = p_saveMenu->addAction("Зберегти як .png");
 	connect(saveDensityToPngAction, &QAction::triggered,
-			p_plot, &PlotBase::saveToPng);
+			p_plot, &Plot2dBase::saveToPng);
 	QAction* saveDensityToJpgAction = p_saveMenu->addAction("Зберегти як .jpg");
 	connect(saveDensityToJpgAction, &QAction::triggered,
-		p_plot, &PlotBase::saveToJpg);
+		p_plot, &Plot2dBase::saveToJpg);
 	QAction* saveDensityToPdfAction = p_saveMenu->addAction("Зберегти як .pdf");
 	connect(saveDensityToPdfAction, &QAction::triggered,
-			p_plot, &PlotBase::saveToPdf);
+			p_plot, &Plot2dBase::saveToPdf);
 
 	v_mainLayout->setMenuBar(p_menuBar);
 }
 
-void PlotDialogBase::fill() {
+void Plot2dDialogBase::fill() {
 	p_plot->fill();
 }
 
-void PlotDialogBase::saveToPng() {
+void Plot2dDialogBase::saveToPng() {
 	p_plot->saveToPng();
 }
-void PlotDialogBase::saveToJpg() {
+void Plot2dDialogBase::saveToJpg() {
 	p_plot->saveToJpg();
 }
-void PlotDialogBase::saveToPdf() {
+void Plot2dDialogBase::saveToPdf() {
 	p_plot->saveToPdf();
 }
