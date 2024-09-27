@@ -1,13 +1,13 @@
-#ifndef _VECTOR_PAIR_3D_PLOT_
-#define _VECTOR_PAIR_3D_PLOT_
+#ifndef _PLOT_3D_BASE_HPP
+#define _PLOT_3D_BASE_HPP
 
 #include <Q3DSurface>
 
 #include "vectorPair.hpp"
 
-class VectorPair3dPlotBase: Q3DSurface {
+class Plot3dBase: public Q3DSurface {
 public:
-	VectorPair3dPlotBase(ss::VectorPair*);
+	Plot3dBase(ss::VectorPair*);
 
 	ss::VectorPair* vector() { return s_vector; };
 	void setVector(ss::VectorPair* v) { s_vector = v; };
@@ -21,4 +21,4 @@ protected:
 	QSurface3DSeries* s_series = nullptr;
 };
 
-#endif // !_VECTOR_PAIR_3D_PLOT_
+#endif // !_PLOT_3D_BASE_HPP

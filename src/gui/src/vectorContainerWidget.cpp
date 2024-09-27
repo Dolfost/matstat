@@ -22,7 +22,7 @@
 #include <vectorPairDistributionDialog.hpp>
 #include <vectorPairCorelationDialog.hpp>
 #include <vectorPairDensityDialog.hpp>
-#include <vectorPairDensityDialog.hpp>
+#include <vectorPairDensity3dDialog.hpp>
 #include <vectorPairInfoDialog.hpp>
 #include <vectorPairHypothesisDialog.hpp>
 
@@ -404,6 +404,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(corelation, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairCorelationAction);
 
+	QAction *density3d = graphics->addAction("Відтворена функція щільності");
+	connect(density3d, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairDensity3dAction);
+
 	SpinBoxAction *classCountActionX = new SpinBoxAction("Кількість класів по х");
 	classCountActionX->spinBox()->setRange(0, 1000);
 	graphics->addAction(classCountActionX);
@@ -465,6 +469,16 @@ void VectorContainerWidget::vectorPairDensityAction() {
 					dia, &VectorPairDensityDialog::sync);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairDensityDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorPairDensity3dAction() {
+	for (auto& v : selectedVectorPairsList) {
+		VectorPairDensity3dDialog* dia = new VectorPairDensity3dDialog(v, this);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorPairDensity3dDialog::sync);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorPairDensity3dDialog::vectorDeletedHandler);
 	}
 }
 

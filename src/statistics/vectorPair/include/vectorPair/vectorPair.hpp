@@ -80,9 +80,11 @@ public:
 	double pmean() { return pRawMoment(1); };
 
 public:
-	class Distribution {
+	class Distribution: public utils::StatisticSingle<std::function<double(double, double)>, VectorPair> {
 	public:
-		void setDistribution(std::vector<double>, size_t);
+		using StatisticSingle::StatisticSingle;
+		void setParameters(std::vector<double>, size_t);
+		virtual void adapt();
 		static const std::vector<std::string> distributionName;
 		static const std::vector<std::string> methodName;
 		static const std::vector<std::vector<std::string>> parameterName;
@@ -92,14 +94,13 @@ public:
 	public:
 		double pdf(double, double);
 
-		size_t size = 0;
 		size_t parametersCount = 0;
 		std::vector<std::string> paremeterNames;
 		std::vector<double> parameters{0};
 
 	private:
 		std::function<double(double, double)> d_pdf;
-	} dist;
+	} dist = Distribution(this);
 
 	using ClassSeriesT = std::vector<std::pair<std::size_t, double>>;
 	class ClassSeries : public ss::ClassSeries<ClassSeriesT, VectorPair> {
@@ -150,6 +151,8 @@ public:
 		double c_stepY = 0;
 	} cs = ClassSeries(this);
 	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
+	
+	void reproduceDistribution();
 	
 	Vector& x = v_x;
 	Vector& y = v_y;

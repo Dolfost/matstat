@@ -196,9 +196,9 @@ void SetGeneratorDialog::generateVectorPair() {
 	size_t count = countSpinBox->value();
 	std::vector<double> parameters;
 
-	ss::VectorPair::Distribution dr;
+	ss::VectorPair::Distribution dr(nullptr);
 	std::vector<double> p = vectorPairParametersWidget->parameters();
-	dr.setDistribution(p, count);
+	dr.setParameters(p, count);
 	std::pair<std::list<double>, std::list<double>> set = dr.generateSet(count);
 	dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
 	parameters = dr.parameters;

@@ -1,12 +1,12 @@
-#ifndef _VECTOR_PAIR_3D_DENSITY_HPP_
-#define _VECTOR_PAIR_3D_DENSITY_HPP_
+#ifndef _VECTOR_PAIR_DENSITY_PLOT_3D_HPP_
+#define _VECTOR_PAIR_DENSITY_PLOT_3D_HPP_
 
-#include <vectorPairPlot3dBase.hpp>
+#include <plot3dBase.hpp>
 
-class VectorPair3dDensity: VectorPair3dPlotBase {
+class VectorPairDensityPlot3d: public Plot3dBase {
 public:
-	using VectorPair3dPlotBase::VectorPair3dPlotBase;
+	VectorPairDensityPlot3d(ss::VectorPair*);
 	virtual void fill() override;
 };
 
-#endif // !_VECTOR_PAIR_3D_DENSITY_HPP_
+#endif // !_VECTOR_PAIR_DENSITY_PLOT_3D_HPP_

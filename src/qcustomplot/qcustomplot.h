@@ -850,7 +850,7 @@ public:
   friend inline const QCPRange operator*(double value, const QCPRange& range);
   friend inline const QCPRange operator/(const QCPRange& range, double value);
   
-  double size() const { return upper-lower; }
+  double size() const { return std::abs(upper-lower); }
   double center() const { return (upper+lower)*0.5; }
   void normalize() { if (lower > upper) qSwap(lower, upper); }
   void expand(const QCPRange &otherRange);
