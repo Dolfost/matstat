@@ -15,16 +15,18 @@
 #include <QDoubleSpinBox>
 #include <QStackedWidget>
 
+#include "vectorEntryDialogBase.hpp"
+
 #include "guiTypes.hpp"
 
-class DistributionReproducerDialog : public QDialog {
+class DistributionReproducerDialog : public VectorEntryDialogBase {
 	Q_OBJECT
-public:
+	public:
 	DistributionReproducerDialog(
-			Vector*,
-			QWidget* = nullptr,
-			Qt::WindowFlags = Qt::WindowFlags()
-			);
+		Vector*,
+		QWidget* = nullptr,
+		Qt::WindowFlags = Qt::WindowFlags()
+	);
 
 private:
 	QComboBox* distributionComboBox = nullptr;
@@ -40,21 +42,18 @@ private:
 
 	QDoubleSpinBox* consentsProbabilitySpinBox = nullptr;
 
-	Vector* ve = nullptr;
+	virtual void fill() override;
 
-	void refill();
+	Vector* v_vector = nullptr;
 
 	int precision = 4;
-
-public slots:
-	void vectorDeletedHandler(Vector*);
 
 private slots:
 	void distribute(int);
 	void makeConsents();
 	void makeTtest();
 
-signals:
+	signals:
 	void distributionSelected(Vector*);
 };
 
