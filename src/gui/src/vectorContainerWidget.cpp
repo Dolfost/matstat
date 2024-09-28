@@ -453,6 +453,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(corelationRatio->spinBox(), &QSpinBox::valueChanged, this,
 				 &VectorContainerWidget::vectorPairCorelationRatioCountAction);
 
+	menu->addSeparator();
+	QAction *breakIt = menu->addAction("Розбити на одновимірні обʼєкти");
+	connect(breakIt, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairBreak);
 
 	if (selectedVectorPairsList.size() == 1) {
 		classCountActionX->spinBox()->setValue(
@@ -694,7 +698,6 @@ void VectorContainerWidget::vectorInfoAction() {
 }
 
 void VectorContainerWidget::vectorMergePairAction() {
-	
 	ss::VectorPair vp; 
 
 	try {
@@ -706,7 +709,10 @@ void VectorContainerWidget::vectorMergePairAction() {
 		message("Вектори різного розміру. Сформувати пару не вдалося");
 		return;
 	}
-	placeVectorPair(vp);
+	placeVectorPair(
+		vp, 
+		"VP(" + selectedVectorsList[0]->name() + "&" + selectedVectorsList[1]->name() + ")"
+	);
 }
 
 void VectorContainerWidget::vectorWriteAction() {
@@ -749,6 +755,18 @@ void VectorContainerWidget::vectorPairHypothesisAction(ss::VectorPairHypothesis:
 		selectedVectorPairsList, p, this);
 	connect(this, &VectorContainerWidget::vectorDeleted, hmd,
 				 &VectorHypothesisDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::vectorPairBreak() {
+	for (auto const& v : selectedVectorPairsList) {
+		QString postfix =  QString::number(++vectorCount) + "(" + v->name() + ")";
+		placeVector(
+			v->vectorPair()->x, "Bx" + postfix
+		);
+		placeVector(
+			v->vectorPair()->y, "By" + postfix
+		);
+	}
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem(int type) : QTableWidgetItem(type) {

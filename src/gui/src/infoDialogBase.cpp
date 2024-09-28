@@ -72,7 +72,10 @@ void InfoDialogBase::fillTable(QList<QStringList> contents) {
 		width += i_table->horizontalHeader()->sectionSize(i);
 	}
 
-	resize(width + 50, height());
+	if (!i_isResized) {
+		resize(width + 50, height());
+		i_isResized = true;
+	}
 }
 
 void InfoDialogBase::fillConfidence( // name, deviation, conf functor, value

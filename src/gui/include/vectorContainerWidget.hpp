@@ -86,6 +86,7 @@ private slots:
 	void vectorPairClassCountActionY(int);
 	void vectorPairInfoAction();
 	void vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure);
+	void vectorPairBreak();
 
 signals:
 	void vectorDeleted(Vector*);
