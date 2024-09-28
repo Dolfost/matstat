@@ -420,15 +420,6 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(classCountActionY->spinBox(), &QSpinBox::valueChanged, this,
 				 &VectorContainerWidget::vectorPairClassCountActionY);
 
-	if (selectedVectorPairsList.size() == 1) {
-		classCountActionX->spinBox()->setValue(
-			selectedVectorPairsList[0]->vectorPair()->cs.countX()
-		);
-		classCountActionY->spinBox()->setValue(
-			selectedVectorPairsList[0]->vectorPair()->cs.countY()
-		);
-	}
-
 	menu->addSeparator();
 
 	QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
@@ -454,6 +445,27 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	QAction *infoAction = menu->addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairInfoAction);
+
+	QMenu *parameters = menu->addMenu("Параметри…");
+	SpinBoxAction *corelationRatio = new SpinBoxAction("Кількість інтервалів кор. відн.");
+	corelationRatio->spinBox()->setRange(0, 1000);
+	parameters->addAction(corelationRatio);
+	connect(corelationRatio->spinBox(), &QSpinBox::valueChanged, this,
+				 &VectorContainerWidget::vectorPairCorelationRatioCountAction);
+
+
+	if (selectedVectorPairsList.size() == 1) {
+		classCountActionX->spinBox()->setValue(
+			selectedVectorPairsList[0]->vectorPair()->cs.countX()
+		);
+		classCountActionY->spinBox()->setValue(
+			selectedVectorPairsList[0]->vectorPair()->cs.countY()
+		);
+		corelationRatio->spinBox()->setValue(
+			selectedVectorPairsList[0]->vectorPair()->corRatio.count()
+		);
+	}
+
 }
 
 void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
@@ -520,11 +532,20 @@ void VectorContainerWidget::vectorPairClassCountActionY(int cls) {
 	}
 }
 
+void VectorContainerWidget::vectorPairCorelationRatioCountAction(int cnt) {
+	for (auto& v : selectedVectorPairsList) {
+		v->vectorPair()->corRatio.setCount(cnt);
+		emit vectorParametersChanged(v);
+	}
+}
+
 void VectorContainerWidget::vectorPairInfoAction() {
 	for (auto& v : selectedVectorPairsList) {
 		VectorPairInfoDialog* dia = new VectorPairInfoDialog(v, this);
 		connect(this, &VectorContainerWidget::vectorPairDeleted,
 					dia, &VectorPairInfoDialog::vectorDeletedHandler);
+		connect(this, &VectorContainerWidget::vectorParametersChanged,
+					dia, &VectorPairInfoDialog::sync);
 	}
 }
 

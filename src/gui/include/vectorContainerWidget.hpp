@@ -74,6 +74,7 @@ private slots:
 	void vectorDistributionAction();
 	void vectorDensityAction();
 	void vectorClassCountAction(int);
+	void vectorPairCorelationRatioCountAction(int);
 	void vectorConfidenceAction(double);
 	void vectorMergePairAction();
 
@@ -93,6 +94,7 @@ signals:
 
 	void outliersRemoved(bool);
 	void redrawVector(VectorEntry*);
+	void vectorParametersChanged(VectorEntry*);
 
 	void message(QString);
 };
