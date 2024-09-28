@@ -13,6 +13,7 @@ public:
 		tTestCor,
 		compareCor,
 		tTestCorRatio,
+		normalDistrubutionRevelance,
 		Count
 	};
 	
@@ -40,6 +41,14 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} tTestCorRatio = TTestCorRatio(this);
+
+	class NormalDistribtuionRevelance
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} normalDistributionRevelance = NormalDistribtuionRevelance(this);
 
 public:
 	virtual void invalidate() override;

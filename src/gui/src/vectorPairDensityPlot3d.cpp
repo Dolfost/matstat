@@ -34,5 +34,18 @@ void VectorPairDensityPlot3d::fill() {
 		dataArray << newRow;
 	}
 
+	axisX()->setSegmentCount(
+		qMax(
+			axisX()->segmentCount(),
+			axisZ()->segmentCount()
+		)
+	);
+	axisZ()->setSegmentCount(
+		qMax(
+			axisX()->segmentCount(),
+			axisZ()->segmentCount()
+		)
+	);
+
 	s_series->dataProxy()->resetArray(dataArray);
 }

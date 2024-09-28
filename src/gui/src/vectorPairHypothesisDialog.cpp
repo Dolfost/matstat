@@ -48,6 +48,19 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
+		case ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance: {
+			doTest(
+				"<=",
+				[&](){ return h_hypot.normalDistributionRevelance(); },
+				[&](double a) { return ss::pearQuantile(a, h_hypot[0]->cs.countX()*h_hypot[0]->cs.countY()-2); },
+				std::less_equal<double>(),
+				{
+					"відтворення нормального розподілу адекватне", 
+					"відтворення нормального розподілу не адекватне", 
+				}
+			);
+			break;
+		}
 
 		case ss::VectorPairHypothesis::Procedure::Count: {}
 	}

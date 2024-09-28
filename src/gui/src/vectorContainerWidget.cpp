@@ -445,6 +445,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(compareCor, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::compareCor); });
 
+	QAction *normalDistributionRevelance = hypotesisMenu->addAction("Адекв. відтв. норм. розп.");
+	connect(normalDistributionRevelance, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance); });
+
 	menu->addSeparator();
 
 	QAction *infoAction = menu->addAction("Про вектор…");
