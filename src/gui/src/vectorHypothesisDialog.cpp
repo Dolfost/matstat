@@ -340,7 +340,7 @@ void VectorHypothesisDialog::fill() {
 			doTest(
 				">",
 				[&](){ return h_hypot.testAbbe(); },
-				[&](double a) { return ss::normQuantile(a); },
+				[&](double a) { return ss::normalDistributionCdf(a); },
 				std::greater<double>(),
 				{"спостереження незалежні", "спостереження залежні"}
 			);

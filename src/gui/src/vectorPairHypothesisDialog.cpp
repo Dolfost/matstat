@@ -1,7 +1,7 @@
 #include "vectorPairHypothesisDialog.hpp"
 #include "vector/quantile.hpp"
 #include <QGroupBox>
-#include <QtCore/qstring.h>
+#include <QString>
 #include <cstdlib>
 #include <functional>
 
