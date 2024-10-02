@@ -58,6 +58,14 @@ void VectorPairInfoDialog::fill() {
 			n(v_pair->vectorPair()->corSpearmanConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
+			"Ранговий коефіцієнт кореляції Кендалла", "𝜏ₖ",
+			n(v_pair->vectorPair()->corKendall()), 
+			n(v_pair->vectorPair()->corKendallDeviation()),
+			n(v_pair->vectorPair()->corKendallConfidence(i_prob, ss::Bound::Lower)),
+			"",
+			n(v_pair->vectorPair()->corKendallConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
 			"Дисперсійно коваріаційна матриця", ms({{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
 			m(
 				{

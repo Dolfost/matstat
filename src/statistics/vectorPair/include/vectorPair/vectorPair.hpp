@@ -100,6 +100,24 @@ public:
 		using Confidence::Confidence;
 		virtual void adapt(double) override;
 	} corSpearmanConfidence = CorrelationSpearmanConfidence(this);
+	
+	class CorrelationKendall: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} corKendall = CorrelationKendall(this);
+
+	class CorrelationKendallDeviation: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} corKendallDeviation = CorrelationKendallDeviation(this);
+
+	class CorrelationKendallConfidence: public utils::Confidence<double, double, VectorPair> {
+	public:
+		using Confidence::Confidence;
+		virtual void adapt(double) override;
+	} corKendallConfidence = CorrelationKendallConfidence(this);
 
 	std::size_t size() { return v_x.size(); };
 	double pmean() { return pRawMoment(1); };

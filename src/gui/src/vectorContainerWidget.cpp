@@ -432,6 +432,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(tTestCorRatio, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::tTestCorRatio); });
 
+	QAction *corSpearman = tTestMenu->addAction("Значущість коефіцієнта кореляції Спірмена");
+	connect(corSpearman, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::corSpearman); });
+
 	QAction *compareCor = hypotesisMenu->addAction("Збіг кореляцій");
 	connect(compareCor, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::compareCor); });
@@ -439,9 +443,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	QAction *normalDistributionRevelance = hypotesisMenu->addAction("Адекв. відтв. норм. розп.");
 	connect(normalDistributionRevelance, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance); });
-	QAction *corSpearman = tTestMenu->addAction("Значущість коефіцієнта кореляції Спірмена");
-	connect(corSpearman, &QAction::triggered, this,
-				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::corSpearman); });
+
+	QAction *compareCorKendall = hypotesisMenu->addAction("Значущість коефіцієнта кореляції Кендалла");
+	connect(compareCorKendall, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::corKendall); });
 
 	menu->addSeparator();
 

@@ -7,6 +7,8 @@ const std::vector<std::string> VectorPairHypothesis::procedureName {
 	"Збіг коефіцієтів кореляції k вибірок",
 	"Значущість кореляційного відношення",
 	"Адекватність відтворення нормального розподілу",
+	"Значущість рангового коефіцієнта кореляції Спірмена",
+	"Значущість рангового коефіцієнта кореляції Кендалла",
 };
 
 void VectorPairHypothesis::TTestCor::adapt() {
@@ -68,6 +70,15 @@ void VectorPairHypothesis::CorSpearman::adapt() {
 	VectorPair* vp = s_vector->at(0);
 	s_value = (vp->corSpearman()*std::sqrt(vp->size()-1)) / 
 		std::sqrt(1-std::pow(vp->corSpearman(),2));
+}
+
+void VectorPairHypothesis::CorKendall::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair* vp = s_vector->at(0);
+	s_value = (2*vp->corKendall()*std::sqrt(vp->size()*(vp->size()-1))) /
+		std::sqrt(2*(2*vp->size()+5));
 }
 
 void VectorPairHypothesis::invalidate() {
