@@ -17,5 +17,5 @@ qt_add_executable(lab
 
 target_link_libraries(lab PRIVATE
 	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Graphs
-	gui 
+	ss::statistics qcustomplot gui 
 )

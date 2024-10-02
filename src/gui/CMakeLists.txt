@@ -21,11 +21,17 @@ target_sources(gui
 			FILES ${HEADERS}
 )
 
+qt_add_resources(gui "fonts"
+    PREFIX "/"
+    FILES
+				"res/JuliaMono-Regular.ttf"
+)
+
 target_include_directories(gui 
 	PUBLIC include
 )
 
-target_link_libraries(gui
+target_link_libraries(gui PRIVATE
 	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Graphs
 	exprtk ss::statistics qcustomplot
 )

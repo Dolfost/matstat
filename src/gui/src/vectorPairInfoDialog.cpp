@@ -11,8 +11,28 @@ VectorPairInfoDialog::VectorPairInfoDialog(
 	fill();
 };
 
+QString VectorPairInfoDialog::v(double x, double y) {
+	return "(" + n(x) + "," + n(y) + ")";
+}
+
 void VectorPairInfoDialog::fill() {
 	fillTable({
+		{
+			"Вектор стат. центральних моменів другого порядку", "(μₓ,μᵧ)",
+			v(v_pair->vectorPair()->x.variance(), v_pair->vectorPair()->y.variance()), 
+			v(v_pair->vectorPair()->x.varianceDeviation(), v_pair->vectorPair()->y.varianceDeviation()), 
+			v(v_pair->vectorPair()->x.varianceConfidence(i_prob, ss::Bound::Lower), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Lower)), 
+			v(v_pair->vectorPair()->x.variance(ss::Measure::Population), v_pair->vectorPair()->y.variance(ss::Measure::Population)), 
+			v(v_pair->vectorPair()->x.varianceConfidence(i_prob, ss::Bound::Upper), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Upper)), 
+		},
+		{
+			"Вектор стат. початкових моменів першого порядку", "(vₓ,vᵧ)",
+			v(v_pair->vectorPair()->x.mean(), v_pair->vectorPair()->y.variance()), 
+			v(v_pair->vectorPair()->x.meanDeviation(), v_pair->vectorPair()->y.varianceDeviation()), 
+			v(v_pair->vectorPair()->x.meanConfidence(i_prob, ss::Bound::Lower), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Lower)), 
+			"",
+			v(v_pair->vectorPair()->x.meanConfidence(i_prob, ss::Bound::Upper), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Upper)), 
+		},
 		{
 			"Коефіцієнт кореляції", "r",
 			n(v_pair->vectorPair()->cor()), 
@@ -28,6 +48,23 @@ void VectorPairInfoDialog::fill() {
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Lower)),
 			"—",
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Дисперсійно коваріаційна матриця", ms({{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
+			m(
+				{
+					{
+						v_pair->vectorPair()->x.variance(), v_pair->vectorPair()->x.sd()*v_pair->vectorPair()->y.sd()*v_pair->vectorPair()->cor()
+					},
+					{
+						v_pair->vectorPair()->x.sd()*v_pair->vectorPair()->y.sd()*v_pair->vectorPair()->cor(), v_pair->vectorPair()->y.variance()
+					}
+				}
+			),
+			"",
+			"",
+			"",
+			"",
 		},
 	});
 	

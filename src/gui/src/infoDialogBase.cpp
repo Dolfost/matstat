@@ -1,5 +1,7 @@
-#include <QHeaderView>
 #include <infoDialogBase.hpp>
+
+#include <QHeaderView>
+#include <QBuffer>
 
 InfoDialogBase::InfoDialogBase(
 	VectorEntry* ve, 
@@ -14,6 +16,7 @@ InfoDialogBase::InfoDialogBase(
 	i_table->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	i_table->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	i_table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+	i_table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
 	v_mainLayout->addWidget(i_table);
 
@@ -48,6 +51,45 @@ QString InfoDialogBase::n(double arg) {
 	return QString::number(arg, 'f', i_precision);
 }
 
+QString InfoDialogBase::m(QList<QList<double>> mtrx) {
+	QList<QList<QString>> r;
+	for (auto const& x : mtrx) {
+		QList<QString> row;
+		for (auto const& y : x)
+			row.push_back(n(y));
+		r.push_back(row);
+	}
+	
+	return ms(r);
+}
+
+QString InfoDialogBase::ms(QList<QList<QString>> s) {
+	int maxw = 0;
+	for (auto const& x : s) {
+		for (auto const& y : x) {
+			if (y.size() > maxw)
+				maxw = y.size();
+		}
+	}
+
+	QString str;
+	QTextStream a;
+	a.setString(&str);
+	a.setFieldAlignment(QTextStream::FieldAlignment::AlignLeft);
+	for (auto& x : s) {
+		a.setFieldWidth(maxw+1);
+		for (auto it = x.begin(); it < x.end()-1; it++) {
+			a << *it;
+		}
+		a.setFieldWidth(0);
+		a << x.back();
+		a << "\n";
+	}
+
+	str.chop(1);
+	return str;
+}
+
 void InfoDialogBase::fillTable(QList<QStringList> contents) {
 	i_table->clear();
 	i_table->setRowCount(contents.length());
@@ -58,7 +100,7 @@ void InfoDialogBase::fillTable(QList<QStringList> contents) {
 	for (auto& rowLabels : contents) {
 		col = 0;
 		for (auto& itemLabel : rowLabels) {
-			QTableWidgetItem* tableItem = new QTableWidgetItem(
+			InfoTableWidgetItem* tableItem = new InfoTableWidgetItem(
 				itemLabel.size() ? itemLabel : "—"
 			);
 			i_table->setItem(row, col, tableItem);
@@ -91,17 +133,17 @@ void InfoDialogBase::fillConfidence( // name, deviation, conf functor, value
 
 	int col, row;
 	for (row = 0 ; row < l.size(); row++) {
-		i_interval->setItem(row, 0, new QTableWidgetItem(std::get<1>(l[row]).size() ? std::get<1>(l[row]) : "—"));
-		i_interval->setItem(row, i_probs.size()+1, new QTableWidgetItem(std::get<3>(l[row])));
+		i_interval->setItem(row, 0, new InfoTableWidgetItem(std::get<1>(l[row]).size() ? std::get<1>(l[row]) : "—"));
+		i_interval->setItem(row, i_probs.size()+1, new InfoTableWidgetItem(std::get<3>(l[row])));
 		vheader.push_back(std::get<0>(l[row]).size() ? std::get<0>(l[row]) : "—");
 		for (col = 1 ; col < i_probs.length()+1; col++) {
 			int prob = col - 1;
 			header[col] = ("INF 𝛼 = " + QString::number(i_probs[prob]));
-			i_interval->setItem(row, col, new QTableWidgetItem(
+			i_interval->setItem(row, col, new InfoTableWidgetItem(
 				n(std::get<2>(l[row])(i_probs[prob], ss::Bound::Lower))
 			));
 			header[2*i_probs.size() + 2 - col] = ("SUP 𝛼 = " + QString::number(i_probs[prob]));
-			i_interval->setItem(row, 2*i_probs.size() + 2 - col, new QTableWidgetItem(
+			i_interval->setItem(row, 2*i_probs.size() + 2 - col, new InfoTableWidgetItem(
 				n(std::get<2>(l[row])(i_probs[prob], ss::Bound::Upper))
 			));
 		}

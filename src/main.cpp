@@ -1,14 +1,14 @@
 #include <QApplication>
 #include <QDebug>
+#include <QFontDatabase>
 
 #include "mainWindow.hpp"
-
-#include <vectorPair.hpp>
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
 
-	ss::VectorPair a;
+	//  NOTE: update this stuff
+	QFontDatabase::addApplicationFont(":/res/JuliaMono-Regular.ttf");
 
 	MainWindow mainWindow = MainWindow();
 	mainWindow.show();

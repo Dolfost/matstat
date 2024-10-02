@@ -26,6 +26,8 @@ protected:
 
 protected:
 	QString n(double);
+	QString m(QList<QList<double>>);
+	QString ms(QList<QList<QString>>);
 	void fillTable(QList<QStringList>);
 	void fillConfidence(QList<std::tuple<QString, QString, std::function<double(double, ss::Bound)>, QString>>);
 
@@ -37,6 +39,17 @@ protected:
 		"Зсунуте значення", "Верх. дов. знач. (0.95)"
 	};
 	bool i_isResized = false;
+};
+
+class InfoTableWidgetItem: public QTableWidgetItem {
+public:
+	InfoTableWidgetItem(
+		const QString& text, 
+		int type = Type
+	): QTableWidgetItem(text, type) {
+		QFont f("JuliaMono");
+		setFont(f);
+	}
 };
 
 #endif // !_INFO_DIALOG_BASE_HPP_

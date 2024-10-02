@@ -14,6 +14,8 @@ public:
 protected:
 	VectorPair* v_pair = nullptr;
 
+	QString v(double, double);
+
 public slots:
 	virtual void fill() override;
 };
