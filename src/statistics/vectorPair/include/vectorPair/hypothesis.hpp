@@ -14,6 +14,7 @@ public:
 		compareCor,
 		tTestCorRatio,
 		normalDistrubutionRevelance,
+		corSpearman,
 		Count
 	};
 	
@@ -49,6 +50,14 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} normalDistributionRevelance = NormalDistribtuionRevelance(this);
+
+	class CorSpearman
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} corSpearman = CorSpearman(this);
 
 public:
 	virtual void invalidate() override;

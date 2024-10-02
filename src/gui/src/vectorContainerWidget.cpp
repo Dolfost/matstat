@@ -439,6 +439,9 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	QAction *normalDistributionRevelance = hypotesisMenu->addAction("Адекв. відтв. норм. розп.");
 	connect(normalDistributionRevelance, &QAction::triggered, this,
 				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance); });
+	QAction *corSpearman = tTestMenu->addAction("Значущість коефіцієнта кореляції Спірмена");
+	connect(corSpearman, &QAction::triggered, this,
+				 [this](){ this->vectorPairHypothesisAction(ss::VectorPairHypothesis::Procedure::corSpearman); });
 
 	menu->addSeparator();
 

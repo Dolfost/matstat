@@ -2,7 +2,7 @@
 
 namespace ss {
 
-void VectorPair::Yranks::adapt() {
+void VectorPair::Ranks::adapt() {
 	std::list<double> yl = s_vector->y.sorted();
 	std::list<double> ry = s_vector->y.ranks();
 

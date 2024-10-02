@@ -11,17 +11,17 @@ namespace ss {
 
 class VectorPair {
 public:
-	class Corelation: public utils::StatisticSingle<double, VectorPair> {
+	class Correlation: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
-	} cor = Corelation(this);
+	} cor = Correlation(this);
 
-	class CorelationConfidence: public utils::Confidence<double, double, VectorPair> {
+	class CorrelationConfidence: public utils::Confidence<double, double, VectorPair> {
 	public:
 		using Confidence::Confidence;
 		virtual void adapt(double) override;
-	} corConfidence = CorelationConfidence(this);
+	} corConfidence = CorrelationConfidence(this);
 
 	class ProductRawMoment: public utils::StatisticMap<double, double, double, VectorPair> {
 	public:
@@ -41,7 +41,7 @@ public:
 		virtual void adapt() override { s_value = std::max(s_vector->x.max(), s_vector->y.max()); }
 	} max = Max(this);
 
-	class CorelationRatio: public utils::StatisticSingle<double, VectorPair> {
+	class CorrelationRatio: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
@@ -62,19 +62,44 @@ public:
 		}
 	protected:
 		std::size_t c_count = 0;
-	} corRatio = CorelationRatio(this);
+	} corRatio = CorrelationRatio(this);
 
-	class CorelationRatioDeviation: public utils::StatisticSingle<double, VectorPair> {
+	class CorrelationRatioDeviation: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
-	} corRatioDeviation = CorelationRatioDeviation(this);
+	} corRatioDeviation = CorrelationRatioDeviation(this);
 
-	class CorelationRatioConfidence: public utils::Confidence<double, double, VectorPair> {
+	class CorrelationRatioConfidence: public utils::Confidence<double, double, VectorPair> {
 	public:
 		using Confidence::Confidence;
 		virtual void adapt(double) override;
-	} corRatioConfidence = CorelationRatioConfidence(this);
+	} corRatioConfidence = CorrelationRatioConfidence(this);
+
+	class Ranks: public utils::StatisticContainer<std::list<double>, VectorPair> {
+	public:
+		using StatisticContainer::StatisticContainer;
+	protected:
+		virtual void adapt() override;
+	} ranks = Ranks(this);
+	
+	class CorrelationSpearman: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} corSpearman = CorrelationSpearman(this);
+
+	class CorrelationSpearmanDeviation: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+		virtual void adapt() override;
+	} corSpearmanDeviation = CorrelationSpearmanDeviation(this);
+
+	class CorrelationSpearmanConfidence: public utils::Confidence<double, double, VectorPair> {
+	public:
+		using Confidence::Confidence;
+		virtual void adapt(double) override;
+	} corSpearmanConfidence = CorrelationSpearmanConfidence(this);
 
 	std::size_t size() { return v_x.size(); };
 	double pmean() { return pRawMoment(1); };
@@ -101,13 +126,6 @@ public:
 	private:
 		std::function<double(double, double)> d_pdf;
 	} dist = Distribution(this);
-
-	class Yranks: public utils::StatisticContainer<std::list<double>, VectorPair> {
-	public:
-		using StatisticContainer::StatisticContainer;
-	protected:
-		virtual void adapt() override;
-	} yRanks = Yranks(this);
 
 	using ClassSeriesT = std::vector<std::pair<std::size_t, double>>;
 	class ClassSeries : public ss::ClassSeries<ClassSeriesT, VectorPair> {

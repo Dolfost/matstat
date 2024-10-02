@@ -36,9 +36,9 @@ void VectorPairInfoDialog::fill() {
 		{
 			"Коефіцієнт кореляції", "r",
 			n(v_pair->vectorPair()->cor()), 
-			"—",
+			"",
 			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Lower)),
-			"—",
+			"",
 			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
@@ -46,8 +46,16 @@ void VectorPairInfoDialog::fill() {
 			n(v_pair->vectorPair()->corRatio()), 
 			n(v_pair->vectorPair()->corRatioDeviation()),
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Lower)),
-			"—",
+			"",
 			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Ранговий коефіцієнт кореляції Спірмена", "𝜏ₛ",
+			n(v_pair->vectorPair()->corSpearman()), 
+			n(v_pair->vectorPair()->corSpearmanDeviation()),
+			n(v_pair->vectorPair()->corSpearmanConfidence(i_prob, ss::Bound::Lower)),
+			"",
+			n(v_pair->vectorPair()->corSpearmanConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Дисперсійно коваріаційна матриця", ms({{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
@@ -80,6 +88,12 @@ void VectorPairInfoDialog::fill() {
 			n(v_pair->vectorPair()->corRatioDeviation()),
 			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corRatioConfidence(a, b); },
 			n(v_pair->vectorPair()->corRatio()),
+		},
+		{
+			"𝜏",
+			n(v_pair->vectorPair()->corSpearmanDeviation()),
+			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corSpearmanConfidence(a, b); },
+			n(v_pair->vectorPair()->corSpearman()),
 		},
 	});
 

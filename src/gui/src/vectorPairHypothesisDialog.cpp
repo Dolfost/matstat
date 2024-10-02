@@ -61,7 +61,16 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
-
+		case ss::VectorPairHypothesis::Procedure::corSpearman: {
+			doTest(
+				"<=",
+				[&](){ return std::abs(h_hypot.corSpearman()); },
+				[&](double a) { return ss::studQuantile(a, h_hypot[0]->size()-2); },
+				std::less_equal<double>(),
+				{"коефіцієнт раногової кореляції Спірмена не значущий", "коефіцієнт рангової кореляції Спірмена значущий"}
+			);
+			break;
+		}
 		case ss::VectorPairHypothesis::Procedure::Count: {}
 	}
 }

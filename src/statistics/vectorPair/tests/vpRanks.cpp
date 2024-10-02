@@ -14,9 +14,9 @@ int main() {
 		std::cout << std::setw(5) << x << " ";
 	}
 	std::cout << "\nY-ranks:\n";
-	for (auto const& y : vp.yRanks()) {
+	for (auto const& y : vp.ranks()) {
 		std::cout << std::setw(5) << y << " ";
 	}
 	
-	return vp.yRanks() != std::list<double>{1.5, 4, 1.5, 3, 6, 5, 7};
+	return vp.ranks() != std::list<double>{1.5, 4, 1.5, 3, 6, 5, 7};
 }

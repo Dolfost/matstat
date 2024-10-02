@@ -61,6 +61,15 @@ void VectorPairHypothesis::TTestCorRatio::adapt() {
 	s_value = (p2/(1.0-p2))*((double)(vp->size() - vp->corRatio.count())/(vp->corRatio.count() - 1));
 }
 
+void VectorPairHypothesis::CorSpearman::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair* vp = s_vector->at(0);
+	s_value = (vp->corSpearman()*std::sqrt(vp->size()-1)) / 
+		std::sqrt(1-std::pow(vp->corSpearman(),2));
+}
+
 void VectorPairHypothesis::invalidate() {
 	tTestCor.invalidate();
 	compareCor.invalidate();
