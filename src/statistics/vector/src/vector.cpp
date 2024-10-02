@@ -87,6 +87,8 @@ void Vector::invalidate() {
 	vs.invalidate();
 	cs.invalidate();
 
+	ranks.invalidate();
+
 	v_invalidateCallback();
 }
 

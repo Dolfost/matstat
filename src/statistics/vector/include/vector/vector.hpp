@@ -247,6 +247,23 @@ public: // statistics
 		virtual void adapt() override;
 	} sorted = Sorted(this);
 
+	class Ranks: public utils::StatisticContainer<std::list<double>> {
+	public:
+		using StatisticContainer::StatisticContainer;
+		const std::list<std::size_t>& links() {
+			if (!s_valid)
+				adapt();
+			return r_links;
+		}
+		virtual void invalidate() override {
+			r_links.clear();
+			StatisticContainer::invalidate();
+		}
+	protected:
+		virtual void adapt() override;
+		std::list<std::size_t> r_links;
+	} ranks = Ranks(this);
+
 public:
 	class ClassSeries: public ss::ClassSeries<std::pair<std::size_t, double>> {
 	// iterates as x = (h+0.5)i; i is the vector index

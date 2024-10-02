@@ -1,3 +1,4 @@
+#include <numeric>
 #include <vector/hypothesis.hpp>
 
 namespace ss {
@@ -62,16 +63,16 @@ void VectorHypothesis::IntragroupVariation::adapt() {
 void VectorHypothesis::OverallRank::adapt() {
 	std::list<double> vector = s_vector->overallVector();
 
-	size_t r = 1;
+	std::size_t idx = 1;
 	for (auto x = vector.begin(); x != vector.end(); x++) {
-		size_t times = 1;
+		std::list<std::size_t> idxList = {idx};
 		while (std::next(x) != vector.end() and *std::next(x) == *x) {
-			times++;
+			idxList.push_back(++idx);
 			x++;
 		}
 
-		s_value[*x] = r + 1.0/times;
-		r++;
+		s_value[*x] = std::accumulate(idxList.begin(), idxList.end(), 0.0) / idxList.size();
+		idx++;
 	}
 }
 

@@ -102,6 +102,13 @@ public:
 		std::function<double(double, double)> d_pdf;
 	} dist = Distribution(this);
 
+	class Yranks: public utils::StatisticContainer<std::list<double>, VectorPair> {
+	public:
+		using StatisticContainer::StatisticContainer;
+	protected:
+		virtual void adapt() override;
+	} yRanks = Yranks(this);
+
 	using ClassSeriesT = std::vector<std::pair<std::size_t, double>>;
 	class ClassSeries : public ss::ClassSeries<ClassSeriesT, VectorPair> {
 	public:
