@@ -188,6 +188,86 @@ public:
 	};
 };
 
+#define SS_WRAP_EXPRTK_SINGLE(name, vecType) \
+	struct exprtk_##name final: public ::exprtk::ifunction<double> { \
+		exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(0) { \
+			dv = vec; \
+		} \
+		double operator()() { \
+			return dv->name(); \
+		}; \
+	protected: \
+		ss::vecType* dv; \
+	}; \
+
+#define SS_WRAP_EXPRTK_PAIR(name, vecType) \
+	struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
+		exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("S") { \
+			dv = vec; \
+		} \
+		double operator()(parameter_list_t parameters) { \
+			typedef typename generic_type::string_view string_t; \
+			string_t m(parameters[0]); \
+			std::string mstr = m.begin(); \
+			ss::Measure measure; \
+			if (mstr == "pop") \
+				measure = ss::Measure::Population; \
+			else if (mstr == "spl") \
+				measure = ss::Measure::Sample; \
+			else  \
+				measure = ss::Measure::Unknown; \
+			return dv->name(measure); \
+		} \
+	protected: \
+		ss::vecType* dv; \
+	}; \
+
+#define SS_WRAP_EXPRTK_MAP(name, vecType) \
+	struct exprtk_##name final: public ::exprtk::ifunction<double> { \
+		exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(1) { \
+			dv = vec; \
+		} \
+		double operator()(const double& a) { \
+			return dv->name(a); \
+		}; \
+	protected: \
+		ss::vecType* dv; \
+	}; \
+
+#define SS_WRAP_EXPRTK_PAIR_MAP(name, vecType) \
+	struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
+		exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("TS") { \
+			dv = vec; \
+		} \
+		double operator()(parameter_list_t parameters) { \
+			typedef typename generic_type::scalar_view scalar_t; \
+			typedef typename generic_type::string_view string_t; \
+			string_t m(parameters[1]); \
+			std::string mstr = m.begin(); \
+			ss::Measure measure; \
+			if (mstr == "pop") \
+				measure = ss::Measure::Population; \
+			else if (mstr == "spl") \
+				measure = ss::Measure::Sample; \
+			else  \
+				measure = ss::Measure::Unknown; \
+			return dv->name(scalar_t(parameters[0]), measure); \
+		} \
+	protected: \
+		ss::vecType* dv; \
+	}; \
+
+#define SS_WRAP_EXPRTK_DISTRIBUTION(dist) \
+	struct exprtk_##dist final: public ::exprtk::ifunction<double> { \
+		exprtk_##dist(): ::exprtk::ifunction<double>(2) {} \
+		double operator()(const double& f, const double& t) { \
+			std::default_random_engine generator; \
+			generator.seed(std::chrono::system_clock::now().time_since_epoch().count()); \
+			std::dist<double> distrib(f, t); \
+			return distrib(generator); \
+		}; \
+	}; \
+
 }
 
 #endif // !_VECTOR_UTILS_HPP_

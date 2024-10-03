@@ -99,7 +99,7 @@ void VectorPlotBase::fill() {
 	y = {yRange.lower, yRange.lower};
 	standatrDeviation->setData(x, y);
 
-	x = {v_vector->walshAveragesMed()},
+	x = {v_vector->wam()},
 	y = {yRange.lower};
 	walshMed->setData(x, y);
 

@@ -1,6 +1,5 @@
 #include "vector.hpp"
 #include "vector/exprtk_quantile.hpp"
-#include "vector/exprtk_vector.hpp"
 
 namespace ss {
 
@@ -12,52 +11,50 @@ void Vector::setExprtkSymbolTable() {
   v_exprtkSymbolTable.add_constant("e", M_E);
   v_exprtkSymbolTable.add_constant("pi", M_PI);
 
-  exprtkMean *eMean = new exprtkMean(this);
+  exprtk_mean *eMean = new exprtk_mean(this);
   v_exprtkSymbolTable.add_function("mean", *eMean);
 
-  exprtkMed *eMed = new exprtkMed(this);
+  exprtk_med *eMed = new exprtk_med(this);
   v_exprtkSymbolTable.add_function("med", *eMed);
 
-  exprtkMad *eMad = new exprtkMad(this);
+  exprtk_mad *eMad = new exprtk_mad(this);
   v_exprtkSymbolTable.add_function("mad", *eMad);
 
-  exprtkKurtosis *eKurtosis = new exprtkKurtosis(this);
+  exprtk_kurtosis *eKurtosis = new exprtk_kurtosis(this);
   v_exprtkSymbolTable.add_function("kurtosis", *eKurtosis);
 
-  exprtkSkew *eSkew = new exprtkSkew(this);
+  exprtk_skew *eSkew = new exprtk_skew(this);
   v_exprtkSymbolTable.add_function("skew", *eSkew);
 
-  exprtkWalshAveragesMed *eWalshAveragesMed = new exprtkWalshAveragesMed(this);
-  v_exprtkSymbolTable.add_function("wam", *eWalshAveragesMed);
-
-  exprtkVariance *eVariance = new exprtkVariance(this);
+  exprtk_variance *eVariance = new exprtk_variance(this);
   v_exprtkSymbolTable.add_function("variance", *eVariance);
 
-  exprtkXmin *eXmin = new exprtkXmin(this);
+  exprtk_min *eXmin = new exprtk_min(this);
   v_exprtkSymbolTable.add_function("xmin", *eXmin);
 
-  exprtkXmax *eXmax = new exprtkXmax(this);
+  exprtk_max *eXmax = new exprtk_max(this);
   v_exprtkSymbolTable.add_function("xmax", *eXmax);
 
-  exprtkVariationCoef *eVariationCoef = new exprtkVariationCoef(this);
+  exprtk_cv *eVariationCoef = new exprtk_cv(this);
   v_exprtkSymbolTable.add_function("cv", *eVariationCoef);
 
-  exprtkSize *eSize = new exprtkSize(this);
+  exprtk_size *eSize = new exprtk_size(this);
   v_exprtkSymbolTable.add_function("size", *eSize);
 
-  exprtkStandartDeviation *eStandartDeviation =
-      new exprtkStandartDeviation(this);
-  v_exprtkSymbolTable.add_function("standartDeviation",
-                                         *eStandartDeviation);
+  exprtk_wam *e_Wam = new exprtk_wam(this);
+  v_exprtkSymbolTable.add_function("wam", *e_Wam);
 
-  exprtkRawMoment *eRawMoment = new exprtkRawMoment(this);
+  exprtk_sd *eStandartDeviation = new exprtk_sd(this);
+  v_exprtkSymbolTable.add_function("sd", *eStandartDeviation);
+
+	exprtk_rawMoment *eRawMoment = new exprtk_rawMoment(this);
   v_exprtkSymbolTable.add_function("rawMoment", *eRawMoment);
 
-  exprtkCentralMoment *eCentralMoment = new exprtkCentralMoment(this);
+  exprtk_centralMoment *eCentralMoment = new exprtk_centralMoment(this);
   v_exprtkSymbolTable.add_function("centralMoment", *eCentralMoment);
 
-  exprtkTurncatedMean *eTurncatedMean = new exprtkTurncatedMean(this);
-  v_exprtkSymbolTable.add_function("turncatedMean", *eTurncatedMean);
+  exprtk_tmean *eTurncatedMean = new exprtk_tmean(this);
+  v_exprtkSymbolTable.add_function("tmean", *eTurncatedMean);
 
 	ss::exprtk::NormQuantile *eNormQuantile = new ss::exprtk::NormQuantile;
   v_exprtkSymbolTable.add_function("normQuantile", *eNormQuantile);
@@ -71,23 +68,21 @@ void Vector::setExprtkSymbolTable() {
 	ss::exprtk::FishQuantile *eFishQuantile = new ss::exprtk::FishQuantile;
   v_exprtkSymbolTable.add_function("fishQuantile", *eFishQuantile);
 
-  exprtkBeta *eBeta = new exprtkBeta(this);
+  exprtk_beta *eBeta = new exprtk_beta(this);
   v_exprtkSymbolTable.add_function("beta", *eBeta);
 
-  exprtkCounterKurtosis *eCounterKurtosis = new exprtkCounterKurtosis(this);
+  exprtk_counterKurtosis *eCounterKurtosis = new exprtk_counterKurtosis(this);
   v_exprtkSymbolTable.add_function("counterKurtosis", *eCounterKurtosis);
 
-  exprtkNonparametricVariationCoef *eNonparametricVariationCoef =
-      new exprtkNonparametricVariationCoef(this);
-  v_exprtkSymbolTable.add_function("nonparametricCv",
-                                         *eNonparametricVariationCoef);
+  exprtk_ncv *eNonparametricVariationCoef = new exprtk_ncv(this);
+  v_exprtkSymbolTable.add_function("ncv", *eNonparametricVariationCoef);
 
 	ss::exprtk::NormalDistributionCdf *eNormalDistribtuionCdf =
       new ss::exprtk::NormalDistributionCdf();
 
   v_exprtkSymbolTable.add_function("normCfd", *eNormalDistribtuionCdf);
 
-  v_exprtkSymbolTable.add_function("uRand", *new ss::exprtkUniformRandom);
+  v_exprtkSymbolTable.add_function("uRand", *new ss::exprtk_uniform_real_distribution);
 }
 
 const std::string Vector::exprtkFuncitons =
@@ -106,12 +101,12 @@ const std::string Vector::exprtkFuncitons =
     "mean() — математичне сподівання\n"
     "mad() — абсолютне відхилення медіани\n"
     "cv(m) — коефіцієнт варіації (Пірсона)\n"
-    "counterCv(m) — непараметричний коефіцієнт варіації\n"
-    "standartDeviation(m) — середньоквадратичне відхилення\n"
-    "turncatedMean(k) — усічене середнє (k ∈ (0;0.5])\n"
+    "sd(m) — середньоквадратичне відхилення\n"
+    "tmean(k) — усічене середнє (k ∈ (0;0.5])\n"
     "rawMoment(n) — початковий момент n-го порядку (n ∈ R)\n"
     "centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
     "beta(k) — бета–коефіцієнт\n"
+    "ncv() — непараметричний коефіцієнт варіації\n"
     "uRand(a, b) — рівномірно розподілена випадкова величина";
 
 }

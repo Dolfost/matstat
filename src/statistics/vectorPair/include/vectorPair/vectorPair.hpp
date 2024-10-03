@@ -193,7 +193,12 @@ public:
 		double c_stepX = 0;
 		double c_stepY = 0;
 	} cs = ClassSeries(this);
-	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
+
+	class VarSeries: public ss::VarSeries<std::pair<double, double>, VectorPair> {
+	public:
+		using ss::VarSeries<std::pair<double, double>, VectorPair>::VarSeries;
+		virtual void adapt() override;
+	} vs = VarSeries(this);
 	
 	void reproduceDistribution();
 	
@@ -207,6 +212,9 @@ public:
 						const Vector&);
 	VectorPair(const VectorPair&);
 	VectorPair& operator=(const VectorPair&);
+
+public:
+	std::string transform(std::string, std::string);
 
 public:
 	void invalidate();

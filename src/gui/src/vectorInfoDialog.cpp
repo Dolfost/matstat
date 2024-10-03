@@ -64,7 +64,7 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Медіана серідніх Уолша", "WAM",
-			n(v_vector->vector()->walshAveragesMed()),
+			n(v_vector->vector()->wam()),
 			"",
 			"", 
 			"", 

@@ -7,6 +7,8 @@
 #include <list>
 #include <string>
 
+#include <random>
+
 #include"utils.hpp"
 
 namespace ss {
@@ -65,12 +67,19 @@ public:
 	typename std::map<From, std::pair<std::size_t, double>>::const_iterator cend() { return this->s_value.cend(); };
 	void clear() { return this->s_value.clear(); };
 	std::pair<std::size_t, double> operator[](From at) {
-		return this->s_value[at];
+		return this->value()[at];
 	}
 	std::size_t count() { // r 
 		return this->s_value.size();
 	};
 };
+
+SS_WRAP_EXPRTK_DISTRIBUTION(uniform_real_distribution);
+
+#define WRAP_SINGLE(name) SS_WRAP_EXPRTK_SINGLE(name, Vector)
+#define WRAP_PAIR(name) SS_WRAP_EXPRTK_PAIR(name, Vector)
+#define WRAP_MAP(name) SS_WRAP_EXPRTK_MAP(name, Vector)
+#define WRAP_PAIR_MAP(name) SS_WRAP_EXPRTK_PAIR_MAP(name, Vector)
 
 class Vector: protected std::list<double> {
 public: // statistics
@@ -80,6 +89,7 @@ public: // statistics
 	protected:
 		virtual void adapt(double degree) override;
 	} rawMoment = RawMoment(this);
+	WRAP_MAP(rawMoment);
 
 	class MeanDeviation: public utils::StatisticSingle<double> {
 	public:
@@ -87,6 +97,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} meanDeviation = MeanDeviation(this);
+	WRAP_SINGLE(meanDeviation);
 
 	class MeanConfidence: public utils::Confidence<double, double> {
 	public:
@@ -101,6 +112,7 @@ public: // statistics
 	protected:
 		virtual void adapt(double degre) override;
 	} centralMoment = CentralMoment(this);
+	WRAP_PAIR_MAP(centralMoment);
 
 	class VarianceDeviation: public utils::StatisticSingle<double> {
 	public:
@@ -108,6 +120,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} varianceDeviation = VarianceDeviation(this);
+	WRAP_SINGLE(varianceDeviation);
 
 	class VarianceConfidence: public utils::Confidence<double, double> {
 	public:
@@ -122,6 +135,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} skew = Skew(this);
+	WRAP_PAIR(skew);
 
 	class SkewDeviation: public utils::StatisticSingle<double> {
 	public:
@@ -143,6 +157,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} kurtosis = Kurtosis(this);
+	WRAP_PAIR(kurtosis);
 
 	class KurtosisDeviation: public utils::StatisticSingle<double> {
 	public:
@@ -164,6 +179,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} mad = MeanAbsoluteDeviation(this);
+	WRAP_SINGLE(mad);
 
 	class TurncatedMean: public utils::StatisticMap<double, double, std::size_t> {
 	public:
@@ -172,6 +188,7 @@ public: // statistics
 	protected:
 		virtual void adapt(std::size_t) override;
 	} tmean = TurncatedMean(this);
+	WRAP_MAP(tmean);
 
 	class CounterKurtosis: public utils::StatisticPair<double, Measure> {
 	public:
@@ -179,6 +196,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} counterKurtosis = CounterKurtosis(this);
+	WRAP_PAIR(counterKurtosis);
 
 	class StandardDeviation: public utils::StatisticPair<double, Measure> {
 	public:
@@ -186,6 +204,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} sd = StandardDeviation(this);
+	WRAP_PAIR(sd);
 
 	class Beta: public utils::StatisticMap<std::size_t, double> {
 	public:
@@ -193,6 +212,7 @@ public: // statistics
 	protected:
 		virtual void adapt(std::size_t) override;
 	} beta = Beta(this);
+	WRAP_MAP(beta);
 
 	class WalshAverages: public utils::StatisticContainer<std::list<double>> {
 	public:
@@ -206,7 +226,8 @@ public: // statistics
 		using StatisticSingle::StatisticSingle;
 	protected:
 		virtual void adapt() override;
-	} walshAveragesMed = WalshAveragesMedian(this);
+	} wam = WalshAveragesMedian(this);
+	WRAP_SINGLE(wam);
 
 	class KolmConsentCriterion: public utils::StatisticSingle<double> {
 	public:
@@ -214,6 +235,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} kolmConsentCriterion = KolmConsentCriterion(this);
+	WRAP_SINGLE(kolmConsentCriterion);
 
 	class PearConsentCriterion: public utils::StatisticSingle<double> {
 	public:
@@ -221,6 +243,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} pearConsentCriterion = PearConsentCriterion(this);
+	WRAP_SINGLE(pearConsentCriterion);
 
 	class CoefficientOfVariation: public utils::StatisticPair<double, Measure> {
 	public:
@@ -228,6 +251,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} cv = CoefficientOfVariation(this);
+	WRAP_PAIR(cv);
 
 	class NonparametricCoefficientOfVariation: public utils::StatisticSingle<double> {
 	public:
@@ -235,6 +259,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} ncv = NonparametricCoefficientOfVariation(this);
+	WRAP_SINGLE(ncv);
 
 	class Min: public utils::StatisticSingle<double> {
 	public:
@@ -242,6 +267,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} min = Min(this);
+	WRAP_SINGLE(min);
 
 	class Max: public utils::StatisticSingle<double> {
 	public:
@@ -249,6 +275,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} max = Max(this);
+	WRAP_SINGLE(max);
 
 	class Length: public utils::StatisticSingle<double> {
 	public:
@@ -256,6 +283,7 @@ public: // statistics
 	protected:
 		virtual void adapt() override;
 	} len = Length(this);
+	WRAP_SINGLE(len);
 
 	class Sorted: public utils::StatisticContainer<std::list<double>> {
 	public:
@@ -302,7 +330,7 @@ public:
 		std::size_t c_count = 0; // M
 		double c_h; // h
 	} cs = ClassSeries(this);
-	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
+
 	class VarSeries: public ss::VarSeries<double> {
 	public:
 		using ss::VarSeries<double>::VarSeries;
@@ -391,8 +419,13 @@ public:
 	using std::list<double>::empty;
 public: // binds
 	double variance(Measure m = Measure::Sample) { return centralMoment(2, m); };
+	WRAP_PAIR(variance);
 	double mean() { return rawMoment(1); };
+	WRAP_SINGLE(mean);
 	double med() { return tmean(0.5); };
+	WRAP_SINGLE(med);
+
+	WRAP_SINGLE(size);
 	
 public: // vector operations
 	void standardize();
@@ -429,6 +462,10 @@ private: // data
 	void setExprtkSymbolTable();
 };
 
+#undef WRAP_SINGLE
+#undef WRAP_PAIR
+#undef WRAP_MAP
+#undef WRAP_PAIR_MAP
 
 }
 

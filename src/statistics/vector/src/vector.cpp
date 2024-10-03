@@ -76,7 +76,7 @@ void Vector::invalidate() {
 	cv.invalidate();
 	ncv.invalidate();
 	walshAverages.invalidate();
-	walshAveragesMed.invalidate();
+	wam.invalidate();
 
 	sorted.invalidate();
 
@@ -98,7 +98,7 @@ std::string Vector::report() {
 		<< "Варіабельність (u₂) " << variance() << "\n"
 		<< "Медіана (MED) " << med() << "\n"
 		<< "Усічене середнє (α=0.25) " << tmean(0.25) << "\n"
-		<< "Медіана середніх Уолша (MED*) " << walshAveragesMed() << "\n"
+		<< "Медіана середніх Уолша (MED*) " << wam() << "\n"
 		<< "CКВ (σ) " << sd() << "\n"
 		<< "Абсолютне відхилення медіани (MAD) " << mad() << "\n"
 		<< "Коеф. асиметрії (A) " << skew() << "\n"
