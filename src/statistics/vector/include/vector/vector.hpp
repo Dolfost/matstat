@@ -55,6 +55,23 @@ protected:
 	std::vector<Cont> c_cumSeries; 
 };
 
+template<class From, class B=Vector>
+class VarSeries: public utils::StatisticContainer<std::map<From, std::pair<std::size_t, double>>, B> {
+public:
+	using utils::StatisticContainer<std::map<From, std::pair<std::size_t, double>>, B>::StatisticContainer;
+	typename std::map<From, std::pair<std::size_t, double>>::const_iterator begin() { return this->s_value.cbegin(); };
+	typename std::map<From, std::pair<std::size_t, double>>::const_iterator end() { return this->s_value.cend(); };
+	typename std::map<From, std::pair<std::size_t, double>>::const_iterator cbegin() { return this->s_value.cbegin(); };
+	typename std::map<From, std::pair<std::size_t, double>>::const_iterator cend() { return this->s_value.cend(); };
+	void clear() { return this->s_value.clear(); };
+	std::pair<std::size_t, double> operator[](From at) {
+		return this->s_value[at];
+	}
+	std::size_t count() { // r 
+		return this->s_value.size();
+	};
+};
+
 class Vector: protected std::list<double> {
 public: // statistics
 	class RawMoment: public utils::StatisticMap<double, double> {
@@ -286,22 +303,10 @@ public:
 		double c_h; // h
 	} cs = ClassSeries(this);
 	// has size of r; varSeries[x_i].first = n_i, varSeries[x_i].second = p_i
-	class VarSeries: public utils::StatisticContainer<std::map<double, std::pair<std::size_t, double>>> {
+	class VarSeries: public ss::VarSeries<double> {
 	public:
-		using StatisticContainer::StatisticContainer;
-		std::map<double, std::pair<std::size_t, double>>::const_iterator begin() { return s_value.cbegin(); };
-		std::map<double, std::pair<std::size_t, double>>::const_iterator end() { return s_value.cend(); };
-		std::map<double, std::pair<std::size_t, double>>::const_iterator cbegin() { return s_value.cbegin(); };
-		std::map<double, std::pair<std::size_t, double>>::const_iterator cend() { return s_value.cend(); };
-		void clear() { return s_value.clear(); };
-		std::pair<std::size_t, double> operator[](double at) {
-			return s_value[at];
-		}
-
+		using ss::VarSeries<double>::VarSeries;
 		virtual void adapt() override;
-		std::size_t count() { // r 
-			return value().size();
-		};
 	} vs = VarSeries(this);
 		
 	class Distribution {
