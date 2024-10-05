@@ -4,7 +4,17 @@
 #include "exprtk.hpp"
 #include "quantile.hpp"
 
+#include <random>
+
 namespace ss::exprtk {
+
+static const std::string functionNames = 
+	"normQuantile(a) — квантиль нормального розподілу\n"
+	"studQuantile(a,v) — квантиль розподілу Стьюдента\n"
+	"pearQuantile(a,v) — квантиль розподілу Пірсона\n"
+	"fishQuantile(a,v1,v2) — квантиль розподілу Фішера\n"
+	"normCdf(u) — функція розподілу нормованого нормального розподілу\n"
+	"uRand(a,b) — рівномірно розподілена випадкова величина";
 
 struct NormQuantile final : public ::exprtk::ifunction<double> {
 	NormQuantile() : ::exprtk::ifunction<double>(1) {}
@@ -37,6 +47,16 @@ struct NormalDistributionCdf final : public ::exprtk::ifunction<double> {
 	double operator()(const double& u) {
 		return normalDistributionCdf(u);
 	}
+};
+
+struct exprtk_uniform_real_distribution final: public ::exprtk::ifunction<double> {
+	exprtk_uniform_real_distribution(): ::exprtk::ifunction<double>(2) {}
+	double operator()(const double& f, const double& t) {
+		std::default_random_engine generator;
+		generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+		std::uniform_real_distribution<double> distrib(f, t);
+		return distrib(generator);
+	};
 };
 
 }

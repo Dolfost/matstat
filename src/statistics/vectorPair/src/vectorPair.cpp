@@ -17,6 +17,18 @@ VectorPair::VectorPair(const std::list<double> xx,
 
 	v_x.setInvalidateCallback(iLambda);
 	v_y.setInvalidateCallback(iLambda);
+
+	setExprtkSymbolTable(v_exprtkSymbolTable, this);
+}
+
+void VectorPair::setX(const std::list<double>& x) {
+	v_x = x;
+	invalidate();
+}
+
+void VectorPair::setY(const std::list<double>& y) {
+	v_y = y;
+	invalidate();
 }
 
 VectorPair::VectorPair(const Vector& xx, 
@@ -32,22 +44,31 @@ VectorPair::VectorPair(const Vector& xx,
 
 	v_x.setInvalidateCallback(iLambda);
 	v_y.setInvalidateCallback(iLambda);
+
+	setExprtkSymbolTable(v_exprtkSymbolTable, this);
 }
 
 void VectorPair::invalidate() {
 	checkSize();
 }
 
-VectorPair::VectorPair(const VectorPair& other) {
-	operator=(other);
+VectorPair::VectorPair(const VectorPair& other): VectorPair(other.x.list(), other.y.list()) {
 }
-VectorPair& VectorPair::operator=(const VectorPair& other) {
-	v_x = other.v_x;
-	v_y = other.v_y;
 
-	min = other.min;
-	max = other.max;
-	cs = other.cs;
+VectorPair& VectorPair::operator=(const VectorPair& other) {
+	auto c = v_x.invalidateCallback();
+	v_x.setInvalidateCallback([](){});
+	v_y.setInvalidateCallback([](){});
+
+	v_x = other.x;
+	v_y = other.y;
+
+	v_x.setInvalidateCallback(c);
+	v_y.setInvalidateCallback(c);
+	//
+	// min = other.min;
+	// max = other.max;
+	// cs = other.cs;
 
 	return *this;
 }

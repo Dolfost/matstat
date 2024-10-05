@@ -257,17 +257,13 @@ public:
 		ss::vecType* dv; \
 	}; \
 
-#define SS_WRAP_EXPRTK_DISTRIBUTION(dist) \
-	struct exprtk_##dist final: public ::exprtk::ifunction<double> { \
-		exprtk_##dist(): ::exprtk::ifunction<double>(2) {} \
-		double operator()(const double& f, const double& t) { \
-			std::default_random_engine generator; \
-			generator.seed(std::chrono::system_clock::now().time_since_epoch().count()); \
-			std::dist<double> distrib(f, t); \
-			return distrib(generator); \
-		}; \
-	}; \
-
 }
+
+#define SS_ADD_FUNCTION_N(f, name) \
+	t.add_function(p + name, *(new exprtk_##f(v))); \
+
+#define SS_ADD_FUNCTION(f) \
+	t.add_function(p + #f, *(new exprtk_##f(v))); \
+
 
 #endif // !_VECTOR_UTILS_HPP_

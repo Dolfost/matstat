@@ -74,8 +74,6 @@ public:
 	};
 };
 
-SS_WRAP_EXPRTK_DISTRIBUTION(uniform_real_distribution);
-
 #define WRAP_SINGLE(name) SS_WRAP_EXPRTK_SINGLE(name, Vector)
 #define WRAP_PAIR(name) SS_WRAP_EXPRTK_PAIR(name, Vector)
 #define WRAP_MAP(name) SS_WRAP_EXPRTK_MAP(name, Vector)
@@ -452,14 +450,17 @@ public: // general
 	};
 	static const std::string exprtkFuncitons;
 	//  TODO: move from std::list to Vector insertion
-	const std::list<double>& list() { 
+	const std::list<double>& list() const { 
 		return static_cast<const std::list<double>&>(*this); 
 	}
+	Vector& operator=(const Vector&);
 
-private: // data
+	static void addStatisticsToSymbolTable(::exprtk::symbol_table<double>&, Vector*, std::string = "");
+	static void addGenericsToSymbolTable(::exprtk::symbol_table<double>&, std::string = "");
+
+protected: // data
 	std::function<void(void)> v_invalidateCallback = [](){};
 	::exprtk::symbol_table<double> v_exprtkSymbolTable;
-	void setExprtkSymbolTable();
 };
 
 #undef WRAP_SINGLE

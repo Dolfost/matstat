@@ -42,15 +42,6 @@ public:
 		}
 		procedureGroupBox->layout()->addWidget(procedureComboBox);
 
-		QGroupBox* vectorsGroupBox = new QGroupBox("Вектори:");
-		vectorsGroupBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-		vectorsGroupBox->setLayout(new QHBoxLayout);
-		vectorsGroupBox->layout()->setContentsMargins(2,2,2,2);
-		vectorsLineEdit = new QLineEdit;
-		vectorsLineEdit->setReadOnly(true);
-		vectorsGroupBox->layout()->addWidget(vectorsLineEdit);
-		updateObjectsList();
-
 		levelSpinBox = new QDoubleSpinBox;
 		levelSpinBox->setRange(0.001, 0.999);
 		levelSpinBox->setDecimals(5);
@@ -77,7 +68,7 @@ public:
 		pmTable->setHorizontalHeaderLabels(header);
 
 		secondaryLayout->addWidget(procedureGroupBox);
-		secondaryLayout->addWidget(vectorsGroupBox);
+		secondaryLayout->addWidget(s_vectorsGroupBox);
 		secondaryLayout->addLayout(spinBoxLayout);
 		v_mainLayout->addLayout(secondaryLayout);
 		v_mainLayout->addWidget(resTextEdit);
@@ -135,16 +126,6 @@ public:
 		}
 	}
 
-	void updateObjectsList() {
-		QString vecs;
-		for (auto const& v : v_vectorEntry) {
-			vecs.append(v->name() + ", ");
-		}
-		vecs.chop(2);
-
-		vectorsLineEdit->setText(vecs);
-	};
-
 protected:
 	H h_hypot;
 	QList<double> h_probs = {
@@ -155,7 +136,6 @@ protected:
 	
 protected:
 	QComboBox* procedureComboBox = nullptr;
-	QLineEdit* vectorsLineEdit = nullptr;
 	QTextEdit* resTextEdit = nullptr;
 	QDoubleSpinBox* levelSpinBox = nullptr;
 	QTableWidget* pmTable = nullptr;

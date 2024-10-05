@@ -7,7 +7,6 @@
 
 #include <spinBoxAction.hpp>
 
-#include <transformationFormulaEditorDialog.hpp>
 #include <distributionReproducerDialog.hpp>
 #include <setGeneratorDialog.hpp>
 
@@ -18,6 +17,7 @@
 #include <vectorDistributionDialog.hpp>
 #include <vectorDensityDialog.hpp>
 #include <vectorHypothesisDialog.hpp>
+#include <vectorTransformationDialog.hpp>
 
 #include <vectorPairDistributionDialog.hpp>
 #include <vectorPairCorelationDialog.hpp>
@@ -25,6 +25,7 @@
 #include <vectorPairDensity3dDialog.hpp>
 #include <vectorPairInfoDialog.hpp>
 #include <vectorPairHypothesisDialog.hpp>
+#include <vectorPairTransformationDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -450,6 +451,12 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 
 	menu->addSeparator();
 
+	QAction *transformAction = menu->addAction("Трансформації…");
+	connect(transformAction, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairTransformAction);
+
+	menu->addSeparator();
+
 	QAction *infoAction = menu->addAction("Про вектор…");
 	connect(infoAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairInfoAction);
@@ -654,12 +661,27 @@ void VectorContainerWidget::vectorTransformAction() {
 		vec.push_back(v);
 	}
 
-	TransformationFormulaEditorDialog *tfe =
-		new TransformationFormulaEditorDialog(vec, this);
-	connect(tfe, &TransformationFormulaEditorDialog::vectorTransformed, this,
+	VectorTransformationDialog *tfe =
+		new VectorTransformationDialog(vec, this);
+	connect(tfe, &VectorTransformationDialog::vectorTransformed, this,
 				 &VectorContainerWidget::appendVector);
 	connect(this, &VectorContainerWidget::vectorDeleted, tfe,
-				 &TransformationFormulaEditorDialog::vectorDeletedHandler);
+				 &VectorTransformationDialog::vectorDeletedHandler);
+}
+
+void VectorContainerWidget::vectorPairTransformAction() {
+	QList<VectorPair*> vec;
+
+	for (auto const &v : selectedVectorPairsList) {
+		vec.push_back(v);
+	}
+
+	VectorPairTransformationDialog *tfe =
+		new VectorPairTransformationDialog(vec, this);
+	connect(tfe, &VectorPairTransformationDialog::vectorTransformed, this,
+				 &VectorContainerWidget::appendVectorPair);
+	connect(this, &VectorContainerWidget::vectorPairDeleted, tfe,
+				 &VectorPairTransformationDialog::vectorDeletedHandler);
 }
 
 void VectorContainerWidget::vectorReproductionAction() {

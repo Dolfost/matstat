@@ -7,7 +7,15 @@
 #include <utility>
 #include <cstddef>
 
+#include <exprtk.hpp>
+
+
 namespace ss {
+
+#define WRAP_SINGLE(name) SS_WRAP_EXPRTK_SINGLE(name, VectorPair)
+#define WRAP_PAIR(name) SS_WRAP_EXPRTK_PAIR(name, VectorPair)
+#define WRAP_MAP(name) SS_WRAP_EXPRTK_MAP(name, VectorPair)
+#define WRAP_PAIR_MAP(name) SS_WRAP_EXPRTK_PAIR_MAP(name, VectorPair)
 
 class VectorPair {
 public:
@@ -16,6 +24,7 @@ public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
 	} cor = Correlation(this);
+	WRAP_SINGLE(cor)
 
 	class CorrelationConfidence: public utils::Confidence<double, double, VectorPair> {
 	public:
@@ -28,18 +37,21 @@ public:
 		using StatisticMap::StatisticMap;
 		virtual void adapt(double) override;
 	} pRawMoment = ProductRawMoment(this);
+	WRAP_MAP(pRawMoment)
 
 	class Min: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override { s_value = std::min(s_vector->x.min(), s_vector->y.min()); }
 	} min = Min(this);
+	WRAP_SINGLE(min)
 
 	class Max: public utils::StatisticSingle<double, VectorPair> {
 	public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override { s_value = std::max(s_vector->x.max(), s_vector->y.max()); }
 	} max = Max(this);
+	WRAP_SINGLE(max)
 
 	class CorrelationRatio: public utils::StatisticSingle<double, VectorPair> {
 	public:
@@ -63,6 +75,7 @@ public:
 	protected:
 		std::size_t c_count = 0;
 	} corRatio = CorrelationRatio(this);
+	WRAP_SINGLE(corRatio)
 
 	class CorrelationRatioDeviation: public utils::StatisticSingle<double, VectorPair> {
 	public:
@@ -88,6 +101,7 @@ public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
 	} corSpearman = CorrelationSpearman(this);
+	WRAP_SINGLE(corSpearman)
 
 	class CorrelationSpearmanDeviation: public utils::StatisticSingle<double, VectorPair> {
 	public:
@@ -106,6 +120,7 @@ public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
 	} corKendall = CorrelationKendall(this);
+	WRAP_SINGLE(corKendall)
 
 	class CorrelationKendallDeviation: public utils::StatisticSingle<double, VectorPair> {
 	public:
@@ -121,6 +136,7 @@ public:
 
 	std::size_t size() { return v_x.size(); };
 	double pmean() { return pRawMoment(1); };
+	WRAP_SINGLE(pmean)
 
 public:
 	class Distribution: public utils::StatisticSingle<std::function<double(double, double)>, VectorPair> {
@@ -212,6 +228,8 @@ public:
 						const Vector&);
 	VectorPair(const VectorPair&);
 	VectorPair& operator=(const VectorPair&);
+	void setX(const std::list<double>&);
+	void setY(const std::list<double>&);
 
 public:
 	std::string transform(std::string, std::string);
@@ -219,11 +237,20 @@ public:
 public:
 	void invalidate();
 
-private:
+	static void setExprtkSymbolTable(::exprtk::symbol_table<double>&, VectorPair*, std::string = "");
+	static const std::string exprtkFunctions;
+protected:
 	Vector v_x;
 	Vector v_y;
 	void checkSize();
+
+	::exprtk::symbol_table<double> v_exprtkSymbolTable;
 };
+
+#undef WRAP_SINGLE
+#undef WRAP_PAIR
+#undef WRAP_MAP
+#undef WRAP_PAIR_MAP
 
 }
 
