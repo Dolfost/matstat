@@ -1,12 +1,25 @@
 #include "vectorInfoDialog.hpp"
 #include "Section.h"
 
+#include <namedWidget.hpp>
+#include <sectionedWidget.hpp>
+
 VectorInfoDialog::VectorInfoDialog(
 		Vector* v,
 		QWidget *p, Qt::WindowFlags f) 
 	: InfoDialogBase(v, p, f) {
 	v_vector = v;
 
+	auto tw = new NamedWidget<InfoTableWidget>;
+	tw->setTitle("Точкові оцінки");
+	tw->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	v_table = tw->widget();
+	v_mainLayout->insertWidget(0, tw);
+
+	auto iw = new SectionedWidget<IntervalTableWidget>;
+	iw->setTitle("Інтервальні оцінки");
+	v_interval = iw->widget();
+	v_mainLayout->insertWidget(1, iw);
 
 	ui::Section* section = new ui::Section("Варіаційний ряд", 150);
 	QHBoxLayout* lay = new QHBoxLayout;
@@ -191,9 +204,10 @@ void VectorInfoDialog::fill() {
 			}
 		);
 	}
-	fillTable(contents);
 
-	fillConfidence({
+	v_table->fill(contents);
+
+	v_interval->fill({
 		{
 			"v₁",
 			n(v_vector->vector()->meanDeviation()),

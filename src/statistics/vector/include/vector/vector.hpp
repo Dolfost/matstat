@@ -67,7 +67,9 @@ public:
 	typename std::map<From, std::pair<std::size_t, double>>::const_iterator cend() { return this->s_value.cend(); };
 	void clear() { return this->s_value.clear(); };
 	std::pair<std::size_t, double> operator[](From at) {
-		return this->value()[at];
+		if (!this->s_valid)
+			this->adapt();
+		return this->s_value[at];
 	}
 	std::size_t count() { // r 
 		return this->s_value.size();

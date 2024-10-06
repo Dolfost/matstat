@@ -221,6 +221,31 @@ public:
 	Vector& x = v_x;
 	Vector& y = v_y;
 
+	class ConnectionsTable: public utils::StatisticContainer<std::vector<std::vector<double>>, VectorPair> {
+	public:
+		using StatisticContainer::StatisticContainer;
+		virtual void adapt() override;
+		virtual void invalidate() override {
+			c_rowCount.clear();
+			c_columnCount.clear();
+			StatisticContainer::invalidate();
+		};
+
+		const std::vector<double>& col() {
+			if (!s_valid)
+				adapt();
+			return c_rowCount;
+		}
+		const std::vector<double>& row() {
+			if (!s_valid)
+				adapt();
+			return c_columnCount;
+		}
+
+	protected:
+		std::vector<double> c_rowCount, c_columnCount;
+	};
+
 public:
 	VectorPair(const std::list<double> ft = {}, 
 						const std::list<double> sd = {});

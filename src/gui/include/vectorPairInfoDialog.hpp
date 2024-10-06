@@ -16,6 +16,9 @@ protected:
 
 	QString v(double, double);
 
+	InfoTableWidget* v_table = nullptr;
+	IntervalTableWidget* v_interval = nullptr;
+
 public slots:
 	virtual void fill() override;
 };

@@ -1,5 +1,8 @@
 #include <vectorPairInfoDialog.hpp>
 
+#include <namedWidget.hpp>
+#include <sectionedWidget.hpp>
+
 VectorPairInfoDialog::VectorPairInfoDialog(
 	VectorPair* vp, 
 	QWidget* p,
@@ -7,6 +10,17 @@ VectorPairInfoDialog::VectorPairInfoDialog(
 ): InfoDialogBase(vp, p, f) {
 	v_pair = vp;
 	v_mainLayout->addWidget(i_additionalSection);
+
+	auto tw = new NamedWidget<InfoTableWidget>;
+	tw->setTitle("Точкові оцінки");
+	tw->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	v_table = tw->widget();
+	v_mainLayout->insertWidget(0, tw);
+
+	auto iw = new SectionedWidget<IntervalTableWidget>;
+	iw->setTitle("Інтервальні оцінки");
+	v_interval = iw->widget();
+	v_mainLayout->insertWidget(1, iw);
 
 	fill();
 };
@@ -16,7 +30,7 @@ QString VectorPairInfoDialog::v(double x, double y) {
 }
 
 void VectorPairInfoDialog::fill() {
-	fillTable({
+	v_table->fill({
 		{
 			"Вектор стат. центральних моменів другого порядку", "(μₓ,μᵧ)",
 			v(v_pair->vectorPair()->x.variance(), v_pair->vectorPair()->y.variance()), 
@@ -84,7 +98,7 @@ void VectorPairInfoDialog::fill() {
 		},
 	});
 	
-	fillConfidence({
+	v_interval->fill({
 		{
 			"r",
 			"",

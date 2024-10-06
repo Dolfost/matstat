@@ -34,6 +34,8 @@ protected:
 
 protected:
 	QTableWidget* v_var = nullptr;
+	InfoTableWidget* v_table = nullptr;
+	IntervalTableWidget* v_interval = nullptr;
 };
 
 #endif // !_VECTOR_INFO_DIALOG_HPP_
