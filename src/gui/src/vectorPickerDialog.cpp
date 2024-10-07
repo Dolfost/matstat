@@ -40,6 +40,7 @@ void VectorPickerDialog::fileContents(QString filepath) {
 		dataSeries.readData(filepath.toStdString());
 	} catch (std::exception& ex) {
 		statusBar->showMessage(ex.what());
+		return;
 	}
 
 	fill();

@@ -79,6 +79,8 @@ InfoDialogBase::InfoTableWidget::InfoTableWidget(
 }
 
 void InfoDialogBase::InfoTableWidget::fill(QList<QStringList> contents) {
+	if (contents.length() == 0)
+		return;
 	clear();
 	setRowCount(contents.length());
 	setColumnCount(contents[0].length());

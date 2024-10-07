@@ -9,6 +9,10 @@ const std::vector<std::string> VectorPairHypothesis::procedureName {
 	"Адекватність відтворення нормального розподілу",
 	"Значущість рангового коефіцієнта кореляції Спірмена",
 	"Значущість рангового коефіцієнта кореляції Кендалла",
+	"Значущість коефіцієнта сполучень Ф",
+	"Значущість коефіцієнта звʼязку Юла Q",
+	"Значущість коефіцієнта звʼязку Юла Y",
+	"Міра звʼязаності (таблиця сполучень)",
 };
 
 void VectorPairHypothesis::TTestCor::adapt() {
@@ -79,6 +83,50 @@ void VectorPairHypothesis::CorKendall::adapt() {
 	VectorPair* vp = s_vector->at(0);
 	s_value = (2*vp->corKendall()*std::sqrt(vp->size()*(vp->size()-1))) /
 		std::sqrt(2*(2*vp->size()+5));
+}
+
+void VectorPairHypothesis::ConnectionsPhi::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair& v = *s_vector->at(0);
+	v.conTable.connectionsPhi();
+	if (v.size() > 40)
+		s_value = v.size() * std::pow(v.conTable.connectionsPhi(), 2);
+	else 
+		s_value = v.size() * std::pow(v.conTable()[0][0]*v.conTable()[1][1] - v.conTable()[0][1]*v.conTable()[1][0] - 0.5, 2)/
+			(v.conTable.row()[0]*v.conTable.row()[1]*v.conTable.col()[0]*v.conTable.col()[1]);
+}
+
+void VectorPairHypothesis::CouplingQ::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair& v = *s_vector->at(0);
+	s_value = 2*v.conTable.copulingQ() / 
+		((1-std::pow(v.conTable.copulingQ(),2))*std::sqrt(1/v.conTable()[0][0] + 1/v.conTable()[0][1] + 1/v.conTable()[1][0] + 1/v.conTable()[1][1]));
+}
+
+void VectorPairHypothesis::CouplingY::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair& v = *s_vector->at(0);
+	s_value = 4*v.conTable.copulingY() / 
+		((1-std::pow(v.conTable.copulingY(),2))*std::sqrt(1/v.conTable()[0][0] + 1/v.conTable()[0][1] + 1/v.conTable()[1][0] + 1/v.conTable()[1][1]));
+}
+
+void VectorPairHypothesis::CouplingMeasure::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair& v = *s_vector->at(0);
+	s_value = 0;
+	for (int i = 0; i < v.conTable.row().size(); i++)
+		for (int j = 0; j < v.conTable.col().size(); j++) {
+			double nij = v.conTable.row()[i]*v.conTable.col()[j]/v.size();
+			s_value += std::pow(v.conTable()[i][j] - nij, 2) / nij;
+		}
 }
 
 void VectorPairHypothesis::invalidate() {

@@ -81,6 +81,46 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
+		case ss::VectorPairHypothesis::Procedure::ConnectionsPhi: {
+			doTest(
+				"<",
+				[&](){ return h_hypot.connectionsPhi(); },
+				[&](double a) { return ss::studQuantile(1-a, 1); },
+				std::less<double>(),
+				{"коефіцієнт сполучень Ф не значущий", "коефіцієнт сполучень Ф значущий"}
+			);
+			break;
+		}
+		case ss::VectorPairHypothesis::Procedure::CouplingQ: {
+			doTest(
+				"<=",
+				[&](){ return std::abs(h_hypot.couplingQ()); },
+				[&](double a) { return ss::normQuantile(1-a/2); },
+				std::less_equal<double>(),
+				{"Коефіцієнт звʼязку Юла Q не значущий", "Коефіцієнт звʼязку Юла Q значущий"}
+			);
+			break;
+		}
+		case ss::VectorPairHypothesis::Procedure::CouplingY: {
+			doTest(
+				"<=",
+				[&](){ return std::abs(h_hypot.couplingY()); },
+				[&](double a) { return ss::normQuantile(1-a/2); },
+				std::less_equal<double>(),
+				{"Коефіцієнт звʼязку Юла Y не значущий", "Коефіцієнт звʼязку Юла Y значущий"}
+			);
+			break;
+		}
+		case ss::VectorPairHypothesis::Procedure::CouplingMeasure: {
+			doTest(
+				"<=",
+				[&](){ return h_hypot.couplingMeasure(); },
+				[&](double a) { return ss::pearQuantile(1-a, (h_hypot[0]->conTable.row().size()-1)*(h_hypot[0]->conTable.col().size()-1)); },
+				std::less_equal<double>(),
+				{"Звʼязок між X та Y відсутній", "Звʼязок між X та Y присутній"}
+			);
+			break;
+		}
 		case ss::VectorPairHypothesis::Procedure::Count: {}
 	}
 }

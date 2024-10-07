@@ -234,17 +234,56 @@ public:
 		const std::vector<double>& col() {
 			if (!s_valid)
 				adapt();
-			return c_rowCount;
+			return c_columnCount;
 		}
 		const std::vector<double>& row() {
 			if (!s_valid)
 				adapt();
-			return c_columnCount;
+			return c_rowCount;
 		}
+
+		bool is2by2() {
+			return !(value().size() != 2 or value()[0].size() != 2);
+		}
+
+		class FehnerIndex: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} fehnerIndex = FehnerIndex(this);
+
+		class ConnectionsPhi: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} connectionsPhi = ConnectionsPhi(this);
+
+		class CouplingQ: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} copulingQ = CouplingQ(this);
+
+		class CouplingY: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} copulingY = CouplingY(this);
+
+		class PearsonConnectionsCoefficient: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} pearConnecetionsCoef = PearsonConnectionsCoefficient(this);
+
+		class KendallCouplingMeasure: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} kendallCouplingMeasure = KendallCouplingMeasure(this);
+
+		class StuardStatistics: public utils::StatisticSingle<double, ConnectionsTable> {
+			using StatisticSingle::StatisticSingle;
+			virtual void adapt() override;
+		} stuardStatistics = StuardStatistics(this);
 
 	protected:
 		std::vector<double> c_rowCount, c_columnCount;
-	};
+	} conTable = ConnectionsTable(this);
 
 public:
 	VectorPair(const std::list<double> ft = {}, 

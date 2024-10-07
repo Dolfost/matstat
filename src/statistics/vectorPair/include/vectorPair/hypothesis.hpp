@@ -16,6 +16,10 @@ public:
 		normalDistrubutionRevelance,
 		corSpearman,
 		corKendall,
+		ConnectionsPhi,
+		CouplingQ,
+		CouplingY,
+		CouplingMeasure,
 		Count
 	};
 	
@@ -67,6 +71,39 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} corKendall = CorKendall(this);
+
+	class ConnectionsPhi
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} connectionsPhi = ConnectionsPhi(this);
+
+	class CouplingQ
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} couplingQ = CouplingQ(this);
+
+	class CouplingY
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} couplingY = CouplingY(this);
+
+	class CouplingMeasure
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} couplingMeasure = CouplingMeasure(this);
+
 
 public:
 	virtual void invalidate() override;

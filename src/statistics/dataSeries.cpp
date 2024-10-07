@@ -1,3 +1,4 @@
+#include <iostream>
 #include <list>
 #include <string>
 #include <stdexcept>
@@ -18,7 +19,8 @@ void DataSeries::readData(std::string fn) {
 	filename = fn;
 
 	std::ifstream file;
-	file.exceptions(std::ios::badbit | std::ios::failbit);
+	// file.exceptions(std::ios::badbit | std::ios::failbit);
+	file.exceptions(std::ios::badbit);
 
 	file.open(filename, std::ios::in);
 
@@ -42,8 +44,6 @@ void DataSeries::readData(std::string fn) {
 			return !s.length();
 		});
 		words.erase(e, words.end());
-
-		
 
 		// skip empty lines
 		if (words.size() == 0)

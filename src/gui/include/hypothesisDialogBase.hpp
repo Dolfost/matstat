@@ -96,6 +96,9 @@ public:
 		} catch (const char* ex) {
 			resTextEdit->setText("Помилка: " + QString(ex));
 			return;
+		} catch (const std::exception& ex) {
+			resTextEdit->setText("Помилка: " + QString(ex.what()));
+			return;
 		}
 
 		QString res = QString(

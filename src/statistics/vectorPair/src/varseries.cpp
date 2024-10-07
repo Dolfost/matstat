@@ -3,6 +3,7 @@
 namespace ss {
 
 void VectorPair::VarSeries::adapt() {
+	s_value.clear();
 	for (auto x = s_vector->x.begin(), y = s_vector->y.begin(); x != s_vector->x.end(); x++, y++) {
 		s_value[{*x, *y}].first++;
 	}
