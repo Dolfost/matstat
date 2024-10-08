@@ -20,7 +20,7 @@ void VectorPairHypothesisDialog::fill() {
 	switch ((ss::VectorPairHypothesis::Procedure)procedureComboBox->currentIndex()) {
 		case ss::VectorPairHypothesis::Procedure::tTestCor: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return std::abs(h_hypot.tTestCor()); },
 				[&](double a) { return ss::studQuantile(1-a/2, h_hypot[0]->size()-2); },
 				std::less_equal<double>(),
@@ -30,7 +30,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::compareCor: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return h_hypot.compareCor(); },
 				[&](double a) { return ss::pearQuantile(1-a, h_hypot.size()-1); },
 				std::less_equal<double>(),
@@ -40,7 +40,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::tTestCorRatio: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return h_hypot.tTestCorRatio(); },
 				[&](double a) { return ss::fishQuantile(1-a, h_hypot[0]->corRatio.count() - 1, h_hypot[0]->size() - h_hypot[0]->corRatio.count()); },
 				std::less_equal<double>(),
@@ -50,7 +50,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return h_hypot.normalDistributionRevelance(); },
 				[&](double a) { return ss::pearQuantile(a, h_hypot[0]->cs.countX()*h_hypot[0]->cs.countY()-2); },
 				std::less_equal<double>(),
@@ -63,7 +63,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::corSpearman: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return h_hypot.corSpearman(); },
 				[&](double a) { return ss::studQuantile(a, h_hypot[0]->size()-2); },
 				std::less_equal<double>(),
@@ -73,7 +73,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::corKendall: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return std::abs(h_hypot.corKendall()); },
 				[&](double a) { return ss::normQuantile(1-a/2); },
 				std::less_equal<double>(),
@@ -93,7 +93,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::CouplingQ: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return std::abs(h_hypot.couplingQ()); },
 				[&](double a) { return ss::normQuantile(1-a/2); },
 				std::less_equal<double>(),
@@ -103,7 +103,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::CouplingY: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return std::abs(h_hypot.couplingY()); },
 				[&](double a) { return ss::normQuantile(1-a/2); },
 				std::less_equal<double>(),
@@ -113,7 +113,7 @@ void VectorPairHypothesisDialog::fill() {
 		}
 		case ss::VectorPairHypothesis::Procedure::CouplingMeasure: {
 			doTest(
-				"<=",
+				"≤",
 				[&](){ return h_hypot.couplingMeasure(); },
 				[&](double a) { return ss::pearQuantile(1-a, (h_hypot[0]->conTable.row().size()-1)*(h_hypot[0]->conTable.col().size()-1)); },
 				std::less_equal<double>(),

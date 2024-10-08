@@ -50,6 +50,8 @@ VectorPair::VectorPair(const Vector& xx,
 
 void VectorPair::invalidate() {
 	checkSize();
+
+	cor.invalidate();
 }
 
 VectorPair::VectorPair(const VectorPair& other): VectorPair(other.x.list(), other.y.list()) {

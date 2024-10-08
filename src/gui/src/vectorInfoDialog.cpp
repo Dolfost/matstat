@@ -42,42 +42,43 @@ VectorInfoDialog::VectorInfoDialog(
 }
 
 void VectorInfoDialog::fill() {
+	ss::Vector& vv = *v_vector->vector();
 	QList<QStringList> contents = {
 		{
 			"Стат. початковий момент першого порядку", "v₁",
-			n(v_vector->vector()->mean()), 
-			n(v_vector->vector()->meanDeviation()),
-			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Lower)),
+			n(vv.mean()), 
+			n(vv.meanDeviation()),
+			n(vv.meanConfidence(i_prob, ss::Bound::Lower)),
 			"",
-			n(v_vector->vector()->meanConfidence(i_prob, ss::Bound::Upper)),
+			n(vv.meanConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Стат. центральний момент другого порядку", "μ₂",
-			n(v_vector->vector()->variance()),
-			n(v_vector->vector()->varianceDeviation()),
-			n(v_vector->vector()->varianceConfidence(i_prob, ss::Bound::Lower)),
-			n(v_vector->vector()->variance(ss::Measure::Population)),
-			n(v_vector->vector()->varianceConfidence(i_prob, ss::Bound::Upper)),
+			n(vv.variance()),
+			n(vv.varianceDeviation()),
+			n(vv.varianceConfidence(i_prob, ss::Bound::Lower)),
+			n(vv.variance(ss::Measure::Population)),
+			n(vv.varianceConfidence(i_prob, ss::Bound::Upper)),
 		 },
 		{
 			"Коефіцієнт асиметрії", "A",
-			n(v_vector->vector()->skew()),
-			n(v_vector->vector()->skewDeviation()),
-			n(v_vector->vector()->skewConfidence(i_prob, ss::Bound::Lower)),
-			n(v_vector->vector()->skew(ss::Measure::Population)),
-			n(v_vector->vector()->skewConfidence(i_prob, ss::Bound::Upper)),
+			n(vv.skew()),
+			n(vv.skewDeviation()),
+			n(vv.skewConfidence(i_prob, ss::Bound::Lower)),
+			n(vv.skew(ss::Measure::Population)),
+			n(vv.skewConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Коефіцієнт ексцесу", "E",
-			n(v_vector->vector()->kurtosis()), 
-			n(v_vector->vector()->kurtosisDeviation()),
-			n(v_vector->vector()->kurtosisConfidence(i_prob, ss::Bound::Lower)),
-			n(v_vector->vector()->kurtosis(ss::Measure::Population)),
-			n(v_vector->vector()->kurtosisConfidence(i_prob, ss::Bound::Upper)),
+			n(vv.kurtosis()), 
+			n(vv.kurtosisDeviation()),
+			n(vv.kurtosisConfidence(i_prob, ss::Bound::Lower)),
+			n(vv.kurtosis(ss::Measure::Population)),
+			n(vv.kurtosisConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Медіана серідніх Уолша", "WAM",
-			n(v_vector->vector()->wam()),
+			n(vv.wam()),
 			"",
 			"", 
 			"", 
@@ -85,15 +86,15 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Середньоквадратичне відхилення", "СКВ",
-			n(v_vector->vector()->sd()),
+			n(vv.sd()),
 			"",
 			"", 
-			n(v_vector->vector()->sd(ss::Measure::Population)),
+			n(vv.sd(ss::Measure::Population)),
 			""
 		},
 		{
 			"Абсолютне відхилення медіани", "MAD",
-			n(v_vector->vector()->mad()), 
+			n(vv.mad()), 
 			"",
 			"",
 			"", 
@@ -102,23 +103,23 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Коефіцієнт контрексцесу", "𝜘",
-			n(v_vector->vector()->counterKurtosis()), 
+			n(vv.counterKurtosis()), 
 			"",
 			"",
-			n(v_vector->vector()->counterKurtosis(ss::Measure::Population)),
+			n(vv.counterKurtosis(ss::Measure::Population)),
 			""
 		},
 		{
 			"Коефіцієнт варіації Пірсона", "W",
-			n(v_vector->vector()->cv()), 
+			n(vv.cv()), 
 			"",
 			"", 
-			n(v_vector->vector()->cv(ss::Measure::Population)),
+			n(vv.cv(ss::Measure::Population)),
 			""
 		},
 		{
 			"Непараметричнйи коефіцієнт варіації", "Wₕ",
-			n(v_vector->vector()->ncv()),
+			n(vv.ncv()),
 			"",
 			"", 
 			"", 
@@ -126,7 +127,7 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Медіана", "MED", 
-			n(v_vector->vector()->med()), 
+			n(vv.med()), 
 			"", 
 			"", 
 			"", 
@@ -134,15 +135,15 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Розмір", "N", 
-			n(v_vector->vector()->size()),
-			""
+			n(vv.size()),
+			"",
 			"", 
 			"", 
 			""
 		},
 		{
 			"Найменше спостереження", "xₘᵢₙ", 
-			n(v_vector->vector()->min()), 
+			n(vv.min()), 
 			"", 
 			"", 
 			"", 
@@ -150,7 +151,7 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Найбільше спостереження", "xₘₐₓ", 
-			n(v_vector->vector()->max()),
+			n(vv.max()),
 			"", 
 			"",
 			"",
@@ -158,7 +159,7 @@ void VectorInfoDialog::fill() {
 		},
 		{
 			"Кількість варіант", "r", 
-			n(v_vector->vector()->vs.count()),
+			n(vv.vs.count()),
 			"", 
 			"", 
 			"",
@@ -170,10 +171,10 @@ void VectorInfoDialog::fill() {
 		contents.append(
 			{
 				"Центральний момент " + QString::number(x) + " порядку", "μ" + QString(QChar(0x2080+x)), 
-				n(v_vector->vector()->centralMoment(x)),
+				n(vv.centralMoment(x)),
 				"", 
 				"", 
-				n(v_vector->vector()->centralMoment(x, ss::Measure::Population)), 
+				n(vv.centralMoment(x, ss::Measure::Population)), 
 				""
 			}
 		);
@@ -183,7 +184,7 @@ void VectorInfoDialog::fill() {
 		contents.append(
 			{
 				"Початковий момент " + QString::number(x) + " порядку", "v" + QString(QChar(0x2080+x)), 
-				n(v_vector->vector()->rawMoment(x)), 
+				n(vv.rawMoment(x)), 
 				"", 
 				"", 
 				"", 
@@ -196,7 +197,7 @@ void VectorInfoDialog::fill() {
 		contents.append(
 			{
 				"Усічене середнє (α=" + QString::number(x) + ")", "X*", 
-				n(v_vector->vector()->tmean(x)),
+				n(vv.tmean(x)),
 				"", 
 				"",
 				"", 
@@ -210,35 +211,35 @@ void VectorInfoDialog::fill() {
 	v_interval->fill({
 		{
 			"v₁",
-			n(v_vector->vector()->meanDeviation()),
-			[=](double a, ss::Bound b) { return v_vector->vector()->meanConfidence(a, b); },
-			n(v_vector->vector()->mean()),
+			n(vv.meanDeviation()),
+			[&](double a, ss::Bound b) { return vv.meanConfidence(a, b); },
+			n(vv.mean()),
 		},
 		{
     "μ₂",
-			n(v_vector->vector()->varianceDeviation()),
-			[=](double a, ss::Bound b) { return v_vector->vector()->varianceConfidence(a, b); },
-			n(v_vector->vector()->variance()),
+			n(vv.varianceDeviation()),
+			[&](double a, ss::Bound b) { return vv.varianceConfidence(a, b); },
+			n(vv.variance()),
 		},
 		{
 			"A", 
-			n(v_vector->vector()->skewDeviation()),
-			[=](double a, ss::Bound b) { return v_vector->vector()->skewConfidence(a, b); },
-			n(v_vector->vector()->skew()),
+			n(vv.skewDeviation()),
+			[&](double a, ss::Bound b) { return vv.skewConfidence(a, b); },
+			n(vv.skew()),
 		},
 		{
 			"E", 
-			n(v_vector->vector()->kurtosisDeviation()),
-			[=](double a, ss::Bound b) { return v_vector->vector()->kurtosisConfidence(a, b); },
-			n(v_vector->vector()->kurtosis()),
+			n(vv.kurtosisDeviation()),
+			[&](double a, ss::Bound b) { return vv.kurtosisConfidence(a, b); },
+			n(vv.kurtosis()),
 		},
 	});
 
 	int row, col;
 	QStringList header;
-	v_var->setColumnCount(v_vector->vector()->vs.count());
+	v_var->setColumnCount(vv.vs.count());
 	col = 0;
-	for (auto const& [variant, value] : v_vector->vector()->vs()) {
+	for (auto const& [variant, value] : vv.vs()) {
 		QTableWidgetItem* tableItem = new QTableWidgetItem(
 			n(variant)
 		);

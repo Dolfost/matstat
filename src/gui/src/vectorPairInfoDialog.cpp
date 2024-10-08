@@ -30,64 +30,49 @@ QString VectorPairInfoDialog::v(double x, double y) {
 }
 
 void VectorPairInfoDialog::fill() {
+	ss::VectorPair& vp = *v_pair->vectorPair();
 	v_table->fill({
 		{
-			"Вектор стат. центральних моменів другого порядку", "(μₓ,μᵧ)",
-			v(v_pair->vectorPair()->x.variance(), v_pair->vectorPair()->y.variance()), 
-			v(v_pair->vectorPair()->x.varianceDeviation(), v_pair->vectorPair()->y.varianceDeviation()), 
-			v(v_pair->vectorPair()->x.varianceConfidence(i_prob, ss::Bound::Lower), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Lower)), 
-			v(v_pair->vectorPair()->x.variance(ss::Measure::Population), v_pair->vectorPair()->y.variance(ss::Measure::Population)), 
-			v(v_pair->vectorPair()->x.varianceConfidence(i_prob, ss::Bound::Upper), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Upper)), 
-		},
-		{
-			"Вектор стат. початкових моменів першого порядку", "(vₓ,vᵧ)",
-			v(v_pair->vectorPair()->x.mean(), v_pair->vectorPair()->y.variance()), 
-			v(v_pair->vectorPair()->x.meanDeviation(), v_pair->vectorPair()->y.varianceDeviation()), 
-			v(v_pair->vectorPair()->x.meanConfidence(i_prob, ss::Bound::Lower), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Lower)), 
-			"",
-			v(v_pair->vectorPair()->x.meanConfidence(i_prob, ss::Bound::Upper), v_pair->vectorPair()->y.varianceConfidence(i_prob, ss::Bound::Upper)), 
-		},
-		{
 			"Коефіцієнт кореляції", "r",
-			n(v_pair->vectorPair()->cor()), 
+			n(vp.cor()), 
 			"",
-			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.corConfidence(i_prob, ss::Bound::Lower)),
 			"",
-			n(v_pair->vectorPair()->corConfidence(i_prob, ss::Bound::Upper)),
+			n(vp.corConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Коефіцієнт кореляційного відношення", "ρ",
-			n(v_pair->vectorPair()->corRatio()), 
-			n(v_pair->vectorPair()->corRatioDeviation()),
-			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.corRatio()), 
+			n(vp.corRatioDeviation()),
+			n(vp.corRatioConfidence(i_prob, ss::Bound::Lower)),
 			"",
-			n(v_pair->vectorPair()->corRatioConfidence(i_prob, ss::Bound::Upper)),
+			n(vp.corRatioConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Ранговий коефіцієнт кореляції Спірмена", "𝜏ₛ",
-			n(v_pair->vectorPair()->corSpearman()), 
-			n(v_pair->vectorPair()->corSpearmanDeviation()),
-			n(v_pair->vectorPair()->corSpearmanConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.corSpearman()), 
+			n(vp.corSpearmanDeviation()),
+			n(vp.corSpearmanConfidence(i_prob, ss::Bound::Lower)),
 			"",
-			n(v_pair->vectorPair()->corSpearmanConfidence(i_prob, ss::Bound::Upper)),
+			n(vp.corSpearmanConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Ранговий коефіцієнт кореляції Кендалла", "𝜏ₖ",
-			n(v_pair->vectorPair()->corKendall()), 
-			n(v_pair->vectorPair()->corKendallDeviation()),
-			n(v_pair->vectorPair()->corKendallConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.corKendall()), 
+			n(vp.corKendallDeviation()),
+			n(vp.corKendallConfidence(i_prob, ss::Bound::Lower)),
 			"",
-			n(v_pair->vectorPair()->corKendallConfidence(i_prob, ss::Bound::Upper)),
+			n(vp.corKendallConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
 			"Дисперсійно коваріаційна матриця", ms({{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
 			m(
 				{
 					{
-						v_pair->vectorPair()->x.variance(), v_pair->vectorPair()->x.sd()*v_pair->vectorPair()->y.sd()*v_pair->vectorPair()->cor()
+						vp.x.variance(), vp.x.sd()*vp.y.sd()*vp.cor()
 					},
 					{
-						v_pair->vectorPair()->x.sd()*v_pair->vectorPair()->y.sd()*v_pair->vectorPair()->cor(), v_pair->vectorPair()->y.variance()
+						vp.x.sd()*vp.y.sd()*vp.cor(), vp.y.variance()
 					}
 				}
 			),
@@ -96,26 +81,106 @@ void VectorPairInfoDialog::fill() {
 			"",
 			"",
 		},
+		{
+			"Стат. початковий момент першого порядку за x", "vₓ₁",
+			n(vp.x.mean()), 
+			n(vp.x.meanDeviation()),
+			n(vp.x.meanConfidence(i_prob, ss::Bound::Lower)),
+			"",
+			n(vp.x.meanConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Стат. початковий момент першого порядку за y", "vᵧ₁",
+			n(vp.y.mean()), 
+			n(vp.y.meanDeviation()),
+			n(vp.y.meanConfidence(i_prob, ss::Bound::Lower)),
+			"",
+			n(vp.y.meanConfidence(i_prob, ss::Bound::Upper)),
+		},
+		{
+			"Стат. центральний момент другого порядку x", "μₓ₂",
+			n(vp.x.variance()),
+			n(vp.x.varianceDeviation()),
+			n(vp.x.varianceConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.x.variance(ss::Measure::Population)),
+			n(vp.x.varianceConfidence(i_prob, ss::Bound::Upper)),
+		 },
+		{
+			"Стат. центральний момент другого порядку y", "μᵧ₂",
+			n(vp.y.variance()),
+			n(vp.y.varianceDeviation()),
+			n(vp.y.varianceConfidence(i_prob, ss::Bound::Lower)),
+			n(vp.y.variance(ss::Measure::Population)),
+			n(vp.y.varianceConfidence(i_prob, ss::Bound::Upper)),
+		 },
+		{
+			"Середньоквадратичне відхилення x", "СКВₓ",
+			n(vp.x.sd()),
+			"",
+			"", 
+			n(vp.x.sd(ss::Measure::Population)),
+			""
+		},
+		{
+			"Середньоквадратичне відхилення y", "СКВᵧ",
+			n(vp.y.sd()),
+			"",
+			"", 
+			n(vp.y.sd(ss::Measure::Population)),
+			""
+		},
+		{
+			"Найменше спостереження x", "xₘᵢₙ", 
+			n(vp.x.min()),
+			"", 
+			"", 
+			"", 
+			""
+		},
+		{
+			"Найбільше спостереження x", "xₘₐₓ", 
+			n(vp.x.max()),
+			"", 
+			"",
+			"",
+			""
+		},
+		{
+			"Найменше спостереження y", "yₘᵢₙ", 
+			n(vp.y.min()),
+			"", 
+			"", 
+			"", 
+			""
+		},
+		{
+			"Найбільше спостереження y", "yₘₐₓ", 
+			n(vp.y.max()),
+			"", 
+			"",
+			"",
+			""
+		},
 	});
 	
 	v_interval->fill({
 		{
 			"r",
 			"",
-			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corConfidence(a, b); },
-			n(v_pair->vectorPair()->cor()),
+			[&](double a, ss::Bound b) { return vp.corConfidence(a, b); },
+			n(vp.cor()),
 		},
 		{
 			"ρ",
-			n(v_pair->vectorPair()->corRatioDeviation()),
-			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corRatioConfidence(a, b); },
-			n(v_pair->vectorPair()->corRatio()),
+			n(vp.corRatioDeviation()),
+			[&](double a, ss::Bound b) { return vp.corRatioConfidence(a, b); },
+			n(vp.corRatio()),
 		},
 		{
 			"𝜏",
-			n(v_pair->vectorPair()->corSpearmanDeviation()),
-			[=](double a, ss::Bound b) { return v_pair->vectorPair()->corSpearmanConfidence(a, b); },
-			n(v_pair->vectorPair()->corSpearman()),
+			n(vp.corSpearmanDeviation()),
+			[&](double a, ss::Bound b) { return vp.corSpearmanConfidence(a, b); },
+			n(vp.corSpearman()),
 		},
 	});
 

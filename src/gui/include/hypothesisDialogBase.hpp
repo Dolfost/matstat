@@ -106,10 +106,9 @@ public:
 		).arg(implies.first).arg(implies.second);
 
 		res.append(
-			QString("Умова: %1 %2 %3 = %4\n")
+			QString("Умова: %1 %2 %3\n")
 			.arg(critValue)
 			.arg(c)
-			.arg(critLevel)
 			.arg(QString::number(quantile(critLevel)))
 		);
 

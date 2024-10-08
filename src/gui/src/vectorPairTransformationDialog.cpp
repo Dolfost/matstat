@@ -53,7 +53,8 @@ void VectorPairTransformationDialog::transform() {
 		} else {
 			newVector->setName("TR" + QString::number(++trIdx) + "(" + v->name() + ")");
 			statusTextEdit->append("Вектор " + v->name() + " перетворено вдало.\n" +
-													"xᵢ = " + xExpression->text() + ".\n"
+													"xᵢ = " + xExpression->text() + "\n"
+													"yᵢ = " + yExpression->text() + "\n"
 													"Новий вектор було збережено у " +
 													newVector->name() + "\n");
 			emit vectorTransformed(newVector);

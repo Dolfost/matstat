@@ -19,6 +19,10 @@ set(DOXYGEN_EXAMPLE_PATTERNS
 	"*.cpp" "*.hpp" "*.h"
 )
 
+set(DOXYGEN_EXCLUDE_PATTERNS
+	"*/exprtk/include/exprtk.hpp" "*/qcustomplot/qcustomplot.h"
+)
+
 set(DOXYGEN_IMAGE_PATH images/)
 set(DOXYGEN_DOT_IMAGE_FORMAT svg)
 
