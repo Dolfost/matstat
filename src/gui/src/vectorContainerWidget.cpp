@@ -635,11 +635,11 @@ void VectorContainerWidget::vectorPairTransformAction() {
 
 void VectorContainerWidget::vectorReproductionAction() {
 	for (auto const &vec : selectedVectorsList) {
-		DistributionReproducerDialog *drd =
-			new DistributionReproducerDialog(vec, this);
+		VectorDistributionReproducerDialog *drd =
+			new VectorDistributionReproducerDialog(vec, this);
 		connect(this, &VectorContainerWidget::vectorDeleted, drd,
-					&DistributionReproducerDialog::vectorDeletedHandler);
-		connect(drd, &DistributionReproducerDialog::distributionSelected,
+					&VectorDistributionReproducerDialog::vectorDeletedHandler);
+		connect(drd, &VectorDistributionReproducerDialog::modelSelected,
 					[=]() { emit redrawVector(vec); });
 	}
 }

@@ -17,6 +17,13 @@ public:
 		Qt::WindowFlags = Qt::WindowFlags()
 	);
 
+public:
+	static QString n(double);
+	static QString m(QList<QList<double>>);
+	static QString ms(QList<QList<QString>>);
+
+	static const int i_precision = 4;
+
 public slots:
 	virtual void fill() = 0;
 

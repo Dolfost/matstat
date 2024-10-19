@@ -39,6 +39,8 @@ public:
 		signTest,
 		qTest,
 		testAbbe,
+		kolmConsentCriterion,
+		pearConsentCriterion,
 		Count
 	};
 	
@@ -135,6 +137,20 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} testAbbe = TestAbbe(this);
+
+	class KolmConsentCriterion: public utils::StatisticSingle<double, VectorHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} kolmConsentCriterion = KolmConsentCriterion(this);
+
+	class PearConsentCriterion: public utils::StatisticSingle<double, VectorHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} pearConsentCriterion = PearConsentCriterion(this);
 
 	class OverallRank: public utils::StatisticContainer<std::map<double, double>, VectorHypothesis> {
 	public:

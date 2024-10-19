@@ -52,12 +52,12 @@ void Vector::invalidate() {
 	walshAverages.invalidate();
 	wam.invalidate();
 
+	min.invalidate();
+	max.invalidate();
+
 	sorted.invalidate();
 
 	reproduceDistribution(Distribution::Model::Unknown);
-	pearConsentCriterion.invalidate();
-	kolmConsentCriterion.invalidate();
-
 	vs.invalidate();
 	cs.invalidate();
 

@@ -17,6 +17,8 @@ const std::vector<std::string> VectorHypothesis::procedureName = {
 	"Критерій знаків",
 	"Q-критерій Кохрена",
 	"Критерій Аббе",
+	"Критерій згоди Колмогорова",
+	"Критерій згоди Пірсона",
 };
 
 void VectorHypothesis::OverallSize::adapt() {
@@ -374,6 +376,96 @@ void VectorHypothesis::TestAbbe::adapt() {
 	s_value = u;
 }
 
+void VectorHypothesis::KolmConsentCriterion::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	ss::Vector* v = s_vector->at(0);
+	if (v->dist.model == Vector::Distribution::Model::Unknown)
+		throw "Розподіл вибірки не відтворено";
+
+	auto x1 = v->cbegin(), x2 = ++v->cbegin();
+
+  double k;
+  if (v->dist.domain.first != v->dist.domain.second)
+	  k =  std::abs(v->dist.domain.first - v->dist.domain.second) /
+		  std::abs(v->min() - v->max());
+  else 
+	  k = 1;
+
+  double cdfv = v->cs.cdf(*x2), 
+		 Dp = std::abs(cdfv - v->dist.cdf(*x2*k)),
+		 Dm = std::abs(cdfv - v->dist.cdf(*x1*k));
+
+  x1++;
+  x2++;
+
+  while (x2 != v->cend()) {
+	  cdfv = v->cs.cdf(*x2);
+
+	  double DpTmp = std::abs(cdfv - v->dist.cdf(*x2*k));
+	  if (DpTmp > Dp)
+		  Dp = DpTmp;
+
+	  double DmTmp = std::abs(cdfv - v->dist.cdf(*x1*k));
+	  if (DmTmp > Dm)
+		  Dm = DmTmp;
+
+	  x1++;
+	  x2++;
+  }
+
+  double z = std::sqrt(v->size()) * std::max(Dp, Dm);
+
+  double tmp = 0;
+  for (int k = 1; k <= 4; k++) {
+    double pm = (1 - (k & 2 ? -1 : +1)), f1 = std::pow(k, 2) - pm / 2,
+           f2 = 5 * std::pow(k, 2) + 22 - pm * 7.5;
+
+    tmp += (k % 2 ? -1 : 1) * std::exp(-2 * std::pow(k, 2) * std::pow(z, 2)) *
+           (1 - (2 * std::pow(k, 2) * z) / (3 * sqrt(v->size())) -
+            (1.0 / (18 * v->size())) *
+                ((f1 - 4 * (f1 + 3)) * std::pow(k, 2) * std::pow(z, 2) +
+                 8 * std::pow(k, 4) * std::pow(z, 4)) +
+            ((std::pow(k, 2) * z) / (27 * std::pow(v->size(), 1.5))) *
+                (std::pow(f2, 2) / 5 -
+                 (4 * (f2 + 45) * std::pow(k, 2) * std::pow(z, 2)) / 15 +
+                 8 * std::pow(k, 4) * std::pow(z, 4)));
+  }
+
+  s_value = 1 + 2 * tmp;
+}
+
+void VectorHypothesis::PearConsentCriterion::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	ss::Vector* v = s_vector->at(0);
+	if (v->dist.model == Vector::Distribution::Model::Unknown)
+		throw "Розподіл вибірки не відтворено";
+
+	s_value = 0;
+
+	double k, s;
+	if (v->dist.domain.first != v->dist.domain.second) {
+		k =  std::abs(v->dist.domain.first - v->dist.domain.second) /
+			std::abs(v->min() - v->max());
+		s = v->dist.domain.first;
+	} else {
+		k = 1;
+		s = v->min();
+	}
+
+	for (int i = 0; i < v->cs.count(); i++) {
+		double ni = v->cs.series()[i].first,
+			   nio = v->dist.cdf(s + (i + 1) * (v->cs.step()*k));
+		nio -= v->dist.cdf(s + i * (v->cs.step()*k));
+		nio *= v->size();
+
+		s_value += std::pow(ni - nio, 2) / nio;
+	}
+}
+
 void VectorHypothesis::invalidate() {
 	tTestDependent.invalidate();
 	tTestIndependent.invalidate();
@@ -388,6 +480,9 @@ void VectorHypothesis::invalidate() {
 	signTest.invalidate();
 	qTest.invalidate();
 	testAbbe.invalidate();
+	pearConsentCriterion.invalidate();
+	kolmConsentCriterion.invalidate();
+
 	overallRank.invalidate();
 	overallVector.invalidate();
 	intragroupVariation.invalidate();

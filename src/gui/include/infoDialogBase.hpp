@@ -58,13 +58,7 @@ protected:
 	QTextEdit* i_additionalText = nullptr;
 
 protected:
-	static QString n(double);
-	static QString m(QList<QList<double>>);
-	static QString ms(QList<QList<QString>>);
-
-protected:
 	double i_prob = 0.95;
-	static const int i_precision = 4;
 };
 
 #endif // !_INFO_DIALOG_BASE_HPP_

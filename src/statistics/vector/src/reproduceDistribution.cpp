@@ -7,9 +7,6 @@ bool Vector::reproduceDistribution(
   // if (csReady == false)
   //   return false;
 
-	pearConsentCriterion.invalidate();
-	kolmConsentCriterion.invalidate();
-
   switch (type) {
 		case Distribution::Model::Normal: {
     dist.setDistribution(

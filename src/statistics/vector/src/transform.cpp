@@ -36,7 +36,6 @@ std::string Vector::transform(std::string expression) {
 
   invalidate();
 
-
   return msg;
 }
 

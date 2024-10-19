@@ -229,22 +229,6 @@ public: // statistics
 	} wam = WalshAveragesMedian(this);
 	WRAP_SINGLE(wam);
 
-	class KolmConsentCriterion: public utils::StatisticSingle<double> {
-	public:
-		using StatisticSingle::StatisticSingle;
-	protected:
-		virtual void adapt() override;
-	} kolmConsentCriterion = KolmConsentCriterion(this);
-	WRAP_SINGLE(kolmConsentCriterion);
-
-	class PearConsentCriterion: public utils::StatisticSingle<double> {
-	public:
-		using StatisticSingle::StatisticSingle;
-	protected:
-		virtual void adapt() override;
-	} pearConsentCriterion = PearConsentCriterion(this);
-	WRAP_SINGLE(pearConsentCriterion);
-
 	class CoefficientOfVariation: public utils::StatisticPair<double, Measure> {
 	public:
 		using StatisticPair::StatisticPair;
