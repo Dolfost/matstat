@@ -286,6 +286,71 @@ public:
 	} conTable = ConnectionsTable(this);
 
 public:
+	class Regression: public utils::Statistic<int, VectorPair> {
+	public:
+		using Statistic::Statistic;
+		enum class Model {
+			Unknown,
+			Linear,
+			Parabolic,
+			Count,
+		} model = Model::Unknown;
+
+		void setModel(Model, std::vector<double>);
+		std::list<double> generateSet(std::size_t, double);
+		static const std::vector<std::string> regressionName;
+		static const std::vector<std::vector<std::string>> parameterName;
+
+	public:
+		double f(double x) {
+			return r_regression(x);
+		}
+		std::pair<double, double> confidence(double x) {
+			return r_confidence(x);
+		}
+		std::pair<double, double> forecast(double x) {
+			return r_forecast(x);
+		}
+		std::pair<double, double> tolerance(double x) {
+			return r_tolerance(x);
+		}
+
+		double Syx0(double x) {
+			return r_Syx0(x);
+		}
+		double Symx(double x) {
+			return r_Symx(x);
+		}
+
+		double confidenceLevel() { return d_confidence; };
+		void setConfidenceLevel(double c) { d_confidence = c; };
+
+		size_t parametersCount = 0;
+		std::vector<std::string> paremeterNames;
+		std::vector<std::string> parametersDeviationNames;
+		std::vector<double> parameters{0};
+		std::vector<double> parametersDeviation{0};
+
+		double remDispersion;
+		double determination;
+		double phi1, phi2;
+
+		virtual void invalidate() override {
+			setModel(Model::Unknown, {});
+		}
+	protected:
+		std::function<double(double)> r_regression;
+		std::function<std::pair<double, double>(double)> r_confidence;
+		std::function<std::pair<double, double>(double)> r_forecast;
+		std::function<std::pair<double, double>(double)> r_tolerance;
+		std::function<double(double)> r_Syx0;
+		std::function<double(double)> r_Symx;
+		double d_confidence = 0.95;
+	} reg = Regression(this);
+
+	void reproduceRegression(Regression::Model);
+
+public:
 	VectorPair(const std::list<double> ft = {}, 
 						const std::list<double> sd = {});
 	VectorPair(const Vector&,

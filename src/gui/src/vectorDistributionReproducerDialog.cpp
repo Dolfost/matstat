@@ -1,4 +1,4 @@
-#include "distributionReproducerDialog.hpp"
+#include "vectorDistributionReproducerDialog.hpp"
 #include <QLabel>
 #include <vector>
 
@@ -55,7 +55,7 @@ void VectorDistributionReproducerDialog::distribute(int dist) {
 }
 
 void VectorDistributionReproducerDialog::makeTtest() {
-	if (v_vector->isModeled()) {
+	if (v_vector->distribuitonModel() != ss::Vector::Distribution::Model::Unknown) {
 		ss::Vector::Distribution& rep = (v_vector->vector()->dist);
 
 		if (v_vector->model()!= rep.model) {
@@ -75,7 +75,7 @@ void VectorDistributionReproducerDialog::makeTtest() {
 			t.push_back(
 				{
 					QString::fromStdString(rep.paremeterNames[i]),
-					(v_vector->parameters()[i]-rep.parameters[i]) / 
+					(v_vector->distributionParameters()[i]-rep.parameters[i]) / 
 					std::sqrt(rep.parametersDeviation[i])
 				}
 			);

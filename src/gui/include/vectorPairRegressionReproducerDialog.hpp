@@ -1,5 +1,5 @@
-#ifndef _VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_
-#define _VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_
+#ifndef _VECTOR_PAIR_REGRESSION_REPRODUCER_DIALOG_
+#define _VECTOR_PAIR_REGRESSION_REPRODUCER_DIALOG_
 
 #include <QDialog>
 #include <QHBoxLayout>
@@ -23,25 +23,22 @@
 
 #include "guiTypes.hpp"
 
-class VectorDistributionReproducerDialog : public FunctionReproducerDialogBase {
+class VectorPairRegressionReproducerDialog : public FunctionReproducerDialogBase {
 	Q_OBJECT
 	public:
-	VectorDistributionReproducerDialog(
-		Vector*,
+	VectorPairRegressionReproducerDialog(
+		VectorPair*,
 		QWidget* = nullptr,
 		Qt::WindowFlags = Qt::WindowFlags()
 	);
 
 protected:
 	virtual void fill() override;
-	Vector* v_vector = nullptr;
+	VectorPair* v_vectorPair = nullptr;
 
-private slots:
+protected slots:
 	virtual void distribute(int) override;
 	virtual void makeTtest() override;
-
-	signals:
-	void modelSelected(Vector*);
 };
 
-#endif // !_VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_
+#endif // !_VECTOR_PAIR_REGRESSION_REPRODUCER_DIALOG_

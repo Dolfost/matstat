@@ -9,7 +9,7 @@ bool Vector::reproduceDistribution(
 
   switch (type) {
 		case Distribution::Model::Normal: {
-    dist.setDistribution(
+    dist.setModel(
         type,
         {mean(), (size() / (size() - 1.0)) *
                      std::sqrt(rawMoment(2) - std::pow(rawMoment(1), 2))},
@@ -17,7 +17,7 @@ bool Vector::reproduceDistribution(
     break;
   }
 		case Distribution::Model::Exponential: {
-    dist.setDistribution(type, {1 / mean()}, size());
+    dist.setModel(type, {1 / mean()}, size());
     break;
   }
 		case Distribution::Model::Weibull: {
@@ -46,14 +46,14 @@ bool Vector::reproduceDistribution(
 
     S /= (size() - 3);
 
-    dist.setDistribution(type,
+    dist.setModel(type,
                         {std::exp(-skew(Measure::Population)), beta,
                          skew(Measure::Population), S, a11, a21, a22},
                         size());
     break;
   }
 		case Distribution::Model::LogNormal: {
-    dist.setDistribution(type,
+    dist.setModel(type,
                         {2 * log(mean()) - log(rawMoment(2)) / 2,
                          sqrt(log(rawMoment(2)) - 2 * log(mean()))},
                         size());
@@ -61,11 +61,11 @@ bool Vector::reproduceDistribution(
   }
 		case Distribution::Model::Uniform: {
     double pm = std::sqrt(3 * (rawMoment(2) - std::pow(mean(), 2)));
-    dist.setDistribution(type, {mean() - pm, mean() + pm}, size());
+    dist.setModel(type, {mean() - pm, mean() + pm}, size());
     break;
   }
 		case Distribution::Model::Unknown: {
-    dist.setDistribution(type, {}, size());
+    dist.setModel(type, {}, size());
     break;
   }
   default:

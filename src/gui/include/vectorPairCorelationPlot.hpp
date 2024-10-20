@@ -15,6 +15,11 @@ protected:
 	QCPGraph* cor = nullptr;
 	QCPScatterStyle corScatter;
 	QPen scatterPen;
+
+	QCPGraph* regression = nullptr;
+	QCPGraph* tolerance = nullptr;
+	QCPGraph* confidence = nullptr;
+	QCPGraph* forecast = nullptr;
 };
 
 #endif // !_VECTOR_PAIR_CORELATION_PLOT_HPP_

@@ -35,7 +35,7 @@ FunctionReproducerDialogBase::FunctionReproducerDialogBase(
 
 	infoWidget->layout()->addWidget(parametersTest);
 
-	this->resize(300, 400);
+	this->resize(100, 150);
 }
 
 

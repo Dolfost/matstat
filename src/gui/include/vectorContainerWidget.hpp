@@ -89,6 +89,8 @@ private slots:
 	void vectorPairBreak();
 	void vectorPairTransformAction();
 	void vectorPairConnectionsTableInfoAction();
+	void vectorPairRegressionAction();
+	void vectorPairConfidenceAction(double);
 
 signals:
 	void vectorDeleted(Vector*);

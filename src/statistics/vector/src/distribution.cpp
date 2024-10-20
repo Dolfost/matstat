@@ -14,7 +14,7 @@ std::pair<double, double> Vector::Distribution::cdfConfidence(double x) {
 		cdf(x), cdfDev(x), d_confidence, 61, true);
 }
 
-void Vector::Distribution::setDistribution(
+void Vector::Distribution::setModel(
 	Model type,
 	std::vector<double> p, size_t s
 ) {

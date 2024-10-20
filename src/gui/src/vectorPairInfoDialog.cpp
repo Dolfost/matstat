@@ -31,7 +31,7 @@ QString VectorPairInfoDialog::v(double x, double y) {
 
 void VectorPairInfoDialog::fill() {
 	ss::VectorPair& vp = *v_pair->vectorPair();
-	v_table->fill({
+	QList<QStringList> t = {
 		{
 			"Коефіцієнт кореляції", "r",
 			n(vp.cor()), 
@@ -161,8 +161,29 @@ void VectorPairInfoDialog::fill() {
 			"",
 			""
 		},
-	});
-	
+	};
+
+	if (vp.reg.model != ss::VectorPair::Regression::Model::Unknown) {
+		t.push_back({
+			"Коефіцієнт детермінації", "R²", 
+			n(vp.reg.determination),
+			"", 
+			"",
+			"",
+			""
+		});
+		t.push_back({
+			"Залишкова дисперсія", "Sзал", 
+			n(vp.reg.remDispersion),
+			"", 
+			"",
+			"",
+			""
+		});
+	}
+
+	v_table->fill(t);
+
 	v_interval->fill({
 		{
 			"r",
@@ -184,12 +205,12 @@ void VectorPairInfoDialog::fill() {
 		},
 	});
 
-	if (v_pair->isModeled()) {
+	if (v_pair->isNormalDistribution()) {
 		i_additionalText->setText("Вектор змодельвано в програмі:\n  Параметри");
 		for (std::size_t i = 0; i < ss::VectorPair::Distribution::parameterName[0].size(); i++) {
 			i_additionalText->append("   " + 
 			 QString::fromStdString(ss::VectorPair::Distribution::parameterName[0][i]) + 
-			 " " + n(v_pair->parameters()[i]));
+			 " " + n(v_pair->distributionParameters()[i]));
 		}
 	} else
 		i_additionalText->setText("Вектор імпортовано у програму.");

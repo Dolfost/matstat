@@ -179,14 +179,14 @@ void SetGeneratorDialog::generateVector() {
 	std::vector<double> parameters;
 
 	ss::Vector::Distribution dr;
-	dr.setDistribution(ss::Vector::Distribution::Model(vectorDistributionComboBox->currentIndex()+1),
+	dr.setModel(ss::Vector::Distribution::Model(vectorDistributionComboBox->currentIndex()+1),
 										vectorParametersWidget->parameters(), count);
 	dv = new ss::Vector(dr.generateSet(m, count, min, max));
 	dist = dr.model;
 	parameters = dr.parameters;
 
 	Vector* newve = new Vector(dv);
-	newve->setModel(dist, parameters, m);
+	newve->setDistribuitonModel(dist, parameters, m);
 
 	emit vectorGenerated(newve);
 }
@@ -205,8 +205,8 @@ void SetGeneratorDialog::generateVectorPair() {
 
 	VectorPair* newve = new VectorPair;
 	newve->setVectorPair(dv);
-	newve->setModel(true);
-	newve->setParameters(p);
+	newve->setDistribuitonParameters(p);
+	newve->setNormalDistribution(true);
 
 	emit vectorPairGenerated(newve);
 }

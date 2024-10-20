@@ -7,7 +7,7 @@
 
 #include <spinBoxAction.hpp>
 
-#include <distributionReproducerDialog.hpp>
+#include <vectorDistributionReproducerDialog.hpp>
 #include <setGeneratorDialog.hpp>
 
 #include <vectorContainerWidget.hpp>
@@ -27,6 +27,7 @@
 #include <vectorPairHypothesisDialog.hpp>
 #include <vectorPairTransformationDialog.hpp>
 #include <vectorPairConnectionsTableInfoDialog.hpp>
+#include <vectorPairRegressionReproducerDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -280,7 +281,7 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 
 	if (selectedVectorsList.size() == 1) {
 		classCountAction->spinBox()->setValue(selectedVectorsList[0]->vector()->cs.count());
-		confidence->spinBox()->setValue(selectedVectorsList[0]->vector()->dist.confidence());
+		confidence->spinBox()->setValue(selectedVectorsList[0]->vector()->dist.confidenceLevel());
 	}
 
 	menu->addSeparator();
@@ -374,6 +375,17 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(classCountActionY->spinBox(), &QSpinBox::valueChanged, this,
 				 &VectorContainerWidget::vectorPairClassCountActionY);
 
+	DoubleSpinBoxAction *confidence = new DoubleSpinBoxAction("Критерій довіри");
+	confidence->spinBox()->setRange(0.0, 1.0);
+	confidence->spinBox()->setDecimals(5);
+	confidence->spinBox()->setSingleStep(0.1);
+	connect(confidence->spinBox(), &QDoubleSpinBox::valueChanged, this,
+				 &VectorContainerWidget::vectorPairConfidenceAction);
+	graphics->addAction(confidence);
+
+	if (selectedVectorsList.size() == 1) {
+	}
+
 	menu->addSeparator();
 
 	QMenu *hypotesisMenu = menu->addMenu("Перевірка гіпотез…");
@@ -400,6 +412,10 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 	connect(conTableAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairConnectionsTableInfoAction);
 
+	QAction *regressionAction = menu->addAction("Відтворення регресії…");
+	connect(regressionAction, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairRegressionAction);
+
 	QMenu *parameters = menu->addMenu("Параметри…");
 	SpinBoxAction *corelationRatio = new SpinBoxAction("Кількість інтервалів кор. відн.");
 	corelationRatio->spinBox()->setRange(0, 1000);
@@ -422,6 +438,7 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 		corelationRatio->spinBox()->setValue(
 			selectedVectorPairsList[0]->vectorPair()->corRatio.count()
 		);
+		confidence->spinBox()->setValue(selectedVectorPairsList[0]->vectorPair()->reg.confidenceLevel());
 	}
 
 }
@@ -504,6 +521,8 @@ void VectorContainerWidget::vectorPairInfoAction() {
 					dia, &VectorPairInfoDialog::vectorDeletedHandler);
 		connect(this, &VectorContainerWidget::vectorParametersChanged,
 					dia, &VectorPairInfoDialog::sync);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorPairInfoDialog::sync);
 	}
 }
 
@@ -526,7 +545,14 @@ void VectorContainerWidget::vectorClassCountAction(int cls) {
 
 void VectorContainerWidget::vectorConfidenceAction(double c) {
 	for (auto const &vec : selectedVectorsList) {
-		vec->vector()->dist.setConfidence(c);
+		vec->vector()->dist.setConfidenceLevel(c);
+		emit redrawVector(vec);
+	}
+}
+
+void VectorContainerWidget::vectorPairConfidenceAction(double c) {
+	for (auto const &vec : selectedVectorPairsList) {
+		vec->vectorPair()->reg.setConfidenceLevel(c);
 		emit redrawVector(vec);
 	}
 }
@@ -719,6 +745,16 @@ void VectorContainerWidget::vectorWriteAction() {
 		set.writeToFile(filename.toStdString());
 	} catch (const char* msg) {
 		message(msg);
+	}
+}
+
+void VectorContainerWidget::vectorPairRegressionAction() {
+	for (auto vec : selectedVectorPairsList) {
+		VectorPairRegressionReproducerDialog *reg = new VectorPairRegressionReproducerDialog(vec, this);
+		connect(this, &VectorContainerWidget::vectorPairDeleted, reg,
+					&VectorPairRegressionReproducerDialog::vectorDeletedHandler);
+		connect(reg, &VectorPairRegressionReproducerDialog::modelSelected,
+					[=]() { emit redrawVector(vec); });
 	}
 }
 

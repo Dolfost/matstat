@@ -254,7 +254,7 @@ void VectorInfoDialog::fill() {
 		col++;
 	}
 
-	if (v_vector->isModeled()) {
+	if (v_vector->distribuitonModel() != ss::Vector::Distribution::Model::Unknown) {
 		QString addInfo = QString(
 			"Вектор %1 змодельвано у програмі.\n"
 			"  Метод: %2\n"
@@ -265,7 +265,7 @@ void VectorInfoDialog::fill() {
 			.arg(QString::fromStdString(ss::Vector::Distribution::methodName[(int)v_vector->method()]))
 			.arg(QString::fromStdString(ss::Vector::Distribution::distributionName[(int)v_vector->model()]));
 		int i = 0;
-		for (auto const& p : v_vector->parameters()) {
+		for (auto const& p : v_vector->distributionParameters()) {
 			addInfo.append(
 				QString::fromStdString("    " + ss::Vector::Distribution::parameterName[(int)v_vector->model()][i++]) + 
 				" " + n(p) + "\n");

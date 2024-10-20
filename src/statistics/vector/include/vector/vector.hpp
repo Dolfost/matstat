@@ -344,7 +344,7 @@ public:
 			Count,
 		};
 
-		void setDistribution(Model, std::vector<double>, size_t);
+		void setModel(Model, std::vector<double>, size_t);
 		static const std::vector<std::string> distributionName;
 		static const std::vector<std::string> methodName;
 		static const std::vector<std::vector<std::string>> parameterName;
@@ -353,8 +353,8 @@ public:
 
 	public:
 		std::pair<double, double> cdfConfidence(double x1);
-		double confidence() { return d_confidence; };
-		void setConfidence(double c) { d_confidence = c; };
+		double confidenceLevel() { return d_confidence; };
+		void setConfidenceLevel(double c) { d_confidence = c; };
 
 		double pdf(double);
 		double cdf(double);
