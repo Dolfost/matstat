@@ -41,7 +41,6 @@ protected:
 protected:
 	ConnectionsTableWiget* v_con = nullptr;
 	InfoTableWidget* v_table = nullptr;
-	IntervalTableWidget* v_interval = nullptr;
 };
 
 #endif // !_VECTOR_PAIR_CONNECTIONS_TABLE_INFO_DIALOG_

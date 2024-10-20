@@ -23,11 +23,6 @@ VectorPairConnectionsTableInfoDialog::VectorPairConnectionsTableInfoDialog(
 	);
 	v_mainLayout->addWidget(tw);
 
-	auto iw = new SectionedWidget<IntervalTableWidget>;
-	iw->setTitle("Інтервальні оцінки");
-	v_interval = iw->widget();
-	v_mainLayout->addWidget(iw);
-
 	resize(200, 100);
 	fill();
 }
