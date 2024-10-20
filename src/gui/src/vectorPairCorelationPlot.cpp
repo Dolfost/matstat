@@ -55,7 +55,7 @@ void VectoPairCorelationPlot::fill() {
 		for (int i = 0; i <= 300; i++) {
 			double s = v_pair->x.min() + i*step;
 			x.push_back(s);
-			r.push_back(v_pair->reg.f(s));
+			r.push_back(v_pair->reg.regression(s));
 			std::pair<double, double> p;
 			p = v_pair->reg.tolerance(s);
 			tl.push_back(p.first), tu.push_back(p.second);

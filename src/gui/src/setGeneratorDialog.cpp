@@ -15,6 +15,7 @@ ParametersWidget::ParametersWidget(QStringList params, std::vector<double> val, 
 		layout->addWidget(new QLabel(params[i]), i, 0);
 		QDoubleSpinBox* sb = new QDoubleSpinBox;
 		sb->setEnabled(en);
+		sb->setRange(-1000, 1000);
 		sb->setValue(val[i]);
 		sb->setDecimals(precision);
 		layout->addWidget(sb, i, 1);
@@ -78,20 +79,27 @@ void SetGeneratorDialog::setVectorPairTab() {
 	layout->setContentsMargins(10,10,10,0);
 	vectorPairTab->setLayout(layout);
 
-	QGroupBox* parametersBox = new QGroupBox("Нормальний розподіл");
+	QGroupBox* parametersBox = new QGroupBox("Модель");
 	parametersBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	QVBoxLayout* parametersLayout = new QVBoxLayout;
-	parametersLayout->setContentsMargins(1,1,1,1);
-	parametersBox->setLayout(parametersLayout);
+	vectorPairParametersLayout = new QVBoxLayout;
+	vectorPairParametersLayout->setContentsMargins(1,1,1,1);
+	parametersBox->setLayout(vectorPairParametersLayout);
 
-	QStringList p;
-	for (auto const& x : ss::VectorPair::Distribution::parameterName[0]) {
-		p.push_back(QString::fromStdString(x));
+	vectorPairModelComboBox = new QComboBox;
+	vectorPairModelComboBox->addItems({"Нормальний розподіл"});
+	for (int i = 1; i < (int)ss::VectorPair::Regression::Model::Count; i++) {
+		vectorPairModelComboBox->insertItem(
+			i,
+			QString::fromStdString(ss::VectorPair::Regression::regressionName[i])
+		);
 	}
-	vectorPairParametersWidget = new ParametersWidget(p, {0, 0, 1, 1, 0.5}, enabled);
-	parametersLayout->addWidget(vectorPairParametersWidget);
+	connect(vectorPairModelComboBox, &QComboBox::currentIndexChanged,
+				 this, &SetGeneratorDialog::vectorPairModelSelected);
+	vectorPairParametersLayout->addWidget(vectorPairModelComboBox);
 
 	layout->addWidget(parametersBox);
+
+	vectorPairModelSelected(vectorPairModelComboBox->currentIndex());
 }
 
 void SetGeneratorDialog::setVectorTab() {
@@ -195,14 +203,30 @@ void SetGeneratorDialog::generateVectorPair() {
 	ss::VectorPair* dv;
 	size_t count = countSpinBox->value();
 	std::vector<double> parameters;
-
-	ss::VectorPair::Distribution dr(nullptr);
 	std::vector<double> p = vectorPairParametersWidget->parameters();
-	dr.setParameters(p, count);
-	std::pair<std::list<double>, std::list<double>> set = dr.generateSet(count);
-	dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
-	parameters = dr.parameters;
+	int idx = vectorPairModelComboBox->currentIndex();
+	std::pair<std::list<double>, std::list<double>> set;
 
+	if (idx == 0) {
+		ss::VectorPair::Distribution dr(nullptr);
+		dr.setParameters(p, count);
+		std::pair<std::list<double>, std::list<double>> set = dr.generateSet(count);
+		dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
+		parameters = dr.parameters;
+	} else {
+		ss::VectorPair::Regression rr(nullptr);
+		double xmax = p.back();
+		p.pop_back();
+		double xmin = p.back();
+		p.pop_back();
+		double sigma = p.back();
+		p.pop_back();
+		rr.setModel(ss::VectorPair::Regression::Model(idx), p);
+		set = rr.generateSet(count, xmin, xmax, sigma);
+		parameters = rr.parameters;
+	}
+
+	dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
 	VectorPair* newve = new VectorPair;
 	newve->setVectorPair(dv);
 	newve->setDistribuitonParameters(p);
@@ -235,6 +259,26 @@ void SetGeneratorDialog::vectorDistributionSelected(int model) {
 
 	vectorParametersWidget = new ParametersWidget(p, params, enabled);
 	vectorParametersLayout->addWidget(vectorParametersWidget);
+}
+
+void SetGeneratorDialog::vectorPairModelSelected(int model) {
+	if (vectorPairParametersWidget != nullptr)
+		vectorPairParametersLayout->removeWidget(vectorPairParametersWidget);
+	delete vectorPairParametersWidget;
+	QStringList p;
+	if (model == 0)
+		for (auto const& x : ss::VectorPair::Distribution::parameterName[0])
+			p.push_back(QString::fromStdString(x));
+	else  {
+		for (auto const& x : ss::VectorPair::Regression::parameterName[model])
+			p.push_back(QString::fromStdString(x));
+		p.push_back("σ");
+		p.push_back("xₘᵢₙ");
+		p.push_back("xₘₐₓ");
+	}
+
+	vectorPairParametersWidget = new ParametersWidget(p, params, enabled);
+	vectorPairParametersLayout->addWidget(vectorPairParametersWidget);
 }
 
 void SetGeneratorDialog::vectorMethodSelected(int method) {

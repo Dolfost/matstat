@@ -297,12 +297,12 @@ public:
 		} model = Model::Unknown;
 
 		void setModel(Model, std::vector<double>);
-		std::list<double> generateSet(std::size_t, double);
+		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t, double, double, double);
 		static const std::vector<std::string> regressionName;
 		static const std::vector<std::vector<std::string>> parameterName;
 
 	public:
-		double f(double x) {
+		double regression(double x) {
 			return r_regression(x);
 		}
 		std::pair<double, double> confidence(double x) {

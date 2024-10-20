@@ -51,6 +51,7 @@ private:
 
   ParametersWidget *vectorPairParametersWidget = nullptr;
   QVBoxLayout *vectorPairParametersLayout = nullptr;
+	QComboBox* vectorPairModelComboBox = nullptr;
 
 	QTabWidget* tabs = nullptr;
 	QWidget* vectorTab = nullptr;
@@ -75,6 +76,8 @@ private slots:
   void vectorMethodSelected(int);
   void vectorMinBoundChanged(double);
   void vectorMaxBoundChanged(double);
+
+	void vectorPairModelSelected(int);
 
 signals:
   void vectorGenerated(Vector*);

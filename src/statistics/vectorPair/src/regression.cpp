@@ -11,24 +11,27 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 
 	parameters = p;
 	model = m;
-
-	ss::VectorPair& v = *s_vector;
+	ss::VectorPair* v = s_vector;
 
 	switch (model) {
 		case Model::Linear: {
 			double a = p[0], b = p[1];
-			remDispersion = v.y.sd()*std::sqrt((1-std::pow(v.cor(), 2)))*(v.size()-1)/(v.size()-2);
-			parametersDeviation.push_back(
-				remDispersion*std::sqrt(1.0/v.size()+std::pow(v.x.mean(), 2)/(std::pow(v.x.sd(), 2)*(v.size() - 1)))
-			);
-			parametersDeviation.push_back(
-				remDispersion/(v.x.sd()*std::sqrt(v.size() - 1))
-			);
 			r_regression = [a, b](double x) {
 				return a + x*b;
 			};
+
+			if (!v)
+				return;
+
+			remDispersion = v->y.sd()*std::sqrt((1-std::pow(v->cor(), 2)))*(v->size()-1)/(v->size()-2);
+			parametersDeviation.push_back(
+				remDispersion*std::sqrt(1.0/v->size()+std::pow(v->x.mean(), 2)/(std::pow(v->x.sd(), 2)*(v->size() - 1)))
+			);
+			parametersDeviation.push_back(
+				remDispersion/(v->x.sd()*std::sqrt(v->size() - 1))
+			);
 			r_tolerance = [this](double x) -> std::pair<double, double> {
-				double f = this->f(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
 				return {f - q, f + q};
 			};
 			r_Syx0 = [this](double x) {
@@ -36,7 +39,7 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 										 std::pow(this->parametersDeviation[1], 2)*std::pow(x - this->s_vector->x.mean(), 2));
 			};
 			r_forecast = [this](double x) -> std::pair<double, double> {
-				double f = this->f(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
 				return {f - q, f + q};
 			};
 			r_Symx = [this](double x) {
@@ -44,14 +47,49 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 										 std::pow(this->parametersDeviation[1]*(x-this->s_vector->x.mean()), 2));
 			};
 			r_confidence = [this](double x) -> std::pair<double, double> {
-				double f = this->f(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
 				return {f - q, f + q};
 			};
-			determination = std::pow(v.cor(), 2)*100;
+			determination = std::pow(v->cor(), 2)*100;
 			break;
 		}
 		case Model::Parabolic: {
+			double a = p[0], b = p[1], c = p[2];
+			r_regression = [a, b, c](double x) {
+				return a + x*b + std::pow(x, 2)*c;
+			};
 
+			if (!v)
+				return;
+
+			remDispersion = v->y.sd()*std::sqrt((1-std::pow(v->cor(), 2)))*(v->size()-1)/(v->size()-2);
+			parametersDeviation.push_back(
+				remDispersion*std::sqrt(1.0/v->size()+std::pow(v->x.mean(), 2)/(std::pow(v->x.sd(), 2)*(v->size() - 1)))
+			);
+			parametersDeviation.push_back(
+				remDispersion/(v->x.sd()*std::sqrt(v->size() - 1))
+			);
+			r_tolerance = [this](double x) -> std::pair<double, double> {
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
+				return {f - q, f + q};
+			};
+			r_Syx0 = [this](double x) {
+				return std::sqrt(this->remDispersion*(1+1.0/this->s_vector->size()) + 
+										 std::pow(this->parametersDeviation[1], 2)*std::pow(x - this->s_vector->x.mean(), 2));
+			};
+			r_forecast = [this](double x) -> std::pair<double, double> {
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
+				return {f - q, f + q};
+			};
+			r_Symx = [this](double x) {
+				return std::sqrt(std::pow(this->remDispersion, 2)/this->s_vector->size() +
+										 std::pow(this->parametersDeviation[1]*(x-this->s_vector->x.mean()), 2));
+			};
+			r_confidence = [this](double x) -> std::pair<double, double> {
+				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
+				return {f - q, f + q};
+			};
+			determination = std::pow(v->cor(), 2)*100;
 			break;
 		}
 		case Model::Unknown: {
@@ -66,6 +104,23 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 	paremeterNames = parameterName[(int)model];
 	parametersDeviationNames = parameterName[(int)model];
 }
+
+std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generateSet(
+	std::size_t n, double a, double b, double sigma
+) {
+	std::default_random_engine generator;
+	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+	std::uniform_real_distribution<double> uni(a, b);
+	std::normal_distribution<double> norm(0, sigma);
+
+	std::list<double> x, y;
+	for (std::size_t i = 0; i < n; i++) {
+		x.push_back(uni(generator));
+		y.push_back(regression(x.back()) + norm(generator));
+	}
+
+	return {x, y};
+};
 
 const std::vector<std::string> VectorPair::Regression::regressionName = {
 	"Невідома", "Лінійна", "Параболічна",

@@ -380,6 +380,15 @@ public:
 		double d_confidence = 0.95;
 	};
 
+	double p1(double x) {
+		return x - mean();
+	};
+	double p2(double x) {
+		return std::pow(x, 2) - 
+			(rawMoment(3) - rawMoment(2)*mean())*(x-mean()) / 
+			std::pow(sd(), 2) - rawMoment(2);
+	};
+
 public:
 	Vector();
 	Vector(const std::list<double>&);

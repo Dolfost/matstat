@@ -38,7 +38,6 @@ FunctionReproducerDialogBase::FunctionReproducerDialogBase(
 	this->resize(100, 150);
 }
 
-
 void FunctionReproducerDialogBase::distribute(int dist) {
 	if (dist != 0) {
 		fill();
