@@ -72,6 +72,8 @@ public:
 		return this->s_value[at];
 	}
 	std::size_t count() { // r 
+		if (!this->s_valid)
+			this->adapt();
 		return this->s_value.size();
 	};
 };
