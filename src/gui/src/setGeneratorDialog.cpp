@@ -200,19 +200,18 @@ void SetGeneratorDialog::generateVector() {
 }
 
 void SetGeneratorDialog::generateVectorPair() {
-	ss::VectorPair* dv;
 	size_t count = countSpinBox->value();
-	std::vector<double> parameters;
 	std::vector<double> p = vectorPairParametersWidget->parameters();
 	int idx = vectorPairModelComboBox->currentIndex();
 	std::pair<std::list<double>, std::list<double>> set;
+	VectorPair* newve = new VectorPair;
 
 	if (idx == 0) {
 		ss::VectorPair::Distribution dr(nullptr);
 		dr.setParameters(p, count);
-		std::pair<std::list<double>, std::list<double>> set = dr.generateSet(count);
-		dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
-		parameters = dr.parameters;
+		set = dr.generateSet(count);
+		newve->setNormalDistribution(true);
+		newve->setDistribuitonParameters(p);
 	} else {
 		ss::VectorPair::Regression rr(nullptr);
 		double xmax = p.back();
@@ -223,14 +222,10 @@ void SetGeneratorDialog::generateVectorPair() {
 		p.pop_back();
 		rr.setModel(ss::VectorPair::Regression::Model(idx), p);
 		set = rr.generateSet(count, xmin, xmax, sigma);
-		parameters = rr.parameters;
+		newve->setRegressionModel(rr.model, rr.parameters);
 	}
 
-	dv = new ss::VectorPair(std::move(set.first), std::move(set.second));
-	VectorPair* newve = new VectorPair;
-	newve->setVectorPair(dv);
-	newve->setDistribuitonParameters(p);
-	newve->setNormalDistribution(true);
+	newve->setVectorPair(new ss::VectorPair(std::move(set.first), std::move(set.second)));
 
 	emit vectorPairGenerated(newve);
 }

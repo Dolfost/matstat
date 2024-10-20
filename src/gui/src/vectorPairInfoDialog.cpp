@@ -166,7 +166,7 @@ void VectorPairInfoDialog::fill() {
 	if (vp.reg.model != ss::VectorPair::Regression::Model::Unknown) {
 		t.push_back({
 			"Коефіцієнт детермінації", "R²", 
-			n(vp.reg.determination),
+			n(vp.reg.determination) + "%",
 			"", 
 			"",
 			"",
@@ -206,11 +206,22 @@ void VectorPairInfoDialog::fill() {
 	});
 
 	if (v_pair->isNormalDistribution()) {
-		i_additionalText->setText("Вектор змодельвано в програмі:\n  Параметри");
+		i_additionalText->setText("Вектор змодельвано в програмі за нормальним розподілом:\n  Параметри");
 		for (std::size_t i = 0; i < ss::VectorPair::Distribution::parameterName[0].size(); i++) {
 			i_additionalText->append("   " + 
 			 QString::fromStdString(ss::VectorPair::Distribution::parameterName[0][i]) + 
 			 " " + n(v_pair->distributionParameters()[i]));
+		}
+	} else if (v_pair->regressionModel() != ss::VectorPair::Regression::Model::Unknown) {
+		i_additionalText->setText(
+			"Вектор змодельвано в програмі:\nМодель:" + 
+			QString::fromStdString(ss::VectorPair::Regression::regressionName[(int)v_pair->regressionModel()])
+		);
+		i_additionalText->append("Параметри:");
+		for (std::size_t i = 0; i < ss::VectorPair::Regression::parameterName[(int)v_pair->regressionModel()].size(); i++) {
+			i_additionalText->append("   " + 
+			 QString::fromStdString(ss::VectorPair::Regression::parameterName[(int)v_pair->regressionModel()][i]) + 
+			 " " + n(v_pair->regressionParameters()[i]));
 		}
 	} else
 		i_additionalText->setText("Вектор імпортовано у програму.");

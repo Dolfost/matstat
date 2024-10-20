@@ -11,12 +11,21 @@ void VectorPair::reproduceRegression(Regression::Model m) {
 			break;
 		}
 		case (Regression::Model::Parabolic): {
-
+			double a = y.mean(), b = 0, c = 0, p1 = 0, p2 = 0;
+			auto xl = x.begin(), yl = y.begin();
+			while (xl != x.end()) {
+				b += (*xl - x.mean())**yl;
+				double j = x.p2(*xl);
+				p1 += j**yl;
+				p2 += std::pow(j, 2);
+				xl++, yl++;
+			}
+			b /= (size()-2)*std::pow(x.sd(), 2);
+			c = p1/p2;
+			p = {a, b, c};
 			break;
 		}
-		case (Regression::Model::Unknown): {
-			break;
-		}
+		case (Regression::Model::Unknown):
 		case (Regression::Model::Count):
 			break;
 	};

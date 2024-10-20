@@ -2,6 +2,7 @@
 #define _VECTOR_PAIR_HPP_	
 
 #include <vector.hpp>
+#include <vector/quantile.hpp>
 #include <vector/utils.hpp>
 
 #include <utility>
@@ -306,13 +307,16 @@ public:
 			return r_regression(x);
 		}
 		std::pair<double, double> confidence(double x) {
-			return r_confidence(x);
+			double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
+			return {f - q, f + q};
 		}
 		std::pair<double, double> forecast(double x) {
-			return r_forecast(x);
+			double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
+			return {f - q, f + q};
 		}
 		std::pair<double, double> tolerance(double x) {
-			return r_tolerance(x);
+			double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
+			return {f - q, f + q};
 		}
 
 		double Syx0(double x) {
@@ -340,9 +344,6 @@ public:
 		}
 	protected:
 		std::function<double(double)> r_regression;
-		std::function<std::pair<double, double>(double)> r_confidence;
-		std::function<std::pair<double, double>(double)> r_forecast;
-		std::function<std::pair<double, double>(double)> r_tolerance;
 		std::function<double(double)> r_Syx0;
 		std::function<double(double)> r_Symx;
 		double d_confidence = 0.95;

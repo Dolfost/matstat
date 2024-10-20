@@ -6,7 +6,6 @@ namespace ss {
 void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 	paremeterNames.clear();
 	parametersDeviationNames.clear();
-	parameters.clear();
 	parametersDeviation.clear();
 
 	parameters = p;
@@ -30,72 +29,65 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 			parametersDeviation.push_back(
 				remDispersion/(v->x.sd()*std::sqrt(v->size() - 1))
 			);
-			r_tolerance = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
-				return {f - q, f + q};
-			};
 			r_Syx0 = [this](double x) {
 				return std::sqrt(this->remDispersion*(1+1.0/this->s_vector->size()) + 
 										 std::pow(this->parametersDeviation[1], 2)*std::pow(x - this->s_vector->x.mean(), 2));
 			};
-			r_forecast = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
-				return {f - q, f + q};
-			};
 			r_Symx = [this](double x) {
 				return std::sqrt(std::pow(this->remDispersion, 2)/this->s_vector->size() +
 										 std::pow(this->parametersDeviation[1]*(x-this->s_vector->x.mean()), 2));
-			};
-			r_confidence = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
-				return {f - q, f + q};
 			};
 			determination = std::pow(v->cor(), 2)*100;
 			break;
 		}
 		case Model::Parabolic: {
 			double a = p[0], b = p[1], c = p[2];
-			r_regression = [a, b, c](double x) {
-				return a + x*b + std::pow(x, 2)*c;
-			};
-
-			if (!v)
+			if (!v) {
+				r_regression = [a, b, c](double x) {
+					return a + x*b + std::pow(x, 2)*c;
+				};
 				return;
+			} else
+				r_regression = [a, b, c, v](double x) {
+					return a + v->x.p1(x)*b + v->x.p2(x)*c;
+				};
 
-			remDispersion = v->y.sd()*std::sqrt((1-std::pow(v->cor(), 2)))*(v->size()-1)/(v->size()-2);
+			remDispersion = 0;
+			double p2mean2 = 0;
+			auto xl = v->x.begin(), yl = v->y.begin();
+			while (xl != v->x.end()) {
+				remDispersion += std::pow(*yl - a - b*v->x.p1(*xl) - c*v->x.p2(*xl), 2);
+				p2mean2 += std::pow(v->x.p2(*xl), 2);
+				xl++, yl++;
+			}
+			remDispersion /= v->size()-3;
+			p2mean2 /= (v->size()-2);
+			remDispersion = std::sqrt(remDispersion);
+			
 			parametersDeviation.push_back(
-				remDispersion*std::sqrt(1.0/v->size()+std::pow(v->x.mean(), 2)/(std::pow(v->x.sd(), 2)*(v->size() - 1)))
+				remDispersion/std::sqrt(v->size())
 			);
 			parametersDeviation.push_back(
-				remDispersion/(v->x.sd()*std::sqrt(v->size() - 1))
+				remDispersion/(v->x.sd()*std::sqrt(v->size()))
 			);
-			r_tolerance = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->remDispersion;
-				return {f - q, f + q};
-			};
-			r_Syx0 = [this](double x) {
-				return std::sqrt(this->remDispersion*(1+1.0/this->s_vector->size()) + 
-										 std::pow(this->parametersDeviation[1], 2)*std::pow(x - this->s_vector->x.mean(), 2));
-			};
-			r_forecast = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Syx0(x);
-				return {f - q, f + q};
-			};
-			r_Symx = [this](double x) {
-				return std::sqrt(std::pow(this->remDispersion, 2)/this->s_vector->size() +
-										 std::pow(this->parametersDeviation[1]*(x-this->s_vector->x.mean()), 2));
-			};
-			r_confidence = [this](double x) -> std::pair<double, double> {
-				double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
-				return {f - q, f + q};
-			};
-			determination = std::pow(v->cor(), 2)*100;
-			break;
-		}
-		case Model::Unknown: {
+			parametersDeviation.push_back(
+				remDispersion/std::sqrt(v->size()*p2mean2)
+			);
 
+			r_Syx0 = [v, this, p2mean2](double x) {
+				return (this->remDispersion/std::sqrt(v->size())) * 
+				std::sqrt(v->size() + 1 + std::pow(v->x.p1(x), 2)/v->x.sd() + 
+							std::pow(v->x.p2(x), 2)/p2mean2);
+			};
+			r_Symx = [v, this, p2mean2](double x) {
+				return (this->remDispersion/std::sqrt(v->size())) * 
+				std::sqrt(1 + std::pow(v->x.p1(x), 2)/v->x.sd() + 
+							std::pow(v->x.p2(x), 2)/p2mean2);
+			};
+			determination = std::pow(v->corRatio(), 2)*100;
 			break;
 		}
+		case Model::Unknown:
 		case Model::Count:
 			break;
 	}
