@@ -13,6 +13,7 @@ const std::vector<std::string> VectorPairHypothesis::procedureName {
 	"Значущість коефіцієнта звʼязку Юла Q",
 	"Значущість коефіцієнта звʼязку Юла Y",
 	"Міра звʼязаності (таблиця сполучень)",
+	"Адекватність відтворення регресії",
 };
 
 void VectorPairHypothesis::TTestCor::adapt() {
@@ -127,6 +128,18 @@ void VectorPairHypothesis::CouplingMeasure::adapt() {
 			double nij = v.conTable.row()[i]*v.conTable.col()[j]/v.size();
 			s_value += std::pow(v.conTable()[i][j] - nij, 2) / nij;
 		}
+}
+
+void VectorPairHypothesis::RegressionRevalance::adapt() {
+	if (s_vector->size() != 1)
+		throw "Кількість вибірок не рівна 1";
+
+	VectorPair& v = *s_vector->at(0);
+
+	if (v.reg.model == ss::VectorPair::Regression::Model::Unknown)
+		throw "Регресія вибірки не відтворена";
+
+	s_value = std::pow(v.reg.remDispersion/v.y.sd(), 2);
 }
 
 void VectorPairHypothesis::invalidate() {

@@ -48,7 +48,7 @@ void VectorPairHypothesisDialog::fill() {
 			);
 			break;
 		}
-		case ss::VectorPairHypothesis::Procedure::normalDistrubutionRevelance: {
+		case ss::VectorPairHypothesis::Procedure::normalDistrubutionRevalance: {
 			doTest(
 				"≤",
 				[&](){ return h_hypot.normalDistributionRevelance(); },
@@ -118,6 +118,16 @@ void VectorPairHypothesisDialog::fill() {
 				[&](double a) { return ss::pearQuantile(1-a, (h_hypot[0]->conTable.row().size()-1)*(h_hypot[0]->conTable.col().size()-1)); },
 				std::less_equal<double>(),
 				{"Звʼязок між X та Y відсутній", "Звʼязок між X та Y присутній"}
+			);
+			break;
+		}
+		case ss::VectorPairHypothesis::Procedure::RegresionRevalance: {
+			doTest(
+				"≤",
+				[&](){ return h_hypot.regressionRevalance(); },
+				[&](double a) { return ss::fishQuantile(1-a, h_hypot[0]->size() - 1, h_hypot[0]->size() - 3); },
+				std::less_equal<double>(),
+				{"Відтворення регресії адекватне", "Відтворення регресії не адекватне"}
 			);
 			break;
 		}

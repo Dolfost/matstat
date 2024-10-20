@@ -13,13 +13,14 @@ public:
 		tTestCor,
 		compareCor,
 		tTestCorRatio,
-		normalDistrubutionRevelance,
+		normalDistrubutionRevalance,
 		corSpearman,
 		corKendall,
 		ConnectionsPhi,
 		CouplingQ,
 		CouplingY,
 		CouplingMeasure,
+		RegresionRevalance,
 		Count
 	};
 	
@@ -103,6 +104,14 @@ public: // tests
 	protected:
 		virtual void adapt() override;
 	} couplingMeasure = CouplingMeasure(this);
+
+	class RegressionRevalance
+	: public utils::StatisticSingle<double, VectorPairHypothesis> {
+	public:
+		using StatisticSingle::StatisticSingle;
+	protected:
+		virtual void adapt() override;
+	} regressionRevalance = RegressionRevalance(this);
 
 
 public:
