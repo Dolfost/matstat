@@ -17,7 +17,7 @@ public:
 		setTitle(title);
 		setSizePolicy(
 			QSizePolicy::MinimumExpanding,
-			QSizePolicy::Fixed
+			QSizePolicy::Expanding
 		);
 	}
 

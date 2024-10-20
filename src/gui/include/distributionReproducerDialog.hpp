@@ -1,5 +1,5 @@
-#ifndef _DISTRIBUTION_REPRODUCER_DIALOG_
-#define _DISTRIBUTION_REPRODUCER_DIALOG_
+#ifndef _VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_
+#define _VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_
 
 #include <QDialog>
 #include <QHBoxLayout>
@@ -44,4 +44,4 @@ private slots:
 	void modelSelected(Vector*);
 };
 
-#endif // !_DISTRIBUTION_REPRODUCER_DIALOG_
+#endif // !_VECTOR_DISTRIBUTION_REPRODUCER_DIALOG_

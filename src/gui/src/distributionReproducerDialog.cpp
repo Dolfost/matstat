@@ -16,9 +16,6 @@ VectorDistributionReproducerDialog::VectorDistributionReproducerDialog(
 	modelComboBox->setCurrentIndex((int)v_vector->vector()->dist.model);
 
 	distribute(modelComboBox->currentIndex());
-
-	this->adjustSize();
-	this->show();
 }
 
 void VectorDistributionReproducerDialog::fill() {
