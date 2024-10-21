@@ -29,6 +29,7 @@ void Vector::addGenericsToSymbolTable(::exprtk::symbol_table<double>& t, std::st
   t.add_function("normCfd", *eNormalDistribtuionCdf);
 
   t.add_function("uRand", *new ss::exprtk::exprtk_uniform_real_distribution);
+  t.add_function("uNorm", *new ss::exprtk::exprtk_normal_distribution);
 }
 
 void Vector::addStatisticsToSymbolTable(::exprtk::symbol_table<double>& t, Vector* v, std::string p) {
@@ -74,6 +75,7 @@ const std::string Vector::exprtkFuncitons =
 	"centralMoment(n, m) — центральний момент n-го порядку (n ∈ R)\n"
 	"beta(k) — бета–коефіцієнт\n"
 	"ncv() — непараметричний коефіцієнт варіації\n"
-	"uRand(a, b) — рівномірно розподілена випадкова величина";
+	"uRand(a, b) — рівномірно розподілена випадкова величина\n"
+	"uNorm(m, σ) — нормально розподілена випадкова величина";
 
 }

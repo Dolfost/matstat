@@ -59,6 +59,16 @@ struct exprtk_uniform_real_distribution final: public ::exprtk::ifunction<double
 	};
 };
 
+struct exprtk_normal_distribution final: public ::exprtk::ifunction<double> {
+	exprtk_normal_distribution(): ::exprtk::ifunction<double>(2) {}
+	double operator()(const double& m, const double& sigma) {
+		std::default_random_engine generator;
+		generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
+		std::normal_distribution<double> distrib(m, sigma);
+		return distrib(generator);
+	};
+};
+
 }
 
 #endif // !_VECTOR_EXPRTK_QUANTILE_HPP_
