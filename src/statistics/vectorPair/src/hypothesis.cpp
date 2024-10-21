@@ -42,7 +42,7 @@ void VectorPairHypothesis::CompareCor::adapt() {
 	s_value = sumZi2 - std::pow(sumZi, 2)/sumNi;
 }
 
-void VectorPairHypothesis::NormalDistribtuionRevelance::adapt() {
+void VectorPairHypothesis::NormalDistribtuionRelevance::adapt() {
 	if (s_vector->size() != 1)
 		throw "Кількість вибірок не рівна 1";
 
@@ -130,7 +130,7 @@ void VectorPairHypothesis::CouplingMeasure::adapt() {
 		}
 }
 
-void VectorPairHypothesis::RegressionRevalance::adapt() {
+void VectorPairHypothesis::RegressionRelevance::adapt() {
 	if (s_vector->size() != 1)
 		throw "Кількість вибірок не рівна 1";
 
@@ -145,7 +145,18 @@ void VectorPairHypothesis::RegressionRevalance::adapt() {
 void VectorPairHypothesis::invalidate() {
 	tTestCor.invalidate();
 	compareCor.invalidate();
-	normalDistributionRevelance.invalidate();
+	normalDistributionRelevance.invalidate();
+	tTestCor.invalidate();
+	compareCor.invalidate();
+	tTestCorRatio.invalidate();
+	normalDistributionRelevance.invalidate();
+	corSpearman.invalidate();
+	corKendall.invalidate();
+	connectionsPhi.invalidate();
+	couplingQ.invalidate();
+	couplingY.invalidate();
+	couplingMeasure.invalidate();
+	regressionRelevance.invalidate();
 }
 
 }

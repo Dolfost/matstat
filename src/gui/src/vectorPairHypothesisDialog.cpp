@@ -51,7 +51,7 @@ void VectorPairHypothesisDialog::fill() {
 		case ss::VectorPairHypothesis::Procedure::normalDistrubutionRevalance: {
 			doTest(
 				"≤",
-				[&](){ return h_hypot.normalDistributionRevelance(); },
+				[&](){ return h_hypot.normalDistributionRelevance(); },
 				[&](double a) { return ss::pearQuantile(a, h_hypot[0]->cs.countX()*h_hypot[0]->cs.countY()-2); },
 				std::less_equal<double>(),
 				{
@@ -124,7 +124,7 @@ void VectorPairHypothesisDialog::fill() {
 		case ss::VectorPairHypothesis::Procedure::RegresionRevalance: {
 			doTest(
 				"≤",
-				[&](){ return h_hypot.regressionRevalance(); },
+				[&](){ return h_hypot.regressionRelevance(); },
 				[&](double a) { return ss::fishQuantile(1-a, h_hypot[0]->size() - 1, h_hypot[0]->size() - 3); },
 				std::less_equal<double>(),
 				{"Відтворення регресії адекватне", "Відтворення регресії не адекватне"}

@@ -49,13 +49,13 @@ public: // tests
 		virtual void adapt() override;
 	} tTestCorRatio = TTestCorRatio(this);
 
-	class NormalDistribtuionRevelance
+	class NormalDistribtuionRelevance
 	: public utils::StatisticSingle<double, VectorPairHypothesis> {
 	public:
 		using StatisticSingle::StatisticSingle;
 	protected:
 		virtual void adapt() override;
-	} normalDistributionRevelance = NormalDistribtuionRevelance(this);
+	} normalDistributionRelevance = NormalDistribtuionRelevance(this);
 
 	class CorSpearman
 	: public utils::StatisticSingle<double, VectorPairHypothesis> {
@@ -105,13 +105,13 @@ public: // tests
 		virtual void adapt() override;
 	} couplingMeasure = CouplingMeasure(this);
 
-	class RegressionRevalance
+	class RegressionRelevance
 	: public utils::StatisticSingle<double, VectorPairHypothesis> {
 	public:
 		using StatisticSingle::StatisticSingle;
 	protected:
 		virtual void adapt() override;
-	} regressionRevalance = RegressionRevalance(this);
+	} regressionRelevance = RegressionRelevance(this);
 
 
 public:
