@@ -214,14 +214,10 @@ void SetGeneratorDialog::generateVectorPair() {
 		newve->setDistribuitonParameters(p);
 	} else {
 		ss::VectorPair::Regression rr(nullptr);
-		double xmax = p.back();
-		p.pop_back();
-		double xmin = p.back();
-		p.pop_back();
 		double sigma = p.back();
 		p.pop_back();
 		rr.setModel(ss::VectorPair::Regression::Model(idx), p);
-		set = rr.generateSet(count, xmin, xmax, sigma);
+		set = rr.generateSet(count, sigma);
 		newve->setRegressionModel(rr.model, rr.parameters);
 	}
 
@@ -268,8 +264,6 @@ void SetGeneratorDialog::vectorPairModelSelected(int model) {
 		for (auto const& x : ss::VectorPair::Regression::parameterName[model])
 			p.push_back(QString::fromStdString(x));
 		p.push_back("σ");
-		p.push_back("xₘᵢₙ");
-		p.push_back("xₘₐₓ");
 	}
 
 	vectorPairParametersWidget = new ParametersWidget(p, params, enabled);

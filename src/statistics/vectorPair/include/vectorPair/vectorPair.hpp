@@ -294,11 +294,12 @@ public:
 			Unknown,
 			Linear,
 			Parabolic,
+			QuaziLinear,
 			Count,
 		} model = Model::Unknown;
 
 		void setModel(Model, std::vector<double>);
-		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t, double, double, double);
+		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t, double);
 		static const std::vector<std::string> regressionName;
 		static const std::vector<std::vector<std::string>> parameterName;
 

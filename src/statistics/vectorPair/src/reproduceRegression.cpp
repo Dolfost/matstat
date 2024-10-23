@@ -25,6 +25,8 @@ void VectorPair::reproduceRegression(Regression::Model m) {
 			p = {a, b, c};
 			break;
 		}
+		case (Regression::Model::QuaziLinear): {
+		}
 		case (Regression::Model::Unknown):
 		case (Regression::Model::Count):
 			break;

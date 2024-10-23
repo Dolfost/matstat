@@ -87,27 +87,88 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 			determination = std::pow(v->corRatio(), 2)*100;
 			break;
 		}
+		case Model::QuaziLinear: {
+			if (!v and p.size() != 0) {
+				double a = p[0], b = p[1];
+				r_regression = [a, b](double x) {
+					return a*std::pow(x, b);
+				};
+				return;
+			}
+			ss::VectorPair* goodPair;
+
+			ss::VectorPair weighted(*s_vector), notWeighted(*s_vector);
+			weighted.transform(
+				/* x = */ "log(x)*x^2/y^2", 
+				/* y = */ "log(y)*x^2/y^2"
+			);
+			notWeighted.transform(
+				/* x = */ "log(x)", 
+				/* y = */ "log(y)"
+			);
+			double weightedS = 0, notWeightedS = 0;
+			auto wy = weighted.y.begin(), nwy = notWeighted.y.begin();
+			while (wy != weighted.y.end()) {
+				weightedS += std::pow(*wy - weighted.x.mean(), 2); 
+				notWeightedS += std::pow(*nwy - notWeighted.x.mean(), 2); 
+				wy++, nwy++;
+			}
+			weightedS = std::sqrt(weightedS/(v->size()-2));
+			notWeightedS = std::sqrt(notWeightedS/(v->size()-2));
+
+			if (weightedS > notWeightedS) {
+				goodPair = &notWeighted;
+				remDispersion = notWeightedS;
+			} else {
+				goodPair = &weighted;
+				remDispersion = weightedS;
+			}
+
+			parametersDeviation.push_back(
+				remDispersion*std::sqrt(1.0/v->size() + std::pow(goodPair->x.mean(), 2)/(std::pow(goodPair->x.sd(), 2)*(v->size()-1)))
+			);
+			parametersDeviation.push_back(
+				goodPair->x.mean()*std::sqrt(v->size()-1)/remDispersion
+			);
+
+			r_Syx0 = [](double x) {
+				return -1000;
+			};
+			double tm = goodPair->x.mean();
+			r_Symx = [v, this, tm](double x) {
+				return std::sqrt(std::pow(remDispersion, 2)/v->size() + std::pow(this->parametersDeviation[2]*(x-tm), 2));
+			};
+			determination = std::pow(goodPair->corRatio(), 2)*100;
+
+			double b = goodPair->cor()*goodPair->y.sd()/goodPair->x.sd();
+			double a = std::pow(M_E, goodPair->y.mean() - b*goodPair->x.mean());
+			parameters.push_back(a);
+			parameters.push_back(b);
+			r_regression = [a, b](double x) {
+				return a*std::pow(x, b);
+			};
+		};
 		case Model::Unknown:
 		case Model::Count:
 			break;
 	}
 
-	parametersCount = p.size();
+	parametersCount = parameters.size();
 	paremeterNames = parameterName[(int)model];
 	parametersDeviationNames = parameterName[(int)model];
 }
 
 std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generateSet(
-	std::size_t n, double a, double b, double sigma
+	std::size_t n, double sigma
 ) {
 	std::default_random_engine generator;
 	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
-	std::uniform_real_distribution<double> uni(a, b);
+	std::normal_distribution<double> normx(0, 1);
 	std::normal_distribution<double> norm(0, sigma);
 
 	std::list<double> x, y;
 	for (std::size_t i = 0; i < n; i++) {
-		x.push_back(uni(generator));
+		x.push_back(normx(generator));
 		y.push_back(regression(x.back()) + norm(generator));
 	}
 
@@ -115,11 +176,11 @@ std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generate
 };
 
 const std::vector<std::string> VectorPair::Regression::regressionName = {
-	"Невідома", "Лінійна", "Параболічна",
+	"Невідома", "Лінійна (a+bx)", "Параболічна (a+bx+cx²)", "Квазілінійна (axᵇ)",
 };
 
 const std::vector<std::vector<std::string>> VectorPair::Regression::parameterName = {
-	{}, {"a", "b"}, {"a", "b", "c"},
+	{}, {"a", "b"}, {"a", "b", "c"}, {"a", "b"},
 };
 
 }
