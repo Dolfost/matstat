@@ -10,6 +10,32 @@ void VectorPair::reproduceRegression(Regression::Model m) {
 			p = {a, b};
 			break;
 		}
+		case (Regression::Model::LinearThail): {
+			std::list<double> lst;
+			auto xi = x.begin(), yi = y.begin();
+			while (xi != x.end()) {
+			auto xj = std::next(xi), yj = std::next(yi);
+				while (xj != x.end()) {
+					if (*xi != *xj)
+						lst.push_back((*yj - *yi)/(*xj - *xi));
+					xj++, yj++;
+				}
+				xi++, yi++;
+			}
+			ss::Vector v(lst);
+			double b = v.med();
+
+			lst.clear();
+			auto xj = x.begin(), yj = y.begin();
+			while (xj != x.end()) {
+				lst.push_back(*yj - b**xj);
+				xj++, yj++;
+			}
+			v.setVector(lst);
+			double a = v.med();
+			p = {a, b};
+			break;
+		}
 		case (Regression::Model::Parabolic): {
 			double a = y.mean(), b = 0, c = 0, p1 = 0, p2 = 0;
 			auto xl = x.begin(), yl = y.begin();

@@ -13,6 +13,7 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 	ss::VectorPair* v = s_vector;
 
 	switch (model) {
+		case Model::LinearThail:
 		case Model::Linear: {
 			double a = p[0], b = p[1];
 			r_regression = [a, b](double x) {
@@ -176,11 +177,11 @@ std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generate
 };
 
 const std::vector<std::string> VectorPair::Regression::regressionName = {
-	"Невідома", "Лінійна (a+bx)", "Параболічна (a+bx+cx²)", "Квазілінійна (axᵇ)",
+	"Невідома", "Лінійна (a+bx)", "Лінійна за Тейлом (a+bx)", "Параболічна (a+bx+cx²)", "Квазілінійна (axᵇ)",
 };
 
 const std::vector<std::vector<std::string>> VectorPair::Regression::parameterName = {
-	{}, {"a", "b"}, {"a", "b", "c"}, {"a", "b"},
+	{}, {"a", "b"}, {"a", "b"}, {"a", "b", "c"}, {"a", "b"},
 };
 
 }

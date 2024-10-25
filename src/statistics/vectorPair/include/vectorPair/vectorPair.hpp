@@ -293,6 +293,7 @@ public:
 		enum class Model {
 			Unknown,
 			Linear,
+			LinearThail,
 			Parabolic,
 			QuaziLinear,
 			Count,
