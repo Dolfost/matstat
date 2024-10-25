@@ -14,8 +14,8 @@ void Vector::TurncatedMean::adapt(std::size_t k) {
   double& turncatedMean = s_values[k];
 	turncatedMean = 0;
 
-  auto front = s_vector->cbegin();
-  auto back = s_vector->cend();
+  auto front = s_vector->sorted().cbegin();
+  auto back = s_vector->sorted().cend();
   std::advance(front, k);
   std::advance(back, -k);
 
