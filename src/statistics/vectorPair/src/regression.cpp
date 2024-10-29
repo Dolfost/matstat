@@ -96,53 +96,53 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 				};
 				return;
 			}
-			ss::VectorPair* goodPair;
 
-			ss::VectorPair weighted(*s_vector), notWeighted(*s_vector);
-			weighted.transform(
-				/* x = */ "log(x)*x^2/y^2", 
-				/* y = */ "log(y)*x^2/y^2"
-			);
-			notWeighted.transform(
+			ss::VectorPair trans(*s_vector);
+			trans.transform(
 				/* x = */ "log(x)", 
 				/* y = */ "log(y)"
 			);
-			double weightedS = 0, notWeightedS = 0;
-			auto wy = weighted.y.begin(), nwy = notWeighted.y.begin();
-			while (wy != weighted.y.end()) {
-				weightedS += std::pow(*wy - weighted.x.mean(), 2); 
-				notWeightedS += std::pow(*nwy - notWeighted.x.mean(), 2); 
-				wy++, nwy++;
-			}
-			weightedS = std::sqrt(weightedS/(v->size()-2));
-			notWeightedS = std::sqrt(notWeightedS/(v->size()-2));
+			double phi = 0, psi = 0, phi2 = 0, phiPsi = 0, w = 0;
 
-			if (weightedS > notWeightedS) {
-				goodPair = &notWeighted;
-				remDispersion = notWeightedS;
-			} else {
-				goodPair = &weighted;
-				remDispersion = weightedS;
+			for (auto xl = trans.x.begin(), yl = trans.y.begin(); xl != trans.x.end(); xl++, yl++) {
+				double wl = std::pow(*yl / *xl, 2);
+				w += wl;
+				phi += *xl*wl;
+				psi += *yl*wl;
+				phi2 += std::pow(*xl, 2)*wl;
+				phiPsi += *xl**yl*wl;
 			}
+			phi /= w, psi /= w, phi2 /= w, phiPsi /= w;
+			double B = (phiPsi - phi*psi)/(phi2 - std::pow(phi, 2)), A = psi - B*phi, 
+			b = trans.cor()*trans.y.sd()/trans.x.sd(), a = trans.y.mean() - b*trans.x.mean(); 
+
+			double weightedS = 0, notWeightedS = 0;
+			for (auto xl = trans.x.begin(), yl = trans.y.begin(); xl != trans.x.end(); xl++, yl++) {
+				weightedS += std::pow(*yl - A - B**xl, 2);
+				notWeightedS += std::pow(*yl - a - b**xl, 2);
+			}
+
+			if (weightedS > notWeightedS)
+				a = A, b = B;
 
 			parametersDeviation.push_back(
-				remDispersion*std::sqrt(1.0/v->size() + std::pow(goodPair->x.mean(), 2)/(std::pow(goodPair->x.sd(), 2)*(v->size()-1)))
+				remDispersion*std::sqrt(1.0/v->size() + std::pow(trans.x.mean(), 2)/(std::pow(trans.x.sd(), 2)*(v->size()-1)))
 			);
 			parametersDeviation.push_back(
-				goodPair->x.mean()*std::sqrt(v->size()-1)/remDispersion
+				trans.x.mean()*std::sqrt(v->size()-1)/remDispersion
 			);
 
 			r_Syx0 = [](double x) {
 				return -1000;
 			};
-			double tm = goodPair->x.mean();
+			double tm = trans.x.mean();
 			r_Symx = [v, this, tm](double x) {
 				return std::sqrt(std::pow(remDispersion, 2)/v->size() + std::pow(this->parametersDeviation[2]*(x-tm), 2));
 			};
-			determination = std::pow(goodPair->corRatio(), 2)*100;
+			determination = std::pow(trans.corRatio(), 2)*100;
 
-			double b = goodPair->cor()*goodPair->y.sd()/goodPair->x.sd();
-			double a = std::pow(M_E, goodPair->y.mean() - b*goodPair->x.mean());
+			b = trans.cor()*trans.y.sd()/trans.x.sd();
+			a = std::pow(M_E, trans.y.mean() - b*trans.x.mean());
 			parameters.push_back(a);
 			parameters.push_back(b);
 			r_regression = [a, b](double x) {
