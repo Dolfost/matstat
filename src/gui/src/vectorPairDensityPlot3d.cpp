@@ -27,6 +27,8 @@ VectorPairDensityPlot3d::VectorPairDensityPlot3d(
 	surface->axisY()->setSegmentCount(
 		15
 	);
+	s_graph->setAspectRatio(1.0);
+	s_graph->setHorizontalAspectRatio(1.0);
 }
 
 void VectorPairDensityPlot3d::fill() {
