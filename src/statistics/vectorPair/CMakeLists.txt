@@ -5,7 +5,7 @@ file(GLOB HEADERS CONFIGURE_DEPENDS
 	include/*.hpp
 )
 
-add_library(ss_vectorPair STATIC)
+add_library(ss_vectorPair)
 add_library(ss::vectorPair ALIAS ss_vectorPair)
 target_sources(ss_vectorPair
 	PRIVATE

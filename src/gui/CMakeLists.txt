@@ -1,6 +1,6 @@
 find_package(Qt6 REQUIRED COMPONENTS 
 	Core Widgets Gui 
-	Graphs
+	DataVisualization
 )
 
 file(GLOB SOURCES CONFIGURE_DEPENDS 
@@ -11,7 +11,7 @@ file(GLOB HEADERS CONFIGURE_DEPENDS
 	${CMAKE_CURRENT_LIST_DIR}/include/*.h
 )
 
-qt_add_library(gui STATIC)
+qt_add_library(gui)
 target_sources(gui
 	PUBLIC
 		${SOURCES}
@@ -27,11 +27,7 @@ qt_add_resources(gui "fonts"
 				"res/JuliaMono-Regular.ttf"
 )
 
-target_include_directories(gui 
-	PUBLIC include
-)
-
-target_link_libraries(gui PRIVATE
-	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::Graphs
+target_link_libraries(gui
+	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::DataVisualization
 	exprtk ss::statistics qcustomplot
 )

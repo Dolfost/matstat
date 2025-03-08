@@ -4,6 +4,7 @@
 #include<qcustomplot.h>
 
 class Plot2dBase: public QCustomPlot {
+	Q_OBJECT
 public:
 	Plot2dBase(QWidget* parent = nullptr);
 	void setSaveFilename(QString s) {
