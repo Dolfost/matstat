@@ -11,7 +11,7 @@ void VectorPair::reproduceRegression(Regression::Model m) {
 			break;
 		}
 		case (Regression::Model::LinearThail): {
-			std::list<double> lst;
+			std::vector<double> lst;
 			auto xi = x.begin(), yi = y.begin();
 			while (xi != x.end()) {
 			auto xj = std::next(xi), yj = std::next(yi);

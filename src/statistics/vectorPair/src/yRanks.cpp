@@ -3,11 +3,11 @@
 namespace ss {
 
 void VectorPair::Ranks::adapt() {
-	std::list<double> yl = s_vector->y.sorted();
-	std::list<double> ry = s_vector->y.ranks();
+	std::vector<double> yl = s_vector->y.sorted();
+	std::vector<double> ry = s_vector->y.ranks();
 
-	std::list<double> yv = s_vector->y.list();
-	std::list<double> xv = s_vector->x.list();
+	std::vector<double> yv = s_vector->y.list();
+	std::vector<double> xv = s_vector->x.list();
 
 	for (auto x = s_vector->x.sorted().begin(); x != s_vector->x.sorted().end(); x++) {
 		double y;

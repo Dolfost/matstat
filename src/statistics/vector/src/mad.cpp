@@ -3,7 +3,7 @@
 namespace ss {
 
 void Vector::MeanAbsoluteDeviation::adapt() {
-  std::list<double> madVector;
+  std::vector<double> madVector;
   double medValue = s_vector->med();
 
   for (auto const &i : *s_vector) {

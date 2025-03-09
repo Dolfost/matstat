@@ -1,7 +1,7 @@
 #ifndef _DATASERIES_HPP_
 #define _DATASERIES_HPP_
 
-#include <list>
+#include <vector>
 #include <string>
 
 class DataSeries {
@@ -9,8 +9,8 @@ public:
 	DataSeries() = default;
 
 	void readData(std::string);
-	const std::vector<std::list<double>>& series();
-	const std::list<double>& filewiseSeries();
+	const std::vector<std::vector<double>>& series();
+	const std::vector<double>& filewiseSeries();
 	size_t size();
 	unsigned short dimension();
 
@@ -19,8 +19,8 @@ public:
 private:
 	std::string filename;
 
-	std::vector<std::list<double>> dataSeries;
-	std::list<double> filewiseDataSeries;
+	std::vector<std::vector<double>> dataSeries;
+	std::vector<double> filewiseDataSeries;
 	unsigned short dimensions = 0;
 };
 

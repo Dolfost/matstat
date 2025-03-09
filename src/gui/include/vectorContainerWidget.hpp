@@ -44,7 +44,7 @@ private:
 
 
 public slots:
-	void placeList(const std::list<double>&);
+	void placeList(const std::vector<double>&);
 	void placeVector(ss::Vector&, QString = "");
 	void placeVectorPair(ss::VectorPair&, QString = "");
 	void appendVector(Vector*);

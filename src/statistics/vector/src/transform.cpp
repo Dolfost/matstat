@@ -28,7 +28,7 @@ std::string Vector::transform(std::string expression) {
   }
 
 	auto rit = ranks().begin();
-  for (auto& timeSeriesValue : static_cast<std::list<double>&>(*this)) {
+  for (auto& timeSeriesValue : static_cast<std::vector<double>&>(*this)) {
     x = timeSeriesValue, xr = *rit;
 		timeSeriesValue = expr.value();
 		rit++;

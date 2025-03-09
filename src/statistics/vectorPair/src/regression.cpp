@@ -159,7 +159,7 @@ void VectorPair::Regression::setModel(Model m, std::vector<double> p) {
 	parametersDeviationNames = parameterName[(int)model];
 }
 
-std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generateSet(
+std::pair<std::vector<double>, std::vector<double>> VectorPair::Regression::generateSet(
 	std::size_t n, double sigma
 ) {
 	std::default_random_engine generator;
@@ -167,7 +167,7 @@ std::pair<std::list<double>, std::list<double>> VectorPair::Regression::generate
 	std::normal_distribution<double> normx(0, 1);
 	std::normal_distribution<double> norm(0, sigma);
 
-	std::list<double> x, y;
+	std::vector<double> x, y;
 	for (std::size_t i = 0; i < n; i++) {
 		x.push_back(normx(generator));
 		y.push_back(regression(x.back()) + norm(generator));

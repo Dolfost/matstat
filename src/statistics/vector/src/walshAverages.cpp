@@ -12,7 +12,7 @@ void Vector::WalshAverages::adapt() {
 
 void Vector::WalshAveragesMedian::adapt() {
   Vector walshAveragesVector(
-		std::list<double>(
+		std::vector<double>(
 			s_vector->walshAverages().begin(), 
 			s_vector->walshAverages().end()
 		)

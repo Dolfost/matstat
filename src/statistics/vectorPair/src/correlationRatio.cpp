@@ -10,7 +10,7 @@ void VectorPair::CorrelationRatio::adapt() {
 
 	double step = s_vector->x.len()/c_count;
 
-	std::vector<std::list<double>> groups;
+	std::vector<std::vector<double>> groups;
 	groups.resize(c_count);
 
 	auto xit = s_vector->x.begin();

@@ -90,7 +90,7 @@ public:
 		virtual void adapt(double) override;
 	} corRatioConfidence = CorrelationRatioConfidence(this);
 
-	class Ranks: public utils::StatisticContainer<std::list<double>, VectorPair> {
+	class Ranks: public utils::StatisticContainer<std::vector<double>, VectorPair> {
 	public:
 		using StatisticContainer::StatisticContainer;
 	protected:
@@ -149,7 +149,7 @@ public:
 		static const std::vector<std::string> methodName;
 		static const std::vector<std::vector<std::string>> parameterName;
 
-		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t = 0);
+		std::pair<std::vector<double>, std::vector<double>> generateSet(std::size_t = 0);
 
 	public:
 		double pdf(double, double);
@@ -300,7 +300,7 @@ public:
 		} model = Model::Unknown;
 
 		void setModel(Model, std::vector<double>);
-		std::pair<std::list<double>, std::list<double>> generateSet(std::size_t, double);
+		std::pair<std::vector<double>, std::vector<double>> generateSet(std::size_t, double);
 		static const std::vector<std::string> regressionName;
 		static const std::vector<std::vector<std::string>> parameterName;
 
@@ -354,14 +354,14 @@ public:
 	void reproduceRegression(Regression::Model);
 
 public:
-	VectorPair(const std::list<double> ft = {}, 
-						const std::list<double> sd = {});
+	VectorPair(const std::vector<double> ft = {}, 
+						const std::vector<double> sd = {});
 	VectorPair(const Vector&,
 						const Vector&);
 	VectorPair(const VectorPair&);
 	VectorPair& operator=(const VectorPair&);
-	void setX(const std::list<double>&);
-	void setY(const std::list<double>&);
+	void setX(const std::vector<double>&);
+	void setY(const std::vector<double>&);
 
 public:
 	std::string transform(std::string, std::string);

@@ -203,7 +203,7 @@ void SetGeneratorDialog::generateVectorPair() {
 	size_t count = countSpinBox->value();
 	std::vector<double> p = vectorPairParametersWidget->parameters();
 	int idx = vectorPairModelComboBox->currentIndex();
-	std::pair<std::list<double>, std::list<double>> set;
+	std::pair<std::vector<double>, std::vector<double>> set;
 	VectorPair* newve = new VectorPair;
 
 	if (idx == 0) {

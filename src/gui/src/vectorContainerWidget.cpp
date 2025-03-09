@@ -67,7 +67,7 @@ VectorContainerWidget::VectorContainerWidget(QWidget *parent)
 				 &VectorContainerWidget::showContextMenu);
 }
 
-void VectorContainerWidget::placeList(const std::list<double>& l) {
+void VectorContainerWidget::placeList(const std::vector<double>& l) {
 	ss::Vector v = ss::Vector(l);
 	placeVector(v);
 }

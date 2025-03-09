@@ -4,8 +4,8 @@
 
 namespace ss {
 
-VectorPair::VectorPair(const std::list<double> xx, 
-											 const std::list<double> yy) {
+VectorPair::VectorPair(const std::vector<double> xx, 
+											 const std::vector<double> yy) {
 	v_x.setVector(xx);
 	v_y.setVector(yy);
 
@@ -21,12 +21,12 @@ VectorPair::VectorPair(const std::list<double> xx,
 	setExprtkSymbolTable(v_exprtkSymbolTable, this);
 }
 
-void VectorPair::setX(const std::list<double>& x) {
+void VectorPair::setX(const std::vector<double>& x) {
 	v_x = x;
 	invalidate();
 }
 
-void VectorPair::setY(const std::list<double>& y) {
+void VectorPair::setY(const std::vector<double>& y) {
 	v_y = y;
 	invalidate();
 }

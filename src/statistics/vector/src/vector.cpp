@@ -8,7 +8,7 @@ Vector::Vector() {
 	addGenericsToSymbolTable(v_exprtkSymbolTable);
 }
 
-Vector::Vector(const std::list<double> &input): Vector() {
+Vector::Vector(const std::vector<double> &input): Vector() {
   setVector(input);
 }
 
@@ -20,8 +20,8 @@ Vector& Vector::operator=(const Vector& other) {
 	return *this;
 }
 
-void Vector::setVector(const std::list<double> &input) {
-	static_cast<std::list<double>&>(*this) = input;
+void Vector::setVector(const std::vector<double> &input) {
+	static_cast<std::vector<double>&>(*this) = input;
 	invalidate();
 }
 

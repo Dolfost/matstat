@@ -280,10 +280,10 @@ double Vector::Distribution::invCdf(double x) {
 	return d_invCdf(x);
 }
 
-std::list<double> Vector::Distribution::generateSet(Method m, size_t s,
+std::vector<double> Vector::Distribution::generateSet(Method m, size_t s,
 																						double from, double to) {
 	size_t setSize = s ? s : size;
-	std::list<double> set;
+	std::vector<double> set;
 
 	std::default_random_engine generator;
 	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());

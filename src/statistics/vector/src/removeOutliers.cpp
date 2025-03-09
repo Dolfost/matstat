@@ -27,7 +27,7 @@ bool Vector::removeOutliers() {
 	  if(it != end())
 		  erase(it);
 
-      pop_front();
+			erase(begin());
       invalidate();
       popCount++;
       continue;
@@ -47,7 +47,7 @@ bool Vector::removeOutliers() {
     break;
   }
 
-	static_cast<std::list<double>&>(*this) = dataVector;
+	static_cast<std::vector<double>&>(*this) = dataVector;
 	invalidate();
 
   return popCount != 0;

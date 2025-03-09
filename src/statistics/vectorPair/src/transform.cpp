@@ -40,8 +40,8 @@ std::string VectorPair::transform(std::string xExpr, std::string yExpr) {
     return msg;
   }
 
-	std::list<double> xl = this->x.list();
-	std::list<double> yl = this->y.list();
+	std::vector<double> xl = this->x.list();
+	std::vector<double> yl = this->y.list();
 
 	auto xrit = this->x.ranks().begin(), yrit = this->y.ranks().begin();
 	auto rit = this->ranks().begin();

@@ -54,7 +54,7 @@ void VectorPair::Distribution::adapt() {
 	};
 }
 
-std::pair<std::list<double>, std::list<double>> VectorPair::Distribution::generateSet(std::size_t size) {
+std::pair<std::vector<double>, std::vector<double>> VectorPair::Distribution::generateSet(std::size_t size) {
   std::default_random_engine generator;
 	generator.seed(std::chrono::system_clock::now().time_since_epoch().count());
   std::normal_distribution<double> distribution(0, 1);
@@ -64,7 +64,7 @@ std::pair<std::list<double>, std::list<double>> VectorPair::Distribution::genera
 	double mx = parameters[0], my = parameters[1],
 		ox = parameters[2], oy = parameters[3],
 		r = parameters[4];
-	std::list<double> xl, yl;
+	std::vector<double> xl, yl;
 
 	for (std::size_t i = 0; i < size; i++) {
 		double z1 = distribution(generator),

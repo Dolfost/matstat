@@ -4,7 +4,7 @@
 #include <exprtk.hpp>
 
 #include <cstddef>
-#include <list>
+#include <vector>
 #include <string>
 
 #include <random>
@@ -83,7 +83,7 @@ public:
 #define WRAP_MAP(name) SS_WRAP_EXPRTK_MAP(name, Vector)
 #define WRAP_PAIR_MAP(name) SS_WRAP_EXPRTK_PAIR_MAP(name, Vector)
 
-class Vector: protected std::list<double> {
+class Vector: protected std::vector<double> {
 public: // statistics
 	class RawMoment: public utils::StatisticMap<double, double> {
 	public:
@@ -271,17 +271,17 @@ public: // statistics
 	} len = Length(this);
 	WRAP_SINGLE(len);
 
-	class Sorted: public utils::StatisticContainer<std::list<double>> {
+	class Sorted: public utils::StatisticContainer<std::vector<double>> {
 	public:
 		using StatisticContainer::StatisticContainer;
 	protected:
 		virtual void adapt() override;
 	} sorted = Sorted(this);
 
-	class Ranks: public utils::StatisticContainer<std::list<double>> {
+	class Ranks: public utils::StatisticContainer<std::vector<double>> {
 	public:
 		using StatisticContainer::StatisticContainer;
-		const std::list<std::size_t>& links() {
+		const std::vector<std::size_t>& links() {
 			if (!s_valid)
 				adapt();
 			return r_links;
@@ -292,7 +292,7 @@ public: // statistics
 		}
 	protected:
 		virtual void adapt() override;
-		std::list<std::size_t> r_links;
+		std::vector<std::size_t> r_links;
 	} ranks = Ranks(this);
 
 public:
@@ -349,7 +349,7 @@ public:
 		static const std::vector<std::string> methodName;
 		static const std::vector<std::vector<std::string>> parameterName;
 
-		std::list<double> generateSet(Method, size_t = 0, double = 0, double = 1);
+		std::vector<double> generateSet(Method, size_t = 0, double = 0, double = 1);
 
 	public:
 		std::pair<double, double> cdfConfidence(double x1);
@@ -391,27 +391,27 @@ public:
 
 public:
 	Vector();
-	Vector(const std::list<double>&);
+	Vector(const std::vector<double>&);
 	Vector(const Vector&);
-	void setVector(const std::list<double>&);
+	void setVector(const std::vector<double>&);
 	~Vector();
 
 public:
-	using std::list<double>::size;
+	using std::vector<double>::size;
 
-	using std::list<double>::front;
-	using std::list<double>::back;
+	using std::vector<double>::front;
+	using std::vector<double>::back;
 	const_iterator begin() {
 		return cbegin();
 	}
 	const_iterator end() {
 		return cend();
 	}
-	using std::list<double>::cbegin;
-	using std::list<double>::cend;
-	using std::list<double>::crbegin;
-	using std::list<double>::crend;
-	using std::list<double>::empty;
+	using std::vector<double>::cbegin;
+	using std::vector<double>::cend;
+	using std::vector<double>::crbegin;
+	using std::vector<double>::crend;
+	using std::vector<double>::empty;
 public: // binds
 	double variance(Measure m = Measure::Sample) { return centralMoment(2, m); };
 	WRAP_PAIR(variance);
@@ -447,8 +447,8 @@ public: // general
 	};
 	static const std::string exprtkFuncitons;
 	//  TODO: move from std::list to Vector insertion
-	const std::list<double>& list() const { 
-		return static_cast<const std::list<double>&>(*this); 
+	const std::vector<double>& list() const { 
+		return static_cast<const std::vector<double>&>(*this); 
 	}
 	Vector& operator=(const Vector&);
 

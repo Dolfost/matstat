@@ -8,7 +8,7 @@
 
 #include "dataSeries.hpp"
 
-std::list<std::string> split(const std::string &s, const std::regex &sep_regex = std::regex{"\\s+"}) {
+std::vector<std::string> split(const std::string &s, const std::regex &sep_regex = std::regex{"\\s+"}) {
   std::sregex_token_iterator iter(s.begin(), s.end(), sep_regex, -1);
   std::sregex_token_iterator end;
   return {iter, end};
@@ -25,13 +25,13 @@ void DataSeries::readData(std::string fn) {
 	file.open(filename, std::ios::in);
 
 	std::string line;
-	std::list<std::string> words;
+	std::vector<std::string> words;
 	unsigned short dim;
 	unsigned long lineno = 0;
 
 	double tmp;
 	int column;
-	std::vector<std::list<double>> tmpDataSeries;
+	std::vector<std::vector<double>> tmpDataSeries;
 
 	dimensions = 0;
 	while (!file.eof()) {
@@ -79,7 +79,7 @@ void DataSeries::readData(std::string fn) {
 	dataSeries = tmpDataSeries;
 
 	filewiseDataSeries.clear();
-	std::vector<std::list<double>::iterator> iterators;
+	std::vector<std::vector<double>::iterator> iterators;
 	for (auto& list : tmpDataSeries) {
 		iterators.push_back(list.begin());
 	}
@@ -92,11 +92,11 @@ void DataSeries::readData(std::string fn) {
 	}
 }
 
-const std::vector<std::list<double>>& DataSeries::series() {
+const std::vector<std::vector<double>>& DataSeries::series() {
 	return dataSeries;
 }
 
-const std::list<double>& DataSeries::filewiseSeries() {
+const std::vector<double>& DataSeries::filewiseSeries() {
 	return filewiseDataSeries;
 }
 

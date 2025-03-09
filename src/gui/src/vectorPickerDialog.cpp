@@ -49,7 +49,7 @@ void VectorPickerDialog::fileContents(QString filepath) {
 }
 
 void VectorPickerDialog::fill() {
-	std::vector<std::list<double>> data = dataSeries.series(); 
+	std::vector<std::vector<double>> data = dataSeries.series(); 
 	vectorsTableWidget->clear();
 	vectorsTableWidget->setRowCount(data[0].size());
 	vectorsTableWidget->setColumnCount(dataSeries.dimension());

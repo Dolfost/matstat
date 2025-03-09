@@ -6,7 +6,7 @@ void Vector::standardize() {
   double meanValue = mean();
   double sdValue = sd(Measure::Sample);
 
-  for (auto &x : static_cast<std::list<double>&>(*this)) {
+  for (auto &x : static_cast<std::vector<double>&>(*this)) {
     x = (x - meanValue) / sdValue;
   }
 

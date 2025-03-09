@@ -1,7 +1,6 @@
 #include "vectorChain.hpp"
 
 #include <ios>
-#include <list>
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -20,7 +19,7 @@ void VectorChain::writeToFile(std::string filename) {
 	file.exceptions(std::ios::badbit | std::ios::failbit);
 	file.open(filename, std::ios::out);
 
-  std::vector<std::list<double>::const_iterator> its;
+  std::vector<std::vector<double>::const_iterator> its;
 
   for (auto const& v : *this) {
 	  its.push_back(v->begin());

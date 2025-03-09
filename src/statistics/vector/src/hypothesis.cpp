@@ -97,7 +97,7 @@ void VectorHypothesis::TTestDependent::adapt() {
 		throw "Вибірки різного розміру";
 
 	auto y = v2->begin();
-	std::list<double> z;
+	std::vector<double> z;
 	for (auto x = v1->begin();
 			x != v1->end(); x++, y++) {
 		z.push_back(*x - *y);
@@ -342,7 +342,7 @@ void VectorHypothesis::QTest::adapt() {
 		i++;
 	}
 
-	Vector tVector(std::list<double>(T.cbegin(), T.cend()));
+	Vector tVector(std::vector<double>(T.cbegin(), T.cend()));
 
 	double uSum = 0, uSum2 = 0;
 	for (auto const& ui : u) {
