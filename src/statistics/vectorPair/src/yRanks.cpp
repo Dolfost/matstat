@@ -1,4 +1,5 @@
 #include <vectorPair.hpp>
+#include <iostream>
 
 namespace ss {
 
@@ -11,20 +12,32 @@ void VectorPair::Ranks::adapt() {
 
 	for (auto x = s_vector->x.sorted().begin(); x != s_vector->x.sorted().end(); x++) {
 		double y;
-		for (auto yi = yv.begin(), xi = xv.begin(); yi != yv.end(); yi++, xi++)
+
+		auto yi = yv.begin(), xi = xv.begin();
+		while (yi != yv.end() && xi != xv.end()) {
 			if (*xi == *x) {
 				y = *yi;
 				yi = yv.erase(yi);
 				xi = xv.erase(xi);
 				break;
+			} else {
+				++yi;
+				++xi;
 			}
+		}
 
-		for (auto yi = yl.begin(), r = ry.begin(); yi != yl.end(); yi++, r++)
+		auto r = ry.begin();
+		yi = yl.begin();
+		while (yi != yl.end() && r != ry.end()) {
 			if (*yi == y) {
 				s_value.push_back(*r);
 				yi = yl.erase(yi);
 				r = ry.erase(r);
+			} else {
+				++yi;
+				++r;
 			}
+		}
 	}
 }
 

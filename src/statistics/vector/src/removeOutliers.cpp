@@ -22,30 +22,30 @@ bool Vector::removeOutliers() {
       b = mean() + t2 * sd(Measure::Sample);
     }
 
-    if (a > dataVector.front()) {
-	  auto it = std::find(begin(), end(), front());
-	  if(it != end())
-		  erase(it);
+		if (a > dataVector.front()) {
+			auto it = std::find(begin(), end(), front());
+			if(it != end())
+				erase(it);
 
 			erase(begin());
-      invalidate();
-      popCount++;
-      continue;
+			invalidate();
+			popCount++;
+			continue;
     }
 
-    if (b < dataVector.back()) {
-	  auto it = std::find(begin(), end(), dataVector.back());
-	  if(it != end())
-		  erase(it);
-	  
-      dataVector.pop_back();
-      invalidate();
-      popCount++;
-      continue;
-    }
+		if (b < dataVector.back()) {
+			auto it = std::find(begin(), end(), dataVector.back());
+			if(it != end())
+				erase(it);
 
-    break;
-  }
+			dataVector.pop_back();
+			invalidate();
+			popCount++;
+			continue;
+		}
+
+		break;
+	}
 
 	static_cast<std::vector<double>&>(*this) = dataVector;
 	invalidate();
