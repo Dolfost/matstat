@@ -1,5 +1,6 @@
-#include "vectorChain.hpp"
+#include <vectorChain.hpp>
 
+#include <stdexcept>
 #include <ios>
 #include <vector>
 #include <fstream>
@@ -7,11 +8,17 @@
 
 namespace ss {
 
+void VectorChain::invalidate() {
+}
+
+void VectorChain::checkSize() {
+}
+
 void VectorChain::writeToFile(std::string filename) {
-  size_t n = at(0)->size();
+  size_t n = at(0).size();
 
   for (size_t i = 1; i < size(); i++) {
-	  if (at(i)->size() != n)
+	  if (at(i).size() != n)
 		  throw std::logic_error("Вектори не однакового розміру!");
   }
 
@@ -21,8 +28,8 @@ void VectorChain::writeToFile(std::string filename) {
 
   std::vector<std::vector<double>::const_iterator> its;
 
-  for (auto const& v : *this) {
-	  its.push_back(v->begin());
+  for (auto& v : *this) {
+	  its.push_back(v.begin());
   }
 
 	std::stringstream line;
@@ -39,5 +46,6 @@ void VectorChain::writeToFile(std::string filename) {
 
   file.close();
 }
+
 
 }

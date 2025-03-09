@@ -7,6 +7,7 @@ file(GLOB HEADERS CONFIGURE_DEPENDS
 
 add_subdirectory(vector)
 add_subdirectory(vectorPair)
+add_subdirectory(vectorChain)
 
 add_library(ss_statistics)
 add_library(ss::statistics ALIAS ss_statistics)
@@ -27,5 +28,5 @@ target_include_directories(ss_statistics
 
 target_link_libraries(ss_statistics 
 	PRIVATE exprtk 
-	PUBLIC ss::vector ss::vectorPair ss::vector
+	PUBLIC ss::vector ss::vectorPair ss::vectorChain
 )

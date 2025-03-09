@@ -47,16 +47,17 @@ public slots:
 	void placeList(const std::vector<double>&);
 	void placeVector(ss::Vector&, QString = "");
 	void placeVectorPair(ss::VectorPair&, QString = "");
+	void placeVectorChain(ss::VectorChain&, QString = "");
 	void appendVector(Vector*);
 	void appendVectorPair(VectorPair*);
-	// void appendVectorChain(VectorChain*);
+	void appendVectorChain(VectorChain*);
 
 private slots:
 	void showContextMenu(const QPoint&);
+	void fillGenericContextMenu(QMenu*);
 	void fillVectorContextMenu(QMenu*);
 	void fillVectorPairContextMenu(QMenu*);
 	void fillVectorChainContextMenu(QMenu*);
-	void fillGenericContextMenu(QMenu*);
 
 	void deleteAction();
 

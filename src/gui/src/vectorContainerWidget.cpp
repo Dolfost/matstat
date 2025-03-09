@@ -739,12 +739,12 @@ void VectorContainerWidget::vectorWriteAction() {
 
 	ss::VectorChain set;
 	for (auto const &v : selectedVectorsList)
-	set.push_back(v->vector());
+	set.push_back(v->vector()->list());
 
 	try {
 		set.writeToFile(filename.toStdString());
-	} catch (const char* msg) {
-		message(msg);
+	} catch (std::logic_error& ex) {
+		message(ex.what());
 	}
 }
 
@@ -782,6 +782,14 @@ void VectorContainerWidget::vectorPairBreak() {
 			v->vectorPair()->y, "By" + postfix
 		);
 	}
+}
+
+void VectorContainerWidget::appendVectorChain(VectorChain* chain) {
+
+}
+
+void VectorContainerWidget::placeVectorChain(ss::VectorChain& chain, QString name) {
+
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem(int type) : QTableWidgetItem(type) {
