@@ -19,9 +19,47 @@ public:
 
 public:
 	static QString n(double);
-	static QString m(QList<QList<double>>);
-	static QString ms(QList<QList<QString>>);
 
+	template<typename T>
+	QString m(T mtrx) {
+		QList<QList<QString>> r;
+		for (auto const& x : mtrx) {
+			QList<QString> row;
+			for (auto const& y : x)
+			row.push_back(n(y));
+			r.push_back(row);
+		}
+
+		return ms(r);
+	}
+
+	template<typename T>
+	QString ms(T s) {
+		int maxw = 0;
+		for (auto const& x : s) {
+			for (auto const& y : x) {
+				if (y.size() > maxw)
+					maxw = y.size();
+			}
+		}
+
+		QString str;
+		QTextStream a;
+		a.setString(&str);
+		a.setFieldAlignment(QTextStream::FieldAlignment::AlignLeft);
+		for (auto& x : s) {
+			a.setFieldWidth(maxw+1);
+			for (auto it = x.begin(); it < x.end()-1; it++) {
+				a << *it;
+			}
+			a.setFieldWidth(0);
+			a << x.back();
+			a << "\n";
+		}
+
+		str.chop(1);
+		return str;
+	}
 	static const int i_precision = 4;
 
 public slots:

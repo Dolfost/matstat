@@ -24,7 +24,7 @@ target_include_directories(ss_vectorChain
 )
 
 target_link_libraries(ss_vectorChain PRIVATE 
-	exprtk ss::vector
+	exprtk ss::vector ss::vectorPair
 )
 
 add_subdirectory(tests)

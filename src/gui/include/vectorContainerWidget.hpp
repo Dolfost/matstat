@@ -78,6 +78,7 @@ private slots:
 	void vectorPairCorelationRatioCountAction(int);
 	void vectorConfidenceAction(double);
 	void vectorMergePairAction();
+	void vectorMergeChainAction();
 
 	void vectorPairDensityAction();
 	void vectorPairDistributionAction();
@@ -92,6 +93,10 @@ private slots:
 	void vectorPairConnectionsTableInfoAction();
 	void vectorPairRegressionAction();
 	void vectorPairConfidenceAction(double);
+
+	void vectorChainBreak();
+	void vectorChainInfoAction();
+	void vectorChainField3dAction();
 
 signals:
 	void vectorDeleted(Vector*);

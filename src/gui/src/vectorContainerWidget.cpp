@@ -29,6 +29,9 @@
 #include <vectorPairConnectionsTableInfoDialog.hpp>
 #include <vectorPairRegressionReproducerDialog.hpp>
 
+#include <vectorChainInfoDialog.hpp>
+#include <vectorChainField3dDialog.hpp>
+
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
 	SelectedT<VectorEntry> vectors;
@@ -181,6 +184,83 @@ void VectorContainerWidget::appendVectorPair(VectorPair* vp) {
 	}
 }
 
+void VectorContainerWidget::appendVectorChain(VectorChain* chain) {
+	int row = this->rowCount();
+
+	this->insertRow(row);
+	this->setRowHeight(row, this->horizontalHeader()->height()*2);
+
+	this->setColumnCount(
+		(chain->chain()->at(0).size() + InfoCell::Count > this->columnCount()
+		? chain->chain()->at(0).size() + InfoCell::Count
+		: this->columnCount()));
+	if (chain->name().length() == 0)
+		chain->setName("VC" + QString::number(++vectorCount));
+
+
+	QList<HorizontalHeaderItem *> infoItems;
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Name));
+	infoItems[InfoCell::Name]->setData(Qt::DisplayRole,
+																		QVariant(chain->name()));
+	chain->setTableItem(infoItems[InfoCell::Name]);
+	infoItems[InfoCell::Name]->setData(Qt::UserRole,
+																		QVariant::fromValue(static_cast<VectorEntry*>(chain)));
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Size));
+	infoItems[InfoCell::Size]->setData(
+		Qt::DisplayRole, QVariant(QString("%1x%2").arg(chain->chain()->size()).arg(chain->chain()->at(0).size())));
+
+	QString str;
+	for (auto& v: *chain->chain()) {
+		str.push_back(QString::number(v.min()) + "\n");
+	}
+	str.chop(1);
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Min));
+	infoItems[InfoCell::Min]->setData(Qt::DisplayRole,
+																	 QVariant(str));
+
+	str.clear();
+	for (auto& v: *chain->chain()) {
+		str.push_back(QString::number(v.max()) + "\n");
+	}
+	str.chop(1);
+
+	infoItems.append(new HorizontalHeaderItem(InfoCell::Max));
+	infoItems[InfoCell::Max]->setData(Qt::DisplayRole,
+																	 QVariant(str));
+
+	QList<std::vector<double>::const_iterator> its;
+	for (auto& it: *chain->chain())
+		its.push_back(it.begin());
+
+	for (size_t col = InfoCell::Count;
+	col < chain->chain()->at(0).size() + InfoCell::Count; col++) {
+		QTableWidgetItem *tableItem = new QTableWidgetItem(DataCell::Data);
+		QString str;
+		for (auto& it: its) {
+			str.append(QString::number(*it) + "\n");
+			it++;
+		}
+		str.chop(1);
+		tableItem->setText(str);
+		this->setItem(row, col, tableItem);
+	}
+
+	for (size_t i = InfoCell::Count; i < this->columnCount() + InfoCell::Count;
+	i++) {
+		QTableWidgetItem *headerItem = new QTableWidgetItem();
+		headerItem->setText(QString::number(i - InfoCell::Count + 1));
+		this->setHorizontalHeaderItem(i, headerItem);
+	}
+	for (int i = 0; i < InfoCell::Count; i++) {
+		this->setItem(row, i, infoItems[i]);
+	}
+
+	this->resizeRowToContents(row);
+}
+
+
 
 void VectorContainerWidget::placeVector(ss::Vector& vec,
 																			 QString name) {
@@ -201,6 +281,17 @@ void VectorContainerWidget::placeVectorPair(ss::VectorPair& vec,
 	);
 	vectorPair->setName(name);
 	appendVectorPair(vectorPair);
+}
+
+void VectorContainerWidget::placeVectorChain(ss::VectorChain& chain, QString name) {
+	VectorChain *vectorChain = new VectorChain;
+	vectorChain->setVectorChain(
+		new ss::VectorChain(
+			chain.begin(), chain.end()
+		)
+	);
+	vectorChain->setName(name);
+	appendVectorChain(vectorChain);
 }
 
 void VectorContainerWidget::showContextMenu(const QPoint &pos) {
@@ -286,10 +377,15 @@ void VectorContainerWidget::fillVectorContextMenu(QMenu* menu) {
 
 	menu->addSeparator();
 
-	if (selectedVectorsList.size() == 2) {
-		QAction* mergePair = menu->addAction("Створити двовимірний об'єкт");
-		connect(mergePair, &QAction::triggered, this,
-					&VectorContainerWidget::vectorMergePairAction);
+	if (selectedVectorsList.size() >= 2) {
+		if (selectedVectorsList.size() == 2) {
+			QAction* mergePair = menu->addAction("Створити двовимірний об'єкт");
+			connect(mergePair, &QAction::triggered, this,
+						&VectorContainerWidget::vectorMergePairAction);
+		}
+		QAction* mergeChain = menu->addAction("Створити багатовимірнйи об'єкт");
+		connect(mergeChain, &QAction::triggered, this,
+					&VectorContainerWidget::vectorMergeChainAction);
 		menu->addSeparator();
 	}
 
@@ -443,7 +539,25 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 
 }
 
-void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {}
+void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {
+	QMenu* graphics = menu->addMenu("Графіка...");
+
+	QAction *field3d = graphics->addAction("Тривимірне поле");
+	connect(field3d, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorChainField3dAction);
+
+	menu->addSeparator();
+	
+	QAction *info = menu->addAction("Про об'єкт...");
+	connect(info, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorChainInfoAction);
+
+	menu->addSeparator();
+
+	QAction *breakIt = menu->addAction("Розбити на одновимірні обʼєкти");
+	connect(breakIt, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorChainBreak);
+}
 
 void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	menu->addSeparator();
@@ -523,6 +637,34 @@ void VectorContainerWidget::vectorPairInfoAction() {
 					dia, &VectorPairInfoDialog::sync);
 		connect(this, &VectorContainerWidget::redrawVector,
 					dia, &VectorPairInfoDialog::sync);
+	}
+}
+
+void VectorContainerWidget::vectorChainInfoAction() {
+	for (auto& v : selectedVectorChainsList) {
+		VectorChainInfoDialog* dia = new VectorChainInfoDialog(v, this);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorChainInfoDialog::vectorDeletedHandler);
+		connect(this, &VectorContainerWidget::vectorParametersChanged,
+					dia, &VectorChainInfoDialog::sync);
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorChainInfoDialog::sync);
+	}
+}
+
+void VectorContainerWidget::vectorChainField3dAction() {
+	for (auto& v : selectedVectorChainsList) {
+		VectorChainField3dDialog* dia;
+		try {
+			dia = new VectorChainField3dDialog(v, this);
+		} catch (std::exception& ex) {
+			message(ex.what());
+			continue;
+		}
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorChainField3dDialog::sync);
+		connect(this, &VectorContainerWidget::vectorChainDeleted,
+					dia, &VectorChainField3dDialog::vectorDeletedHandler);
 	}
 }
 
@@ -720,6 +862,27 @@ void VectorContainerWidget::vectorMergePairAction() {
 	);
 }
 
+void VectorContainerWidget::vectorMergeChainAction() {
+	ss::VectorChain vc; 
+
+	QList<ss::Vector*> vv;
+	for (auto i: selectedVectorsList) {
+		vv.push_back(i->vector());
+	}
+
+	try {
+		vc = ss::VectorChain(
+			vv.begin(), vv.end()
+		);
+	} catch (std::logic_error& ex) {
+		message("Вектори різного розміру. Сформувати багатовимірний об'єкт не вдалося");
+		return;
+	}
+	placeVectorChain(
+		vc
+	);
+}
+
 void VectorContainerWidget::vectorWriteAction() {
 	QString names;
 	for (auto const& v : selectedVectorsList) {
@@ -784,12 +947,14 @@ void VectorContainerWidget::vectorPairBreak() {
 	}
 }
 
-void VectorContainerWidget::appendVectorChain(VectorChain* chain) {
-
-}
-
-void VectorContainerWidget::placeVectorChain(ss::VectorChain& chain, QString name) {
-
+void VectorContainerWidget::vectorChainBreak() {
+	for (auto const& v : selectedVectorChainsList) {
+		QString postfix =  QString::number(++vectorCount) + "(" + v->name() + ")";
+		std::size_t no = 1;
+		for (auto& vi: *v->chain()) {
+			placeVector(vi, "B" + postfix + ":" + QString::number(no++));
+		}
+	}
 }
 
 HorizontalHeaderItem::HorizontalHeaderItem(int type) : QTableWidgetItem(type) {

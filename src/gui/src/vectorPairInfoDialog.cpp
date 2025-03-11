@@ -65,9 +65,9 @@ void VectorPairInfoDialog::fill() {
 			n(vp.corKendallConfidence(i_prob, ss::Bound::Upper)),
 		},
 		{
-			"Дисперсійно коваріаційна матриця", ms({{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
+			"Дисперсійно коваріаційна матриця", ms(QList<QStringList>{{"σ²ₓ", "σₓσᵧrₓᵧ"}, {"σₓσᵧrₓᵧ", "σ²ᵧ"}}),
 			m(
-				{
+				QList<QList<double>>{
 					{
 						vp.x.variance(), vp.x.sd()*vp.y.sd()*vp.cor()
 					},
