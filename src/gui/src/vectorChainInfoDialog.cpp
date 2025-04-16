@@ -65,4 +65,6 @@ void VectorChainInfoDialog::fill() {
 	};
 
 	v_table->fill(t);
+	v_table->resizeColumnsToContents();
+	v_table->resizeRowsToContents();
 }

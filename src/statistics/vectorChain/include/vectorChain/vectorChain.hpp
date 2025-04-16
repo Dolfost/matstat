@@ -36,6 +36,18 @@ public:
 		using StatisticSingle::StatisticSingle;
 		virtual void adapt() override;
 	} r = R(this);
+
+	class PluralCorelationRatio: public utils::StatisticMap<std::size_t, double, std::size_t, VectorChain> {
+	public:
+		using StatisticMap::StatisticMap;
+		virtual void adapt(std::size_t) override;
+	} plural_corelation = PluralCorelationRatio(this);
+
+	class PartialCorelationRatio: public utils::StatisticMap<std::tuple<std::size_t, std::size_t, std::vector<std::size_t>, std::size_t>, double, std::tuple<std::size_t, std::size_t, std::vector<std::size_t>, std::size_t>, VectorChain> {
+	public:
+		using StatisticMap::StatisticMap;
+		virtual void adapt(std::tuple<std::size_t, std::size_t, std::vector<std::size_t>, std::size_t>) override;
+	} partial_corelation = PartialCorelationRatio(this);
 	
 	VectorChain() {};
 	template<class Iter, typename std::enable_if<std::is_same<typename

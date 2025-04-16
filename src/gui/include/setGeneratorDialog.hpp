@@ -37,6 +37,7 @@ public:
 private:
 	void setVectorTab();
 	void setVectorPairTab();
+	void setVectorChainTab();
 
   QComboBox *vectorDistributionComboBox = nullptr;
   QGroupBox *vectorBoundsBox = nullptr;
@@ -53,9 +54,13 @@ private:
   QVBoxLayout *vectorPairParametersLayout = nullptr;
 	QComboBox* vectorPairModelComboBox = nullptr;
 
+  ParametersWidget *vectorChainParametersWidget = nullptr;
+  QVBoxLayout *vectorChainParametersLayout = nullptr;
+
 	QTabWidget* tabs = nullptr;
 	QWidget* vectorTab = nullptr;
 	QWidget* vectorPairTab = nullptr;
+	QWidget* vectorChainTab = nullptr;
 
   QStatusBar *statusBar = nullptr;
 
@@ -67,6 +72,8 @@ private:
 
   void generateVector();
   void generateVectorPair();
+  void generateVectorChain();
+
 public slots:
 	virtual void fill() {};
 
@@ -82,6 +89,7 @@ private slots:
 signals:
   void vectorGenerated(Vector*);
   void vectorPairGenerated(VectorPair*);
+  void vectorChainGenerated(VectorPair*);
   void message(QString);
 };
 

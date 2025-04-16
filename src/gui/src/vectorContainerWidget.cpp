@@ -31,6 +31,7 @@
 
 #include <vectorChainInfoDialog.hpp>
 #include <vectorChainField3dDialog.hpp>
+#include <vectorChainCorelationCoeficientDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -543,28 +544,42 @@ void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {
 	QMenu* graphics = menu->addMenu("Графіка...");
 
 	QAction *field3d = graphics->addAction("Тривимірне поле");
-	connect(field3d, &QAction::triggered, this,
-				 &VectorContainerWidget::vectorChainField3dAction);
+	connect(
+		field3d, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainField3dAction
+	);
 
 	menu->addSeparator();
-	
+
 	QAction *info = menu->addAction("Про об'єкт...");
-	connect(info, &QAction::triggered, this,
-				 &VectorContainerWidget::vectorChainInfoAction);
+	connect(
+		info, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainInfoAction
+	);
+
+	QAction *corr = menu->addAction("Коефіцієнти кореляції...");
+	connect(
+		corr, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainCorelationCoeficientAction
+	);
 
 	menu->addSeparator();
 
 	QAction *breakIt = menu->addAction("Розбити на одновимірні обʼєкти");
-	connect(breakIt, &QAction::triggered, this,
-				 &VectorContainerWidget::vectorChainBreak);
+	connect(
+		breakIt, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainBreak
+	);
 }
 
 void VectorContainerWidget::fillGenericContextMenu(QMenu* menu) {
 	menu->addSeparator();
 
 	QAction *deleteAction = menu->addAction("Видалити");
-	connect(deleteAction, &QAction::triggered, this,
-				 &VectorContainerWidget::deleteAction);
+	connect(
+		deleteAction, &QAction::triggered, this,
+		&VectorContainerWidget::deleteAction
+	);
 }
 
 void VectorContainerWidget::vectorPairDensityAction() {
@@ -643,7 +658,7 @@ void VectorContainerWidget::vectorPairInfoAction() {
 void VectorContainerWidget::vectorChainInfoAction() {
 	for (auto& v : selectedVectorChainsList) {
 		VectorChainInfoDialog* dia = new VectorChainInfoDialog(v, this);
-		connect(this, &VectorContainerWidget::vectorPairDeleted,
+		connect(this, &VectorContainerWidget::vectorChainDeleted,
 					dia, &VectorChainInfoDialog::vectorDeletedHandler);
 		connect(this, &VectorContainerWidget::vectorParametersChanged,
 					dia, &VectorChainInfoDialog::sync);
@@ -665,6 +680,22 @@ void VectorContainerWidget::vectorChainField3dAction() {
 					dia, &VectorChainField3dDialog::sync);
 		connect(this, &VectorContainerWidget::vectorChainDeleted,
 					dia, &VectorChainField3dDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorChainCorelationCoeficientAction() {
+	for (auto& v : selectedVectorChainsList) {
+		VectorChainCorelationCoeficientsDialog* dia;
+		try {
+			dia = new VectorChainCorelationCoeficientsDialog(v, this);
+		} catch (std::exception& ex) {
+			message(ex.what());
+			continue;
+		}
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorChainCorelationCoeficientsDialog::sync);
+		connect(this, &VectorContainerWidget::vectorChainDeleted,
+					dia, &VectorChainCorelationCoeficientsDialog::vectorDeletedHandler);
 	}
 }
 

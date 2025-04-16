@@ -4,6 +4,7 @@
 
 #include<Qt>
 #include<QDialog>
+#include<QMessageBox>
 #include<QVBoxLayout>
 
 #include "guiTypes.hpp"
@@ -61,6 +62,11 @@ public:
 		return str;
 	}
 	static const int i_precision = 4;
+
+protected:
+	void err(const QString& msg) {
+		QMessageBox::warning(this, "Помилка", msg);
+	}
 
 public slots:
 	virtual void fill() = 0;

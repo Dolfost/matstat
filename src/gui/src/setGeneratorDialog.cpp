@@ -46,6 +46,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 
 	setVectorTab();
 	setVectorPairTab();
+	setVectorChainTab();
 
 	generateButton = new QPushButton("Генерувати");
 	connect(generateButton, &QPushButton::clicked,
@@ -71,6 +72,27 @@ SetGeneratorDialog::SetGeneratorDialog(
 	if (show)
 		this->show();
 }
+
+void SetGeneratorDialog::setVectorChainTab() {
+	vectorPairTab = new QWidget;
+	tabs->addTab(vectorPairTab, "Багатовимірні");
+
+	// QVBoxLayout* layout = new QVBoxLayout;
+	// layout->setContentsMargins(10,10,10,0);
+	// vectorChainTab->setLayout(layout);
+	//
+	// QGroupBox* parametersBox = new QGroupBox("Лінійна регресія");
+	// parametersBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	// vectorChainParametersLayout = new QVBoxLayout;
+	// vectorChainParametersLayout->setContentsMargins(1,1,1,1);
+	// parametersBox->setLayout(vectorChainParametersLayout);
+	// vectorChainParametersWidget = new ParametersWidget({"a", "b", "c", "σ"}, {1, 1, 1, 0.1});
+	//
+	// layout->addWidget(parametersBox);
+	//
+	// vectorPairModelSelected(vectorPairModelComboBox->currentIndex());
+}
+
 void SetGeneratorDialog::setVectorPairTab() {
 	vectorPairTab = new QWidget;
 	tabs->addTab(vectorPairTab, "Двовимірні");
@@ -130,8 +152,9 @@ void SetGeneratorDialog::setVectorTab() {
 
 	vectorMethodComboBox = new QComboBox;
 	for (int i = 0; i < (int)ss::Vector::Distribution::Method::Count; i++) {
-		vectorMethodComboBox->insertItem(i,
-																	 QString::fromStdString(ss::Vector::Distribution::methodName[i]));
+		vectorMethodComboBox->insertItem(
+			i, QString::fromStdString(ss::Vector::Distribution::methodName[i])
+		);
 	}
 
 	QGroupBox* methodBox = new QGroupBox("Метод відтворення");
@@ -224,6 +247,22 @@ void SetGeneratorDialog::generateVectorPair() {
 	newve->setVectorPair(new ss::VectorPair(std::move(set.first), std::move(set.second)));
 
 	emit vectorPairGenerated(newve);
+}
+
+void SetGeneratorDialog::generateVectorChain() {
+	size_t count = countSpinBox->value();
+	std::vector<double> p = vectorChainParametersWidget->parameters();
+	std::pair<std::vector<double>, std::vector<double>> set;
+	VectorChain* newve = new VectorChain;
+
+	double sigma = p.back();
+	p.pop_back();
+
+	// newve->setRegressionParameters(p);
+
+	// newve->setVectorChain(new ss::VectorChain(std::move(set.first), std::move(set.second)));
+	//
+	// emit vectorChainGenerated(newve);
 }
 
 void SetGeneratorDialog::generateHandler() {

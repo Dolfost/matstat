@@ -83,7 +83,7 @@ public:
 #define WRAP_MAP(name) SS_WRAP_EXPRTK_MAP(name, Vector)
 #define WRAP_PAIR_MAP(name) SS_WRAP_EXPRTK_PAIR_MAP(name, Vector)
 
-class Vector: protected std::vector<double> {
+class Vector: public std::vector<double> {
 public: // statistics
 	class RawMoment: public utils::StatisticMap<double, double> {
 	public:

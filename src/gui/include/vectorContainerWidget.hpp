@@ -97,6 +97,7 @@ private slots:
 	void vectorChainBreak();
 	void vectorChainInfoAction();
 	void vectorChainField3dAction();
+	void vectorChainCorelationCoeficientAction();
 
 signals:
 	void vectorDeleted(Vector*);
