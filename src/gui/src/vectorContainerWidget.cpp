@@ -32,6 +32,7 @@
 #include <vectorChainInfoDialog.hpp>
 #include <vectorChainField3dDialog.hpp>
 #include <vectorChainCorelationCoeficientDialog.hpp>
+#include <vectorChainScatterPlotMatrixDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -549,6 +550,12 @@ void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {
 		&VectorContainerWidget::vectorChainField3dAction
 	);
 
+	QAction *scatterPlotMatrix = graphics->addAction("Матриця діаграм розикду");
+	connect(
+		scatterPlotMatrix, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainScatterPlotMatrixAction
+	);
+
 	menu->addSeparator();
 
 	QAction *info = menu->addAction("Про об'єкт...");
@@ -696,6 +703,22 @@ void VectorContainerWidget::vectorChainCorelationCoeficientAction() {
 					dia, &VectorChainCorelationCoeficientsDialog::sync);
 		connect(this, &VectorContainerWidget::vectorChainDeleted,
 					dia, &VectorChainCorelationCoeficientsDialog::vectorDeletedHandler);
+	}
+}
+
+void VectorContainerWidget::vectorChainScatterPlotMatrixAction() {
+	for (auto& v : selectedVectorChainsList) {
+		VectorChainScatterPlotMatrixDialog* dia;
+		try {
+			dia = new VectorChainScatterPlotMatrixDialog(v, this);
+		} catch (std::exception& ex) {
+			message(ex.what());
+			continue;
+		}
+		connect(this, &VectorContainerWidget::redrawVector,
+					dia, &VectorChainScatterPlotMatrixDialog::sync);
+		connect(this, &VectorContainerWidget::vectorChainDeleted,
+					dia, &VectorChainScatterPlotMatrixDialog::vectorDeletedHandler);
 	}
 }
 

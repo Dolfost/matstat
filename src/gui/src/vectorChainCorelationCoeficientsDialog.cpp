@@ -52,12 +52,6 @@ VectorChainCorelationCoeficientsDialog::VectorChainCorelationCoeficientsDialog(
 	jLayout->addWidget(jLabel);
 	jLayout->addWidget(jEdit);
 
-	QHBoxLayout* dLayout = new QHBoxLayout;
-	QLabel *dLabel = new QLabel("d = ");
-	dEdit = new QLineEdit;
-	dLayout->addWidget(dLabel);
-	dLayout->addWidget(dEdit);
-
 	QHBoxLayout* cLayout = new QHBoxLayout;
 	QLabel *cLabel = new QLabel("c = ");
 	cEdit = new QLineEdit;
@@ -68,7 +62,6 @@ VectorChainCorelationCoeficientsDialog::VectorChainCorelationCoeficientsDialog(
 	partialLayout->addSpacing(50);
 	partialLayout->addLayout(iLayout);
 	partialLayout->addLayout(jLayout);
-	partialLayout->addLayout(dLayout);
 
 	v_partialLayout->addLayout(partialLayout);
 	v_partialLayout->addLayout(cLayout);
@@ -136,17 +129,43 @@ void VectorChainCorelationCoeficientsDialog::fill() {
 
 			std::size_t i = iEdit->text().toInt();
 			std::size_t j = jEdit->text().toInt();
-			std::size_t d = dEdit->text().toInt();
 
 			QString input = cEdit->text();
-			QStringList stringNumbers = input.split(" ,");
+			QStringList stringNumbers = input.split(',', Qt::SkipEmptyParts);
 
 			std::vector<std::size_t> c;
 			for (const QString& str : stringNumbers) {
 				c.push_back(str.toInt());
 			}
 
-			r = v_chain->chain()->partial_corelation({i, j, c, d});
+			{
+				auto c1 = c;
+				std::sort(c1.begin(), c1.end());
+				if (std::unique(c1.begin(), c1.end()) != c1.end()) {
+					QMessageBox::warning(this, "Помилка", "У векторі C є дублікати");
+					return;
+				}
+			}
+			
+			if (*std::max_element(c.begin(), c.end()) >= v_chain->chain()->size()) {
+				QMessageBox::warning(this, "Помилка", "У векторі C є завеликі індекси");
+				return;
+			}
+
+			if (i == j) {
+				QMessageBox::warning(this, "Помилка", "i = j");
+				return;
+			}
+			if (std::find(c.begin(), c.end(), i) != c.end()) {
+				QMessageBox::warning(this, "Помилка", "Вектор C містить i");
+				return;
+			}
+			if (std::find(c.begin(), c.end(), j) != c.end()) {
+				QMessageBox::warning(this, "Помилка", "Вектор C містить j");
+				return;
+			}
+
+			r = v_chain->chain()->partial_corelation({i, j, c});
 
 			int N = v_chain->chain()->size();
 			t = std::abs(r*std::sqrt(N - c.size() - 2)/std::sqrt(1.0 - r));
