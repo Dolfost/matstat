@@ -1,7 +1,6 @@
 #ifndef _VECTOR_CHAIN_HPP_
 #define _VECTOR_CHAIN_HPP_	
 
-#include <iostream>
 #include <vector.hpp>
 #include <vector/quantile.hpp>
 #include <vector/utils.hpp>

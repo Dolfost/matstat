@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <cstddef>
+#include <vector>
 
 namespace ss {
 
@@ -63,6 +64,22 @@ T minor(T matrix, std::size_t k) {
 	return m;
 }
 
+template<class T1, class T2>
+std::vector<std::vector<double>> multiply(const T1& a, const T2& b) {
+	const std::size_t n = a.size();
+	const std::size_t m = a[0].size();
+	const std::size_t p = b[0].size();
+
+	std::vector <std::vector<double>> c(n, std::vector<double>(p, 0));
+	for (auto j = 0; j < p; ++j)
+		for (auto k = 0; k < m; ++k)
+			for (auto i = 0; i < n; ++i)
+				c[i][j] += a[i][k] * b[k][j];
+
+	return c;
 }
+
+}
+
 
 #endif // !_VECTOR_CHAIN_MATH_HPP_

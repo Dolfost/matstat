@@ -12,6 +12,8 @@
 #include <QStatusBar>
 #include <QVBoxLayout>
 
+#include <calgo/qt/matWidget.hpp>
+
 #include "guiTypes.hpp"
 
 #include <dialogBase.hpp>
@@ -54,8 +56,10 @@ private:
   QVBoxLayout *vectorPairParametersLayout = nullptr;
 	QComboBox* vectorPairModelComboBox = nullptr;
 
-  ParametersWidget *vectorChainParametersWidget = nullptr;
+  ParametersWidget *vectorChainMeans = nullptr;
+	ca::qt::MatWidget* vectorChainDCwidget = nullptr;
   QVBoxLayout *vectorChainParametersLayout = nullptr;
+  QSpinBox *vectorChainDimensionSpinBox = nullptr;
 
 	QTabWidget* tabs = nullptr;
 	QWidget* vectorTab = nullptr;
@@ -89,7 +93,7 @@ private slots:
 signals:
   void vectorGenerated(Vector*);
   void vectorPairGenerated(VectorPair*);
-  void vectorChainGenerated(VectorPair*);
+  void vectorChainGenerated(VectorChain*);
   void message(QString);
 };
 

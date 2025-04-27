@@ -8,7 +8,7 @@ include(FetchContent)
 FetchContent_Declare(
     calgo QUIET
     GIT_REPOSITORY https://github.com/Dolfost/calgo.git
-    GIT_TAG 1a1c76fc3e783b2238eafab8caac7043b9399d7b
+    GIT_TAG v4.1.4.0
 )
 FetchContent_MakeAvailable(calgo)
 include(FetchContent)
@@ -34,5 +34,5 @@ qt_add_executable(lab
 )
 
 target_link_libraries(lab PRIVATE
-	gui 
+	gui
 )

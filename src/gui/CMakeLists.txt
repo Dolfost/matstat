@@ -29,5 +29,5 @@ qt_add_resources(gui "fonts"
 
 target_link_libraries(gui
 	Qt6::Core Qt6::Widgets Qt6::Gui Qt6::DataVisualization
-	exprtk ss::statistics qcustomplot
+	exprtk ss::statistics qcustomplot ca::qt ca::linear
 )

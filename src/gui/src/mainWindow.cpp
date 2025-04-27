@@ -71,6 +71,8 @@ void MainWindow::createVectorContainers() {
 				 vectorContainer, &VectorContainerWidget::appendVector);
 	connect(setGenerator, &SetGeneratorDialog::vectorPairGenerated,
 				 vectorContainer, &VectorContainerWidget::appendVectorPair);
+	connect(setGenerator, &SetGeneratorDialog::vectorChainGenerated,
+				 vectorContainer, &VectorContainerWidget::appendVectorChain);
 }
 
 void MainWindow::createActions() {

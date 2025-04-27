@@ -3,6 +3,12 @@
 #include <QtWidgets/qlabel.h>
 #include <QtWidgets/qpushbutton.h>
 
+#include <random>
+
+#include <vectorChain/math.hpp>
+
+#include <calgo/qt/symmetricMatModel.hpp>
+
 ParametersWidget::ParametersWidget(QStringList params, std::vector<double> val, bool en) : QWidget() {
 	size = params.length();
 	if (val.size() < size)
@@ -42,7 +48,7 @@ SetGeneratorDialog::SetGeneratorDialog(
 	this->setWindowTitle("Генератор вибірок");
 	tabs = new QTabWidget;
 	v_mainLayout->addWidget(tabs);
-	v_mainLayout->setSpacing(5);
+v_mainLayout->setSpacing(5);
 
 	setVectorTab();
 	setVectorPairTab();
@@ -74,23 +80,56 @@ SetGeneratorDialog::SetGeneratorDialog(
 }
 
 void SetGeneratorDialog::setVectorChainTab() {
-	vectorPairTab = new QWidget;
-	tabs->addTab(vectorPairTab, "Багатовимірні");
+	vectorChainTab = new QWidget;
+	tabs->addTab(vectorChainTab, "Багатовимірні");
 
-	// QVBoxLayout* layout = new QVBoxLayout;
-	// layout->setContentsMargins(10,10,10,0);
-	// vectorChainTab->setLayout(layout);
-	//
-	// QGroupBox* parametersBox = new QGroupBox("Лінійна регресія");
-	// parametersBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-	// vectorChainParametersLayout = new QVBoxLayout;
-	// vectorChainParametersLayout->setContentsMargins(1,1,1,1);
-	// parametersBox->setLayout(vectorChainParametersLayout);
-	// vectorChainParametersWidget = new ParametersWidget({"a", "b", "c", "σ"}, {1, 1, 1, 0.1});
-	//
-	// layout->addWidget(parametersBox);
-	//
-	// vectorPairModelSelected(vectorPairModelComboBox->currentIndex());
+	QVBoxLayout* layout = new QVBoxLayout;
+	layout->setContentsMargins(10,10,10,0);
+	vectorChainTab->setLayout(layout);
+
+	QGroupBox* parametersBox = new QGroupBox("Нормльний розподіл");
+	vectorChainDimensionSpinBox = new QSpinBox;
+	vectorChainDimensionSpinBox->setRange(3, 100);
+	QHBoxLayout* dim_lay = new QHBoxLayout;
+	dim_lay->addWidget(new QLabel("Кількість вимірів"));
+	dim_lay->addWidget(vectorChainDimensionSpinBox);
+
+	connect(
+		vectorChainDimensionSpinBox, &QSpinBox::valueChanged,
+		[&](int val) {
+			vectorChainParametersLayout->removeWidget(vectorChainMeans);
+			delete vectorChainMeans;
+			QStringList labels; std::vector<double> values;
+			for (std::size_t i = 0; i < val; i++) {
+				labels.push_back("m_" + QString::number(i + 1));
+				values.push_back(i + 1);
+			}
+			vectorChainMeans = new ParametersWidget(labels, values);
+			vectorChainParametersLayout->addWidget(vectorChainMeans);
+			vectorChainDCwidget->setRowCount(val);
+			vectorChainDCwidget->setColumnCount(val);
+			adjustSize();
+		}
+	);
+
+	parametersBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+	vectorChainParametersLayout = new QVBoxLayout;
+	vectorChainParametersLayout->setContentsMargins(1,1,1,1);
+	parametersBox->setLayout(vectorChainParametersLayout);
+
+	vectorChainParametersLayout->addLayout(dim_lay);
+
+	vectorChainDCwidget = new ca::qt::MatWidget;
+	vectorChainDCwidget->setModel(new ca::qt::SymmetricMatModel(ca::mat<double>()));
+	vectorChainDCwidget->setRowCount(3);
+	vectorChainDCwidget->setColumnCount(3);
+	vectorChainParametersLayout->addWidget(vectorChainDCwidget);
+	vectorChainMeans = new ParametersWidget({"m_1", "m_2", "m_3"}, {1, 2, 3});
+	vectorChainParametersLayout->addWidget(vectorChainMeans);
+
+	layout->addWidget(parametersBox);
+
+	vectorPairModelSelected(vectorPairModelComboBox->currentIndex());
 }
 
 void SetGeneratorDialog::setVectorPairTab() {
@@ -250,19 +289,62 @@ void SetGeneratorDialog::generateVectorPair() {
 }
 
 void SetGeneratorDialog::generateVectorChain() {
-	size_t count = countSpinBox->value();
-	std::vector<double> p = vectorChainParametersWidget->parameters();
-	std::pair<std::vector<double>, std::vector<double>> set;
+	std::size_t count = countSpinBox->value(); // N
+	std::vector<double> E = vectorChainMeans->parameters(); // E(3)
+	auto DC = vectorChainDCwidget->matrix(); // DC(3)
+	const auto dim = E.size(); // n
+
+	std::vector<ss::Vector> vectors(dim); // X_l
+	std::vector<std::vector<double>> A(dim); // A
+	std::vector<double> U(dim); // U_l
+	for (std::size_t i = 0; i < dim; i++) {
+		vectors[i].resize(count);
+		A[i].resize(dim);
+	}
+
+	
+
+	for (std::size_t i = 0; i < dim; i++) { // fill A
+		for (std::size_t j = 0; j < dim; j++) {
+			if (i == j) {
+				double a = 0;
+				for (std::size_t w = 0; w < i; w++)
+					a += std::pow(A[i][w], 2);
+				A[i][j] = std::sqrt(DC[i][i] - a);
+			} else if (i > j) {
+				double a = 0;
+				for (std::size_t w = 0; w < j; w++)
+					a += A[i][w]*A[j][w];
+				A[i][j] = (DC[i][j] - a)/(A[j][j]);
+			}
+		}
+	}
+
+	for (auto const& x : A) {
+		for (auto y : x) {
+			std::cout << y << '\t';
+		}
+		std::cout << std::endl;
+	}
+
+	std::random_device device;
+	std::mt19937 generator(device());
+	std::normal_distribution ndist(0.0, 1.0);
+	for (std::size_t l = 0; l < count; l++) {
+		for (auto &x : U) {
+			x = ndist(generator);
+		}
+		for (std::size_t i = 0; i < dim; i++) {
+			vectors[i][l] = E[i];
+			for (std::size_t j = 0; j < dim; j++)
+				vectors[i][l] += A[i][j]*U[j];
+		}
+	}
+	
+	
 	VectorChain* newve = new VectorChain;
-
-	double sigma = p.back();
-	p.pop_back();
-
-	// newve->setRegressionParameters(p);
-
-	// newve->setVectorChain(new ss::VectorChain(std::move(set.first), std::move(set.second)));
-	//
-	// emit vectorChainGenerated(newve);
+	newve->setVectorChain(new ss::VectorChain(vectors.begin(), vectors.end()));
+	emit vectorChainGenerated(newve);
 }
 
 void SetGeneratorDialog::generateHandler() {
@@ -273,6 +355,10 @@ void SetGeneratorDialog::generateHandler() {
 		}
 		case 1: {
 			generateVectorPair();
+			break;
+		}
+		case 2: {
+			generateVectorChain();
 			break;
 		}
 	}

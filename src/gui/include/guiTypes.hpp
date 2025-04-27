@@ -94,6 +94,7 @@ public:
 	ss::VectorChain* chain() { return v_vectorChain; }
 	ss::VectorChain* data() { return v_vectorChain; }
 	void setVectorChain(ss::VectorChain* v) { v_vectorChain = v; }
+
 protected:
 	ss::VectorChain* v_vectorChain = nullptr;
 };
