@@ -306,13 +306,12 @@ void SetGeneratorDialog::generateVectorChain() {
 
 	for (std::size_t i = 0; i < dim; i++) { // fill A
 		for (std::size_t j = 0; j < dim; j++) {
+			double a = 0;
 			if (i == j) {
-				double a = 0;
 				for (std::size_t w = 0; w < i; w++)
 					a += std::pow(A[i][w], 2);
 				A[i][j] = std::sqrt(DC[i][i] - a);
 			} else if (i > j) {
-				double a = 0;
 				for (std::size_t w = 0; w < j; w++)
 					a += A[i][w]*A[j][w];
 				A[i][j] = (DC[i][j] - a)/(A[j][j]);
@@ -320,12 +319,12 @@ void SetGeneratorDialog::generateVectorChain() {
 		}
 	}
 
-	for (auto const& x : A) {
-		for (auto y : x) {
-			std::cout << y << '\t';
-		}
-		std::cout << std::endl;
-	}
+	// for (auto const& x : A) {
+	// 	for (auto y : x) {
+	// 		std::cout << y << '\t';
+	// 	}
+	// 	std::cout << std::endl;
+	// }
 
 	std::random_device device;
 	std::mt19937 generator(device());

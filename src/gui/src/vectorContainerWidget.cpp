@@ -681,6 +681,7 @@ void VectorContainerWidget::vectorChainField3dAction() {
 			dia = new VectorChainField3dDialog(v, this);
 		} catch (std::exception& ex) {
 			message(ex.what());
+			delete dia;
 			continue;
 		}
 		connect(this, &VectorContainerWidget::redrawVector,

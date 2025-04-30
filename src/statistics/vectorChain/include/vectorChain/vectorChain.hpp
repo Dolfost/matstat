@@ -79,6 +79,36 @@ public:
 		}
 	}
 
+	class Regression: public utils::Statistic<int, VectorChain> {
+	public:
+		using Statistic::Statistic;
+
+	public:
+		void setModel(std::vector<double>);
+		double regression(std::vector<double> x);
+		std::vector<double> confidence(std::vector<double> x) {
+			// double f = this->regression(x), q = ss::studQuantile(1-this->d_confidence/2, this->s_vector->size()-2)*this->Symx(x);
+			// return {f - q, f + q};
+			return {0};
+		}
+
+		double confidenceLevel() { return d_confidence; };
+		void setConfidenceLevel(double c) { d_confidence = c; };
+
+		size_t parametersCount = 0;
+		std::vector<double> parameters{0};
+		std::vector<double> parametersDeviation{0};
+
+		double remDispersion;
+		double determination;
+		double phi1, phi2;
+
+		virtual void invalidate() override {
+		}
+	protected:
+		double d_confidence = 0.95;
+	} reg = Regression(this);
+
 	void writeToFile(std::string filename);
 
 public:
