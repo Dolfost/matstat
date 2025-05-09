@@ -11,6 +11,7 @@ void VectorChain::Regression::setModel(std::vector<double> p) {
 double VectorChain::Regression::regression(std::vector<double> x) {
 	if (x.size() - 1 != parameters.size())
 		throw std::logic_error("Кількість параметрів не рівна кількості аргументів (регресія)");
+	return 0;
 }
 
 }

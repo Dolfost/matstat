@@ -9,6 +9,13 @@
 namespace ss {
 
 void VectorChain::invalidate() {
+	pca.invalidate();
+	reg.invalidate();
+	plural_corelation.invalidate();
+	partial_corelation.invalidate();
+	r.invalidate();
+	dc.invalidate();
+	pcor.invalidate();
 }
 
 void VectorChain::checkSize() {

@@ -52,6 +52,9 @@ void VectorPair::invalidate() {
 	checkSize();
 
 	cor.invalidate();
+	nangle.invalidate();
+	vs.invalidate();
+	cs.invalidate();
 }
 
 VectorPair::VectorPair(const VectorPair& other): VectorPair(other.x.list(), other.y.list()) {

@@ -21,6 +21,7 @@ public:
 	class PairCorrelation: public utils::StatisticMap<std::pair<std::size_t, std::size_t>, double, std::pair<std::size_t, std::size_t>, VectorChain> {
 	public:
 		using StatisticMap::StatisticMap;
+		PairCorrelation() = delete;
 		virtual void adapt(std::pair<std::size_t, std::size_t>) override;
 	} pcor = PairCorrelation(this);
 
@@ -78,6 +79,32 @@ public:
 			push_back(*i);
 		}
 	}
+
+	class PrincipalComponentAnalysis: public utils::Statistic<int, VectorChain> {
+	public:
+		using Statistic::Statistic;
+
+	public:
+		virtual void invalidate() override {
+			if (m_done) {
+				m_eigenvalues.clear();
+				m_eigenvectors.clear();
+				m_done = false;
+			}
+		}
+
+		bool is_done() const { return m_done; }
+		const std::vector<double>& eigenvalues() { return m_eigenvalues; }
+		const std::vector<std::vector<double>>& eigenvectors() { return m_eigenvectors; }
+
+	public:
+		void perform();
+
+	protected:
+		std::vector<double> m_eigenvalues;
+		std::vector<std::vector<double>> m_eigenvectors;
+		bool m_done = false;
+	} pca = PrincipalComponentAnalysis(this);
 
 	class Regression: public utils::Statistic<int, VectorChain> {
 	public:

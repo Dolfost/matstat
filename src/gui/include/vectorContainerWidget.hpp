@@ -93,12 +93,17 @@ private slots:
 	void vectorPairConnectionsTableInfoAction();
 	void vectorPairRegressionAction();
 	void vectorPairConfidenceAction(double);
+	void vectorPairNormalizingRotationAction();
+	void vectorPairUndoNormalizingRotationAction();
 
 	void vectorChainBreak();
 	void vectorChainInfoAction();
 	void vectorChainField3dAction();
 	void vectorChainCorelationCoeficientAction();
 	void vectorChainScatterPlotMatrixAction();
+	void vectorChainPerformPCAAction();
+	void vectorChainNormalizeAction();
+	void vectorChainCenterAction();
 
 signals:
 	void vectorDeleted(Vector*);

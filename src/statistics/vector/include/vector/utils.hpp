@@ -28,8 +28,11 @@ template<class T, class B = Vector>
 class Statistic {
 public:
 	Statistic() = delete;
-	Statistic(B& vec): s_vector(&vec) {};
 	Statistic(B* vec): s_vector(vec) {};
+	template<class U, class V>
+	Statistic(Statistic<U, V>& other) {
+		s_vector = other.s_vector;
+	}
 	B& vector() const { return *s_vector; };
 	// void setVector(B* v) { s_vector = v; };
 	// void setVector(B& v) { s_vector = &v; };
@@ -44,7 +47,8 @@ template<class T, class B = Vector>
 class StatisticSingle: public Statistic<T, B> {
 public:
 	StatisticSingle() = delete;
-	StatisticSingle(const StatisticSingle& other) {
+	template<class U, class V>
+	StatisticSingle(const StatisticSingle<U, V>& other) {
 		s_valid = other.s_valid;
 		s_value = other.s_value;
 	}
@@ -70,7 +74,8 @@ template<class T, class B=Vector>
 class StatisticContainer: public Statistic<T, B> {
 public:
 	StatisticContainer() = delete;
-	StatisticContainer(const StatisticContainer& other) {
+	template<class U, class V>
+	StatisticContainer(const StatisticContainer<U, V>& other) {
 		s_valid = other.s_valid;
 		s_value = other.s_value;
 	}
@@ -97,7 +102,8 @@ template<class T, class Switch, class B=Vector>
 class StatisticPair: public Statistic<T, B> {
 public:
 	StatisticPair() = delete;
-	StatisticPair(const StatisticPair& other) {
+	template<class U, class V, class K>
+	StatisticPair(const StatisticPair<U, V, K>& other) {
 		s_valid = other.s_valid;
 		s_value = other.s_value;
 	}
@@ -129,7 +135,8 @@ template<class From, class To, class MapFrom=From, class B=Vector>
 class StatisticMap: public Statistic<To, B> {
 public:
 	StatisticMap() = delete;
-	StatisticMap(const StatisticMap& other) {
+	template<class U, class V, class K, class D>
+	StatisticMap(const StatisticMap<U, V, K, D>& other) {
 		s_values = other.s_values;
 	}
 	using Statistic<To, B>::Statistic;
@@ -152,7 +159,8 @@ template<class From, class To, class Switch, class B=Vector>
 class StatisticPairMap: public Statistic<To, B> {
 public:
 	StatisticPairMap() = delete;
-	StatisticPairMap(const StatisticPairMap& other) {
+	template<class U, class V, class K, class D>
+	StatisticPairMap(const StatisticPairMap<U, V, K, D>& other) {
 		s_values = other.s_values;
 	}
 	using Statistic<To, B>::Statistic;
@@ -189,81 +197,81 @@ public:
 };
 
 #define SS_WRAP_EXPRTK_SINGLE(name, vecType) \
-	struct exprtk_##name final: public ::exprtk::ifunction<double> { \
-		exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(0) { \
-			dv = vec; \
-		} \
-		double operator()() { \
-			return dv->name(); \
-		}; \
+struct exprtk_##name final: public ::exprtk::ifunction<double> { \
+exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(0) { \
+	dv = vec; \
+} \
+double operator()() { \
+	return dv->name(); \
+}; \
 	protected: \
-		ss::vecType* dv; \
+ss::vecType* dv; \
 	}; \
 
 #define SS_WRAP_EXPRTK_PAIR(name, vecType) \
-	struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
-		exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("S") { \
-			dv = vec; \
-		} \
-		double operator()(parameter_list_t parameters) { \
-			typedef typename generic_type::string_view string_t; \
-			string_t m(parameters[0]); \
-			std::string mstr = m.begin(); \
-			ss::Measure measure; \
-			if (mstr == "pop") \
-				measure = ss::Measure::Population; \
-			else if (mstr == "spl") \
-				measure = ss::Measure::Sample; \
-			else  \
-				measure = ss::Measure::Unknown; \
-			return dv->name(measure); \
-		} \
+struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
+exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("S") { \
+	dv = vec; \
+} \
+double operator()(parameter_list_t parameters) { \
+	typedef typename generic_type::string_view string_t; \
+	string_t m(parameters[0]); \
+	std::string mstr = m.begin(); \
+	ss::Measure measure; \
+	if (mstr == "pop") \
+		measure = ss::Measure::Population; \
+	else if (mstr == "spl") \
+		measure = ss::Measure::Sample; \
+	else  \
+		measure = ss::Measure::Unknown; \
+	return dv->name(measure); \
+} \
 	protected: \
-		ss::vecType* dv; \
+ss::vecType* dv; \
 	}; \
 
 #define SS_WRAP_EXPRTK_MAP(name, vecType) \
-	struct exprtk_##name final: public ::exprtk::ifunction<double> { \
-		exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(1) { \
-			dv = vec; \
-		} \
-		double operator()(const double& a) { \
-			return dv->name(a); \
-		}; \
+struct exprtk_##name final: public ::exprtk::ifunction<double> { \
+exprtk_##name(ss::vecType* vec): ::exprtk::ifunction<double>(1) { \
+	dv = vec; \
+} \
+double operator()(const double& a) { \
+	return dv->name(a); \
+}; \
 	protected: \
-		ss::vecType* dv; \
+ss::vecType* dv; \
 	}; \
 
 #define SS_WRAP_EXPRTK_PAIR_MAP(name, vecType) \
-	struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
-		exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("TS") { \
-			dv = vec; \
-		} \
-		double operator()(parameter_list_t parameters) { \
-			typedef typename generic_type::scalar_view scalar_t; \
-			typedef typename generic_type::string_view string_t; \
-			string_t m(parameters[1]); \
-			std::string mstr = m.begin(); \
-			ss::Measure measure; \
-			if (mstr == "pop") \
-				measure = ss::Measure::Population; \
-			else if (mstr == "spl") \
-				measure = ss::Measure::Sample; \
-			else  \
-				measure = ss::Measure::Unknown; \
-			return dv->name(scalar_t(parameters[0]), measure); \
-		} \
+struct exprtk_##name final: public ::exprtk::igeneric_function<double> { \
+exprtk_##name(ss::vecType* vec): ::exprtk::igeneric_function<double>("TS") { \
+	dv = vec; \
+} \
+double operator()(parameter_list_t parameters) { \
+	typedef typename generic_type::scalar_view scalar_t; \
+	typedef typename generic_type::string_view string_t; \
+	string_t m(parameters[1]); \
+	std::string mstr = m.begin(); \
+	ss::Measure measure; \
+	if (mstr == "pop") \
+		measure = ss::Measure::Population; \
+	else if (mstr == "spl") \
+		measure = ss::Measure::Sample; \
+	else  \
+		measure = ss::Measure::Unknown; \
+	return dv->name(scalar_t(parameters[0]), measure); \
+} \
 	protected: \
-		ss::vecType* dv; \
+ss::vecType* dv; \
 	}; \
 
 }
 
 #define SS_ADD_FUNCTION_N(f, name) \
-	t.add_function(p + name, *(new exprtk_##f(v))); \
+t.add_function(p + name, *(new exprtk_##f(v))); \
 
 #define SS_ADD_FUNCTION(f) \
-	t.add_function(p + #f, *(new exprtk_##f(v))); \
+t.add_function(p + #f, *(new exprtk_##f(v))); \
 
 
 #endif // !_VECTOR_UTILS_HPP_

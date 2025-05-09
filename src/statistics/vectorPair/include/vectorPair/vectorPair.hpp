@@ -353,6 +353,16 @@ public:
 
 	void reproduceRegression(Regression::Model);
 
+	class NormalizationAngle: public utils::StatisticSingle<double, VectorPair> {
+	public:
+		using StatisticSingle::StatisticSingle;
+
+	protected:
+		virtual void adapt() override;
+	} nangle = NormalizationAngle(this);
+
+	void rotate(double phi);
+
 public:
 	VectorPair(const std::vector<double> ft = {}, 
 						const std::vector<double> sd = {});

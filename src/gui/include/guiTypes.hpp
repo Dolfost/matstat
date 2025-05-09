@@ -82,6 +82,8 @@ public:
 		return v_isNormalDistribution;
 	}
 	const std::vector<double>& regressionParameters() { return v_regressionParameters; }
+
+	std::optional<double> rotated_angle;
 protected:
 	ss::VectorPair* v_vectorPair = nullptr;
 	ss::VectorPair::Regression::Model v_regressionModel = ss::VectorPair::Regression::Model::Unknown;

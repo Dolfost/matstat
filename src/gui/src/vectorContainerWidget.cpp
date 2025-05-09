@@ -496,9 +496,27 @@ void VectorContainerWidget::fillVectorPairContextMenu(QMenu* menu) {
 
 	menu->addSeparator();
 
-	QAction *transformAction = menu->addAction("Трансформації…");
+	QMenu* transformMenu = menu->addMenu("Трансформації…");
+	QAction* transformAction = transformMenu->addAction("Власне перетворення");
 	connect(transformAction, &QAction::triggered, this,
 				 &VectorContainerWidget::vectorPairTransformAction);
+
+	QAction* normRotationAction = transformMenu->addAction("Нормалізуючий поворот");
+	connect(normRotationAction, &QAction::triggered, this,
+				 &VectorContainerWidget::vectorPairNormalizingRotationAction);
+
+	if (
+		std::all_of(
+			selectedVectorPairsList.begin(), selectedVectorPairsList.end(), [](auto vp) {
+				return bool(vp->rotated_angle);
+			}
+		)
+	) {
+		QAction* undoNormRotationAction = transformMenu->addAction("Відмінити нормалізуючий поворот");
+		connect(undoNormRotationAction, &QAction::triggered, this,
+					 &VectorContainerWidget::vectorPairUndoNormalizingRotationAction);
+	}
+
 
 	menu->addSeparator();
 
@@ -554,6 +572,25 @@ void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {
 	connect(
 		scatterPlotMatrix, &QAction::triggered, this,
 		&VectorContainerWidget::vectorChainScatterPlotMatrixAction
+	);
+
+	menu->addSeparator();
+
+	QMenu* transformations = menu->addMenu("Перетворення...");
+	auto performPCA = transformations->addAction("Провести перетворення МГК");
+	connect(
+		performPCA, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainPerformPCAAction
+	);
+	auto normalize = transformations->addAction("Нормалізувати");
+	connect(
+		normalize, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainNormalizeAction
+	);
+	auto center = transformations->addAction("Відцентрувати");
+	connect(
+		center, &QAction::triggered, this,
+		&VectorContainerWidget::vectorChainCenterAction
 	);
 
 	menu->addSeparator();
@@ -723,6 +760,44 @@ void VectorContainerWidget::vectorChainScatterPlotMatrixAction() {
 	}
 }
 
+void VectorContainerWidget::vectorChainPerformPCAAction() {
+	for (auto& vec : selectedVectorChainsList) {
+		VectorChain* vc = new VectorChain;
+		vc->setName("PCA" + QString::number(vectorCount++) + "(" + vec->name() + ")");
+		ss::VectorChain* svc = new ss::VectorChain(vec->chain()->begin(), vec->chain()->end());
+		svc->pca.perform();
+		vc->setVectorChain(svc);
+		appendVectorChain(vc);
+	}
+}
+
+void VectorContainerWidget::vectorChainNormalizeAction() {
+	for (auto& vec : selectedVectorChainsList) {
+		VectorChain* vc = new VectorChain;
+		vc->setName("NORM" + QString::number(vectorCount++) + "(" + vec->name() + ")");
+		ss::VectorChain* svc = new ss::VectorChain(vec->chain()->begin(), vec->chain()->end());
+		vc->setVectorChain(svc);
+		for (auto& v: *svc) {
+			v.standardize();
+		}
+		appendVectorChain(vc);
+	}
+}
+
+void VectorContainerWidget::vectorChainCenterAction() {
+	for (auto& vec : selectedVectorChainsList) {
+		VectorChain* vc = new VectorChain;
+		vc->setName("CNTR" + QString::number(vectorCount++) + "(" + vec->name() + ")");
+		ss::VectorChain* svc = new ss::VectorChain(vec->chain()->begin(), vec->chain()->end());
+		vc->setVectorChain(svc);
+		for (auto& v: *svc) {
+			v.transform("x - mean()");
+		}
+		appendVectorChain(vc);
+	}
+}
+
+
 void VectorContainerWidget::vectorPairConnectionsTableInfoAction() {
 	for (auto& v : selectedVectorPairsList) {
 		VectorPairConnectionsTableInfoDialog* dia = new VectorPairConnectionsTableInfoDialog(v, this);
@@ -751,6 +826,27 @@ void VectorContainerWidget::vectorPairConfidenceAction(double c) {
 	for (auto const &vec : selectedVectorPairsList) {
 		vec->vectorPair()->reg.setConfidenceLevel(c);
 		emit redrawVector(vec);
+	}
+}
+
+void VectorContainerWidget::vectorPairNormalizingRotationAction() {
+	for (auto const &vec : selectedVectorPairsList) {
+		VectorPair* vp = new VectorPair("NR" + QString::number(vectorCount++) + "(" + vec->name() + ")");
+		ss::VectorPair* svp = new ss::VectorPair(*(vec->vectorPair()));
+		vp->setVectorPair(svp);
+		vp->rotated_angle = svp->nangle();
+		svp->rotate(svp->nangle());
+		appendVectorPair(vp);
+	}
+}
+
+void VectorContainerWidget::vectorPairUndoNormalizingRotationAction() {
+	for (auto const &vec : selectedVectorPairsList) {
+		VectorPair* vp = new VectorPair("UNR" + QString::number(vectorCount++) + "(" + vec->name() + ")");
+		ss::VectorPair* svp = new ss::VectorPair(*(vec->vectorPair()));
+		vp->setVectorPair(svp);
+		svp->rotate(-vec->vectorPair()->nangle());
+		appendVectorPair(vp);
 	}
 }
 
