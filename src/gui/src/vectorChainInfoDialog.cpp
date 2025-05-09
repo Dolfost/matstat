@@ -17,11 +17,6 @@ VectorChainInfoDialog::VectorChainInfoDialog(
 	v_table = tw->widget();
 	v_mainLayout->insertWidget(0, tw);
 
-	// auto iw = new SectionedWidget<IntervalTableWidget>;
-	// iw->setTitle("Інтервальні оцінки");
-	// v_interval = iw->widget();
-	// v_mainLayout->insertWidget(1, iw);
-
 	fill();
 };
 

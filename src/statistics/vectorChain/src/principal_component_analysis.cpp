@@ -25,12 +25,12 @@ void VectorChain::PrincipalComponentAnalysis::perform() {
 
 	jacobi_pd::Jacobi<double, std::vector<double>&, std::vector<std::vector<double>>&, const std::vector<std::vector<double>>&> jac(n);
 	jac.Diagonalize(s_vector->dc(), m_eigenvalues, m_eigenvectors);
-	show(m_eigenvectors);
 
-	for (const auto& y: m_eigenvalues) {
-		std::cout << y << '\t';
-	}
-	std::cout << std::endl;
+	// show(m_eigenvectors);
+	// for (const auto& y: m_eigenvalues) {
+	// 	std::cout << y << '\t';
+	// }
+	// std::cout << std::endl;
 
 	for (std::size_t k = 0; k < n; k++) {
 		for (std::size_t l = 0; l < N; l++) {

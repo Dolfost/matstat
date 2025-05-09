@@ -104,6 +104,7 @@ private slots:
 	void vectorChainPerformPCAAction();
 	void vectorChainNormalizeAction();
 	void vectorChainCenterAction();
+	void vectorChainPCAInfoAction();
 
 signals:
 	void vectorDeleted(Vector*);

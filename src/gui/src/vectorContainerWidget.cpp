@@ -33,6 +33,7 @@
 #include <vectorChainField3dDialog.hpp>
 #include <vectorChainCorelationCoeficientDialog.hpp>
 #include <vectorChainScatterPlotMatrixDialog.hpp>
+#include <vectorChainPCAInfoDialog.hpp>
 
 VectorContainerWidget::SelectedT<VectorEntry>
 VectorContainerWidget::selectedVectors() {
@@ -601,6 +602,21 @@ void VectorContainerWidget::fillVectorChainContextMenu(QMenu* menu) {
 		&VectorContainerWidget::vectorChainInfoAction
 	);
 
+	if (
+		std::all_of(
+			selectedVectorChainsList.begin(), selectedVectorChainsList.end(), [](auto vc) {
+				return bool(vc->chain()->pca.is_done());
+			}
+		)
+	) {
+		auto PCAinfo = menu->addAction("Результати МГК...");
+		connect(
+			PCAinfo, &QAction::triggered, this,
+			&VectorContainerWidget::vectorChainPCAInfoAction
+		);
+	}
+
+
 	QAction *corr = menu->addAction("Коефіцієнти кореляції...");
 	connect(
 		corr, &QAction::triggered, this,
@@ -794,6 +810,16 @@ void VectorContainerWidget::vectorChainCenterAction() {
 			v.transform("x - mean()");
 		}
 		appendVectorChain(vc);
+	}
+}
+
+void VectorContainerWidget::vectorChainPCAInfoAction() {
+	for (auto& vec : selectedVectorChainsList) {
+		VectorChainPCAInfoDialog* dia = new VectorChainPCAInfoDialog(vec, this);
+		connect(this, &VectorContainerWidget::vectorPairDeleted,
+					dia, &VectorChainPCAInfoDialog::vectorDeletedHandler);
+		connect(this, &VectorContainerWidget::vectorParametersChanged,
+					dia, &VectorChainPCAInfoDialog::sync);
 	}
 }
 
