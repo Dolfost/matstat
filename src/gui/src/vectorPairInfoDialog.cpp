@@ -225,4 +225,5 @@ void VectorPairInfoDialog::fill() {
 		}
 	} else
 		i_additionalText->setText("Вектор імпортовано у програму.");
+
 }

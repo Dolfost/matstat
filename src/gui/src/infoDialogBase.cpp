@@ -55,6 +55,9 @@ void InfoDialogBase::InfoTableWidget::fill(QList<QStringList> contents) {
 		}
 		row++;
 	}
+
+	resizeColumnsToContents();
+	resizeRowsToContents();
 }
 
 InfoDialogBase::IntervalTableWidget::IntervalTableWidget() {
